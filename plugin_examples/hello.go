@@ -17,7 +17,7 @@ func (pluginDemo *HelloWorldPlugin) Run(context plugin.PluginContext, args []str
 
 func (pluginDemo *HelloWorldPlugin) GetMetadata() plugin.PluginMetadata {
 	return plugin.PluginMetadata{
-		Name: "Hello",
+		Name: "SayHello",
 		Version: plugin.VersionType{
 			Major: 0,
 			Minor: 0,
