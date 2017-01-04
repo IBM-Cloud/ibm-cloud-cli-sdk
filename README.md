@@ -45,7 +45,7 @@ See plugin examples [here](https://github.com/IBM-Bluemix/bluemix-cli-sdk/tree/m
 
 Bluemix has a public plugin repository by default installed in Bluemix CLI. Run `bluemix plugin`, you can see a repository named `Bluemix` (`https://plugins.ng.bluemix.net`). The repository support multiple version of plugin. You can list all plugins in the repository by using `bluemix plugin repo-plugins -r Bluemix`.
 
-To publish, update or remove your plugin in Bluemix plugin repository, you can simply [create an issue on GitHub](https://github.ibm.com/Bluemix/bluemix-cli-sdk/issues/new) following below samples:
+To publish, update or remove your plugin in Bluemix plugin repository, you can simply [create an issue on GitHub](https://github.com/IBM-Bluemix/bluemix-cli-sdk/issues/new) following below samples:
 
 **Example to publish a new plugin**:
 
@@ -163,7 +163,7 @@ Report problems by [adding an issue on GitHub](https://github.com/IBM-Bluemix/bl
 
 # License
 
-This project is released under version 2.0 of the [Apache License](https://github.ibm.com/Bluemix/bluemix-cli-sdk/blob/master/LICENSE)
+This project is released under version 2.0 of the [Apache License](https://github.com/IBM-Bluemix/bluemix-cli-sdk/blob/master/LICENSE)
 
 
 
