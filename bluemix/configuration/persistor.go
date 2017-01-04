@@ -6,7 +6,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.ibm.com/Bluemix/bluemix-cli-sdk/common/file_helpers"
+	"github.com/IBM-Bluemix/bluemix-cli-sdk/common/file_helpers"
 )
 
 type Persistor interface {

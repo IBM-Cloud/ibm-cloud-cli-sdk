@@ -4,7 +4,7 @@ package fakes
 import (
 	"sync"
 
-	"github.ibm.com/Bluemix/bluemix-cli-sdk/plugin"
+	"github.com/weieigao/bluemix-cli-sdk/plugin"
 )
 
 type FakePluginConfig struct {

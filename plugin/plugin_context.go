@@ -4,11 +4,11 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.ibm.com/Bluemix/bluemix-cli-sdk/bluemix/configuration/config_helpers"
-	"github.ibm.com/Bluemix/bluemix-cli-sdk/bluemix/configuration/core_config"
-	"github.ibm.com/Bluemix/bluemix-cli-sdk/bluemix/consts"
-	"github.ibm.com/Bluemix/bluemix-cli-sdk/bluemix/token_refresher"
-	"github.ibm.com/Bluemix/bluemix-cli-sdk/plugin/models"
+	"github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/configuration/config_helpers"
+	"github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/configuration/core_config"
+	"github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/consts"
+	"github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/token_refresher"
+	"github.com/IBM-Bluemix/bluemix-cli-sdk/plugin/models"
 )
 
 type pluginContext struct {

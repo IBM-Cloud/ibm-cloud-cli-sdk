@@ -3,8 +3,8 @@ package main
 import (
 	"strconv"
 
-	"github.ibm.com/Bluemix/bluemix-cli-sdk/bluemix/terminal"
-	"github.ibm.com/Bluemix/bluemix-cli-sdk/plugin"
+	"github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/terminal"
+	"github.com/IBM-Bluemix/bluemix-cli-sdk/plugin"
 )
 
 type PrintContext struct {

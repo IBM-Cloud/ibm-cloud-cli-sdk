@@ -2,7 +2,8 @@ package main
 
 import (
 	"fmt"
-	"github.ibm.com/Bluemix/bluemix-cli-sdk/plugin"
+
+	"github.com/IBM-Bluemix/bluemix-cli-sdk/plugin"
 )
 
 type HelloWorldPlugin struct{}

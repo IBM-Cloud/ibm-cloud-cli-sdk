@@ -3,7 +3,7 @@ package configuration
 import (
 	cfconfiguration "github.com/cloudfoundry/cli/cf/configuration"
 
-	"github.ibm.com/Bluemix/bluemix-cli-sdk/bluemix/configuration/core_config"
+	"github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/configuration/core_config"
 )
 
 type FakeCFPersistor struct{}

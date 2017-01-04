@@ -6,7 +6,7 @@ import (
 	"io"
 	"strings"
 
-	term "github.ibm.com/Bluemix/bluemix-cli-sdk/bluemix/terminal"
+	term "github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/terminal"
 )
 
 // TODO: to be deprecated

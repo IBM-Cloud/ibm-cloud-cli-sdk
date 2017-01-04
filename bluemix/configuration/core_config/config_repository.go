@@ -15,9 +15,9 @@ import (
 	cfcoreconfig "github.com/cloudfoundry/cli/cf/configuration/coreconfig"
 	cfmodels "github.com/cloudfoundry/cli/cf/models"
 
-	"github.ibm.com/Bluemix/bluemix-cli-sdk/bluemix/configuration"
-	"github.ibm.com/Bluemix/bluemix-cli-sdk/bluemix/configuration/config_helpers"
-	"github.ibm.com/Bluemix/bluemix-cli-sdk/bluemix/models"
+	"github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/configuration"
+	"github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/configuration/config_helpers"
+	"github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/models"
 )
 
 const (

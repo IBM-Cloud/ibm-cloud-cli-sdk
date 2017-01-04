@@ -7,7 +7,7 @@ import (
 
 	"golang.org/x/crypto/ssh/terminal"
 
-	"github.ibm.com/Bluemix/bluemix-cli-sdk/bluemix/consts"
+	"github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/consts"
 )
 
 type Color uint

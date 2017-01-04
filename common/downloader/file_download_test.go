@@ -12,7 +12,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
 
-	"github.ibm.com/Bluemix/bluemix-cli-sdk/common/file_helpers"
+	"github.com/IBM-Bluemix/bluemix-cli-sdk/common/file_helpers"
 )
 
 type DownloadTestSuite struct {

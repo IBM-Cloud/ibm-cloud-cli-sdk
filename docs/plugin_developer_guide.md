@@ -12,7 +12,7 @@ _Step 1:_ Define a new struct for Bluemix CLI plugin and associate Run and GetMe
 
 ```go
 import (
-    "github.ibm.com/Bluemix/bluemix-cli-sdk/plugin"
+    "github.com/IBM-Bluemix/bluemix-cli-sdk/plugin"
 )
 
 type DemoPlugin struct {}
@@ -107,7 +107,7 @@ The following are shared-namespaces currently predefined in Bluemix CLI:
 For shared namespace, it can be referenced by plugin as the following example:
 
 ```go
-import "github.ibm.com/Bluemix/bluemix-cli-sdk/plugin"
+import "github.com/IBM-Bluemix/bluemix-cli-sdk/plugin"
 
 func (p *CatalogExtPlugin) GetMetadata() plugin.PluginMetadata {
     return plugin.PluginMetadata{
@@ -140,7 +140,7 @@ func (p *CatalogExtPlugin) Run(context plugin.PluginContext, args []string) {
 For non-shared namespace, it can be defined in plugin like:
 
 ```go
-import "github.ibm.com/Bluemix/bluemix-cli-sdk/plugin"
+import "github.com/IBM-Bluemix/bluemix-cli-sdk/plugin"
 
 
 func (p *DemoPlugin) GetMetadata() plugin.PluginMetadata {
@@ -312,7 +312,7 @@ You have not logged in. Use 'bluemix login'to login first.
 You can use the following APIs provided by Bluemix CLI SDK to print the above message:
 
 ```go
-import "github.ibm.com/Bluemix/bluemix-cli-sdk/bluemix/terminal"
+import "github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/terminal"
 
 ui := terminal.NewStdUI()
 
@@ -564,7 +564,7 @@ demo-app   This is a long long long ...
 
 Using APIs provided by Bluemix CLI can let you easily print results in table format:
 ```go
-import "github.ibm.com/Bluemix/bluemix-cli-sdk/bluemix/terminal"
+import "github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/terminal"
 
 func (demo *DemoPlugin) PrintTable() {
     ui := terminal.NewStdUI()
@@ -582,7 +582,7 @@ Bluemix CLI provides utility for tracing based on "BLUEMIX\_TRACE" environment v
 
 It's pretty much easy on using Bluemix CLI trace API.
 ```go
-import "github.ibm.com/Bluemix/bluemix-cli-sdk/bluemix/trace"
+import "github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/trace"
 
 func (demo *DemoPlugin) Run(context plugin.PluginContext, args []string) {
     // first, initialize the trace logger
@@ -609,7 +609,7 @@ trace.Logger = trace.NewLogger(pluginContext.Trace())
 Then you can create a HTTP client with TraceLoggingTransport to send the request:
 ```go
 import (
-    "github.ibm.com/Bluemix/bluemix-cli-sdk/bluemix/http"
+    "github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/http"
     gohttp "net/http"
 )
 
@@ -626,7 +626,7 @@ HTTP interaction with a remote server is a common task in both core and plugin c
 
 For example, to create a GET request:
 ```go
-import "github.ibm.com/Bluemix/bluemix-cli-sdk/common/rest"
+import "github.com/IBM-Bluemix/bluemix-cli-sdk/common/rest"
 
 var r = rest.GetRequest("http://www.example.com")
 // equal to
@@ -725,8 +725,8 @@ FakeUI can intercept all of output and store the output in a buffer temporarily,
 ```go
 // Here is the source code to be tested:
 import (
-    "github.ibm.com/Bluemix/bluemix-cli-sdk/plugin"
-    "github.ibm.com/Bluemix/bluemix-cli-sdk/bluemix/terminal"
+    "github.com/IBM-Bluemix/bluemix-cli-sdk/plugin"
+    "github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/terminal"
 )
 
 type DemoPluginstruct {}
@@ -745,7 +745,7 @@ func (demo *DemoPlugin) Start(ui terminal.UI){
 }
 
 // The following is the testing code:
-import "github.ibm.com/Bluemix/bluemix-cli-sdk/testhelpers/terminal"
+import "github.com/IBM-Bluemix/bluemix-cli-sdk/testhelpers/terminal"
 
 func TestStart() {
     demoPlugin := DemoPlugin{}

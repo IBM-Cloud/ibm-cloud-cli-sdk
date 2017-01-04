@@ -4,7 +4,7 @@ package fakes
 import (
 	"sync"
 
-	"github.ibm.com/Bluemix/bluemix-cli-sdk/bluemix/token_refresher"
+	"github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/token_refresher"
 )
 
 type FakeTokenRefresher struct {

@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.ibm.com/Bluemix/bluemix-cli-sdk/bluemix/configuration/core_config"
+	"github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/configuration/core_config"
 )
 
 func Start(plugin Plugin) {

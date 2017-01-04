@@ -4,7 +4,7 @@ import (
 	"encoding/base64"
 	"fmt"
 
-	"github.ibm.com/Bluemix/bluemix-cli-sdk/common/rest"
+	"github.com/IBM-Bluemix/bluemix-cli-sdk/common/rest"
 )
 
 type InvalidTokenError struct {

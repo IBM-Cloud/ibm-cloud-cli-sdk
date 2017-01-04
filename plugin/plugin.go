@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.ibm.com/Bluemix/bluemix-cli-sdk/plugin/models"
+	"github.com/IBM-Bluemix/bluemix-cli-sdk/plugin/models"
 )
 
 type PluginMetadata struct {

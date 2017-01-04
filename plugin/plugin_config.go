@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"sync"
 
-	"github.ibm.com/Bluemix/bluemix-cli-sdk/bluemix/configuration"
+	"github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/configuration"
 )
 
 // PluginConfig defines methods to access plug-in's private configuration stored in a JSON format.
