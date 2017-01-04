@@ -10,10 +10,10 @@ import (
 
 	"github.com/blang/semver"
 
-	cfconfiguration "github.com/cloudfoundry/cli/cf/configuration"
-	cfconfighelpers "github.com/cloudfoundry/cli/cf/configuration/confighelpers"
-	cfcoreconfig "github.com/cloudfoundry/cli/cf/configuration/coreconfig"
-	cfmodels "github.com/cloudfoundry/cli/cf/models"
+	cfconfiguration "code.cloudfoundry.org/cli/cf/configuration"
+	cfconfighelpers "code.cloudfoundry.org/cli/cf/configuration/confighelpers"
+	cfcoreconfig "code.cloudfoundry.org/cli/cf/configuration/coreconfig"
+	cfmodels "code.cloudfoundry.org/cli/cf/models"
 
 	"github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/configuration"
 	"github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/configuration/config_helpers"

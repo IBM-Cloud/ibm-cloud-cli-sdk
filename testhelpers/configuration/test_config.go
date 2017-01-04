@@ -1,7 +1,7 @@
 package configuration
 
 import (
-	cfconfiguration "github.com/cloudfoundry/cli/cf/configuration"
+	cfconfiguration "code.cloudfoundry.org/cli/cf/configuration"
 
 	"github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/configuration/core_config"
 )
