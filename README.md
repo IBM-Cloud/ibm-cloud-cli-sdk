@@ -1,10 +1,10 @@
 # Bluemix CLI SDK
 
-This is the Bluemix CLI plugin SDK. It provides predefined plugin interface, utilities and libraries for plugin development.
+Bluemix CLI plugin SDK provides predefined plugin interface, utilities and libraries to develop plugins for [Bluemix cli](https://clis.ng.bluemix.net).
 
 # Building and running tests
 
-The project uses [govendor](https://github.com/kardianos/govendor) to manager dependencies. Run the following command to restore the dependencies into vendor folder:
+The project uses [govendor](https://github.com/kardianos/govendor) to manage dependencies. Run the following command to restore the dependencies into vendor folder:
 
 ```bash
 $ govendor sync
