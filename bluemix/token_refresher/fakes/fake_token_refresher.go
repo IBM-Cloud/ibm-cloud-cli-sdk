@@ -8,46 +8,36 @@ import (
 )
 
 type FakeTokenRefresher struct {
-	RefreshStub        func(oldToken string) (newToken string, refreshToken string, err error)
-	refreshMutex       sync.RWMutex
-	refreshArgsForCall []struct {
-		oldToken string
-	}
-	refreshReturns struct {
+	RefreshAuthTokenStub        func() (newToken string, refreshToken string, err error)
+	refreshAuthTokenMutex       sync.RWMutex
+	refreshAuthTokenArgsForCall []struct{}
+	refreshAuthTokenReturns struct {
 		result1 string
 		result2 string
 		result3 error
 	}
 }
 
-func (fake *FakeTokenRefresher) Refresh(oldToken string) (newToken string, refreshToken string, err error) {
-	fake.refreshMutex.Lock()
-	fake.refreshArgsForCall = append(fake.refreshArgsForCall, struct {
-		oldToken string
-	}{oldToken})
-	fake.refreshMutex.Unlock()
-	if fake.RefreshStub != nil {
-		return fake.RefreshStub(oldToken)
+func (fake *FakeTokenRefresher) RefreshAuthToken() (newToken string, refreshToken string, err error) {
+	fake.refreshAuthTokenMutex.Lock()
+	fake.refreshAuthTokenArgsForCall = append(fake.refreshAuthTokenArgsForCall, struct{}{})
+	fake.refreshAuthTokenMutex.Unlock()
+	if fake.RefreshAuthTokenStub != nil {
+		return fake.RefreshAuthTokenStub()
 	} else {
-		return fake.refreshReturns.result1, fake.refreshReturns.result2, fake.refreshReturns.result3
+		return fake.refreshAuthTokenReturns.result1, fake.refreshAuthTokenReturns.result2, fake.refreshAuthTokenReturns.result3
 	}
 }
 
-func (fake *FakeTokenRefresher) RefreshCallCount() int {
-	fake.refreshMutex.RLock()
-	defer fake.refreshMutex.RUnlock()
-	return len(fake.refreshArgsForCall)
+func (fake *FakeTokenRefresher) RefreshAuthTokenCallCount() int {
+	fake.refreshAuthTokenMutex.RLock()
+	defer fake.refreshAuthTokenMutex.RUnlock()
+	return len(fake.refreshAuthTokenArgsForCall)
 }
 
-func (fake *FakeTokenRefresher) RefreshArgsForCall(i int) string {
-	fake.refreshMutex.RLock()
-	defer fake.refreshMutex.RUnlock()
-	return fake.refreshArgsForCall[i].oldToken
-}
-
-func (fake *FakeTokenRefresher) RefreshReturns(result1 string, result2 string, result3 error) {
-	fake.RefreshStub = nil
-	fake.refreshReturns = struct {
+func (fake *FakeTokenRefresher) RefreshAuthTokenReturns(result1 string, result2 string, result3 error) {
+	fake.RefreshAuthTokenStub = nil
+	fake.refreshAuthTokenReturns = struct {
 		result1 string
 		result2 string
 		result3 error

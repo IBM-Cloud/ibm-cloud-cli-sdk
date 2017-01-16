@@ -81,10 +81,10 @@ type FakePluginContext struct {
 	accessTokenReturns struct {
 		result1 string
 	}
-	TokenRefreshStub        func() (string, error)
-	tokenRefreshMutex       sync.RWMutex
-	tokenRefreshArgsForCall []struct{}
-	tokenRefreshReturns struct {
+	RefreshAccessTokenStub        func() (string, error)
+	refreshAccessTokenMutex       sync.RWMutex
+	refreshAccessTokenArgsForCall []struct{}
+	refreshAccessTokenReturns struct {
 		result1 string
 		result2 error
 	}
@@ -456,26 +456,26 @@ func (fake *FakePluginContext) AccessTokenReturns(result1 string) {
 	}{result1}
 }
 
-func (fake *FakePluginContext) TokenRefresh() (string, error) {
-	fake.tokenRefreshMutex.Lock()
-	fake.tokenRefreshArgsForCall = append(fake.tokenRefreshArgsForCall, struct{}{})
-	fake.tokenRefreshMutex.Unlock()
-	if fake.TokenRefreshStub != nil {
-		return fake.TokenRefreshStub()
+func (fake *FakePluginContext) RefreshAccessToken() (string, error) {
+	fake.refreshAccessTokenMutex.Lock()
+	fake.refreshAccessTokenArgsForCall = append(fake.refreshAccessTokenArgsForCall, struct{}{})
+	fake.refreshAccessTokenMutex.Unlock()
+	if fake.RefreshAccessTokenStub != nil {
+		return fake.RefreshAccessTokenStub()
 	} else {
-		return fake.tokenRefreshReturns.result1, fake.tokenRefreshReturns.result2
+		return fake.refreshAccessTokenReturns.result1, fake.refreshAccessTokenReturns.result2
 	}
 }
 
-func (fake *FakePluginContext) TokenRefreshCallCount() int {
-	fake.tokenRefreshMutex.RLock()
-	defer fake.tokenRefreshMutex.RUnlock()
-	return len(fake.tokenRefreshArgsForCall)
+func (fake *FakePluginContext) RefreshAccessTokenCallCount() int {
+	fake.refreshAccessTokenMutex.RLock()
+	defer fake.refreshAccessTokenMutex.RUnlock()
+	return len(fake.refreshAccessTokenArgsForCall)
 }
 
-func (fake *FakePluginContext) TokenRefreshReturns(result1 string, result2 error) {
-	fake.TokenRefreshStub = nil
-	fake.tokenRefreshReturns = struct {
+func (fake *FakePluginContext) RefreshAccessTokenReturns(result1 string, result2 error) {
+	fake.RefreshAccessTokenStub = nil
+	fake.refreshAccessTokenReturns = struct {
 		result1 string
 		result2 error
 	}{result1, result2}

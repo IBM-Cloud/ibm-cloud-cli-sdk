@@ -25,7 +25,7 @@ func NewPluginContext(pluginName string, coreConfig core_config.ReadWriter) *plu
 		pluginConfig: NewPluginConfig(filepath.Join(pluginPath, "config.json")),
 	}
 	c.coreConfig = coreConfig
-	c.tokenRefresher = token_refresher.NewTokenRefresher(coreConfig.UaaEndpoint())
+	c.tokenRefresher = token_refresher.NewTokenRefresher(coreConfig)
 	return c
 }
 
@@ -93,13 +93,11 @@ func (c *pluginContext) AccessToken() string {
 	return c.coreConfig.AccessToken()
 }
 
-func (c *pluginContext) TokenRefresh() (string, error) {
-	newToken, newRefreshToken, err := c.tokenRefresher.Refresh(c.coreConfig.RefreshToken())
+func (c *pluginContext) RefreshAccessToken() (string, error) {
+	newToken, _, err := c.tokenRefresher.RefreshAuthToken()
 	if err != nil {
 		return "", err
 	}
-	c.coreConfig.SetAccessToken(newToken)
-	c.coreConfig.SetRefreshToken(newRefreshToken)
 	return newToken, nil
 }
 

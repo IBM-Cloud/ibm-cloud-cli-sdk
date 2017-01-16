@@ -4,6 +4,7 @@ import (
 	"encoding/base64"
 	"fmt"
 
+	"github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/configuration/core_config"
 	"github.com/IBM-Bluemix/bluemix-cli-sdk/common/rest"
 )
 
@@ -20,25 +21,25 @@ func (e *InvalidTokenError) Error() string {
 }
 
 type TokenRefresher interface {
-	Refresh(oldToken string) (newToken string, refreshToken string, err error)
+	RefreshAuthToken() (newToken string, refreshToken string, err error)
 }
 
 type uaaTokenRefresher struct {
-	uaaEndpoint string
-	client      *rest.Client
+	config core_config.ReadWriter
+	client *rest.Client
 }
 
-func NewTokenRefresher(uaaEndpoint string) *uaaTokenRefresher {
+func NewTokenRefresher(config core_config.ReadWriter) *uaaTokenRefresher {
 	return &uaaTokenRefresher{
-		uaaEndpoint: uaaEndpoint,
-		client:      rest.NewClient(),
+		config: config,
+		client: rest.NewClient(),
 	}
 }
 
-func (t *uaaTokenRefresher) Refresh(oldToken string) (string, string, error) {
-	req := rest.PostRequest(fmt.Sprintf("%s/oauth/token", t.uaaEndpoint)).
+func (t *uaaTokenRefresher) RefreshAuthToken() (string, string, error) {
+	req := rest.PostRequest(fmt.Sprintf("%s/oauth/token", t.config.UaaEndpoint())).
 		Set("Authorization", "Basic "+base64.StdEncoding.EncodeToString([]byte("cf:"))).
-		Field("refresh_token", oldToken).
+		Field("refresh_token", t.config.RefreshToken()).
 		Field("grant_type", "refresh_token").
 		Field("scope", "")
 
@@ -58,7 +59,13 @@ func (t *uaaTokenRefresher) Refresh(oldToken string) (string, string, error) {
 		}
 	}
 
-	return fmt.Sprintf("%s %s", tokens.TokenType, tokens.AccessToken), tokens.RefreshToken, nil
+	accessToken := fmt.Sprintf("%s %s", tokens.TokenType, tokens.AccessToken)
+	refreshToken := tokens.RefreshToken
+
+	t.config.SetAccessToken(accessToken)
+	t.config.SetRefreshToken(refreshToken)
+
+	return accessToken, refreshToken, nil
 }
 
 type uaaErrorResponse struct {
