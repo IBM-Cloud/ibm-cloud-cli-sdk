@@ -115,6 +115,10 @@ func (c *pluginContext) CurrentSpace() models.Space {
 	}
 }
 
+func (c *pluginContext) Region() string {
+	return c.coreConfig.APICache().Region
+}
+
 func (c *pluginContext) Locale() string {
 	return c.coreConfig.Locale()
 }

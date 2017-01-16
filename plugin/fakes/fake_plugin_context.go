@@ -112,6 +112,12 @@ type FakePluginContext struct {
 	hasSpaceReturns struct {
 		result1 bool
 	}
+	RegionStub        func() string
+	regionMutex       sync.RWMutex
+	regionArgsForCall []struct{}
+	regionReturns struct {
+		result1 string
+	}
 	LocaleStub        func() string
 	localeMutex       sync.RWMutex
 	localeArgsForCall []struct{}
@@ -568,6 +574,30 @@ func (fake *FakePluginContext) HasSpaceReturns(result1 bool) {
 	fake.HasSpaceStub = nil
 	fake.hasSpaceReturns = struct {
 		result1 bool
+	}{result1}
+}
+
+func (fake *FakePluginContext) Region() string {
+	fake.regionMutex.Lock()
+	fake.regionArgsForCall = append(fake.regionArgsForCall, struct{}{})
+	fake.regionMutex.Unlock()
+	if fake.RegionStub != nil {
+		return fake.RegionStub()
+	} else {
+		return fake.regionReturns.result1
+	}
+}
+
+func (fake *FakePluginContext) RegionCallCount() int {
+	fake.regionMutex.RLock()
+	defer fake.regionMutex.RUnlock()
+	return len(fake.regionArgsForCall)
+}
+
+func (fake *FakePluginContext) RegionReturns(result1 string) {
+	fake.RegionStub = nil
+	fake.regionReturns = struct {
+		result1 string
 	}{result1}
 }
 

@@ -89,6 +89,7 @@ type PluginContext interface {
 	HasOrganization() bool
 	CurrentSpace() models.Space
 	HasSpace() bool
+	Region() string
 	Locale() string
 	Trace() string
 	ColorEnabled() string
