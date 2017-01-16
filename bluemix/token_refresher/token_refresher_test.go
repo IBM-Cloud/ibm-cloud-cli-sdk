@@ -6,6 +6,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/IBM-Bluemix/bluemix-cli-sdk/testhelpers/configuration"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -15,7 +16,7 @@ func TestRefreshToken(t *testing.T) {
 	uaaServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		assert.NoError(r.ParseForm())
 		assert.Equal("refresh_token", r.Form.Get("grant_type"))
-		assert.Equal("the-refresh-token", r.Form.Get("refresh_token"))
+		assert.Equal("old-refresh-token", r.Form.Get("refresh_token"))
 		assert.Equal("", r.Form.Get("scope"))
 
 		fmt.Fprint(w, `{"refresh_token": "new-refresh-token",
@@ -25,8 +26,12 @@ func TestRefreshToken(t *testing.T) {
 	}))
 	defer uaaServer.Close()
 
-	tokenRefresher := NewTokenRefresher(uaaServer.URL)
-	newToken, newRefreshToken, err := tokenRefresher.Refresh("the-refresh-token")
+	config := configuration.NewFakeCoreConfig()
+	config.SetUaaEndpoint(uaaServer.URL)
+	config.SetRefreshToken("old-refresh-token")
+
+	tokenRefresher := NewTokenRefresher(config)
+	newToken, newRefreshToken, err := tokenRefresher.RefreshAuthToken()
 	assert.NoError(err)
 	assert.Equal("bearer new-access-token", newToken)
 	assert.Equal("new-refresh-token", newRefreshToken)
@@ -42,8 +47,12 @@ func TestRefreshToken_InvalidToken(t *testing.T) {
 	}))
 	defer uaaServer.Close()
 
-	tokenRefresher := NewTokenRefresher(uaaServer.URL)
-	_, _, err := tokenRefresher.Refresh("old-token")
+	config := configuration.NewFakeCoreConfig()
+	config.SetUaaEndpoint(uaaServer.URL)
+	config.SetRefreshToken("old-refresh-token")
+
+	tokenRefresher := NewTokenRefresher(config)
+	_, _, err := tokenRefresher.RefreshAuthToken()
 
 	assert.Error(err)
 	assert.IsType(new(InvalidTokenError), err)

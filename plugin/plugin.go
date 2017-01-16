@@ -84,7 +84,7 @@ type PluginContext interface {
 	UserEmail() string
 	IsLoggedIn() bool
 	AccessToken() string
-	TokenRefresh() (string, error) // refresh and return the new access token
+	RefreshAccessToken() (string, error)
 	CurrentOrg() models.Organization
 	HasOrganization() bool
 	CurrentSpace() models.Space
