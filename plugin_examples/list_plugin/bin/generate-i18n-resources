@@ -1,0 +1,9 @@
+#!/bin/bash
+
+set -e
+
+go get github.com/jteeuwen/go-bindata/...
+
+echo "Generating i18n resource file ..."
+go-bindata -pkg resources -o resources/i18n_resources.go i18n/resources/*.all.json
+echo "Done."

@@ -1,0 +1,82 @@
+[
+  {
+    "id": "CloudFoundy Applications  {{.Used}}/{{.Limit}} used",
+    "translation": "CloudFoundy 应用程序  {{.Used}}/{{.Limit}} 已使用"
+  },
+  {
+    "id": "Containers  {{.MemoryUsed}}/{{.MemoryLimit}}  {{.IPCount}}/{{.IPLimit}} Public IPs Requested|{{.BoundIPCount}} Used",
+    "translation": "容器  {{.MemoryUsed}}/{{.MemoryLimit}}  {{.IPCount}}/{{.IPLimit}} 公共IP地址 已请求|{{.BoundIPCount}} 已使用"
+  },
+  {
+    "id": "Created",
+    "translation": "创建"
+  },
+  {
+    "id": "Image",
+    "translation": "镜像"
+  },
+  {
+    "id": "Instances",
+    "translation": "实例"
+  },
+  {
+    "id": "Memory (MB)",
+    "translation": "内存 （MB）"
+  },
+  {
+    "id": "Name",
+    "translation": "名称"
+  },
+  {
+    "id": "No API endpoint set. Use '{{.Command}}' to set an endpoint.",
+    "translation": "未设置任何 API 端点。请使用“{{.Command}}”来设置端点。"
+  },
+  {
+    "id": "No space targeted. Use '{{.Command}}' to target an org and a space.",
+    "translation": "未选择目标空间。请使用“{{.Command}}”来选择目标空间。"
+  },
+  {
+    "id": "Not logged in. Use '{{.Command}}' to log in.",
+    "translation": "未登录。请使用 '{{.Command}}' 登录。"
+  },
+  {
+    "id": "Plan",
+    "translation": "套餐"
+  },
+  {
+    "id": "Routes",
+    "translation": "路由"
+  },
+  {
+    "id": "Service Offering",
+    "translation": "服务产品"
+  },
+  {
+    "id": "Services {{.Count}}/{{.Limit}} used",
+    "translation": "服务 {{.Count}}/{{.Limit}} 已使用"
+  },
+  {
+    "id": "State",
+    "translation": "状态"
+  },
+  {
+    "id": "Status",
+    "translation": "状态"
+  },
+  {
+    "id": "Unable to query apps and services of the target space:\n",
+    "translation": "无法获取目标空间中的应用程序和服务:\n"
+  },
+  {
+    "id": "Unable to query containers of the target space:\n",
+    "translation": "无法获取目标空间中的容器\n"
+  },
+  {
+    "id": "Unable to retrieve containers' usage and quota of the target space:\n",
+    "translation": "无法获取目标空间中容器的使用情况和配额\n"
+  },
+  {
+    "id": "Unable to retrieve usage of the target org:\n",
+    "translation": "无法获取目标组织中的使用情况信息\n"
+  }
+]

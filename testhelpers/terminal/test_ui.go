@@ -12,9 +12,8 @@ import (
 // TODO: to be deprecated
 type FakeUI struct {
 	Inputs      bytes.Buffer
-	Outputs     bytes.Buffer
-	WarnOutputs bytes.Buffer
-	Prompts     []string
+	outputs     bytes.Buffer
+	warnOutputs bytes.Buffer
 }
 
 func NewFakeUI() *FakeUI {
@@ -23,7 +22,7 @@ func NewFakeUI() *FakeUI {
 
 func (ui *FakeUI) Say(template string, args ...interface{}) {
 	message := fmt.Sprintf(template, args...)
-	fmt.Fprintln(&ui.Outputs, message)
+	fmt.Fprintln(&ui.outputs, message)
 }
 
 func (ui *FakeUI) Ok() {
@@ -38,20 +37,20 @@ func (ui *FakeUI) Failed(template string, args ...interface{}) {
 
 func (ui *FakeUI) Warn(template string, args ...interface{}) {
 	message := fmt.Sprintf(template, args...)
-	fmt.Fprintln(&ui.WarnOutputs, message)
+	fmt.Fprintln(&ui.warnOutputs, message)
 }
 
 func (ui *FakeUI) Prompt(message string, options *term.PromptOptions) *term.Prompt {
 	p := term.NewPrompt(message, options)
 	p.Reader = &ui.Inputs
-	p.Writer = &ui.Outputs
+	p.Writer = &ui.outputs
 	return p
 }
 
 func (ui *FakeUI) ChoicesPrompt(message string, choices []string, options *term.PromptOptions) *term.Prompt {
 	p := term.NewChoicesPrompt(message, choices, options)
 	p.Reader = &ui.Inputs
-	p.Writer = &ui.Outputs
+	p.Writer = &ui.outputs
 	return p
 }
 
@@ -112,17 +111,25 @@ func (ui *FakeUI) SelectOne(choices []string, template string, args ...interface
 }
 
 func (ui *FakeUI) Table(headers []string) term.Table {
-	return term.NewTable(&ui.Outputs, headers)
+	return term.NewTable(&ui.outputs, headers)
+}
+
+func (ui *FakeUI) Outputs() string {
+	return string(ui.outputs.Bytes())
 }
 
 func (ui *FakeUI) ContainsOutput(text string) bool {
-	return strings.Contains(ui.Outputs.String(), text)
+	return strings.Contains(ui.outputs.String(), text)
+}
+
+func (ui *FakeUI) WarnOutputs() string {
+	return string(ui.warnOutputs.Bytes())
 }
 
 func (ui *FakeUI) ContainsWarn(text string) bool {
-	return strings.Contains(ui.WarnOutputs.String(), text)
+	return strings.Contains(ui.warnOutputs.String(), text)
 }
 
 func (ui *FakeUI) Writer() io.Writer {
-	return &ui.Outputs
+	return &ui.outputs
 }
