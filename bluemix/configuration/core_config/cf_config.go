@@ -8,7 +8,7 @@ import (
 	"github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/models"
 )
 
-type CFReader interface {
+type CFConfigReader interface {
 	APIEndpoint() string
 	HasAPIEndpoint() bool
 	APIVersion() string
@@ -32,9 +32,14 @@ type CFReader interface {
 	HasSpace() bool
 
 	IsSSLDisabled() bool
+	Locale() string
+	Trace() string
+	ColorEnabled() string
 }
 
-type CFWriter interface {
+type CFConfigReadWriter interface {
+	CFConfigReader
+
 	SetAPIVersion(string)
 	SetAPIEndpoint(string)
 	SetAuthenticationEndpoint(string)
@@ -43,17 +48,19 @@ type CFWriter interface {
 	SetUaaEndpoint(string)
 	SetRoutingAPIEndpoint(string)
 	SetSSHOAuthClient(string)
+
 	SetAccessToken(string)
 	SetRefreshToken(string)
+
 	SetOrganizationFields(models.OrganizationFields)
 	SetSpaceFields(models.SpaceFields)
-	SetSSLDisabled(bool)
-	Reload()
-}
 
-type CFReadWriter interface {
-	CFReader
-	CFWriter
+	SetSSLDisabled(bool)
+	SetLocale(string)
+	SetTrace(string)
+	SetColorEnabled(string)
+
+	Reload()
 }
 
 type cfConfigAdapter struct {
@@ -63,11 +70,11 @@ type cfConfigAdapter struct {
 	cfcoreconfig.Repository
 }
 
-func NewCFConfigAdapterFromPath(filepath string, errHandler func(error)) *cfConfigAdapter {
-	return NewCFConfigAdapterFromPersistor(cfconfiguration.NewDiskPersistor(filepath), errHandler)
+func createCFConfigAdapterFromPath(filepath string, errHandler func(error)) *cfConfigAdapter {
+	return createCFConfigAdapterFromPersistor(cfconfiguration.NewDiskPersistor(filepath), errHandler)
 }
 
-func NewCFConfigAdapterFromPersistor(persistor cfconfiguration.Persistor, errHandler func(error)) *cfConfigAdapter {
+func createCFConfigAdapterFromPersistor(persistor cfconfiguration.Persistor, errHandler func(error)) *cfConfigAdapter {
 	return &cfConfigAdapter{
 		persistor:  persistor,
 		errHandler: errHandler,

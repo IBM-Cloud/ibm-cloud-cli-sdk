@@ -1,43 +1,29 @@
 package core_config
 
-// internal use only, plugin should use PluginContext
-
 import (
 	cfconfiguration "code.cloudfoundry.org/cli/cf/configuration"
-	cfconfighelpers "code.cloudfoundry.org/cli/cf/configuration/confighelpers"
 
 	"github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/configuration"
 	"github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/configuration/config_helpers"
 )
 
 type Reader interface {
-	BXReader
-	CFReader
-	APICacheValid() bool
+	CFConfigReader
+	BXConfigReader
 }
 
 type ReadWriter interface {
-	Reader
-
-	BXWriter
-	CFWriter
+	CFConfigReadWriter
+	BXConfigReadWriter
 }
 
 type configRepository struct {
-	BXReadWriter
-	CFReadWriter
-}
-
-func (c configRepository) APICacheValid() bool {
-	return c.BXReadWriter.APICache().Target == c.CFReadWriter.APIEndpoint()
+	CFConfigReadWriter
+	BXConfigReadWriter
 }
 
 func NewCoreConfig(errHandler func(error)) ReadWriter {
-	cfConfigPath, err := cfconfighelpers.DefaultFilePath()
-	if err != nil {
-		errHandler(err)
-	}
-	return NewCoreConfigFromPath(cfConfigPath, config_helpers.ConfigFilePath(), errHandler)
+	return NewCoreConfigFromPath(config_helpers.CFConfigFilePath(), config_helpers.ConfigFilePath(), errHandler)
 }
 
 func NewCoreConfigFromPath(cfConfigPath string, bxConfigPath string, errHandler func(error)) configRepository {
@@ -46,7 +32,7 @@ func NewCoreConfigFromPath(cfConfigPath string, bxConfigPath string, errHandler 
 
 func NewCoreConfigFromPersistor(cfPersistor cfconfiguration.Persistor, bxPersistor configuration.Persistor, errHandler func(error)) configRepository {
 	return configRepository{
-		BXReadWriter: NewBluemixConfigFromPersistor(bxPersistor, errHandler),
-		CFReadWriter: NewCFConfigAdapterFromPersistor(cfPersistor, errHandler),
+		CFConfigReadWriter: createCFConfigAdapterFromPersistor(cfPersistor, errHandler),
+		BXConfigReadWriter: createBluemixConfigFromPersistor(bxPersistor, errHandler),
 	}
 }
