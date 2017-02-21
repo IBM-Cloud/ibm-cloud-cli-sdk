@@ -4,18 +4,18 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/authentication"
 	"github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/configuration/config_helpers"
 	"github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/configuration/core_config"
 	"github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/consts"
-	"github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/token_refresher"
+	"github.com/IBM-Bluemix/bluemix-cli-sdk/common/rest"
 	"github.com/IBM-Bluemix/bluemix-cli-sdk/plugin/models"
 )
 
 type pluginContext struct {
-	coreConfig     core_config.ReadWriter
-	pluginConfig   PluginConfig
-	pluginPath     string
-	tokenRefresher token_refresher.TokenRefresher
+	coreConfig   core_config.ReadWriter
+	pluginConfig PluginConfig
+	pluginPath   string
 }
 
 func NewPluginContext(pluginName string, coreConfig core_config.ReadWriter) *pluginContext {
@@ -25,7 +25,6 @@ func NewPluginContext(pluginName string, coreConfig core_config.ReadWriter) *plu
 		pluginConfig: NewPluginConfig(filepath.Join(pluginPath, "config.json")),
 	}
 	c.coreConfig = coreConfig
-	c.tokenRefresher = token_refresher.NewTokenRefresher(coreConfig)
 	return c
 }
 
@@ -35,6 +34,22 @@ func (c *pluginContext) PluginDirectory() string {
 
 func (c *pluginContext) PluginConfig() PluginConfig {
 	return c.pluginConfig
+}
+
+func (c *pluginContext) APIVersion() string {
+	return c.coreConfig.APIVersion()
+}
+
+func (c *pluginContext) APIEndpoint() string {
+	return c.coreConfig.APIEndpoint()
+}
+
+func (c *pluginContext) HasAPIEndpoint() bool {
+	return c.coreConfig.HasAPIEndpoint()
+}
+
+func (c *pluginContext) Region() string {
+	return c.coreConfig.Region()
 }
 
 func (c *pluginContext) AuthenticationEndpoint() string {
@@ -49,20 +64,32 @@ func (c *pluginContext) LoggregatorEndpoint() string {
 	return c.coreConfig.LoggregatorEndpoint()
 }
 
-func (c *pluginContext) UaaEndpoint() string {
-	return c.coreConfig.UaaEndpoint()
+func (c *pluginContext) UAAEndpoint() string {
+	return c.coreConfig.UAAEndpoint()
 }
 
-func (c *pluginContext) APIEndpoint() string {
-	return c.coreConfig.APIEndpoint()
+func (c *pluginContext) UAAToken() string {
+	return c.coreConfig.UAAToken()
 }
 
-func (c *pluginContext) APIVersion() string {
-	return c.coreConfig.APIVersion()
+func (c *pluginContext) UAARefreshToken() string {
+	return c.coreConfig.UAARefreshToken()
 }
 
-func (c *pluginContext) HasAPIEndpoint() bool {
-	return c.coreConfig.HasAPIEndpoint()
+func (c *pluginContext) RefreshUAAToken() (string, error) {
+	return authentication.NewUAARepository(c.coreConfig, new(rest.Client)).RefreshToken()
+}
+
+func (c *pluginContext) IAMToken() string {
+	return c.coreConfig.IAMToken()
+}
+
+func (c *pluginContext) IAMRefreshToken() string {
+	return c.coreConfig.IAMRefreshToken()
+}
+
+func (c *pluginContext) RefreshIAMToken() (string, error) {
+	return authentication.NewIAMAuthRepository(c.coreConfig, new(rest.Client)).RefreshToken()
 }
 
 func (c *pluginContext) IsLoggedIn() bool {
@@ -81,24 +108,12 @@ func (c *pluginContext) Username() string {
 	return c.coreConfig.Username()
 }
 
-func (c *pluginContext) HasOrganization() bool {
-	return c.coreConfig.HasOrganization()
-}
-
-func (c *pluginContext) HasSpace() bool {
-	return c.coreConfig.HasSpace()
-}
-
-func (c *pluginContext) AccessToken() string {
-	return c.coreConfig.AccessToken()
-}
-
-func (c *pluginContext) RefreshAccessToken() (string, error) {
-	newToken, _, err := c.tokenRefresher.RefreshAuthToken()
-	if err != nil {
-		return "", err
+func (c *pluginContext) AccountID() string {
+	token := c.coreConfig.IAMToken()
+	if token != "" {
+		return core_config.NewIAMTokenInfo(token).Accounts.AccountID
 	}
-	return newToken, nil
+	return c.coreConfig.Account().GUID
 }
 
 func (c *pluginContext) CurrentOrg() models.Organization {
@@ -107,14 +122,18 @@ func (c *pluginContext) CurrentOrg() models.Organization {
 	}
 }
 
+func (c *pluginContext) HasOrganization() bool {
+	return c.coreConfig.HasOrganization()
+}
+
 func (c *pluginContext) CurrentSpace() models.Space {
 	return models.Space{
 		SpaceFields: c.coreConfig.SpaceFields(),
 	}
 }
 
-func (c *pluginContext) Region() string {
-	return c.coreConfig.APICache().Region
+func (c *pluginContext) HasSpace() bool {
+	return c.coreConfig.HasSpace()
 }
 
 func (c *pluginContext) Locale() string {

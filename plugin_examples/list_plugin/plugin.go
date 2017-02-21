@@ -87,10 +87,10 @@ func NewHTTPClient(context plugin.PluginContext) *http.Client {
 }
 
 func DefaultHeader(context plugin.PluginContext) http.Header {
-	context.RefreshAccessToken()
+	context.RefreshUAAToken()
 
 	h := http.Header{}
-	h.Add("Authorization", context.AccessToken())
+	h.Add("Authorization", context.UAAToken())
 	return h
 }
 

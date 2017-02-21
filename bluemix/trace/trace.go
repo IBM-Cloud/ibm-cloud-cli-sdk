@@ -99,8 +99,12 @@ func Sanitize(input string) (sanitized string) {
 	sanitized = sanitizeJson("access_token", sanitized)
 	sanitized = sanitizeJson("refresh_token", sanitized)
 	sanitized = sanitizeJson("token", sanitized)
+	sanitized = sanitizeJson("uaa_token", sanitized)
+	sanitized = sanitizeJson("uaa_refresh_token", sanitized)
 	sanitized = sanitizeJson("password", sanitized)
 	sanitized = sanitizeJson("oldPassword", sanitized)
+	sanitized = sanitizeJson("apikey", sanitized)
+	sanitized = sanitizeJson("passcode", sanitized)
 
 	return
 }

@@ -16,31 +16,11 @@ const (
 	_DEFAULT_PLUGIN_REPO_URL  = "https://plugins.ng.bluemix.net"
 )
 
-type BXConfigReader interface {
-	Region() string
-	PluginRepos() []models.PluginRepo
-	PluginRepo(string) (models.PluginRepo, bool)
-	HTTPTimeout() int
-	CLIInfoEndpoint() string
-	CheckCLIVersionDisabled() bool
-	UsageStatsDisabled() bool
-}
-
-type BXConfigReadWriter interface {
-	BXConfigReader
-
-	SetRegion(string)
-	SetCheckCLIVersionDisabled(bool)
-	SetCLIInfoEndpoint(string)
-	SetPluginRepo(models.PluginRepo)
-	UnSetPluginRepo(string)
-
-	SetHTTPTimeout(int)
-	SetUsageStatsDisabled(bool)
-}
-
 type BXConfigData struct {
 	Region                  string
+	IAMToken                string
+	IAMRefreshToken         string
+	Account                 models.Account
 	PluginRepos             []models.PluginRepo
 	Locale                  string
 	Trace                   string
@@ -126,6 +106,31 @@ func (c *bxConfigRepository) Region() (region string) {
 	return
 }
 
+func (c *bxConfigRepository) IAMToken() (token string) {
+	c.read(func() {
+		token = c.data.IAMToken
+	})
+	return
+}
+
+func (c *bxConfigRepository) IAMRefreshToken() (token string) {
+	c.read(func() {
+		token = c.data.IAMRefreshToken
+	})
+	return
+}
+
+func (c *bxConfigRepository) Account() (account models.Account) {
+	c.read(func() {
+		account = c.data.Account
+	})
+	return
+}
+
+func (c *bxConfigRepository) HasAccount() bool {
+	return c.Account().GUID != ""
+}
+
 func (c *bxConfigRepository) PluginRepos() (repos []models.PluginRepo) {
 	c.read(func() {
 		repos = c.data.PluginRepos
@@ -180,6 +185,24 @@ func (c *bxConfigRepository) SetRegion(region string) {
 	})
 }
 
+func (c *bxConfigRepository) SetIAMToken(token string) {
+	c.write(func() {
+		c.data.IAMToken = token
+	})
+}
+
+func (c *bxConfigRepository) SetIAMRefreshToken(token string) {
+	c.write(func() {
+		c.data.IAMRefreshToken = token
+	})
+}
+
+func (c *bxConfigRepository) SetAccount(account models.Account) {
+	c.write(func() {
+		c.data.Account = account
+	})
+}
+
 func (c *bxConfigRepository) SetPluginRepo(pluginRepo models.PluginRepo) {
 	c.write(func() {
 		c.data.PluginRepos = append(c.data.PluginRepos, pluginRepo)
@@ -221,5 +244,19 @@ func (c *bxConfigRepository) SetCLIInfoEndpoint(endpoint string) {
 func (c *bxConfigRepository) SetUsageStatsDisabled(disabled bool) {
 	c.write(func() {
 		c.data.UsageStatsDisabled = disabled
+	})
+}
+
+func (c *bxConfigRepository) ClearSession() {
+	c.write(func() {
+		c.data.IAMToken = ""
+		c.data.IAMRefreshToken = ""
+		c.data.Account = models.Account{}
+	})
+}
+
+func (c *bxConfigRepository) ClearAPICache() {
+	c.write(func() {
+		c.data.Region = ""
 	})
 }
