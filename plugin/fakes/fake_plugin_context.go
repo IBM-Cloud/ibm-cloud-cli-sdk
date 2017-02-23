@@ -45,11 +45,49 @@ type FakePluginContext struct {
 	dopplerEndpointReturns struct {
 		result1 string
 	}
-	UaaEndpointStub        func() string
-	uaaEndpointMutex       sync.RWMutex
-	uaaEndpointArgsForCall []struct{}
-	uaaEndpointReturns struct {
+	UAAEndpointStub        func() string
+	uAAEndpointMutex       sync.RWMutex
+	uAAEndpointArgsForCall []struct{}
+	uAAEndpointReturns struct {
 		result1 string
+	}
+	UAATokenStub        func() string
+	uAATokenMutex       sync.RWMutex
+	uAATokenArgsForCall []struct{}
+	uAATokenReturns struct {
+		result1 string
+	}
+	UAARefreshTokenStub        func() string
+	uAARefreshTokenMutex       sync.RWMutex
+	uAARefreshTokenArgsForCall []struct{}
+	uAARefreshTokenReturns struct {
+		result1 string
+	}
+	RefreshUAATokenStub        func() (string, error)
+	refreshUAATokenMutex       sync.RWMutex
+	refreshUAATokenArgsForCall []struct{}
+	refreshUAATokenReturns struct {
+		result1 string
+		result2 error
+	}
+	IAMTokenStub        func() string
+	iAMTokenMutex       sync.RWMutex
+	iAMTokenArgsForCall []struct{}
+	iAMTokenReturns struct {
+		result1 string
+	}
+	IAMRefreshTokenStub        func() string
+	iAMRefreshTokenMutex       sync.RWMutex
+	iAMRefreshTokenArgsForCall []struct{}
+	iAMRefreshTokenReturns struct {
+		result1 string
+	}
+	RefreshIAMTokenStub        func() (string, error)
+	refreshIAMTokenMutex       sync.RWMutex
+	refreshIAMTokenArgsForCall []struct{}
+	refreshIAMTokenReturns struct {
+		result1 string
+		result2 error
 	}
 	UsernameStub        func() string
 	usernameMutex       sync.RWMutex
@@ -75,19 +113,6 @@ type FakePluginContext struct {
 	isLoggedInReturns struct {
 		result1 bool
 	}
-	AccessTokenStub        func() string
-	accessTokenMutex       sync.RWMutex
-	accessTokenArgsForCall []struct{}
-	accessTokenReturns struct {
-		result1 string
-	}
-	RefreshAccessTokenStub        func() (string, error)
-	refreshAccessTokenMutex       sync.RWMutex
-	refreshAccessTokenArgsForCall []struct{}
-	refreshAccessTokenReturns struct {
-		result1 string
-		result2 error
-	}
 	CurrentOrgStub        func() models.Organization
 	currentOrgMutex       sync.RWMutex
 	currentOrgArgsForCall []struct{}
@@ -99,6 +124,12 @@ type FakePluginContext struct {
 	hasOrganizationArgsForCall []struct{}
 	hasOrganizationReturns struct {
 		result1 bool
+	}
+	AccountIDStub        func() string
+	accountIDMutex       sync.RWMutex
+	accountIDArgsForCall []struct{}
+	accountIDReturns struct {
+		result1 string
 	}
 	CurrentSpaceStub        func() models.Space
 	currentSpaceMutex       sync.RWMutex
@@ -312,28 +343,174 @@ func (fake *FakePluginContext) DopplerEndpointReturns(result1 string) {
 	}{result1}
 }
 
-func (fake *FakePluginContext) UaaEndpoint() string {
-	fake.uaaEndpointMutex.Lock()
-	fake.uaaEndpointArgsForCall = append(fake.uaaEndpointArgsForCall, struct{}{})
-	fake.uaaEndpointMutex.Unlock()
-	if fake.UaaEndpointStub != nil {
-		return fake.UaaEndpointStub()
+func (fake *FakePluginContext) UAAEndpoint() string {
+	fake.uAAEndpointMutex.Lock()
+	fake.uAAEndpointArgsForCall = append(fake.uAAEndpointArgsForCall, struct{}{})
+	fake.uAAEndpointMutex.Unlock()
+	if fake.UAAEndpointStub != nil {
+		return fake.UAAEndpointStub()
 	} else {
-		return fake.uaaEndpointReturns.result1
+		return fake.uAAEndpointReturns.result1
 	}
 }
 
-func (fake *FakePluginContext) UaaEndpointCallCount() int {
-	fake.uaaEndpointMutex.RLock()
-	defer fake.uaaEndpointMutex.RUnlock()
-	return len(fake.uaaEndpointArgsForCall)
+func (fake *FakePluginContext) UAAEndpointCallCount() int {
+	fake.uAAEndpointMutex.RLock()
+	defer fake.uAAEndpointMutex.RUnlock()
+	return len(fake.uAAEndpointArgsForCall)
 }
 
-func (fake *FakePluginContext) UaaEndpointReturns(result1 string) {
-	fake.UaaEndpointStub = nil
-	fake.uaaEndpointReturns = struct {
+func (fake *FakePluginContext) UAAEndpointReturns(result1 string) {
+	fake.UAAEndpointStub = nil
+	fake.uAAEndpointReturns = struct {
 		result1 string
 	}{result1}
+}
+
+func (fake *FakePluginContext) UAAToken() string {
+	fake.uAATokenMutex.Lock()
+	fake.uAATokenArgsForCall = append(fake.uAATokenArgsForCall, struct{}{})
+	fake.uAATokenMutex.Unlock()
+	if fake.UAATokenStub != nil {
+		return fake.UAATokenStub()
+	} else {
+		return fake.uAATokenReturns.result1
+	}
+}
+
+func (fake *FakePluginContext) UAATokenCallCount() int {
+	fake.uAATokenMutex.RLock()
+	defer fake.uAATokenMutex.RUnlock()
+	return len(fake.uAATokenArgsForCall)
+}
+
+func (fake *FakePluginContext) UAATokenReturns(result1 string) {
+	fake.UAATokenStub = nil
+	fake.uAATokenReturns = struct {
+		result1 string
+	}{result1}
+}
+
+func (fake *FakePluginContext) UAARefreshToken() string {
+	fake.uAARefreshTokenMutex.Lock()
+	fake.uAARefreshTokenArgsForCall = append(fake.uAARefreshTokenArgsForCall, struct{}{})
+	fake.uAARefreshTokenMutex.Unlock()
+	if fake.UAARefreshTokenStub != nil {
+		return fake.UAARefreshTokenStub()
+	} else {
+		return fake.uAARefreshTokenReturns.result1
+	}
+}
+
+func (fake *FakePluginContext) UAARefreshTokenCallCount() int {
+	fake.uAARefreshTokenMutex.RLock()
+	defer fake.uAARefreshTokenMutex.RUnlock()
+	return len(fake.uAARefreshTokenArgsForCall)
+}
+
+func (fake *FakePluginContext) UAARefreshTokenReturns(result1 string) {
+	fake.UAARefreshTokenStub = nil
+	fake.uAARefreshTokenReturns = struct {
+		result1 string
+	}{result1}
+}
+
+func (fake *FakePluginContext) RefreshUAAToken() (string, error) {
+	fake.refreshUAATokenMutex.Lock()
+	fake.refreshUAATokenArgsForCall = append(fake.refreshUAATokenArgsForCall, struct{}{})
+	fake.refreshUAATokenMutex.Unlock()
+	if fake.RefreshUAATokenStub != nil {
+		return fake.RefreshUAATokenStub()
+	} else {
+		return fake.refreshUAATokenReturns.result1, fake.refreshUAATokenReturns.result2
+	}
+}
+
+func (fake *FakePluginContext) RefreshUAATokenCallCount() int {
+	fake.refreshUAATokenMutex.RLock()
+	defer fake.refreshUAATokenMutex.RUnlock()
+	return len(fake.refreshUAATokenArgsForCall)
+}
+
+func (fake *FakePluginContext) RefreshUAATokenReturns(result1 string, result2 error) {
+	fake.RefreshUAATokenStub = nil
+	fake.refreshUAATokenReturns = struct {
+		result1 string
+		result2 error
+	}{result1, result2}
+}
+
+func (fake *FakePluginContext) IAMToken() string {
+	fake.iAMTokenMutex.Lock()
+	fake.iAMTokenArgsForCall = append(fake.iAMTokenArgsForCall, struct{}{})
+	fake.iAMTokenMutex.Unlock()
+	if fake.IAMTokenStub != nil {
+		return fake.IAMTokenStub()
+	} else {
+		return fake.iAMTokenReturns.result1
+	}
+}
+
+func (fake *FakePluginContext) IAMTokenCallCount() int {
+	fake.iAMTokenMutex.RLock()
+	defer fake.iAMTokenMutex.RUnlock()
+	return len(fake.iAMTokenArgsForCall)
+}
+
+func (fake *FakePluginContext) IAMTokenReturns(result1 string) {
+	fake.IAMTokenStub = nil
+	fake.iAMTokenReturns = struct {
+		result1 string
+	}{result1}
+}
+
+func (fake *FakePluginContext) IAMRefreshToken() string {
+	fake.iAMRefreshTokenMutex.Lock()
+	fake.iAMRefreshTokenArgsForCall = append(fake.iAMRefreshTokenArgsForCall, struct{}{})
+	fake.iAMRefreshTokenMutex.Unlock()
+	if fake.IAMRefreshTokenStub != nil {
+		return fake.IAMRefreshTokenStub()
+	} else {
+		return fake.iAMRefreshTokenReturns.result1
+	}
+}
+
+func (fake *FakePluginContext) IAMRefreshTokenCallCount() int {
+	fake.iAMRefreshTokenMutex.RLock()
+	defer fake.iAMRefreshTokenMutex.RUnlock()
+	return len(fake.iAMRefreshTokenArgsForCall)
+}
+
+func (fake *FakePluginContext) IAMRefreshTokenReturns(result1 string) {
+	fake.IAMRefreshTokenStub = nil
+	fake.iAMRefreshTokenReturns = struct {
+		result1 string
+	}{result1}
+}
+
+func (fake *FakePluginContext) RefreshIAMToken() (string, error) {
+	fake.refreshIAMTokenMutex.Lock()
+	fake.refreshIAMTokenArgsForCall = append(fake.refreshIAMTokenArgsForCall, struct{}{})
+	fake.refreshIAMTokenMutex.Unlock()
+	if fake.RefreshIAMTokenStub != nil {
+		return fake.RefreshIAMTokenStub()
+	} else {
+		return fake.refreshIAMTokenReturns.result1, fake.refreshIAMTokenReturns.result2
+	}
+}
+
+func (fake *FakePluginContext) RefreshIAMTokenCallCount() int {
+	fake.refreshIAMTokenMutex.RLock()
+	defer fake.refreshIAMTokenMutex.RUnlock()
+	return len(fake.refreshIAMTokenArgsForCall)
+}
+
+func (fake *FakePluginContext) RefreshIAMTokenReturns(result1 string, result2 error) {
+	fake.RefreshIAMTokenStub = nil
+	fake.refreshIAMTokenReturns = struct {
+		result1 string
+		result2 error
+	}{result1, result2}
 }
 
 func (fake *FakePluginContext) Username() string {
@@ -432,55 +609,6 @@ func (fake *FakePluginContext) IsLoggedInReturns(result1 bool) {
 	}{result1}
 }
 
-func (fake *FakePluginContext) AccessToken() string {
-	fake.accessTokenMutex.Lock()
-	fake.accessTokenArgsForCall = append(fake.accessTokenArgsForCall, struct{}{})
-	fake.accessTokenMutex.Unlock()
-	if fake.AccessTokenStub != nil {
-		return fake.AccessTokenStub()
-	} else {
-		return fake.accessTokenReturns.result1
-	}
-}
-
-func (fake *FakePluginContext) AccessTokenCallCount() int {
-	fake.accessTokenMutex.RLock()
-	defer fake.accessTokenMutex.RUnlock()
-	return len(fake.accessTokenArgsForCall)
-}
-
-func (fake *FakePluginContext) AccessTokenReturns(result1 string) {
-	fake.AccessTokenStub = nil
-	fake.accessTokenReturns = struct {
-		result1 string
-	}{result1}
-}
-
-func (fake *FakePluginContext) RefreshAccessToken() (string, error) {
-	fake.refreshAccessTokenMutex.Lock()
-	fake.refreshAccessTokenArgsForCall = append(fake.refreshAccessTokenArgsForCall, struct{}{})
-	fake.refreshAccessTokenMutex.Unlock()
-	if fake.RefreshAccessTokenStub != nil {
-		return fake.RefreshAccessTokenStub()
-	} else {
-		return fake.refreshAccessTokenReturns.result1, fake.refreshAccessTokenReturns.result2
-	}
-}
-
-func (fake *FakePluginContext) RefreshAccessTokenCallCount() int {
-	fake.refreshAccessTokenMutex.RLock()
-	defer fake.refreshAccessTokenMutex.RUnlock()
-	return len(fake.refreshAccessTokenArgsForCall)
-}
-
-func (fake *FakePluginContext) RefreshAccessTokenReturns(result1 string, result2 error) {
-	fake.RefreshAccessTokenStub = nil
-	fake.refreshAccessTokenReturns = struct {
-		result1 string
-		result2 error
-	}{result1, result2}
-}
-
 func (fake *FakePluginContext) CurrentOrg() models.Organization {
 	fake.currentOrgMutex.Lock()
 	fake.currentOrgArgsForCall = append(fake.currentOrgArgsForCall, struct{}{})
@@ -526,6 +654,30 @@ func (fake *FakePluginContext) HasOrganizationReturns(result1 bool) {
 	fake.HasOrganizationStub = nil
 	fake.hasOrganizationReturns = struct {
 		result1 bool
+	}{result1}
+}
+
+func (fake *FakePluginContext) AccountID() string {
+	fake.accountIDMutex.Lock()
+	fake.accountIDArgsForCall = append(fake.accountIDArgsForCall, struct{}{})
+	fake.accountIDMutex.Unlock()
+	if fake.AccountIDStub != nil {
+		return fake.AccountIDStub()
+	} else {
+		return fake.accountIDReturns.result1
+	}
+}
+
+func (fake *FakePluginContext) AccountIDCallCount() int {
+	fake.accountIDMutex.RLock()
+	defer fake.accountIDMutex.RUnlock()
+	return len(fake.accountIDArgsForCall)
+}
+
+func (fake *FakePluginContext) AccountIDReturns(result1 string) {
+	fake.AccountIDStub = nil
+	fake.accountIDReturns = struct {
+		result1 string
 	}{result1}
 }
 

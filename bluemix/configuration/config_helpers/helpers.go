@@ -46,6 +46,18 @@ func PluginBinaryLocation(pluginName string) string {
 	return executable
 }
 
+func CFHome() string {
+	return ConfigDir()
+}
+
+func CFConfigDir() string {
+	return filepath.Join(CFHome(), ".cf")
+}
+
+func CFConfigFilePath() string {
+	return filepath.Join(CFConfigDir(), "config.json")
+}
+
 func UserHomeDir() string {
 	if runtime.GOOS == "windows" {
 		home := os.Getenv("HOMEDRIVE") + os.Getenv("HOMEPATH")

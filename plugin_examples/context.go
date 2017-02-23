@@ -29,7 +29,7 @@ func (p *PrintContext) Run(context plugin.PluginContext, args []string) {
 
 	table.Add("CC endpoint", context.APIEndpoint())
 	table.Add("Authorization endpoint", context.AuthenticationEndpoint())
-	table.Add("Token endpoint", context.UaaEndpoint())
+	table.Add("UAA endpoint", context.UAAEndpoint())
 	table.Add("Doppler logging endpoint", context.DopplerEndpoint())
 
 	table.Add("Color enabled", context.ColorEnabled())

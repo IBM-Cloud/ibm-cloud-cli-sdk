@@ -8,23 +8,25 @@ import (
 	"github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/models"
 )
 
-type CFReader interface {
+type CFConfigReader interface {
 	APIEndpoint() string
 	HasAPIEndpoint() bool
 	APIVersion() string
 	AuthenticationEndpoint() string
 	LoggregatorEndpoint() string
 	DopplerEndpoint() string
-	UaaEndpoint() string
+	UAAEndpoint() string
 	RoutingAPIEndpoint() string
 	SSHOAuthClient() string
+	MinCFCLIVersion() string
+	MinRecommendedCFCLIVersion() string
 
 	Username() string
 	UserGUID() string
 	UserEmail() string
 	IsLoggedIn() bool
-	AccessToken() string
-	RefreshToken() string
+	UAAToken() string
+	UAARefreshToken() string
 
 	OrganizationFields() models.OrganizationFields
 	HasOrganization() bool
@@ -32,28 +34,40 @@ type CFReader interface {
 	HasSpace() bool
 
 	IsSSLDisabled() bool
+	Locale() string
+	Trace() string
+	ColorEnabled() string
 }
 
-type CFWriter interface {
+type CFConfigWriter interface {
 	SetAPIVersion(string)
 	SetAPIEndpoint(string)
 	SetAuthenticationEndpoint(string)
 	SetLoggregatorEndpoint(string)
 	SetDopplerEndpoint(string)
-	SetUaaEndpoint(string)
+	SetUAAEndpoint(string)
 	SetRoutingAPIEndpoint(string)
 	SetSSHOAuthClient(string)
-	SetAccessToken(string)
-	SetRefreshToken(string)
+	SetMinCFCLIVersion(string)
+	SetMinRecommendedCFCLIVersion(string)
+
+	SetUAAToken(string)
+	SetUAARefreshToken(string)
+
 	SetOrganizationFields(models.OrganizationFields)
 	SetSpaceFields(models.SpaceFields)
+
 	SetSSLDisabled(bool)
-	Reload()
+	SetLocale(string)
+	SetTrace(string)
+	SetColorEnabled(string)
+
+	ReloadCF()
 }
 
-type CFReadWriter interface {
-	CFReader
-	CFWriter
+type CFConfigReadWriter interface {
+	CFConfigReader
+	CFConfigWriter
 }
 
 type cfConfigAdapter struct {
@@ -63,16 +77,36 @@ type cfConfigAdapter struct {
 	cfcoreconfig.Repository
 }
 
-func NewCFConfigAdapterFromPath(filepath string, errHandler func(error)) *cfConfigAdapter {
-	return NewCFConfigAdapterFromPersistor(cfconfiguration.NewDiskPersistor(filepath), errHandler)
+func createCFConfigAdapterFromPath(filepath string, errHandler func(error)) *cfConfigAdapter {
+	return createCFConfigAdapterFromPersistor(cfconfiguration.NewDiskPersistor(filepath), errHandler)
 }
 
-func NewCFConfigAdapterFromPersistor(persistor cfconfiguration.Persistor, errHandler func(error)) *cfConfigAdapter {
+func createCFConfigAdapterFromPersistor(persistor cfconfiguration.Persistor, errHandler func(error)) *cfConfigAdapter {
 	return &cfConfigAdapter{
 		persistor:  persistor,
 		errHandler: errHandler,
 		Repository: cfcoreconfig.NewRepositoryFromPersistor(persistor, errHandler),
 	}
+}
+
+func (c *cfConfigAdapter) MinCFCLIVersion() string {
+	return c.Repository.MinCLIVersion()
+}
+
+func (c *cfConfigAdapter) MinRecommendedCFCLIVersion() string {
+	return c.Repository.MinRecommendedCLIVersion()
+}
+
+func (c *cfConfigAdapter) UAAEndpoint() string {
+	return c.Repository.UaaEndpoint()
+}
+
+func (c *cfConfigAdapter) UAAToken() string {
+	return c.Repository.AccessToken()
+}
+
+func (c *cfConfigAdapter) UAARefreshToken() string {
+	return c.Repository.RefreshToken()
 }
 
 func (c *cfConfigAdapter) OrganizationFields() models.OrganizationFields {
@@ -102,6 +136,26 @@ func (c *cfConfigAdapter) SpaceFields() models.SpaceFields {
 	return space
 }
 
+func (c *cfConfigAdapter) SetMinCFCLIVersion(version string) {
+	c.Repository.SetMinCLIVersion(version)
+}
+
+func (c *cfConfigAdapter) SetMinRecommendedCFCLIVersion(version string) {
+	c.Repository.SetMinRecommendedCLIVersion(version)
+}
+
+func (c *cfConfigAdapter) SetUAAEndpoint(endpoint string) {
+	c.Repository.SetUaaEndpoint(endpoint)
+}
+
+func (c *cfConfigAdapter) SetUAAToken(token string) {
+	c.Repository.SetAccessToken(token)
+}
+
+func (c *cfConfigAdapter) SetUAARefreshToken(token string) {
+	c.Repository.SetRefreshToken(token)
+}
+
 func (c *cfConfigAdapter) SetOrganizationFields(org models.OrganizationFields) {
 	var cfOrg cfmodels.OrganizationFields
 
@@ -129,7 +183,7 @@ func (c *cfConfigAdapter) SetSpaceFields(space models.SpaceFields) {
 	c.Repository.SetSpaceFields(cfSpace)
 }
 
-func (c *cfConfigAdapter) Reload() {
+func (c *cfConfigAdapter) ReloadCF() {
 	c.Repository.Close()
 	c.Repository = cfcoreconfig.NewRepositoryFromPersistor(c.persistor, c.errHandler)
 }

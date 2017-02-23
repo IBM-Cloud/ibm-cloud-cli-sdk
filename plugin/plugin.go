@@ -78,15 +78,20 @@ type PluginContext interface {
 	AuthenticationEndpoint() string
 	LoggregatorEndpoint() string
 	DopplerEndpoint() string
-	UaaEndpoint() string
+	UAAEndpoint() string
+	UAAToken() string
+	UAARefreshToken() string
+	RefreshUAAToken() (string, error)
+	IAMToken() string
+	IAMRefreshToken() string
+	RefreshIAMToken() (string, error)
 	Username() string
 	UserGUID() string
 	UserEmail() string
 	IsLoggedIn() bool
-	AccessToken() string
-	RefreshAccessToken() (string, error)
 	CurrentOrg() models.Organization
 	HasOrganization() bool
+	AccountID() string
 	CurrentSpace() models.Space
 	HasSpace() bool
 	Region() string
