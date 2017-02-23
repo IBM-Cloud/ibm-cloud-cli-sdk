@@ -83,33 +83,33 @@ func NewFileLogger(path string) PrinterCloser {
 
 // Santitize returns a clean string with sentive user data in the input
 // replaced by PRIVATE_DATA_PLACEHOLDER.
-func Sanitize(input string) (sanitized string) {
-	var sanitizeJson = func(propertyName string, json string) string {
-		regex := regexp.MustCompile(fmt.Sprintf(`"%s":\s*"[^"]*"`, propertyName))
-		return regex.ReplaceAllString(json, fmt.Sprintf(`"%s":"%s"`, propertyName, PRIVATE_DATA_PLACEHOLDER()))
-	}
-
+func Sanitize(input string) string {
 	re := regexp.MustCompile(`(?m)^Authorization: .*`)
-	sanitized = re.ReplaceAllString(input, "Authorization: "+PRIVATE_DATA_PLACEHOLDER())
+	sanitized := re.ReplaceAllString(input, "Authorization: "+privateDataPlaceholder())
+
 	re = regexp.MustCompile(`(?m)^X-Auth-Token: .*`)
-	sanitized = re.ReplaceAllString(sanitized, "X-Auth-Token: "+PRIVATE_DATA_PLACEHOLDER())
+	sanitized = re.ReplaceAllString(sanitized, "X-Auth-Token: "+privateDataPlaceholder())
+
 	re = regexp.MustCompile(`password=[^&]*&`)
-	sanitized = re.ReplaceAllString(sanitized, "password="+PRIVATE_DATA_PLACEHOLDER()+"&")
+	sanitized = re.ReplaceAllString(sanitized, "password="+privateDataPlaceholder()+"&")
 
-	sanitized = sanitizeJson("access_token", sanitized)
-	sanitized = sanitizeJson("refresh_token", sanitized)
-	sanitized = sanitizeJson("token", sanitized)
-	sanitized = sanitizeJson("uaa_token", sanitized)
-	sanitized = sanitizeJson("uaa_refresh_token", sanitized)
-	sanitized = sanitizeJson("password", sanitized)
-	sanitized = sanitizeJson("oldPassword", sanitized)
-	sanitized = sanitizeJson("apikey", sanitized)
-	sanitized = sanitizeJson("passcode", sanitized)
+	re = regexp.MustCompile(`refresh_token=[^&]*&`)
+	sanitized = re.ReplaceAllString(sanitized, "refresh_token="+privateDataPlaceholder()+"&")
 
-	return
+	sanitized = sanitizeJSON("token", sanitized)
+	sanitized = sanitizeJSON("password", sanitized)
+	sanitized = sanitizeJSON("apikey", sanitized)
+	sanitized = sanitizeJSON("passcode", sanitized)
+
+	return sanitized
 }
 
-// PRIVATE_DATA_PLACEHOLDER returns the text to replace the sentive data.
-func PRIVATE_DATA_PLACEHOLDER() string {
+func sanitizeJSON(propertySubstring string, json string) string {
+	regex := regexp.MustCompile(fmt.Sprintf(`(?i)"([^"]*%s[^"]*)":\s*"[^\,]*"`, propertySubstring))
+	return regex.ReplaceAllString(json, fmt.Sprintf(`"$1":"%s"`, privateDataPlaceholder()))
+}
+
+// privateDataPlaceholder returns the text to replace the sentive data.
+func privateDataPlaceholder() string {
 	return "[PRIVATE DATA HIDDEN]"
 }
