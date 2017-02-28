@@ -3,6 +3,7 @@ package authentication
 import (
 	"encoding/base64"
 	"fmt"
+	"net/url"
 	"regexp"
 
 	"github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/configuration/core_config"
@@ -129,6 +130,20 @@ func (auth *iamAuthRepository) getToken(data map[string]string) error {
 	return nil
 }
 
+var domainRegExp = regexp.MustCompile(`(^https?://)?[^\.]+(\..+)+`)
+
 func IAMTokenEndpoint(apiEndpoint string) string {
-	return regexp.MustCompile(`(^https?://)[^\.]+(\..+)+`).ReplaceAllString(apiEndpoint, "${1}iam${2}")
+	if apiEndpoint == "" {
+		return ""
+	}
+
+	endpoint := domainRegExp.ReplaceAllString(apiEndpoint, "${1}iam${2}")
+
+	u, err := url.Parse(endpoint)
+	if err != nil {
+		return ""
+	}
+
+	u.Scheme = "https"
+	return u.String()
 }
