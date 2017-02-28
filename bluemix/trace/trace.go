@@ -96,6 +96,9 @@ func Sanitize(input string) string {
 	re = regexp.MustCompile(`refresh_token=[^&]*&`)
 	sanitized = re.ReplaceAllString(sanitized, "refresh_token="+privateDataPlaceholder()+"&")
 
+	re = regexp.MustCompile(`apikey=[^&]*&`)
+	sanitized = re.ReplaceAllString(sanitized, "apikey="+privateDataPlaceholder()+"&")
+
 	sanitized = sanitizeJSON("token", sanitized)
 	sanitized = sanitizeJSON("password", sanitized)
 	sanitized = sanitizeJSON("apikey", sanitized)

@@ -10,8 +10,16 @@ import (
 )
 
 type IAMError struct {
-	ErrorCode   string `json:"errorCode"`
-	Description string `json:"errorDetails"`
+	ErrorCode    string `json:"errorCode"`
+	ErrorMessage string `json:"errorMessage"`
+	ErrorDetails string `json:"errorDetails"`
+}
+
+func (e IAMError) Description() string {
+	if e.ErrorDetails != "" {
+		return e.ErrorDetails
+	}
+	return e.ErrorMessage
 }
 
 type IAMTokenResponse struct {
@@ -46,13 +54,6 @@ func (auth *iamAuthRepository) AuthenticatePassword(username string, password st
 		"grant_type": "password",
 		"username":   username,
 		"password":   password,
-	})
-}
-
-func (auth *iamAuthRepository) AuthenticateSSO(passcode string) error {
-	return auth.getToken(map[string]string{
-		"grant_type": "password",
-		"passcode":   passcode,
 	})
 }
 
@@ -114,9 +115,9 @@ func (auth *iamAuthRepository) getToken(data map[string]string) error {
 
 	if apiErr.ErrorCode != "" {
 		if apiErr.ErrorCode == "BXNIM0407E" {
-			return NewInvalidTokenError(apiErr.Description)
+			return NewInvalidTokenError(apiErr.Description())
 		}
-		return NewServerError(resp.StatusCode, apiErr.ErrorCode, apiErr.Description)
+		return NewServerError(resp.StatusCode, apiErr.ErrorCode, apiErr.Description())
 	}
 
 	auth.config.SetIAMToken(fmt.Sprintf("%s %s", tokens.TokenType, tokens.AccessToken))
