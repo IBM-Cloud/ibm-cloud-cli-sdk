@@ -57,13 +57,6 @@ func (auth *iamAuthRepository) AuthenticatePassword(username string, password st
 	})
 }
 
-func (auth *iamAuthRepository) AuthenticateSSO(passcode string) error {
-	return auth.getToken(map[string]string{
-		"grant_type": "password",
-		"passcode":   passcode,
-	})
-}
-
 func (auth *iamAuthRepository) AuthenticateAPIKey(apiKey string) error {
 	return auth.getToken(map[string]string{
 		"grant_type": "urn:ibm:params:oauth:grant-type:apikey",
