@@ -147,6 +147,27 @@ func (c *bxConfigRepository) PluginRepo(name string) (models.PluginRepo, bool) {
 	return models.PluginRepo{}, false
 }
 
+func (c *bxConfigRepository) Locale() (locale string) {
+	c.read(func() {
+		locale = c.data.Locale
+	})
+	return
+}
+
+func (c *bxConfigRepository) Trace() (trace string) {
+	c.read(func() {
+		trace = c.data.Trace
+	})
+	return
+}
+
+func (c *bxConfigRepository) ColorEnabled() (enabled string) {
+	c.read(func() {
+		enabled = c.data.ColorEnabled
+	})
+	return
+}
+
 func (c *bxConfigRepository) HTTPTimeout() (timeout int) {
 	c.read(func() {
 		timeout = c.data.HTTPTimeout
@@ -244,6 +265,24 @@ func (c *bxConfigRepository) SetCLIInfoEndpoint(endpoint string) {
 func (c *bxConfigRepository) SetUsageStatsDisabled(disabled bool) {
 	c.write(func() {
 		c.data.UsageStatsDisabled = disabled
+	})
+}
+
+func (c *bxConfigRepository) SetColorEnabled(enabled string) {
+	c.write(func() {
+		c.data.ColorEnabled = enabled
+	})
+}
+
+func (c *bxConfigRepository) SetLocale(locale string) {
+	c.write(func() {
+		c.data.Locale = locale
+	})
+}
+
+func (c *bxConfigRepository) SetTrace(trace string) {
+	c.write(func() {
+		c.data.Trace = trace
 	})
 }
 
