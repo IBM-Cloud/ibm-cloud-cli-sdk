@@ -54,6 +54,33 @@ type configRepository struct {
 	*bxConfigRepository
 }
 
+func (c configRepository) ColorEnabled() string {
+	return c.bxConfigRepository.ColorEnabled()
+}
+
+func (c configRepository) Trace() string {
+	return c.bxConfigRepository.Trace()
+}
+
+func (c configRepository) Locale() string {
+	return c.bxConfigRepository.Locale()
+}
+
+func (c configRepository) SetColorEnabled(enabled string) {
+	c.bxConfigRepository.SetColorEnabled(enabled)
+	c.CFConfigReadWriter.SetColorEnabled(enabled)
+}
+
+func (c configRepository) SetTrace(trace string) {
+	c.bxConfigRepository.SetTrace(trace)
+	c.CFConfigReadWriter.SetTrace(trace)
+}
+
+func (c configRepository) SetLocale(locale string) {
+	c.bxConfigRepository.SetLocale(locale)
+	c.CFConfigReadWriter.SetTrace(locale)
+}
+
 func (c configRepository) ClearSession() {
 	c.CFConfigReadWriter.(SessionClearer).ClearSession()
 	c.bxConfigRepository.ClearSession()
