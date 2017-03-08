@@ -78,7 +78,7 @@ func (c configRepository) SetTrace(trace string) {
 
 func (c configRepository) SetLocale(locale string) {
 	c.bxConfigRepository.SetLocale(locale)
-	c.CFConfigReadWriter.SetTrace(locale)
+	c.CFConfigReadWriter.SetLocale(locale)
 }
 
 func (c configRepository) ClearSession() {
