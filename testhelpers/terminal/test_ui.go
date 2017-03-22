@@ -9,11 +9,26 @@ import (
 	term "github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/terminal"
 )
 
-// TODO: to be deprecated
+type choicesPrompt struct {
+	Message string
+	Choices []string
+}
+
+func ChoicesPrompt(message string, choices ...string) choicesPrompt {
+	return choicesPrompt{
+		Message: message,
+		Choices: choices,
+	}
+}
+
 type FakeUI struct {
-	Inputs      bytes.Buffer
-	outputs     bytes.Buffer
-	warnOutputs bytes.Buffer
+	Prompts         []string
+	PasswordPrompts []string
+	ChoicesPrompts  []choicesPrompt
+	WarnOutputs     []string
+
+	inputs  bytes.Buffer
+	outputs bytes.Buffer
 }
 
 func NewFakeUI() *FakeUI {
@@ -37,19 +52,38 @@ func (ui *FakeUI) Failed(template string, args ...interface{}) {
 
 func (ui *FakeUI) Warn(template string, args ...interface{}) {
 	message := fmt.Sprintf(template, args...)
-	fmt.Fprintln(&ui.warnOutputs, message)
+	ui.WarnOutputs = append(ui.WarnOutputs, message)
+
+	ui.Say(template, args...)
 }
 
 func (ui *FakeUI) Prompt(message string, options *term.PromptOptions) *term.Prompt {
+	if options.HideInput {
+		ui.PasswordPrompts = append(ui.PasswordPrompts, message)
+	} else {
+		ui.Prompts = append(ui.Prompts, message)
+	}
+
+	if ui.inputs.Len() == 0 {
+		panic("No input provided to Fake UI for prompt: " + message)
+	}
+
 	p := term.NewPrompt(message, options)
-	p.Reader = &ui.Inputs
+	p.Reader = &ui.inputs
 	p.Writer = &ui.outputs
 	return p
 }
 
 func (ui *FakeUI) ChoicesPrompt(message string, choices []string, options *term.PromptOptions) *term.Prompt {
+	ui.ChoicesPrompts = append(ui.ChoicesPrompts, ChoicesPrompt(message, choices...))
+
+	if ui.inputs.Len() == 0 {
+		panic(fmt.Sprintf("No input provided to Fake UI for choices prompt: %s [%s]",
+			message, strings.Join(choices, ", ")))
+	}
+
 	p := term.NewChoicesPrompt(message, choices, options)
-	p.Reader = &ui.Inputs
+	p.Reader = &ui.inputs
 	p.Writer = &ui.outputs
 	return p
 }
@@ -58,10 +92,12 @@ func (ui *FakeUI) Ask(template string, args ...interface{}) string {
 	message := fmt.Sprintf(template, args...)
 
 	var answer string
-	err := ui.Prompt(message, &term.PromptOptions{HideDefault: true, NoLoop: true}).Resolve(&answer)
-	if err == term.ErrInputEmpty {
-		panic("No input provided to Fake UI for prompt: " + message)
-	}
+	ui.Prompt(message,
+		&term.PromptOptions{
+			HideDefault: true,
+			NoLoop:      true,
+		},
+	).Resolve(&answer)
 
 	return answer
 }
@@ -70,32 +106,47 @@ func (ui *FakeUI) AskForPassword(template string, args ...interface{}) string {
 	message := fmt.Sprintf(template, args...)
 
 	var passwd string
-	err := ui.Prompt(message, &term.PromptOptions{HideInput: true, NoLoop: true}).Resolve(&passwd)
-	if err == term.ErrInputEmpty {
-		panic("No input provided to Fake UI for password prompt: " + message)
-	}
+	ui.Prompt(
+		message,
+		&term.PromptOptions{
+			HideDefault: true,
+			HideInput:   true,
+			NoLoop:      true,
+		},
+	).Resolve(&passwd)
 
 	return passwd
 }
 
 func (ui *FakeUI) Confirm(template string, args ...interface{}) bool {
-	var yn bool
-	message := fmt.Sprintf(template, args...)
-	ui.Prompt(message, &term.PromptOptions{HideDefault: true, NoLoop: true}).Resolve(&yn)
-	return yn
+	return ui.ConfirmWithDefault(false, template, args...)
 }
 
 func (ui *FakeUI) ConfirmWithDefault(defaultBool bool, template string, args ...interface{}) bool {
-	var yn = defaultBool
 	message := fmt.Sprintf(template, args...)
-	ui.Prompt(message, &term.PromptOptions{HideDefault: true, NoLoop: true}).Resolve(&yn)
+
+	var yn = defaultBool
+	ui.Prompt(
+		message,
+		&term.PromptOptions{
+			HideDefault: true,
+			NoLoop:      true,
+		},
+	).Resolve(&yn)
 	return yn
 }
 
 func (ui *FakeUI) SelectOne(choices []string, template string, args ...interface{}) int {
-	var selected string
 	message := fmt.Sprintf(template, args...)
-	err := ui.ChoicesPrompt(message, choices, &term.PromptOptions{HideDefault: true}).Resolve(&selected)
+
+	var selected string
+	err := ui.ChoicesPrompt(
+		message,
+		choices,
+		&term.PromptOptions{
+			HideDefault: true,
+		},
+	).Resolve(&selected)
 
 	if err != nil {
 		return -1
@@ -114,20 +165,14 @@ func (ui *FakeUI) Table(headers []string) term.Table {
 	return term.NewTable(&ui.outputs, headers)
 }
 
+func (ui *FakeUI) Inputs(lines ...string) {
+	for _, line := range lines {
+		ui.inputs.WriteString(line + "\n")
+	}
+}
+
 func (ui *FakeUI) Outputs() string {
-	return string(ui.outputs.Bytes())
-}
-
-func (ui *FakeUI) ContainsOutput(text string) bool {
-	return strings.Contains(ui.outputs.String(), text)
-}
-
-func (ui *FakeUI) WarnOutputs() string {
-	return string(ui.warnOutputs.Bytes())
-}
-
-func (ui *FakeUI) ContainsWarn(text string) bool {
-	return strings.Contains(ui.warnOutputs.String(), text)
+	return ui.outputs.String()
 }
 
 func (ui *FakeUI) Writer() io.Writer {

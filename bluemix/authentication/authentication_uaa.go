@@ -19,26 +19,19 @@ type UAATokenResponse struct {
 	RefreshToken string `json:"refresh_token"`
 }
 
-type UAARepository interface {
-	AuthenticatePassword(username string, password string) error
-	AuthenticateSSO(passcode string) error
-	AuthenticateAPIKey(apiKey string) error
-	RefreshToken() (string, error)
-}
-
-type uaaRepository struct {
+type UAARepository struct {
 	config core_config.ReadWriter
 	client *rest.Client
 }
 
-func NewUAARepository(config core_config.ReadWriter, client *rest.Client) UAARepository {
-	return &uaaRepository{
+func NewUAARepository(config core_config.ReadWriter, client *rest.Client) *UAARepository {
+	return &UAARepository{
 		config: config,
 		client: client,
 	}
 }
 
-func (auth *uaaRepository) AuthenticatePassword(username string, password string) error {
+func (auth *UAARepository) AuthenticatePassword(username string, password string) error {
 	return auth.getToken(map[string]string{
 		"grant_type": "password",
 		"username":   username,
@@ -46,18 +39,18 @@ func (auth *uaaRepository) AuthenticatePassword(username string, password string
 	})
 }
 
-func (auth *uaaRepository) AuthenticateSSO(passcode string) error {
+func (auth *UAARepository) AuthenticateSSO(passcode string) error {
 	return auth.getToken(map[string]string{
 		"grant_type": "password",
 		"passcode":   passcode,
 	})
 }
 
-func (auth *uaaRepository) AuthenticateAPIKey(apiKey string) error {
+func (auth *UAARepository) AuthenticateAPIKey(apiKey string) error {
 	return auth.AuthenticatePassword("apikey", apiKey)
 }
 
-func (auth *uaaRepository) RefreshToken() (string, error) {
+func (auth *UAARepository) RefreshToken() (string, error) {
 	err := auth.getToken(map[string]string{
 		"grant_type":    "refresh_token",
 		"refresh_token": auth.config.UAARefreshToken(),
@@ -69,7 +62,7 @@ func (auth *uaaRepository) RefreshToken() (string, error) {
 	return auth.config.UAAToken(), nil
 }
 
-func (auth *uaaRepository) getToken(data map[string]string) error {
+func (auth *UAARepository) getToken(data map[string]string) error {
 	request := rest.PostRequest(auth.config.AuthenticationEndpoint()+"/oauth/token").
 		Set("Authorization", "Basic "+base64.StdEncoding.EncodeToString([]byte("cf:"))).
 		Field("scope", "")
