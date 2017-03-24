@@ -12,8 +12,8 @@ import (
 const (
 	_DEFAULT_CLI_INFO_ENDPOINT = "https://clis.ng.bluemix.net/info"
 
-	_DEFAULT_PLUGIN_REPO_NAME = "Bluemix"
-	_DEFAULT_PLUGIN_REPO_URL  = "https://plugins.ng.bluemix.net"
+	DEFAULT_PLUGIN_REPO      = "Bluemix"
+	_DEFAULT_PLUGIN_REPO_URL = "https://plugins.ng.bluemix.net"
 )
 
 type BXConfigData struct {
@@ -56,7 +56,7 @@ func (c *bxConfigRepository) init() {
 	c.initOnce.Do(func() {
 		err := c.persistor.Load(c.data)
 
-		if err != nil && os.IsNotExist(err) {
+		if os.IsNotExist(err) {
 			c.setDefaults()
 			err = c.persistor.Save(c.data)
 		}
@@ -70,7 +70,7 @@ func (c *bxConfigRepository) init() {
 func (c *bxConfigRepository) setDefaults() {
 	c.data.PluginRepos = []models.PluginRepo{
 		{
-			Name: _DEFAULT_PLUGIN_REPO_NAME,
+			Name: DEFAULT_PLUGIN_REPO,
 			URL:  _DEFAULT_PLUGIN_REPO_URL,
 		},
 	}
