@@ -2,9 +2,11 @@
 
 Bluemix CLI plugin SDK provides predefined plugin interface, utilities and libraries to develop plugins for [Bluemix cli](https://clis.ng.bluemix.net).
 
-# Building and running tests
+# Get started
 
-The project uses [govendor](https://github.com/kardianos/govendor) to manage dependencies. Run the following command to restore the dependencies into vendor folder:
+You firstly need [Go](http://www.golang.org) installed on your machine, and set up a [GOPATH](http://golang.org/doc/code.html#GOPATH). Then clone this repository into `$GOPATH/src/github.com/IBM-Bluemix/bluemix-cli-sdk`. 
+
+This project uses [govendor](https://github.com/kardianos/govendor) to manage dependencies. Go to the project directory and run the following command to restore the dependencies into vendor folder:
 
 ```bash
 $ govendor sync
@@ -16,11 +18,11 @@ and then run tests:
 $ go test ./...
 ```
 
-# Getting started
+# Build and run plugin
 
 Download and install the Bluemix CLI. See instructions [here](https://clis.ng.bluemix.net).
 
-Compile the plugin source code using with the `go build` command.
+Compile the plugin source code with `go build` command, for example
 
 ```bash
 $ go build plugin_examples/hello.go
@@ -49,13 +51,13 @@ $ bluemix plugin uninstall SayHello # SayHello is the plugin name
 
 For more usage of Bluemix plugin management, run `bluemix help plugin`
 
-# Developing
+# Develop plugins
 
-[Go here for plugin developer guide](https://github.com/IBM-Bluemix/bluemix-cli-sdk/blob/master/docs/plugin_developer_guide.md)
+Refer to [plugin developer guide](https://github.com/IBM-Bluemix/bluemix-cli-sdk/blob/master/docs/plugin_developer_guide.md) for how to develop a plugin.
 
 See plugin examples [here](https://github.com/IBM-Bluemix/bluemix-cli-sdk/tree/master/plugin_examples)
 
-# Publishing
+# Publish plugins
 
 Bluemix has a public plugin repository by default installed in Bluemix CLI. Run `bluemix plugin`, you can see a repository named `Bluemix` (`https://plugins.ng.bluemix.net`). The repository support multiple version of plugin. You can list all plugins in the repository by using `bluemix plugin repo-plugins -r Bluemix`.
 
@@ -107,7 +109,7 @@ homepage | Link to the homepage
 version | Version number of your plugin, in [major].[minor].[build] form
 binaries | This section has fields detailing the various binary versions of your plugin. To reach as large an audience as possible, we encourage contributors to cross-compile their plugins on as many platforms as possible. Go provides everything you need to cross-compile for different platforms. `platform`: The os for this binary. Supports `osx`, `linux32`, `linux64`, `win32`, `win64`; `url`: Link to the binary file itself; `checksum`: SHA-1 of the binary file for verification.
 
-**Example to Update a plugin**:
+**Example to update a plugin**:
 
 Title: [plugin-update] Request to update plugin 'SayHello'
 
@@ -124,7 +126,7 @@ Content:
   homepage: http://www.example.com/hello
 ```
 
-**Example to Remove a plugin**:
+**Example to remove a plugin**:
 
 Title: [plugin-remove] Request to remove plugin 'SayHello'
 
