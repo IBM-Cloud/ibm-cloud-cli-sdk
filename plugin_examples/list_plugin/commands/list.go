@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
-	"time"
 
 	"github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/terminal"
 	"github.com/IBM-Bluemix/bluemix-cli-sdk/plugin"
@@ -141,7 +140,7 @@ func (cmd *List) printContainers(containers []models.Container, quotaAndUsage mo
 		if len(containers) > 1 {
 			createdStr = "--"
 		} else {
-			createdStr = time.Unix(containers[0].Created, 0).Format("01/02/2006 3:04 PM")
+			createdStr = fmt.Sprintf("%d", containers[0].Created)
 		}
 
 		status := containers[0].State

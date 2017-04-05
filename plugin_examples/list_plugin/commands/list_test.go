@@ -197,9 +197,9 @@ var _ = Describe("ListCommand", func() {
 		It("List containers", func() {
 			Expect(err).NotTo(HaveOccurred())
 			Expect(ui.Outputs()).To(ContainSubstring("Containers  1 GB/20 GB  2/2 Public IPs Requested|1 Used"))
-			Expect(ui.Outputs()).To(ContainSubstring("Name         Instances   Image    Created              Status"))
-			Expect(ui.Outputs()).To(ContainSubstring("group1       2           image1   --                   Running"))
-			Expect(ui.Outputs()).To(ContainSubstring("container3   1           image2   01/18/2017 1:44 PM   Shutdown"))
+			Expect(ui.Outputs()).To(ContainSubstring("Name         Instances   Image    Created      Status"))
+			Expect(ui.Outputs()).To(ContainSubstring("group1       2           image1   --           Running"))
+			Expect(ui.Outputs()).To(ContainSubstring("container3   1           image2   1484718271   Shutdown"))
 		})
 	})
 })
