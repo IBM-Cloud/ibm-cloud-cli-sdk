@@ -30,6 +30,14 @@ type Namespace struct {
 	Description string // description of the namespace
 }
 
+func (n Namespace) ParentName() string {
+	i := strings.LastIndex(n.Name, " ")
+	if i < 0 {
+		return ""
+	}
+	return n.Name[:i]
+}
+
 type Command struct {
 	Namespace   string // namespace of the command
 	Name        string // command name
