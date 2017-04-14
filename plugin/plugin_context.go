@@ -116,6 +116,10 @@ func (c *pluginContext) AccountID() string {
 	return c.coreConfig.Account().GUID
 }
 
+func (c *pluginContext) IMSAccountID() string {
+	return c.coreConfig.IMSAccountID()
+}
+
 func (c *pluginContext) CurrentOrg() models.Organization {
 	return models.Organization{
 		OrganizationFields: c.coreConfig.OrganizationFields(),

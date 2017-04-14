@@ -131,6 +131,10 @@ func (c *bxConfigRepository) HasAccount() bool {
 	return c.Account().GUID != ""
 }
 
+func (c *bxConfigRepository) IMSAccountID() string {
+	return NewIAMTokenInfo(c.IAMToken()).Accounts.IMSAccountID
+}
+
 func (c *bxConfigRepository) PluginRepos() (repos []models.PluginRepo) {
 	c.read(func() {
 		repos = c.data.PluginRepos
