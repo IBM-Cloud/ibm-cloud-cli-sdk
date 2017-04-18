@@ -100,6 +100,7 @@ type PluginContext interface {
 	CurrentOrg() models.Organization
 	HasOrganization() bool
 	AccountID() string
+	IMSAccountID() string
 	CurrentSpace() models.Space
 	HasSpace() bool
 	Region() string

@@ -16,6 +16,7 @@ type Reader interface {
 	IAMRefreshToken() string
 	Account() models.Account
 	HasAccount() bool
+	IMSAccountID() string
 	PluginRepos() []models.PluginRepo
 	PluginRepo(string) (models.PluginRepo, bool)
 	HTTPTimeout() int
