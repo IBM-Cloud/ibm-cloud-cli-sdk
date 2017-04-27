@@ -96,11 +96,12 @@ build() {
     mv \$OUT_DIR/${plugin_file_basename} "\$OUT_DIR/\$nf"
 }
 
-for os in windows linux darwin; do
-    for arch in amd64 386; do
-        build \$os \$arch
-    done
-done
+build windows amd64
+build windows 386
+#disable CGO for Linux
+CGO_ENABLED=0 build linux amd64
+CGO_ENABLED=0 build linux 386
+build darwin amd64
 ENDSCRIPT
 
 cat <<ENDSCRIPT > bin/catch-i18n-mismatch.sh
