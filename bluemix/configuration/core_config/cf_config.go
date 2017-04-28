@@ -13,7 +13,8 @@ type CFConfigReader interface {
 	HasAPIEndpoint() bool
 	APIVersion() string
 	AuthenticationEndpoint() string
-	LoggregatorEndpoint() string
+	// deprecate loggergator endpoint, use Doppler endpoint instead
+	// LoggregatorEndpoint() string
 	DopplerEndpoint() string
 	UAAEndpoint() string
 	RoutingAPIEndpoint() string
@@ -43,7 +44,8 @@ type CFConfigWriter interface {
 	SetAPIVersion(string)
 	SetAPIEndpoint(string)
 	SetAuthenticationEndpoint(string)
-	SetLoggregatorEndpoint(string)
+	// deprecate loggergator endpoint, use Doppler endpoint instead
+	// SetLoggregatorEndpoint(string)
 	SetDopplerEndpoint(string)
 	SetUAAEndpoint(string)
 	SetRoutingAPIEndpoint(string)
