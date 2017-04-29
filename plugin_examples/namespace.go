@@ -8,9 +8,9 @@ import (
 
 type NamespaceDemo struct{}
 
-// func main() {
-// 	plugin.Start(new(NamespaceDemo))
-// }
+func main() {
+	plugin.Start(new(NamespaceDemo))
+}
 
 func (n *NamespaceDemo) Run(context plugin.PluginContext, args []string) {
 	switch args[0] {

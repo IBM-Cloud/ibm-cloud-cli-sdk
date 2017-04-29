@@ -84,7 +84,8 @@ type PluginContext interface {
 	APIEndpoint() string
 	HasAPIEndpoint() bool
 	AuthenticationEndpoint() string
-	LoggregatorEndpoint() string
+	// deprecate loggergator endpoint, use Doppler endpoint instead
+	// LoggregatorEndpoint() string
 	DopplerEndpoint() string
 	UAAEndpoint() string
 	UAAToken() string

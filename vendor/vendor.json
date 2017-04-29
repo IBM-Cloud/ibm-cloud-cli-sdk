@@ -5,20 +5,20 @@
 		{
 			"checksumSHA1": "LxIafsVpgGykbYLzabSSqF4ki+M=",
 			"path": "code.cloudfoundry.org/cli/cf/configuration",
-			"revision": "2efef8a17ef10d3fcf6ae5b46e1fca62f10f4bb9",
-			"revisionTime": "2016-11-17T01:30:26Z"
+			"revision": "431d016da5568347b5ec65bf860ef996b6845d07",
+			"revisionTime": "2017-04-28T19:07:31Z"
 		},
 		{
 			"checksumSHA1": "OpULU8KZk+kCJk4qAJuh6yTbcmU=",
 			"path": "code.cloudfoundry.org/cli/cf/configuration/confighelpers",
-			"revision": "2efef8a17ef10d3fcf6ae5b46e1fca62f10f4bb9",
-			"revisionTime": "2016-11-17T01:30:26Z"
+			"revision": "431d016da5568347b5ec65bf860ef996b6845d07",
+			"revisionTime": "2017-04-28T19:07:31Z"
 		},
 		{
-			"checksumSHA1": "p//v2v5NR+QDJdInfvA2QqmBTAc=",
+			"checksumSHA1": "bhBXKMtDOTPEM3VYvH93NFvrFpU=",
 			"path": "code.cloudfoundry.org/cli/cf/configuration/coreconfig",
-			"revision": "2efef8a17ef10d3fcf6ae5b46e1fca62f10f4bb9",
-			"revisionTime": "2016-11-17T01:30:26Z"
+			"revision": "431d016da5568347b5ec65bf860ef996b6845d07",
+			"revisionTime": "2017-04-28T19:07:31Z"
 		},
 		{
 			"checksumSHA1": "6L/4fhHPk91tyMAxTmNdV4napuc=",
@@ -43,6 +43,12 @@
 			"path": "code.cloudfoundry.org/cli/cf/resources",
 			"revision": "2efef8a17ef10d3fcf6ae5b46e1fca62f10f4bb9",
 			"revisionTime": "2016-11-17T01:30:26Z"
+		},
+		{
+			"checksumSHA1": "FMaw8oAYnjghR/qfYWCwq26Auvs=",
+			"path": "code.cloudfoundry.org/cli/version",
+			"revision": "431d016da5568347b5ec65bf860ef996b6845d07",
+			"revisionTime": "2017-04-28T19:07:31Z"
 		},
 		{
 			"checksumSHA1": "Oae/AzW8+W/lPdL6smTcgyhncrc=",

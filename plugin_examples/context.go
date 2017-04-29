@@ -11,9 +11,9 @@ type PrintContext struct {
 	ui terminal.UI
 }
 
-// func main() {
-// 	plugin.Start(NewPrintContext())
-// }
+func main() {
+	plugin.Start(NewPrintContext())
+}
 
 func NewPrintContext() *PrintContext {
 	return &PrintContext{

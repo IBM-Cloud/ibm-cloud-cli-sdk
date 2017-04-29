@@ -60,9 +60,11 @@ func (c *pluginContext) DopplerEndpoint() string {
 	return c.coreConfig.DopplerEndpoint()
 }
 
-func (c *pluginContext) LoggregatorEndpoint() string {
-	return c.coreConfig.LoggregatorEndpoint()
-}
+// deprecate loggergator endpoint, use Doppler endpoint instead
+//
+// func (c *pluginContext) LoggregatorEndpoint() string {
+// 	return c.coreConfig.LoggregatorEndpoint()
+// }
 
 func (c *pluginContext) UAAEndpoint() string {
 	return c.coreConfig.UAAEndpoint()
