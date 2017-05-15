@@ -78,7 +78,8 @@ type Client struct {
 // NewClient creates a new REST client.
 func NewClient() *Client {
 	return &Client{
-		HTTPClient: http.DefaultClient,
+		HTTPClient:    http.DefaultClient,
+		DefaultHeader: make(http.Header),
 	}
 }
 
