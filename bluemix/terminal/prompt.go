@@ -11,6 +11,8 @@ import (
 	"strings"
 
 	"golang.org/x/crypto/ssh/terminal"
+
+	. "github.com/IBM-Bluemix/bluemix-cli-sdk/i18n"
 )
 
 var (
@@ -79,27 +81,20 @@ func (p *Prompt) resolveSingle(dest interface{}) error {
 			return readErr
 		}
 
-		if input == "" {
-			if !p.options.Required {
-				return nil
-			}
-
-			if p.options.NoLoop {
-				return ErrInputEmpty
-			}
-
-			fmt.Fprintln(p.Writer, FailureColor("Enter a value."))
-			continue
-		}
-
 		var err error
 
-		if p.options.ValidateFunc != nil {
-			err = p.options.ValidateFunc(input)
-		}
+		if input == "" {
+			if p.options.Required {
+				err = ErrInputEmpty
+			}
+		} else {
+			if p.options.ValidateFunc != nil {
+				err = p.options.ValidateFunc(input)
+			}
 
-		if err == nil {
-			err = resolveValue(input, reflect.ValueOf(dest).Elem())
+			if err == nil {
+				err = resolveValue(input, reflect.ValueOf(dest).Elem())
+			}
 		}
 
 		if err != nil {
@@ -107,7 +102,21 @@ func (p *Prompt) resolveSingle(dest interface{}) error {
 				return err
 			}
 
-			fmt.Fprintln(p.Writer, FailureColor(fmt.Sprintf("Invalid input: %v", err)))
+			var message string
+			switch err {
+			case ErrInputEmpty:
+				message = T("Please enter value.")
+			case ErrInputNotNumber:
+				message = T("Please enter a valid number.")
+			case ErrInputNotFloatNumber:
+				message = T("Please enter a valid floating number.")
+			case ErrInputNotBool:
+				message = T("Please enter 'y', 'n', 'yes' or 'no'.")
+			default:
+				message = err.Error()
+			}
+
+			fmt.Fprintln(p.Writer, FailureColor(message))
 			continue
 		}
 
@@ -214,24 +223,20 @@ func (p *Prompt) resolveChoices(dest interface{}) error {
 			return readErr
 		}
 
+		var selectedNum int
+		var err error
+
 		if input == "" {
-			if !p.options.Required {
-				return nil
+			if p.options.Required {
+				err = ErrInputEmpty
 			}
-
-			if p.options.NoLoop {
-				return ErrInputEmpty
+		} else {
+			selectedNum, err = strconv.Atoi(input)
+			if err != nil {
+				err = ErrInputNotNumber
+			} else if selectedNum < 1 || selectedNum > len(p.choices) {
+				err = ErrInputOutOfRange
 			}
-
-			fmt.Fprintln(p.Writer, FailureColor("Enter a number."))
-			continue
-		}
-
-		selectedNum, err := strconv.Atoi(input)
-		if err != nil {
-			err = ErrInputNotNumber
-		} else if selectedNum < 1 || selectedNum > len(p.choices) {
-			err = ErrInputOutOfRange
 		}
 
 		if err != nil {
@@ -239,11 +244,14 @@ func (p *Prompt) resolveChoices(dest interface{}) error {
 				return err
 			}
 
-			fmt.Fprintln(p.Writer, FailureColor(fmt.Sprintf("Invalid selection: %v", err)))
+			fmt.Fprintln(p.Writer, FailureColor(T("Please enter a number between 1 to {{.Count}}.", map[string]interface{}{"Count": len(p.choices)})))
 			continue
 		}
 
-		reflect.ValueOf(dest).Elem().SetString(p.choices[selectedNum-1])
+		if selectedNum > 0 {
+			reflect.ValueOf(dest).Elem().SetString(p.choices[selectedNum-1])
+		}
+
 		return nil
 	}
 }
@@ -262,7 +270,7 @@ func (p *Prompt) choicesPrompt(dest interface{}) (string, error) {
 			defaultChoice = i
 		}
 	}
-	prompt += "\nEnter a number"
+	prompt += T("\nEnter a number")
 
 	if p.options.HideDefault {
 		return prompt, nil

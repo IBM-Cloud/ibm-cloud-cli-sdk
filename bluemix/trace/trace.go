@@ -7,6 +7,8 @@ import (
 	"os"
 	"regexp"
 	"strings"
+
+	. "github.com/IBM-Bluemix/bluemix-cli-sdk/i18n"
 )
 
 type Printer interface {
@@ -75,7 +77,7 @@ func NewFileLogger(path string) PrinterCloser {
 	file, err := os.OpenFile(path, os.O_CREATE|os.O_RDWR|os.O_APPEND, 0666)
 	if err != nil {
 		logger := NewStdLogger()
-		logger.Printf("An error occurred when creating log file '%s':\n%v\n\n", path, err)
+		logger.Printf(T("An error occurred when creating log file '{{.Path}}':\n{{.Error}}\n\n", map[string]interface{}{"Path": path, "Error": err.Error()}))
 		return logger
 	}
 	return newLoggerImpl(file, "", 0)

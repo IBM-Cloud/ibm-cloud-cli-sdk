@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/configuration/core_config"
+	"github.com/IBM-Bluemix/bluemix-cli-sdk/i18n"
 )
 
 func Start(plugin Plugin) {
@@ -24,7 +25,13 @@ func Run(plugin Plugin, args []string) {
 	config := core_config.NewCoreConfig(func(err error) {
 		panic(fmt.Sprintf("Configuration error: %v", err))
 	})
-	plugin.Run(NewPluginContext(plugin.GetMetadata().Name, config), args)
+
+	context := NewPluginContext(plugin.GetMetadata().Name, config)
+
+	// initialization
+	i18n.T = i18n.Tfunc(context.Locale())
+
+	plugin.Run(context, args)
 }
 
 func isMetadataRequest() bool {
