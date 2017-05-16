@@ -1,6 +1,8 @@
 package authentication
 
-import "fmt"
+import (
+	. "github.com/IBM-Bluemix/bluemix-cli-sdk/i18n"
+)
 
 type InvalidTokenError struct {
 	Description string
@@ -11,7 +13,7 @@ func NewInvalidTokenError(description string) *InvalidTokenError {
 }
 
 func (e *InvalidTokenError) Error() string {
-	return "Invalid token: " + e.Description
+	return T("Invalid token: ") + e.Description
 }
 
 type ServerError struct {
@@ -21,7 +23,8 @@ type ServerError struct {
 }
 
 func (s *ServerError) Error() string {
-	return fmt.Sprintf("Server error, Status code: %d; error code: %s, message: %s", s.StatusCode, s.ErrorCode, s.Description)
+	return T("Remote server error. Status code: {{.StatusCode}}, error code: {{.ErrorCode}}, message: {{.Message}}",
+		map[string]interface{}{"StatusCode": s.StatusCode, "ErrorCode": s.ErrorCode, "Message": s.Description})
 }
 
 func NewServerError(statusCode int, errorCode string, description string) *ServerError {

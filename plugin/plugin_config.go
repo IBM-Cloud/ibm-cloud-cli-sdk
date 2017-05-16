@@ -1,12 +1,14 @@
 package plugin
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"strconv"
 	"sync"
 
 	"github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/configuration"
+	. "github.com/IBM-Bluemix/bluemix-cli-sdk/i18n"
 )
 
 // PluginConfig defines methods to access plug-in's private configuration stored in a JSON format.
@@ -443,7 +445,7 @@ func (c *pluginConfigImpl) write(cb func()) error {
 
 	err := c.persistor.Save(c.data)
 	if err != nil {
-		err = fmt.Errorf("unable to save plugin config: %v", err)
+		err = errors.New(T("Unable to save plugin config: ") + err.Error())
 	}
 	return err
 }

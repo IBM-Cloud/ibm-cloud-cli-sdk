@@ -1,0 +1,62 @@
+[
+  {
+    "id": "\nEnter a number",
+    "translation": "\nEnter a number"
+  },
+  {
+    "id": "An error occurred when creating log file '{{.Path}}':\n{{.Error}}\n\n",
+    "translation": "An error occurred when creating log file '{{.Path}}':\n{{.Error}}\n\n"
+  },
+  {
+    "id": "An error occurred while dumping request:\n{{.Error}}\n",
+    "translation": "An error occurred while dumping request:\n{{.Error}}\n"
+  },
+  {
+    "id": "An error occurred while dumping response:\n{{.Error}}\n",
+    "translation": "An error occurred while dumping response:\n{{.Error}}\n"
+  },
+  {
+    "id": "Elapsed:",
+    "translation": "Elapsed:"
+  },
+  {
+    "id": "Invalid token: ",
+    "translation": "Invalid token: "
+  },
+  {
+    "id": "Please enter 'y', 'n', 'yes' or 'no'.",
+    "translation": "Please enter 'y', 'n', 'yes' or 'no'."
+  },
+  {
+    "id": "Please enter a number between 1 to {{.Count}}.",
+    "translation": "Please enter a number between 1 to {{.Count}}."
+  },
+  {
+    "id": "Please enter a valid floating number.",
+    "translation": "Please enter a valid floating number."
+  },
+  {
+    "id": "Please enter a valid number.",
+    "translation": "Please enter a valid number."
+  },
+  {
+    "id": "Please enter value.",
+    "translation": "Please enter value."
+  },
+  {
+    "id": "REQUEST:",
+    "translation": "REQUEST:"
+  },
+  {
+    "id": "RESPONSE:",
+    "translation": "RESPONSE:"
+  },
+  {
+    "id": "Remote server error. Status code: {{.StatusCode}}, error code: {{.ErrorCode}}, message: {{.Message}}",
+    "translation": "Remote server error. Status code: {{.StatusCode}}, error code: {{.ErrorCode}}, message: {{.Message}}"
+  },
+  {
+    "id": "Unable to save plugin config: ",
+    "translation": "Unable to save plugin config: "
+  }
+]

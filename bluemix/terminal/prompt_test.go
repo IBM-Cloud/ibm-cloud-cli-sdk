@@ -48,7 +48,7 @@ func TestStringPrompt(t *testing.T) {
 		},
 		{
 			input:          "\nfoo\n",
-			outputContains: []string{"Enter a value"},
+			outputContains: []string{"Please enter value"},
 			expected:       "foo",
 			loop:           true,
 		},
@@ -156,8 +156,8 @@ func TestIntPrompt(t *testing.T) {
 		{
 			input: "NA\n\n100\n",
 			outputContains: []string{
-				"Invalid input: input is not a number",
-				"Enter a value",
+				"Please enter a valid number.",
+				"Please enter value.",
 			},
 			expected: 100,
 			loop:     true,
@@ -216,7 +216,7 @@ func TestSinglePrompt_ValidateFunc(t *testing.T) {
 			case "FRI":
 			case "SAT":
 			default:
-				return errors.New(input + " is not a valid week day")
+				return errors.New("please input a valid week day (e.g, MON)")
 			}
 			return nil
 		},
@@ -229,7 +229,7 @@ func TestSinglePrompt_ValidateFunc(t *testing.T) {
 	err := p.Resolve(&day)
 
 	assert.NoError(err)
-	assert.Contains(out.String(), "Invalid input: wedd is not a valid week day")
+	assert.Contains(out.String(), "please input a valid week day (e.g, MON)")
 	assert.Equal("wed", day)
 }
 
@@ -293,8 +293,7 @@ func TestChoicesPrompt2(t *testing.T) {
 			choices: choices,
 			input:   "NA\n3\n2\n",
 			outputContains: []string{
-				"Invalid selection: input is not a number",
-				"Invalid selection: input is out of range",
+				"Please enter a number between 1 to 2",
 			},
 			expected: "bar",
 			loop:     true,

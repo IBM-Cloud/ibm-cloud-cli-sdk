@@ -8,6 +8,7 @@ import (
 
 	"github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/terminal"
 	"github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/trace"
+	. "github.com/IBM-Bluemix/bluemix-cli-sdk/i18n"
 )
 
 // TraceLoggingTransport is a thin wrapper around Transport. It dumps HTTP
@@ -48,12 +49,12 @@ func (r *TraceLoggingTransport) dumpRequest(req *http.Request, start time.Time) 
 
 	dumpedRequest, err := httputil.DumpRequest(req, shouldDisplayBody)
 	if err != nil {
-		trace.Logger.Printf("An error occurred while dumping request:\n%v\n", err)
+		trace.Logger.Printf(T("An error occurred while dumping request:\n{{.Error}}\n", map[string]interface{}{"Error": err.Error()}))
 		return
 	}
 
 	trace.Logger.Printf("\n%s [%s]\n%s\n",
-		terminal.HeaderColor("REQUEST:"),
+		terminal.HeaderColor(T("REQUEST:")),
 		start.Format(time.RFC3339),
 		trace.Sanitize(string(dumpedRequest)))
 
@@ -67,14 +68,14 @@ func (r *TraceLoggingTransport) dumpResponse(res *http.Response, start time.Time
 
 	dumpedResponse, err := httputil.DumpResponse(res, true)
 	if err != nil {
-		trace.Logger.Printf("An error occurred while dumping response:\n%v\n", err)
+		trace.Logger.Printf(T("An error occurred while dumping response:\n{{.Error}}\n", map[string]interface{}{"Error": err.Error()}))
 		return
 	}
 
 	trace.Logger.Printf("\n%s [%s] %s %.0fms\n%s\n",
-		terminal.HeaderColor("RESPONSE:"),
+		terminal.HeaderColor(T("RESPONSE:")),
 		end.Format(time.RFC3339),
-		terminal.HeaderColor("Elapsed:"),
+		terminal.HeaderColor(T("Elapsed:")),
 		end.Sub(start).Seconds()*1000,
 		trace.Sanitize(string(dumpedResponse)))
 }

@@ -142,6 +142,7 @@ func (c *pluginContext) HasSpace() bool {
 	return c.coreConfig.HasSpace()
 }
 
+//TODO: return locale based on both user configured locale and OS locale
 func (c *pluginContext) Locale() string {
 	return c.coreConfig.Locale()
 }
