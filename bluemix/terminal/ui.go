@@ -8,6 +8,7 @@ import (
 	"github.com/mattn/go-colorable"
 
 	"github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/trace"
+	. "github.com/IBM-Bluemix/bluemix-cli-sdk/i18n"
 )
 
 type UI interface {
@@ -60,11 +61,11 @@ func (ui *terminalUI) Warn(format string, args ...interface{}) {
 }
 
 func (ui *terminalUI) Ok() {
-	ui.Say(SuccessColor("OK"))
+	ui.Say(SuccessColor(T("OK")))
 }
 
 func (ui *terminalUI) Failed(format string, args ...interface{}) {
-	ui.Say(FailureColor("FAILED"))
+	ui.Say(FailureColor(T("FAILED")))
 	ui.Say(format, args...)
 	ui.Say("")
 
