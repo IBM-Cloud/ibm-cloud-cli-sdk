@@ -17,7 +17,7 @@
   },
   {
     "id": "Elapsed:",
-    "translation": "Elapsed:"
+    "translation": "Ecoulé :"
   },
   {
     "id": "FAILED",
@@ -25,7 +25,7 @@
   },
   {
     "id": "Invalid token: ",
-    "translation": "Invalid token: "
+    "translation": "Jeton non valide : "
   },
   {
     "id": "OK",
@@ -53,15 +53,15 @@
   },
   {
     "id": "REQUEST:",
-    "translation": "REQUEST:"
+    "translation": "DEMANDE :"
   },
   {
     "id": "RESPONSE:",
-    "translation": "RESPONSE:"
+    "translation": "REPONSE :"
   },
   {
     "id": "Remote server error. Status code: {{.StatusCode}}, error code: {{.ErrorCode}}, message: {{.Message}}",
-    "translation": "Remote server error. Status code: {{.StatusCode}}, error code: {{.ErrorCode}}, message: {{.Message}}"
+    "translation": "Erreur du serveur distant. Code de statut : {{.StatusCode}}, code d'erreur : {{.ErrorCode}}, message : {{.Message}}"
   },
   {
     "id": "Unable to save plugin config: ",

@@ -17,7 +17,7 @@
   },
   {
     "id": "Elapsed:",
-    "translation": "Elapsed:"
+    "translation": "经过时长："
   },
   {
     "id": "FAILED",
@@ -25,7 +25,7 @@
   },
   {
     "id": "Invalid token: ",
-    "translation": "Invalid token: "
+    "translation": "令牌无效："
   },
   {
     "id": "OK",
@@ -53,15 +53,15 @@
   },
   {
     "id": "REQUEST:",
-    "translation": "REQUEST:"
+    "translation": "请求: "
   },
   {
     "id": "RESPONSE:",
-    "translation": "RESPONSE:"
+    "translation": "响应: "
   },
   {
     "id": "Remote server error. Status code: {{.StatusCode}}, error code: {{.ErrorCode}}, message: {{.Message}}",
-    "translation": "Remote server error. Status code: {{.StatusCode}}, error code: {{.ErrorCode}}, message: {{.Message}}"
+    "translation": "远程服务器错误。状态码：{{.StatusCode}}，错误代码：{{.ErrorCode}}，消息：{{.Message}}"
   },
   {
     "id": "Unable to save plugin config: ",
