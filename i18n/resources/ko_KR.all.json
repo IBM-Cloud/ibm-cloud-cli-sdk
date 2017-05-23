@@ -17,11 +17,19 @@
   },
   {
     "id": "Elapsed:",
-    "translation": "Elapsed:"
+    "translation": "경과 시간:"
+  },
+  {
+    "id": "FAILED",
+    "translation": "FAILED"
   },
   {
     "id": "Invalid token: ",
-    "translation": "Invalid token: "
+    "translation": "올바르지 않은 토큰: "
+  },
+  {
+    "id": "OK",
+    "translation": "OK"
   },
   {
     "id": "Please enter 'y', 'n', 'yes' or 'no'.",
@@ -45,15 +53,15 @@
   },
   {
     "id": "REQUEST:",
-    "translation": "REQUEST:"
+    "translation": "요청:"
   },
   {
     "id": "RESPONSE:",
-    "translation": "RESPONSE:"
+    "translation": "응답:"
   },
   {
     "id": "Remote server error. Status code: {{.StatusCode}}, error code: {{.ErrorCode}}, message: {{.Message}}",
-    "translation": "Remote server error. Status code: {{.StatusCode}}, error code: {{.ErrorCode}}, message: {{.Message}}"
+    "translation": "원격 서버 오류가 발생했습니다. 상태 코드: {{.StatusCode}}, 오류 코드: {{.ErrorCode}}, 메시지: {{.Message}}"
   },
   {
     "id": "Unable to save plugin config: ",

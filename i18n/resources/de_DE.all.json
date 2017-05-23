@@ -17,11 +17,19 @@
   },
   {
     "id": "Elapsed:",
-    "translation": "Elapsed:"
+    "translation": "Verstrichen:"
+  },
+  {
+    "id": "FAILED",
+    "translation": "FAILED"
   },
   {
     "id": "Invalid token: ",
-    "translation": "Invalid token: "
+    "translation": "Ungültiges Token: "
+  },
+  {
+    "id": "OK",
+    "translation": "OK"
   },
   {
     "id": "Please enter 'y', 'n', 'yes' or 'no'.",
@@ -45,15 +53,15 @@
   },
   {
     "id": "REQUEST:",
-    "translation": "REQUEST:"
+    "translation": "ANFORDERUNG:"
   },
   {
     "id": "RESPONSE:",
-    "translation": "RESPONSE:"
+    "translation": "ANTWORT:"
   },
   {
     "id": "Remote server error. Status code: {{.StatusCode}}, error code: {{.ErrorCode}}, message: {{.Message}}",
-    "translation": "Remote server error. Status code: {{.StatusCode}}, error code: {{.ErrorCode}}, message: {{.Message}}"
+    "translation": "Fehler auf dem fernen Server. Statuscode: {{.StatusCode}}, Fehlercode: {{.ErrorCode}}, Nachricht: {{.Message}}"
   },
   {
     "id": "Unable to save plugin config: ",
