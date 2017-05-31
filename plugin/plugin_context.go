@@ -52,10 +52,6 @@ func (c *pluginContext) Region() string {
 	return c.coreConfig.Region()
 }
 
-func (c *pluginContext) AuthenticationEndpoint() string {
-	return c.coreConfig.AuthenticationEndpoint()
-}
-
 func (c *pluginContext) DopplerEndpoint() string {
 	return c.coreConfig.DopplerEndpoint()
 }
@@ -80,6 +76,10 @@ func (c *pluginContext) UAARefreshToken() string {
 
 func (c *pluginContext) RefreshUAAToken() (string, error) {
 	return authentication.NewUAARepository(c.coreConfig, new(rest.Client)).RefreshToken()
+}
+
+func (c *pluginContext) IAMTokenEndpoint() string {
+	return authentication.IAMTokenEndpoint(c.coreConfig.APIEndpoint())
 }
 
 func (c *pluginContext) IAMToken() string {

@@ -83,7 +83,6 @@ type PluginContext interface {
 	APIVersion() string
 	APIEndpoint() string
 	HasAPIEndpoint() bool
-	AuthenticationEndpoint() string
 	// deprecate loggergator endpoint, use Doppler endpoint instead
 	// LoggregatorEndpoint() string
 	DopplerEndpoint() string
@@ -91,6 +90,7 @@ type PluginContext interface {
 	UAAToken() string
 	UAARefreshToken() string
 	RefreshUAAToken() (string, error)
+	IAMTokenEndpoint() string
 	IAMToken() string
 	IAMRefreshToken() string
 	RefreshIAMToken() (string, error)
