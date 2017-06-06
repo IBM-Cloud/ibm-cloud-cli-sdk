@@ -1,8 +1,8 @@
 package commands_test
 
 import (
-	pluginFakes "github.com/IBM-Bluemix/bluemix-cli-sdk/plugin/fakes"
 	pluginModels "github.com/IBM-Bluemix/bluemix-cli-sdk/plugin/models"
+	"github.com/IBM-Bluemix/bluemix-cli-sdk/plugin/pluginfakes"
 	"github.com/IBM-Bluemix/bluemix-cli-sdk/plugin_examples/list_plugin/api/fakes"
 	. "github.com/IBM-Bluemix/bluemix-cli-sdk/plugin_examples/list_plugin/commands"
 	"github.com/IBM-Bluemix/bluemix-cli-sdk/plugin_examples/list_plugin/models"
@@ -14,7 +14,7 @@ import (
 
 var _ = Describe("ListCommand", func() {
 	var ui *terminal.FakeUI
-	var context *pluginFakes.FakePluginContext
+	var context *pluginfakes.FakePluginContext
 	var ccClient *fakes.FakeCCClient
 	var containerClient *fakes.FakeContainerClient
 	var cmd *List
@@ -22,7 +22,7 @@ var _ = Describe("ListCommand", func() {
 
 	BeforeEach(func() {
 		ui = terminal.NewFakeUI()
-		context = new(pluginFakes.FakePluginContext)
+		context = new(pluginfakes.FakePluginContext)
 		ccClient = new(fakes.FakeCCClient)
 		containerClient = new(fakes.FakeContainerClient)
 		cmd = NewList(ui, context, ccClient, containerClient)
