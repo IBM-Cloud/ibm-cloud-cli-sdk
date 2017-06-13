@@ -52,6 +52,10 @@ func (c *pluginContext) Region() string {
 	return c.coreConfig.Region()
 }
 
+func (c *pluginContext) RegionID() string {
+	return c.coreConfig.RegionID()
+}
+
 func (c *pluginContext) DopplerEndpoint() string {
 	return c.coreConfig.DopplerEndpoint()
 }

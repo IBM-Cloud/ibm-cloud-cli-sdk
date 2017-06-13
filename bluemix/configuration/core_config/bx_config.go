@@ -19,6 +19,7 @@ const (
 type BXConfigData struct {
 	ConsoleEndpoint         string
 	Region                  string
+	RegionID                string
 	IAMToken                string
 	IAMRefreshToken         string
 	Account                 models.Account
@@ -110,6 +111,13 @@ func (c *bxConfigRepository) ConsoleEndpoint() (endpoint string) {
 func (c *bxConfigRepository) Region() (region string) {
 	c.read(func() {
 		region = c.data.Region
+	})
+	return
+}
+
+func (c *bxConfigRepository) RegionID() (regionID string) {
+	c.read(func() {
+		regionID = c.data.RegionID
 	})
 	return
 }
@@ -224,6 +232,12 @@ func (c *bxConfigRepository) SetRegion(region string) {
 	})
 }
 
+func (c *bxConfigRepository) SetRegionID(regionID string) {
+	c.write(func() {
+		c.data.RegionID = regionID
+	})
+}
+
 func (c *bxConfigRepository) SetIAMToken(token string) {
 	c.write(func() {
 		c.data.IAMToken = token
@@ -315,6 +329,7 @@ func (c *bxConfigRepository) ClearSession() {
 func (c *bxConfigRepository) ClearAPICache() {
 	c.write(func() {
 		c.data.Region = ""
+		c.data.RegionID = ""
 		c.data.ConsoleEndpoint = ""
 	})
 }

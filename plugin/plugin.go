@@ -105,7 +105,8 @@ type PluginContext interface {
 	IMSAccountID() string
 	CurrentSpace() models.Space
 	HasSpace() bool
-	Region() string
+	Region() string   // region name
+	RegionID() string // region unique ID
 	Locale() string
 	Trace() string
 	ColorEnabled() string

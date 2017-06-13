@@ -229,6 +229,15 @@ type FakePluginContext struct {
 	regionReturnsOnCall map[int]struct {
 		result1 string
 	}
+	RegionIDStub        func() string
+	regionIDMutex       sync.RWMutex
+	regionIDArgsForCall []struct{}
+	regionIDReturns     struct {
+		result1 string
+	}
+	regionIDReturnsOnCall map[int]struct {
+		result1 string
+	}
 	LocaleStub        func() string
 	localeMutex       sync.RWMutex
 	localeArgsForCall []struct{}
@@ -1271,6 +1280,46 @@ func (fake *FakePluginContext) RegionReturnsOnCall(i int, result1 string) {
 	}{result1}
 }
 
+func (fake *FakePluginContext) RegionID() string {
+	fake.regionIDMutex.Lock()
+	ret, specificReturn := fake.regionIDReturnsOnCall[len(fake.regionIDArgsForCall)]
+	fake.regionIDArgsForCall = append(fake.regionIDArgsForCall, struct{}{})
+	fake.recordInvocation("RegionID", []interface{}{})
+	fake.regionIDMutex.Unlock()
+	if fake.RegionIDStub != nil {
+		return fake.RegionIDStub()
+	}
+	if specificReturn {
+		return ret.result1
+	}
+	return fake.regionIDReturns.result1
+}
+
+func (fake *FakePluginContext) RegionIDCallCount() int {
+	fake.regionIDMutex.RLock()
+	defer fake.regionIDMutex.RUnlock()
+	return len(fake.regionIDArgsForCall)
+}
+
+func (fake *FakePluginContext) RegionIDReturns(result1 string) {
+	fake.RegionIDStub = nil
+	fake.regionIDReturns = struct {
+		result1 string
+	}{result1}
+}
+
+func (fake *FakePluginContext) RegionIDReturnsOnCall(i int, result1 string) {
+	fake.RegionIDStub = nil
+	if fake.regionIDReturnsOnCall == nil {
+		fake.regionIDReturnsOnCall = make(map[int]struct {
+			result1 string
+		})
+	}
+	fake.regionIDReturnsOnCall[i] = struct {
+		result1 string
+	}{result1}
+}
+
 func (fake *FakePluginContext) Locale() string {
 	fake.localeMutex.Lock()
 	ret, specificReturn := fake.localeReturnsOnCall[len(fake.localeArgsForCall)]
@@ -1642,6 +1691,8 @@ func (fake *FakePluginContext) Invocations() map[string][][]interface{} {
 	defer fake.hasSpaceMutex.RUnlock()
 	fake.regionMutex.RLock()
 	defer fake.regionMutex.RUnlock()
+	fake.regionIDMutex.RLock()
+	defer fake.regionIDMutex.RUnlock()
 	fake.localeMutex.RLock()
 	defer fake.localeMutex.RUnlock()
 	fake.traceMutex.RLock()
