@@ -159,6 +159,10 @@ func (c *pluginContext) ColorEnabled() string {
 	return getFromEnvOrConfig(consts.ENV_BLUEMIX_COLOR, c.coreConfig.ColorEnabled())
 }
 
+func (c *pluginContext) VersionCheckEnabled() bool {
+	return !c.coreConfig.CheckCLIVersionDisabled()
+}
+
 func (c *pluginContext) HTTPTimeout() int {
 	return c.coreConfig.HTTPTimeout()
 }
