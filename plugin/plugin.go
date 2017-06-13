@@ -86,6 +86,7 @@ type PluginContext interface {
 	// deprecate loggergator endpoint, use Doppler endpoint instead
 	// LoggregatorEndpoint() string
 	DopplerEndpoint() string
+	ConsoleEndpoint() string
 	UAAEndpoint() string
 	UAAToken() string
 	UAARefreshToken() string

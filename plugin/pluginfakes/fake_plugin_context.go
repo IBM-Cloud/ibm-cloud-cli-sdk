@@ -45,6 +45,15 @@ type FakePluginContext struct {
 	dopplerEndpointReturnsOnCall map[int]struct {
 		result1 string
 	}
+	ConsoleEndpointStub        func() string
+	consoleEndpointMutex       sync.RWMutex
+	consoleEndpointArgsForCall []struct{}
+	consoleEndpointReturns     struct {
+		result1 string
+	}
+	consoleEndpointReturnsOnCall map[int]struct {
+		result1 string
+	}
 	UAAEndpointStub        func() string
 	uAAEndpointMutex       sync.RWMutex
 	uAAEndpointArgsForCall []struct{}
@@ -452,6 +461,46 @@ func (fake *FakePluginContext) DopplerEndpointReturnsOnCall(i int, result1 strin
 		})
 	}
 	fake.dopplerEndpointReturnsOnCall[i] = struct {
+		result1 string
+	}{result1}
+}
+
+func (fake *FakePluginContext) ConsoleEndpoint() string {
+	fake.consoleEndpointMutex.Lock()
+	ret, specificReturn := fake.consoleEndpointReturnsOnCall[len(fake.consoleEndpointArgsForCall)]
+	fake.consoleEndpointArgsForCall = append(fake.consoleEndpointArgsForCall, struct{}{})
+	fake.recordInvocation("ConsoleEndpoint", []interface{}{})
+	fake.consoleEndpointMutex.Unlock()
+	if fake.ConsoleEndpointStub != nil {
+		return fake.ConsoleEndpointStub()
+	}
+	if specificReturn {
+		return ret.result1
+	}
+	return fake.consoleEndpointReturns.result1
+}
+
+func (fake *FakePluginContext) ConsoleEndpointCallCount() int {
+	fake.consoleEndpointMutex.RLock()
+	defer fake.consoleEndpointMutex.RUnlock()
+	return len(fake.consoleEndpointArgsForCall)
+}
+
+func (fake *FakePluginContext) ConsoleEndpointReturns(result1 string) {
+	fake.ConsoleEndpointStub = nil
+	fake.consoleEndpointReturns = struct {
+		result1 string
+	}{result1}
+}
+
+func (fake *FakePluginContext) ConsoleEndpointReturnsOnCall(i int, result1 string) {
+	fake.ConsoleEndpointStub = nil
+	if fake.consoleEndpointReturnsOnCall == nil {
+		fake.consoleEndpointReturnsOnCall = make(map[int]struct {
+			result1 string
+		})
+	}
+	fake.consoleEndpointReturnsOnCall[i] = struct {
 		result1 string
 	}{result1}
 }
@@ -1553,6 +1602,8 @@ func (fake *FakePluginContext) Invocations() map[string][][]interface{} {
 	defer fake.hasAPIEndpointMutex.RUnlock()
 	fake.dopplerEndpointMutex.RLock()
 	defer fake.dopplerEndpointMutex.RUnlock()
+	fake.consoleEndpointMutex.RLock()
+	defer fake.consoleEndpointMutex.RUnlock()
 	fake.uAAEndpointMutex.RLock()
 	defer fake.uAAEndpointMutex.RUnlock()
 	fake.uAATokenMutex.RLock()

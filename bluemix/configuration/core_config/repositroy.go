@@ -11,6 +11,7 @@ import (
 type Reader interface {
 	CFConfigReader
 
+	ConsoleEndpoint() string
 	Region() string
 	IAMToken() string
 	IAMRefreshToken() string
@@ -30,6 +31,7 @@ type ReadWriter interface {
 
 	CFConfigWriter
 
+	SetConsoleEndpoint(string)
 	SetRegion(string)
 	SetAccount(models.Account)
 	SetIAMToken(string)

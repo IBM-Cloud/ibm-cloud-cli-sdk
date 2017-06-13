@@ -56,6 +56,10 @@ func (c *pluginContext) DopplerEndpoint() string {
 	return c.coreConfig.DopplerEndpoint()
 }
 
+func (c *pluginContext) ConsoleEndpoint() string {
+	return c.coreConfig.ConsoleEndpoint()
+}
+
 // deprecate loggergator endpoint, use Doppler endpoint instead
 //
 // func (c *pluginContext) LoggregatorEndpoint() string {
