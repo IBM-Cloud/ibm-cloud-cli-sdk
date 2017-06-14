@@ -1,7 +1,7 @@
 package commands_test
 
 import (
-	pluginModels "github.com/IBM-Bluemix/bluemix-cli-sdk/plugin/models"
+	sdkmodels "github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/models"
 	"github.com/IBM-Bluemix/bluemix-cli-sdk/plugin/pluginfakes"
 	"github.com/IBM-Bluemix/bluemix-cli-sdk/plugin_examples/list_plugin/api/fakes"
 	. "github.com/IBM-Bluemix/bluemix-cli-sdk/plugin_examples/list_plugin/commands"
@@ -71,10 +71,12 @@ var _ = Describe("ListCommand", func() {
 
 	Context("When user is logged in and a space is target", func() {
 		BeforeEach(func() {
-			org := pluginModels.Organization{}
-			org.QuotaDefinition.InstanceMemoryLimitInMB = 2048
-			org.QuotaDefinition.ServicesLimit = 10
-			context.CurrentOrgReturns(org)
+			context.CurrentOrgReturns(sdkmodels.OrganizationFields{
+				QuotaDefinition: sdkmodels.QuotaFields{
+					InstanceMemoryLimitInMB: 2048,
+					ServicesLimit:           10,
+				},
+			})
 
 			ccClient.AppsAndServicesReturns(models.AppsAndServices{
 				Apps: []models.App{

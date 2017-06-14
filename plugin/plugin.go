@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/IBM-Bluemix/bluemix-cli-sdk/plugin/models"
+	"github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/models"
 )
 
 type PluginMetadata struct {
@@ -98,11 +98,13 @@ type PluginContext interface {
 	UserGUID() string
 	UserEmail() string
 	IsLoggedIn() bool
-	CurrentOrg() models.Organization
+	CurrentOrg() models.OrganizationFields
 	HasOrganization() bool
+	// deprecated. Use Account() instead
 	AccountID() string
+	Account() models.Account
 	IMSAccountID() string
-	CurrentSpace() models.Space
+	CurrentSpace() models.SpaceFields
 	HasSpace() bool
 	Region() string
 	Locale() string
