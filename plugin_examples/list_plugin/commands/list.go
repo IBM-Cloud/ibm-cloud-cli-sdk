@@ -39,8 +39,8 @@ func (cmd *List) Run(args []string) error {
 		return err
 	}
 
-	orgId := cmd.context.CurrentOrg().OrganizationFields.GUID
-	spaceId := cmd.context.CurrentSpace().SpaceFields.GUID
+	orgId := cmd.context.CurrentOrg().GUID
+	spaceId := cmd.context.CurrentSpace().GUID
 
 	summary, err := cmd.ccClient.AppsAndServices(spaceId)
 	if err != nil {
@@ -75,7 +75,7 @@ func (cmd *List) printApps(apps []models.App, orgUsage models.OrgUsage) {
 		T("CloudFoundy Applications  {{.Used}}/{{.Limit}} used",
 			map[string]interface{}{
 				"Used":  formattedGB(orgUsage.TotalMemoryUsed()),
-				"Limit": formattedGB(cmd.context.CurrentOrg().OrganizationFields.QuotaDefinition.InstanceMemoryLimitInMB)}), 33))
+				"Limit": formattedGB(cmd.context.CurrentOrg().QuotaDefinition.InstanceMemoryLimitInMB)}), 33))
 
 	table := cmd.ui.Table([]string{T("Name"), T("Routes"), T("Memory (MB)"), T("Instances"), T("State")})
 	for _, a := range apps {
@@ -95,7 +95,7 @@ func (cmd *List) printServices(services []models.ServiceInstance, orgUsage model
 	cmd.ui.Say(terminal.ColorizeBold(
 		T("Services {{.Count}}/{{.Limit}} used", map[string]interface{}{
 			"Count": orgUsage.ServicesCount(),
-			"Limit": cmd.context.CurrentOrg().OrganizationFields.QuotaDefinition.ServicesLimit}), 33))
+			"Limit": cmd.context.CurrentOrg().QuotaDefinition.ServicesLimit}), 33))
 
 	table := cmd.ui.Table([]string{T("Name"), T("Service Offering"), T("Plan")})
 	for _, s := range services {

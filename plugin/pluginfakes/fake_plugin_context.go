@@ -4,8 +4,8 @@ package pluginfakes
 import (
 	"sync"
 
+	"github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/models"
 	"github.com/IBM-Bluemix/bluemix-cli-sdk/plugin"
-	"github.com/IBM-Bluemix/bluemix-cli-sdk/plugin/models"
 )
 
 type FakePluginContext struct {
@@ -166,14 +166,14 @@ type FakePluginContext struct {
 	isLoggedInReturnsOnCall map[int]struct {
 		result1 bool
 	}
-	CurrentOrgStub        func() models.Organization
+	CurrentOrgStub        func() models.OrganizationFields
 	currentOrgMutex       sync.RWMutex
 	currentOrgArgsForCall []struct{}
 	currentOrgReturns     struct {
-		result1 models.Organization
+		result1 models.OrganizationFields
 	}
 	currentOrgReturnsOnCall map[int]struct {
-		result1 models.Organization
+		result1 models.OrganizationFields
 	}
 	HasOrganizationStub        func() bool
 	hasOrganizationMutex       sync.RWMutex
@@ -193,6 +193,15 @@ type FakePluginContext struct {
 	accountIDReturnsOnCall map[int]struct {
 		result1 string
 	}
+	AccountStub        func() models.Account
+	accountMutex       sync.RWMutex
+	accountArgsForCall []struct{}
+	accountReturns     struct {
+		result1 models.Account
+	}
+	accountReturnsOnCall map[int]struct {
+		result1 models.Account
+	}
 	IMSAccountIDStub        func() string
 	iMSAccountIDMutex       sync.RWMutex
 	iMSAccountIDArgsForCall []struct{}
@@ -202,14 +211,14 @@ type FakePluginContext struct {
 	iMSAccountIDReturnsOnCall map[int]struct {
 		result1 string
 	}
-	CurrentSpaceStub        func() models.Space
+	CurrentSpaceStub        func() models.SpaceFields
 	currentSpaceMutex       sync.RWMutex
 	currentSpaceArgsForCall []struct{}
 	currentSpaceReturns     struct {
-		result1 models.Space
+		result1 models.SpaceFields
 	}
 	currentSpaceReturnsOnCall map[int]struct {
-		result1 models.Space
+		result1 models.SpaceFields
 	}
 	HasSpaceStub        func() bool
 	hasSpaceMutex       sync.RWMutex
@@ -291,6 +300,15 @@ type FakePluginContext struct {
 	}
 	hTTPTimeoutReturnsOnCall map[int]struct {
 		result1 int
+	}
+	VersionCheckEnabledStub        func() bool
+	versionCheckEnabledMutex       sync.RWMutex
+	versionCheckEnabledArgsForCall []struct{}
+	versionCheckEnabledReturns     struct {
+		result1 bool
+	}
+	versionCheckEnabledReturnsOnCall map[int]struct {
+		result1 bool
 	}
 	PluginConfigStub        func() plugin.PluginConfig
 	pluginConfigMutex       sync.RWMutex
@@ -1000,7 +1018,7 @@ func (fake *FakePluginContext) IsLoggedInReturnsOnCall(i int, result1 bool) {
 	}{result1}
 }
 
-func (fake *FakePluginContext) CurrentOrg() models.Organization {
+func (fake *FakePluginContext) CurrentOrg() models.OrganizationFields {
 	fake.currentOrgMutex.Lock()
 	ret, specificReturn := fake.currentOrgReturnsOnCall[len(fake.currentOrgArgsForCall)]
 	fake.currentOrgArgsForCall = append(fake.currentOrgArgsForCall, struct{}{})
@@ -1021,22 +1039,22 @@ func (fake *FakePluginContext) CurrentOrgCallCount() int {
 	return len(fake.currentOrgArgsForCall)
 }
 
-func (fake *FakePluginContext) CurrentOrgReturns(result1 models.Organization) {
+func (fake *FakePluginContext) CurrentOrgReturns(result1 models.OrganizationFields) {
 	fake.CurrentOrgStub = nil
 	fake.currentOrgReturns = struct {
-		result1 models.Organization
+		result1 models.OrganizationFields
 	}{result1}
 }
 
-func (fake *FakePluginContext) CurrentOrgReturnsOnCall(i int, result1 models.Organization) {
+func (fake *FakePluginContext) CurrentOrgReturnsOnCall(i int, result1 models.OrganizationFields) {
 	fake.CurrentOrgStub = nil
 	if fake.currentOrgReturnsOnCall == nil {
 		fake.currentOrgReturnsOnCall = make(map[int]struct {
-			result1 models.Organization
+			result1 models.OrganizationFields
 		})
 	}
 	fake.currentOrgReturnsOnCall[i] = struct {
-		result1 models.Organization
+		result1 models.OrganizationFields
 	}{result1}
 }
 
@@ -1120,6 +1138,46 @@ func (fake *FakePluginContext) AccountIDReturnsOnCall(i int, result1 string) {
 	}{result1}
 }
 
+func (fake *FakePluginContext) Account() models.Account {
+	fake.accountMutex.Lock()
+	ret, specificReturn := fake.accountReturnsOnCall[len(fake.accountArgsForCall)]
+	fake.accountArgsForCall = append(fake.accountArgsForCall, struct{}{})
+	fake.recordInvocation("Account", []interface{}{})
+	fake.accountMutex.Unlock()
+	if fake.AccountStub != nil {
+		return fake.AccountStub()
+	}
+	if specificReturn {
+		return ret.result1
+	}
+	return fake.accountReturns.result1
+}
+
+func (fake *FakePluginContext) AccountCallCount() int {
+	fake.accountMutex.RLock()
+	defer fake.accountMutex.RUnlock()
+	return len(fake.accountArgsForCall)
+}
+
+func (fake *FakePluginContext) AccountReturns(result1 models.Account) {
+	fake.AccountStub = nil
+	fake.accountReturns = struct {
+		result1 models.Account
+	}{result1}
+}
+
+func (fake *FakePluginContext) AccountReturnsOnCall(i int, result1 models.Account) {
+	fake.AccountStub = nil
+	if fake.accountReturnsOnCall == nil {
+		fake.accountReturnsOnCall = make(map[int]struct {
+			result1 models.Account
+		})
+	}
+	fake.accountReturnsOnCall[i] = struct {
+		result1 models.Account
+	}{result1}
+}
+
 func (fake *FakePluginContext) IMSAccountID() string {
 	fake.iMSAccountIDMutex.Lock()
 	ret, specificReturn := fake.iMSAccountIDReturnsOnCall[len(fake.iMSAccountIDArgsForCall)]
@@ -1160,7 +1218,7 @@ func (fake *FakePluginContext) IMSAccountIDReturnsOnCall(i int, result1 string) 
 	}{result1}
 }
 
-func (fake *FakePluginContext) CurrentSpace() models.Space {
+func (fake *FakePluginContext) CurrentSpace() models.SpaceFields {
 	fake.currentSpaceMutex.Lock()
 	ret, specificReturn := fake.currentSpaceReturnsOnCall[len(fake.currentSpaceArgsForCall)]
 	fake.currentSpaceArgsForCall = append(fake.currentSpaceArgsForCall, struct{}{})
@@ -1181,22 +1239,22 @@ func (fake *FakePluginContext) CurrentSpaceCallCount() int {
 	return len(fake.currentSpaceArgsForCall)
 }
 
-func (fake *FakePluginContext) CurrentSpaceReturns(result1 models.Space) {
+func (fake *FakePluginContext) CurrentSpaceReturns(result1 models.SpaceFields) {
 	fake.CurrentSpaceStub = nil
 	fake.currentSpaceReturns = struct {
-		result1 models.Space
+		result1 models.SpaceFields
 	}{result1}
 }
 
-func (fake *FakePluginContext) CurrentSpaceReturnsOnCall(i int, result1 models.Space) {
+func (fake *FakePluginContext) CurrentSpaceReturnsOnCall(i int, result1 models.SpaceFields) {
 	fake.CurrentSpaceStub = nil
 	if fake.currentSpaceReturnsOnCall == nil {
 		fake.currentSpaceReturnsOnCall = make(map[int]struct {
-			result1 models.Space
+			result1 models.SpaceFields
 		})
 	}
 	fake.currentSpaceReturnsOnCall[i] = struct {
-		result1 models.Space
+		result1 models.SpaceFields
 	}{result1}
 }
 
@@ -1560,6 +1618,46 @@ func (fake *FakePluginContext) HTTPTimeoutReturnsOnCall(i int, result1 int) {
 	}{result1}
 }
 
+func (fake *FakePluginContext) VersionCheckEnabled() bool {
+	fake.versionCheckEnabledMutex.Lock()
+	ret, specificReturn := fake.versionCheckEnabledReturnsOnCall[len(fake.versionCheckEnabledArgsForCall)]
+	fake.versionCheckEnabledArgsForCall = append(fake.versionCheckEnabledArgsForCall, struct{}{})
+	fake.recordInvocation("VersionCheckEnabled", []interface{}{})
+	fake.versionCheckEnabledMutex.Unlock()
+	if fake.VersionCheckEnabledStub != nil {
+		return fake.VersionCheckEnabledStub()
+	}
+	if specificReturn {
+		return ret.result1
+	}
+	return fake.versionCheckEnabledReturns.result1
+}
+
+func (fake *FakePluginContext) VersionCheckEnabledCallCount() int {
+	fake.versionCheckEnabledMutex.RLock()
+	defer fake.versionCheckEnabledMutex.RUnlock()
+	return len(fake.versionCheckEnabledArgsForCall)
+}
+
+func (fake *FakePluginContext) VersionCheckEnabledReturns(result1 bool) {
+	fake.VersionCheckEnabledStub = nil
+	fake.versionCheckEnabledReturns = struct {
+		result1 bool
+	}{result1}
+}
+
+func (fake *FakePluginContext) VersionCheckEnabledReturnsOnCall(i int, result1 bool) {
+	fake.VersionCheckEnabledStub = nil
+	if fake.versionCheckEnabledReturnsOnCall == nil {
+		fake.versionCheckEnabledReturnsOnCall = make(map[int]struct {
+			result1 bool
+		})
+	}
+	fake.versionCheckEnabledReturnsOnCall[i] = struct {
+		result1 bool
+	}{result1}
+}
+
 func (fake *FakePluginContext) PluginConfig() plugin.PluginConfig {
 	fake.pluginConfigMutex.Lock()
 	ret, specificReturn := fake.pluginConfigReturnsOnCall[len(fake.pluginConfigArgsForCall)]
@@ -1683,6 +1781,8 @@ func (fake *FakePluginContext) Invocations() map[string][][]interface{} {
 	defer fake.hasOrganizationMutex.RUnlock()
 	fake.accountIDMutex.RLock()
 	defer fake.accountIDMutex.RUnlock()
+	fake.accountMutex.RLock()
+	defer fake.accountMutex.RUnlock()
 	fake.iMSAccountIDMutex.RLock()
 	defer fake.iMSAccountIDMutex.RUnlock()
 	fake.currentSpaceMutex.RLock()
@@ -1705,6 +1805,8 @@ func (fake *FakePluginContext) Invocations() map[string][][]interface{} {
 	defer fake.pluginDirectoryMutex.RUnlock()
 	fake.hTTPTimeoutMutex.RLock()
 	defer fake.hTTPTimeoutMutex.RUnlock()
+	fake.versionCheckEnabledMutex.RLock()
+	defer fake.versionCheckEnabledMutex.RUnlock()
 	fake.pluginConfigMutex.RLock()
 	defer fake.pluginConfigMutex.RUnlock()
 	fake.commandNamespaceMutex.RLock()

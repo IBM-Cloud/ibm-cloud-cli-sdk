@@ -8,8 +8,8 @@ import (
 	"github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/configuration/config_helpers"
 	"github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/configuration/core_config"
 	"github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/consts"
+	"github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/models"
 	"github.com/IBM-Bluemix/bluemix-cli-sdk/common/rest"
-	"github.com/IBM-Bluemix/bluemix-cli-sdk/plugin/models"
 )
 
 type pluginContext struct {
@@ -119,31 +119,27 @@ func (c *pluginContext) Username() string {
 }
 
 func (c *pluginContext) AccountID() string {
-	token := c.coreConfig.IAMToken()
-	if token != "" {
-		return core_config.NewIAMTokenInfo(token).Accounts.AccountID
-	}
-	return c.coreConfig.Account().GUID
+	return c.Account().GUID
+}
+
+func (c *pluginContext) Account() models.Account {
+	return c.coreConfig.Account()
 }
 
 func (c *pluginContext) IMSAccountID() string {
 	return c.coreConfig.IMSAccountID()
 }
 
-func (c *pluginContext) CurrentOrg() models.Organization {
-	return models.Organization{
-		OrganizationFields: c.coreConfig.OrganizationFields(),
-	}
+func (c *pluginContext) CurrentOrg() models.OrganizationFields {
+	return c.coreConfig.OrganizationFields()
 }
 
 func (c *pluginContext) HasOrganization() bool {
 	return c.coreConfig.HasOrganization()
 }
 
-func (c *pluginContext) CurrentSpace() models.Space {
-	return models.Space{
-		SpaceFields: c.coreConfig.SpaceFields(),
-	}
+func (c *pluginContext) CurrentSpace() models.SpaceFields {
+	return c.coreConfig.SpaceFields()
 }
 
 func (c *pluginContext) HasSpace() bool {
