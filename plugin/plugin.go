@@ -111,6 +111,7 @@ type PluginContext interface {
 	IsSSLDisabled() bool
 	PluginDirectory() string
 	HTTPTimeout() int
+	VersionCheckEnabled() bool
 	PluginConfig() PluginConfig
 	CommandNamespace() string
 }
