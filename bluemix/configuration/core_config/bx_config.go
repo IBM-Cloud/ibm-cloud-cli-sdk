@@ -1,7 +1,7 @@
 package core_config
 
 import (
-	"os"
+	"encoding/json"
 	"strings"
 	"sync"
 
@@ -33,6 +33,14 @@ type BXConfigData struct {
 	UsageStatsDisabled      bool
 }
 
+func (data *BXConfigData) Marshal() ([]byte, error) {
+	return json.MarshalIndent(data, "", "  ")
+}
+
+func (data *BXConfigData) Unmarshal(bytes []byte) error {
+	return json.Unmarshal(bytes, data)
+}
+
 type bxConfigRepository struct {
 	data      *BXConfigData
 	persistor configuration.Persistor
@@ -46,8 +54,18 @@ func createBluemixConfigFromPath(configPath string, errHandler func(error)) *bxC
 }
 
 func createBluemixConfigFromPersistor(persistor configuration.Persistor, errHandler func(error)) *bxConfigRepository {
+	data := new(BXConfigData)
+	if !persistor.Exists() {
+		data.PluginRepos = []models.PluginRepo{
+			{
+				Name: DEFAULT_PLUGIN_REPO,
+				URL:  _DEFAULT_PLUGIN_REPO_URL,
+			},
+		}
+	}
+
 	return &bxConfigRepository{
-		data:      new(BXConfigData),
+		data:      data,
 		persistor: persistor,
 		initOnce:  new(sync.Once),
 		onError:   errHandler,
@@ -57,25 +75,10 @@ func createBluemixConfigFromPersistor(persistor configuration.Persistor, errHand
 func (c *bxConfigRepository) init() {
 	c.initOnce.Do(func() {
 		err := c.persistor.Load(c.data)
-
-		if os.IsNotExist(err) {
-			c.setDefaults()
-			err = c.persistor.Save(c.data)
-		}
-
 		if err != nil {
 			c.onError(err)
 		}
 	})
-}
-
-func (c *bxConfigRepository) setDefaults() {
-	c.data.PluginRepos = []models.PluginRepo{
-		{
-			Name: DEFAULT_PLUGIN_REPO,
-			URL:  _DEFAULT_PLUGIN_REPO_URL,
-		},
-	}
 }
 
 func (c *bxConfigRepository) read(cb func()) {

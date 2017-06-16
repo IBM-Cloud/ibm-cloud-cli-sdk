@@ -1,7 +1,6 @@
 package configuration
 
 import (
-	"encoding/json"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -9,42 +8,73 @@ import (
 	"github.com/IBM-Bluemix/bluemix-cli-sdk/common/file_helpers"
 )
 
+const (
+	filePermissions = 0600
+	dirPermissions  = 0700
+)
+
+type DataInterface interface {
+	Marshal() ([]byte, error)
+	Unmarshal([]byte) error
+}
+
 type Persistor interface {
-	Save(interface{}) error
-	Load(interface{}) error
+	Exists() bool
+	Load(DataInterface) error
+	Save(DataInterface) error
 }
 
 type DiskPersistor struct {
 	filePath string
 }
 
-func NewDiskPersistor(path string) *DiskPersistor {
-	return &DiskPersistor{
+func NewDiskPersistor(path string) DiskPersistor {
+	return DiskPersistor{
 		filePath: path,
 	}
 }
 
-func (p *DiskPersistor) Load(retVal interface{}) (err error) {
-	jsonBytes, err := ioutil.ReadFile(p.filePath)
-	if err != nil {
-		return
-	}
-	err = json.Unmarshal(jsonBytes, retVal)
-	return
+func (dp DiskPersistor) Exists() bool {
+	return file_helpers.FileExists(dp.filePath)
 }
 
-func (p *DiskPersistor) Save(data interface{}) (err error) {
-	jsonBytes, err := json.MarshalIndent(data, "", "  ")
+func (dp DiskPersistor) Load(data DataInterface) error {
+	err := dp.read(data)
+	if os.IsPermission(err) {
+		return err
+	}
+
 	if err != nil {
-		return
+		err = dp.write(data)
+	}
+	return err
+}
+
+func (dp DiskPersistor) Save(data DataInterface) error {
+	return dp.write(data)
+}
+
+func (dp DiskPersistor) read(data DataInterface) error {
+	err := os.MkdirAll(filepath.Dir(dp.filePath), dirPermissions)
+	if err != nil {
+		return err
 	}
 
-	if !file_helpers.FileExists(p.filePath) {
-		err = os.MkdirAll(filepath.Dir(p.filePath), 0700)
-		if err != nil {
-			return
-		}
+	bytes, err := ioutil.ReadFile(dp.filePath)
+	if err != nil {
+		return err
 	}
 
-	return ioutil.WriteFile(p.filePath, jsonBytes, 0600)
+	err = data.Unmarshal(bytes)
+	return err
+}
+
+func (dp DiskPersistor) write(data DataInterface) error {
+	bytes, err := data.Marshal()
+	if err != nil {
+		return err
+	}
+
+	err = ioutil.WriteFile(dp.filePath, bytes, filePermissions)
+	return err
 }

@@ -1,191 +1,432 @@
 package core_config
 
 import (
-	cfconfiguration "code.cloudfoundry.org/cli/cf/configuration"
-	cfcoreconfig "code.cloudfoundry.org/cli/cf/configuration/coreconfig"
-	cfmodels "code.cloudfoundry.org/cli/cf/models"
+	"encoding/json"
+	"sync"
 
+	"github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/configuration"
 	"github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/models"
 )
 
-type CFConfigReader interface {
-	APIEndpoint() string
-	HasAPIEndpoint() bool
-	APIVersion() string
-	AuthenticationEndpoint() string
-	// deprecate loggergator endpoint, use Doppler endpoint instead
-	// LoggregatorEndpoint() string
-	DopplerEndpoint() string
-	UAAEndpoint() string
-	RoutingAPIEndpoint() string
-	SSHOAuthClient() string
-	MinCFCLIVersion() string
-	MinRecommendedCFCLIVersion() string
-
-	Username() string
-	UserGUID() string
-	UserEmail() string
-	IsLoggedIn() bool
-	UAAToken() string
-	UAARefreshToken() string
-
-	OrganizationFields() models.OrganizationFields
-	HasOrganization() bool
-	SpaceFields() models.SpaceFields
-	HasSpace() bool
-
-	IsSSLDisabled() bool
-	Locale() string
-	Trace() string
-	ColorEnabled() string
+type CFConfigData struct {
+	ConfigVersion            int
+	Target                   string
+	APIVersion               string
+	AuthorizationEndpoint    string
+	LoggregatorEndpoint      string
+	DopplerEndpoint          string
+	UaaEndpoint              string
+	RoutingAPIEndpoint       string
+	AccessToken              string
+	RefreshToken             string
+	UAAOAuthClient           string
+	UAAOAuthClientSecret     string
+	SSHOAuthClient           string
+	OrganizationFields       models.OrganizationFields
+	SpaceFields              models.SpaceFields
+	SSLDisabled              bool
+	AsyncTimeout             uint
+	Trace                    string
+	ColorEnabled             string
+	Locale                   string
+	PluginRepos              []models.PluginRepo
+	MinCLIVersion            string
+	MinRecommendedCLIVersion string
 }
 
-type CFConfigWriter interface {
-	SetAPIVersion(string)
-	SetAPIEndpoint(string)
-	SetAuthenticationEndpoint(string)
-	// deprecate loggergator endpoint, use Doppler endpoint instead
-	// SetLoggregatorEndpoint(string)
-	SetDopplerEndpoint(string)
-	SetUAAEndpoint(string)
-	SetRoutingAPIEndpoint(string)
-	SetSSHOAuthClient(string)
-	SetMinCFCLIVersion(string)
-	SetMinRecommendedCFCLIVersion(string)
+func NewCFConfigData() *CFConfigData {
+	data := new(CFConfigData)
 
-	SetUAAToken(string)
-	SetUAARefreshToken(string)
+	data.UAAOAuthClient = "cf"
+	data.UAAOAuthClientSecret = ""
 
-	SetOrganizationFields(models.OrganizationFields)
-	SetSpaceFields(models.SpaceFields)
-
-	SetSSLDisabled(bool)
-	SetLocale(string)
-	SetTrace(string)
-	SetColorEnabled(string)
-
-	ReloadCF()
+	return data
 }
 
-type CFConfigReadWriter interface {
-	CFConfigReader
-	CFConfigWriter
+func (data *CFConfigData) Marshal() ([]byte, error) {
+	data.ConfigVersion = 3
+	return json.MarshalIndent(data, "", "  ")
 }
 
-type cfConfigAdapter struct {
-	persistor  cfconfiguration.Persistor
-	errHandler func(error)
+func (data *CFConfigData) Unmarshal(bytes []byte) error {
+	err := json.Unmarshal(bytes, data)
+	if err != nil {
+		return err
+	}
 
-	cfcoreconfig.Repository
+	if data.ConfigVersion != 3 {
+		*data = CFConfigData{}
+		return nil
+	}
+
+	return nil
 }
 
-func createCFConfigAdapterFromPath(filepath string, errHandler func(error)) *cfConfigAdapter {
-	return createCFConfigAdapterFromPersistor(cfconfiguration.NewDiskPersistor(filepath), errHandler)
+type cfConfigRepository struct {
+	data      *CFConfigData
+	persistor configuration.Persistor
+	initOnce  *sync.Once
+	lock      sync.RWMutex
+	onError   func(error)
 }
 
-func createCFConfigAdapterFromPersistor(persistor cfconfiguration.Persistor, errHandler func(error)) *cfConfigAdapter {
-	return &cfConfigAdapter{
-		persistor:  persistor,
-		errHandler: errHandler,
-		Repository: cfcoreconfig.NewRepositoryFromPersistor(persistor, errHandler),
+func createCFConfigFromPath(configPath string, errHandler func(error)) *cfConfigRepository {
+	return createCFConfigFromPersistor(configuration.NewDiskPersistor(configPath), errHandler)
+}
+
+func createCFConfigFromPersistor(persistor configuration.Persistor, errHandler func(error)) *cfConfigRepository {
+	data := NewCFConfigData()
+	if !persistor.Exists() {
+		data.PluginRepos = []models.PluginRepo{
+			{
+				Name: "CF-Community",
+				URL:  "https://plugins.cloudfoundry.org",
+			},
+		}
+	}
+
+	return &cfConfigRepository{
+		data:      data,
+		persistor: persistor,
+		initOnce:  new(sync.Once),
+		onError:   errHandler,
 	}
 }
 
-func (c *cfConfigAdapter) MinCFCLIVersion() string {
-	return c.Repository.MinCLIVersion()
+func (c *cfConfigRepository) init() {
+	c.initOnce.Do(func() {
+		err := c.persistor.Load(c.data)
+		if err != nil {
+			c.onError(err)
+		}
+	})
 }
 
-func (c *cfConfigAdapter) MinRecommendedCFCLIVersion() string {
-	return c.Repository.MinRecommendedCLIVersion()
+func (c *cfConfigRepository) read(cb func()) {
+	c.lock.RLock()
+	defer c.lock.RUnlock()
+
+	c.init()
+
+	cb()
 }
 
-func (c *cfConfigAdapter) UAAEndpoint() string {
-	return c.Repository.UaaEndpoint()
+func (c *cfConfigRepository) write(cb func()) {
+	c.lock.Lock()
+	defer c.lock.Unlock()
+
+	c.init()
+
+	cb()
+
+	err := c.persistor.Save(c.data)
+	if err != nil {
+		c.onError(err)
+	}
 }
 
-func (c *cfConfigAdapter) UAAToken() string {
-	return c.Repository.AccessToken()
+func (c *cfConfigRepository) APIVersion() (version string) {
+	c.read(func() {
+		version = c.data.APIVersion
+	})
+	return
 }
 
-func (c *cfConfigAdapter) UAARefreshToken() string {
-	return c.Repository.RefreshToken()
+func (c *cfConfigRepository) APIEndpoint() (endpoint string) {
+	c.read(func() {
+		endpoint = c.data.Target
+	})
+	return
 }
 
-func (c *cfConfigAdapter) OrganizationFields() models.OrganizationFields {
-	cforg := c.Repository.OrganizationFields()
-
-	var org models.OrganizationFields
-	org.Name = cforg.Name
-	org.GUID = cforg.GUID
-	org.QuotaDefinition.GUID = cforg.QuotaDefinition.GUID
-	org.QuotaDefinition.Name = cforg.QuotaDefinition.Name
-	org.QuotaDefinition.MemoryLimitInMB = cforg.QuotaDefinition.MemoryLimit
-	org.QuotaDefinition.InstanceMemoryLimitInMB = cforg.QuotaDefinition.InstanceMemoryLimit
-	org.QuotaDefinition.RoutesLimit = cforg.QuotaDefinition.RoutesLimit
-	org.QuotaDefinition.ServicesLimit = cforg.QuotaDefinition.ServicesLimit
-	org.QuotaDefinition.NonBasicServicesAllowed = cforg.QuotaDefinition.NonBasicServicesAllowed
-	org.QuotaDefinition.AppInstanceLimit = cforg.QuotaDefinition.AppInstanceLimit
-	return org
+func (c *cfConfigRepository) HasAPIEndpoint() (hasEndpoint bool) {
+	c.read(func() {
+		hasEndpoint = c.data.APIVersion != "" && c.data.Target != ""
+	})
+	return
 }
 
-func (c *cfConfigAdapter) SpaceFields() models.SpaceFields {
-	cfspace := c.Repository.SpaceFields()
-
-	var space models.SpaceFields
-	space.Name = cfspace.Name
-	space.GUID = cfspace.GUID
-	space.AllowSSH = cfspace.AllowSSH
-	return space
+func (c *cfConfigRepository) AuthenticationEndpoint() (endpoint string) {
+	c.read(func() {
+		endpoint = c.data.AuthorizationEndpoint
+	})
+	return
 }
 
-func (c *cfConfigAdapter) SetMinCFCLIVersion(version string) {
-	c.Repository.SetMinCLIVersion(version)
+func (c *cfConfigRepository) DopplerEndpoint() (endpoint string) {
+	c.read(func() {
+		endpoint = c.data.DopplerEndpoint
+	})
+	return
 }
 
-func (c *cfConfigAdapter) SetMinRecommendedCFCLIVersion(version string) {
-	c.Repository.SetMinRecommendedCLIVersion(version)
+func (c *cfConfigRepository) LoggregatorEndpoint() (endpoint string) {
+	c.read(func() {
+		endpoint = c.data.LoggregatorEndpoint
+	})
+	return
 }
 
-func (c *cfConfigAdapter) SetUAAEndpoint(endpoint string) {
-	c.Repository.SetUaaEndpoint(endpoint)
+func (c *cfConfigRepository) UAAEndpoint() (endpoint string) {
+	c.read(func() {
+		endpoint = c.data.UaaEndpoint
+	})
+	return
 }
 
-func (c *cfConfigAdapter) SetUAAToken(token string) {
-	c.Repository.SetAccessToken(token)
+func (c *cfConfigRepository) RoutingAPIEndpoint() (endpoint string) {
+	c.read(func() {
+		endpoint = c.data.RoutingAPIEndpoint
+	})
+	return
 }
 
-func (c *cfConfigAdapter) SetUAARefreshToken(token string) {
-	c.Repository.SetRefreshToken(token)
+// func (c *cfConfigRepository) UAAOAuthClient() (client string) {
+// 	c.read(func() {
+// 		client = c.data.UAAOAuthClient
+// 	})
+// 	return
+// }
+
+// func (c *cfConfigRepository) UAAOAuthClientSecret() (secret string) {
+// 	c.read(func() {
+// 		secret = c.data.UAAOAuthClientSecret
+// 	})
+// 	return
+// }
+
+func (c *cfConfigRepository) SSHOAuthClient() (client string) {
+	c.read(func() {
+		client = c.data.SSHOAuthClient
+	})
+	return
 }
 
-func (c *cfConfigAdapter) SetOrganizationFields(org models.OrganizationFields) {
-	var cfOrg cfmodels.OrganizationFields
-
-	cfOrg.GUID = org.GUID
-	cfOrg.Name = org.Name
-	cfOrg.QuotaDefinition.GUID = org.QuotaDefinition.GUID
-	cfOrg.QuotaDefinition.Name = org.QuotaDefinition.Name
-	cfOrg.QuotaDefinition.MemoryLimit = org.QuotaDefinition.MemoryLimitInMB
-	cfOrg.QuotaDefinition.InstanceMemoryLimit = org.QuotaDefinition.InstanceMemoryLimitInMB
-	cfOrg.QuotaDefinition.RoutesLimit = org.QuotaDefinition.RoutesLimit
-	cfOrg.QuotaDefinition.ServicesLimit = org.QuotaDefinition.ServicesLimit
-	cfOrg.QuotaDefinition.NonBasicServicesAllowed = org.QuotaDefinition.NonBasicServicesAllowed
-	cfOrg.QuotaDefinition.AppInstanceLimit = org.QuotaDefinition.AppInstanceLimit
-
-	c.Repository.SetOrganizationFields(cfOrg)
+func (c *cfConfigRepository) MinCFCLIVersion() (version string) {
+	c.read(func() {
+		version = c.data.MinCLIVersion
+	})
+	return
 }
 
-func (c *cfConfigAdapter) SetSpaceFields(space models.SpaceFields) {
-	var cfSpace cfmodels.SpaceFields
-
-	cfSpace.GUID = space.GUID
-	cfSpace.Name = space.Name
-	cfSpace.AllowSSH = space.AllowSSH
-
-	c.Repository.SetSpaceFields(cfSpace)
+func (c *cfConfigRepository) MinRecommendedCFCLIVersion() (version string) {
+	c.read(func() {
+		version = c.data.MinRecommendedCLIVersion
+	})
+	return
 }
 
-func (c *cfConfigAdapter) ReloadCF() {
-	c.Repository.Close()
-	c.Repository = cfcoreconfig.NewRepositoryFromPersistor(c.persistor, c.errHandler)
+func (c *cfConfigRepository) UAAToken() (token string) {
+	c.read(func() {
+		token = c.data.AccessToken
+	})
+	return
+}
+
+func (c *cfConfigRepository) UAARefreshToken() (token string) {
+	c.read(func() {
+		token = c.data.RefreshToken
+	})
+	return
+}
+
+func (c *cfConfigRepository) UserEmail() (email string) {
+	c.read(func() {
+		email = NewUAATokenInfo(c.data.AccessToken).Email
+	})
+	return
+}
+
+func (c *cfConfigRepository) UserGUID() (guid string) {
+	c.read(func() {
+		guid = NewUAATokenInfo(c.data.AccessToken).UserGUID
+	})
+	return
+}
+
+func (c *cfConfigRepository) Username() (name string) {
+	c.read(func() {
+		name = NewUAATokenInfo(c.data.AccessToken).Username
+	})
+	return
+}
+
+func (c *cfConfigRepository) IsLoggedIn() (loggedIn bool) {
+	c.read(func() {
+		loggedIn = c.data.AccessToken != ""
+	})
+	return
+}
+
+func (c *cfConfigRepository) OrganizationFields() (org models.OrganizationFields) {
+	c.read(func() {
+		org = c.data.OrganizationFields
+	})
+	return
+}
+
+func (c *cfConfigRepository) SpaceFields() (space models.SpaceFields) {
+	c.read(func() {
+		space = c.data.SpaceFields
+	})
+	return
+}
+
+func (c *cfConfigRepository) HasOrganization() (hasOrg bool) {
+	c.read(func() {
+		hasOrg = c.data.OrganizationFields.GUID != "" && c.data.OrganizationFields.Name != ""
+	})
+	return
+}
+
+func (c *cfConfigRepository) HasSpace() (hasSpace bool) {
+	c.read(func() {
+		hasSpace = c.data.SpaceFields.GUID != "" && c.data.SpaceFields.Name != ""
+	})
+	return
+}
+
+func (c *cfConfigRepository) IsSSLDisabled() (isSSLDisabled bool) {
+	c.read(func() {
+		isSSLDisabled = c.data.SSLDisabled
+	})
+	return
+}
+
+func (c *cfConfigRepository) Trace() (trace string) {
+	c.read(func() {
+		trace = c.data.Trace
+	})
+	return
+}
+
+func (c *cfConfigRepository) ColorEnabled() (enabled string) {
+	c.read(func() {
+		enabled = c.data.ColorEnabled
+	})
+	return
+}
+
+func (c *cfConfigRepository) Locale() (locale string) {
+	c.read(func() {
+		locale = c.data.Locale
+	})
+	return
+}
+
+func (c *cfConfigRepository) SetAPIVersion(version string) {
+	c.write(func() {
+		c.data.APIVersion = version
+	})
+}
+
+func (c *cfConfigRepository) SetAPIEndpoint(endpoint string) {
+	c.write(func() {
+		c.data.Target = endpoint
+	})
+}
+
+func (c *cfConfigRepository) SetAuthenticationEndpoint(endpoint string) {
+	c.write(func() {
+		c.data.AuthorizationEndpoint = endpoint
+	})
+}
+
+func (c *cfConfigRepository) SetLoggregatorEndpoint(endpoint string) {
+	c.write(func() {
+		c.data.LoggregatorEndpoint = endpoint
+	})
+}
+
+func (c *cfConfigRepository) SetDopplerEndpoint(endpoint string) {
+	c.write(func() {
+		c.data.DopplerEndpoint = endpoint
+	})
+}
+
+func (c *cfConfigRepository) SetUAAEndpoint(endpoint string) {
+	c.write(func() {
+		c.data.UaaEndpoint = endpoint
+	})
+}
+
+func (c *cfConfigRepository) SetRoutingAPIEndpoint(endpoint string) {
+	c.write(func() {
+		c.data.RoutingAPIEndpoint = endpoint
+	})
+}
+
+func (c *cfConfigRepository) SetSSHOAuthClient(client string) {
+	c.write(func() {
+		c.data.SSHOAuthClient = client
+	})
+}
+
+func (c *cfConfigRepository) SetMinCFCLIVersion(version string) {
+	c.write(func() {
+		c.data.MinCLIVersion = version
+	})
+}
+
+func (c *cfConfigRepository) SetMinRecommendedCFCLIVersion(version string) {
+	c.write(func() {
+		c.data.MinRecommendedCLIVersion = version
+	})
+}
+
+func (c *cfConfigRepository) SetUAAToken(token string) {
+	c.write(func() {
+		c.data.AccessToken = token
+	})
+}
+
+func (c *cfConfigRepository) SetUAARefreshToken(token string) {
+	c.write(func() {
+		c.data.RefreshToken = token
+	})
+}
+
+func (c *cfConfigRepository) SetOrganizationFields(org models.OrganizationFields) {
+	c.write(func() {
+		c.data.OrganizationFields = org
+	})
+}
+
+func (c *cfConfigRepository) SetSpaceFields(space models.SpaceFields) {
+	c.write(func() {
+		c.data.SpaceFields = space
+	})
+}
+
+func (c *cfConfigRepository) SetLocale(locale string) {
+	c.write(func() {
+		c.data.Locale = locale
+	})
+}
+
+func (c *cfConfigRepository) SetSSLDisabled(sslDisabled bool) {
+	c.write(func() {
+		c.data.SSLDisabled = sslDisabled
+	})
+}
+
+func (c *cfConfigRepository) SetTrace(trace string) {
+	c.write(func() {
+		c.data.Trace = trace
+	})
+}
+
+func (c *cfConfigRepository) SetColorEnabled(colorEnabled string) {
+	c.write(func() {
+		c.data.ColorEnabled = colorEnabled
+	})
+}
+
+func (c *cfConfigRepository) ClearSession() {
+	c.write(func() {
+		c.data.AccessToken = ""
+		c.data.RefreshToken = ""
+		c.data.OrganizationFields = models.OrganizationFields{}
+		c.data.SpaceFields = models.SpaceFields{}
+	})
 }
