@@ -16,7 +16,7 @@ type AccountsInfo struct {
 }
 
 func NewIAMTokenInfo(token string) IAMTokenInfo {
-	tokenJSON, err := decodeIAMToken(token)
+	tokenJSON, err := decodeAccessToken(token)
 	if err != nil {
 		return IAMTokenInfo{}
 	}
@@ -30,7 +30,7 @@ func NewIAMTokenInfo(token string) IAMTokenInfo {
 	return info
 }
 
-func decodeIAMToken(token string) (tokenJSON []byte, err error) {
+func decodeAccessToken(token string) (tokenJSON []byte, err error) {
 	tokenParts := strings.Split(token, " ")
 
 	if len(tokenParts) < 2 {

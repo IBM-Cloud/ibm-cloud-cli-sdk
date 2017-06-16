@@ -1,9 +1,9 @@
 package plugin
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
-	"os"
 	"strconv"
 	"sync"
 
@@ -107,10 +107,20 @@ func (e *TypeError) Error() string {
 	return fmt.Sprintf("plugin config: %s - unable to convert value to type %s.", e.Key, e.ExpectedType)
 }
 
+type configData map[string]interface{}
+
+func (data configData) Marshal() ([]byte, error) {
+	return json.MarshalIndent(data, "", "  ")
+}
+
+func (data configData) Unmarshal(bytes []byte) error {
+	return json.Unmarshal(bytes, &data)
+}
+
 type pluginConfigImpl struct {
 	initOnce  *sync.Once
 	lock      sync.RWMutex
-	data      map[string]interface{}
+	data      configData
 	persistor configuration.Persistor
 }
 
@@ -124,10 +134,7 @@ func NewPluginConfig(path string) PluginConfig {
 
 func (c *pluginConfigImpl) init() {
 	c.initOnce.Do(func() {
-		err := c.persistor.Load(&c.data)
-		if err != nil && os.IsNotExist(err) {
-			err = c.persistor.Save(c.data)
-		}
+		err := c.persistor.Load(c.data)
 		if err != nil {
 			panic(err)
 		}

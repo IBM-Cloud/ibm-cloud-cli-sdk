@@ -1,24 +1,54 @@
 package core_config
 
 import (
-	cfconfiguration "code.cloudfoundry.org/cli/cf/configuration"
-
 	"github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/configuration"
 	"github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/configuration/config_helpers"
 	"github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/models"
 )
 
 type Reader interface {
-	CFConfigReader
+	// CF config
+	APIVersion() string
+	APIEndpoint() string
+	HasAPIEndpoint() bool
+	AuthenticationEndpoint() string
+	UAAEndpoint() string
+	LoggregatorEndpoint() string
+	DopplerEndpoint() string
+	RoutingAPIEndpoint() string
+	SSHOAuthClient() string
 
+	MinCFCLIVersion() string
+	MinRecommendedCFCLIVersion() string
+
+	Username() string
+	UserGUID() string
+	UserEmail() string
+	IsLoggedIn() bool
+	UAAToken() string
+	UAARefreshToken() string
+
+	OrganizationFields() models.OrganizationFields
+	HasOrganization() bool
+	SpaceFields() models.SpaceFields
+	HasSpace() bool
+
+	IsSSLDisabled() bool
+	Locale() string
+	Trace() string
+	ColorEnabled() string
+
+	// bx config
 	ConsoleEndpoint() string
 	Region() string
 	RegionID() string
+
 	IAMToken() string
 	IAMRefreshToken() string
 	Account() models.Account
 	HasAccount() bool
 	IMSAccountID() string
+
 	PluginRepos() []models.PluginRepo
 	PluginRepo(string) (models.PluginRepo, bool)
 	HTTPTimeout() int
@@ -30,8 +60,30 @@ type Reader interface {
 type ReadWriter interface {
 	Reader
 
-	CFConfigWriter
+	// cf config
+	SetAPIVersion(string)
+	SetAPIEndpoint(string)
+	SetAuthenticationEndpoint(string)
+	SetLoggregatorEndpoint(string)
+	SetDopplerEndpoint(string)
+	SetUAAEndpoint(string)
+	SetRoutingAPIEndpoint(string)
+	SetSSHOAuthClient(string)
+	SetMinCFCLIVersion(string)
+	SetMinRecommendedCFCLIVersion(string)
 
+	SetUAAToken(string)
+	SetUAARefreshToken(string)
+
+	SetOrganizationFields(models.OrganizationFields)
+	SetSpaceFields(models.SpaceFields)
+
+	SetSSLDisabled(bool)
+	SetLocale(string)
+	SetTrace(string)
+	SetColorEnabled(string)
+
+	// bx config
 	SetConsoleEndpoint(string)
 	SetRegion(string)
 	SetRegionID(string)
@@ -50,12 +102,8 @@ type ReadWriter interface {
 	ClearSession()
 }
 
-type SessionClearer interface {
-	ClearSession()
-}
-
 type configRepository struct {
-	CFConfigReadWriter
+	*cfConfigRepository
 	*bxConfigRepository
 }
 
@@ -73,26 +121,26 @@ func (c configRepository) Locale() string {
 
 func (c configRepository) SetColorEnabled(enabled string) {
 	c.bxConfigRepository.SetColorEnabled(enabled)
-	c.CFConfigReadWriter.SetColorEnabled(enabled)
+	c.cfConfigRepository.SetColorEnabled(enabled)
 }
 
 func (c configRepository) SetTrace(trace string) {
 	c.bxConfigRepository.SetTrace(trace)
-	c.CFConfigReadWriter.SetTrace(trace)
+	c.cfConfigRepository.SetTrace(trace)
 }
 
 func (c configRepository) SetLocale(locale string) {
 	c.bxConfigRepository.SetLocale(locale)
-	c.CFConfigReadWriter.SetLocale(locale)
+	c.cfConfigRepository.SetLocale(locale)
 }
 
 func (c configRepository) ClearSession() {
-	c.CFConfigReadWriter.(SessionClearer).ClearSession()
+	c.cfConfigRepository.ClearSession()
 	c.bxConfigRepository.ClearSession()
 }
 
 func (c configRepository) ClearAPIInfo() {
-	c.CFConfigReadWriter.SetAPIEndpoint("")
+	c.cfConfigRepository.SetAPIEndpoint("")
 	c.bxConfigRepository.ClearAPICache()
 }
 
@@ -101,12 +149,12 @@ func NewCoreConfig(errHandler func(error)) ReadWriter {
 }
 
 func NewCoreConfigFromPath(cfConfigPath string, bxConfigPath string, errHandler func(error)) configRepository {
-	return NewCoreConfigFromPersistor(cfconfiguration.NewDiskPersistor(cfConfigPath), configuration.NewDiskPersistor(bxConfigPath), errHandler)
+	return NewCoreConfigFromPersistor(configuration.NewDiskPersistor(cfConfigPath), configuration.NewDiskPersistor(bxConfigPath), errHandler)
 }
 
-func NewCoreConfigFromPersistor(cfPersistor cfconfiguration.Persistor, bxPersistor configuration.Persistor, errHandler func(error)) configRepository {
+func NewCoreConfigFromPersistor(cfPersistor configuration.Persistor, bxPersistor configuration.Persistor, errHandler func(error)) configRepository {
 	return configRepository{
-		CFConfigReadWriter: createCFConfigAdapterFromPersistor(cfPersistor, errHandler),
+		cfConfigRepository: createCFConfigFromPersistor(cfPersistor, errHandler),
 		bxConfigRepository: createBluemixConfigFromPersistor(bxPersistor, errHandler),
 	}
 }
