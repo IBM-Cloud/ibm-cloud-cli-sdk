@@ -1,19 +1,19 @@
 [
   {
     "id": "\nEnter a number",
-    "translation": "\nEnter a number"
+    "translation": "\nEntrez un nom"
   },
   {
     "id": "An error occurred when creating log file '{{.Path}}':\n{{.Error}}\n\n",
-    "translation": "An error occurred when creating log file '{{.Path}}':\n{{.Error}}\n\n"
+    "translation": "Erreur lors de la création du fichier journal '{{.Path}}':\n{{.Error}}\n\n"
   },
   {
     "id": "An error occurred while dumping request:\n{{.Error}}\n",
-    "translation": "An error occurred while dumping request:\n{{.Error}}\n"
+    "translation": "Erreur lors de la demande de vidage :\n{{.Error}}\n"
   },
   {
     "id": "An error occurred while dumping response:\n{{.Error}}\n",
-    "translation": "An error occurred while dumping response:\n{{.Error}}\n"
+    "translation": "Erreur lors de la réponse de vidage :\n{{.Error}}\n"
   },
   {
     "id": "Elapsed:",
@@ -21,7 +21,7 @@
   },
   {
     "id": "FAILED",
-    "translation": "FAILED"
+    "translation": "ECHEC"
   },
   {
     "id": "Invalid token: ",
@@ -33,23 +33,23 @@
   },
   {
     "id": "Please enter 'y', 'n', 'yes' or 'no'.",
-    "translation": "Please enter 'y', 'n', 'yes' or 'no'."
+    "translation": "L'entrée doit être 'y', 'n', 'yes' ou 'no'."
   },
   {
     "id": "Please enter a number between 1 to {{.Count}}.",
-    "translation": "Please enter a number between 1 to {{.Count}}."
+    "translation": "Entrez un nombre entre 1 et {{.Count}}."
   },
   {
     "id": "Please enter a valid floating number.",
-    "translation": "Please enter a valid floating number."
+    "translation": "Entrez un nombre flottant valide."
   },
   {
     "id": "Please enter a valid number.",
-    "translation": "Please enter a valid number."
+    "translation": "Entrez un nombre valide."
   },
   {
     "id": "Please enter value.",
-    "translation": "Please enter value."
+    "translation": "Entrez une valeur."
   },
   {
     "id": "REQUEST:",
@@ -65,6 +65,6 @@
   },
   {
     "id": "Unable to save plugin config: ",
-    "translation": "Unable to save plugin config: "
+    "translation": "Impossible d'enregistrer la configuration du plug-in : "
   }
 ]

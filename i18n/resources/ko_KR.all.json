@@ -1,19 +1,19 @@
 [
   {
     "id": "\nEnter a number",
-    "translation": "\nEnter a number"
+    "translation": "\n번호 입력"
   },
   {
     "id": "An error occurred when creating log file '{{.Path}}':\n{{.Error}}\n\n",
-    "translation": "An error occurred when creating log file '{{.Path}}':\n{{.Error}}\n\n"
+    "translation": "'{{.Path}}' 로그 파일을 작성할 때 다음 오류가 발생했습니다. \n{{.Error}}\n\n"
   },
   {
     "id": "An error occurred while dumping request:\n{{.Error}}\n",
-    "translation": "An error occurred while dumping request:\n{{.Error}}\n"
+    "translation": "요청을 덤프할 때 다음 오류가 발생했습니다. \n{{.Error}}\n"
   },
   {
     "id": "An error occurred while dumping response:\n{{.Error}}\n",
-    "translation": "An error occurred while dumping response:\n{{.Error}}\n"
+    "translation": "응답을 덤프할 때 다음 오류가 발생했습니다. \n{{.Error}}\n"
   },
   {
     "id": "Elapsed:",
@@ -21,7 +21,7 @@
   },
   {
     "id": "FAILED",
-    "translation": "FAILED"
+    "translation": "실패"
   },
   {
     "id": "Invalid token: ",
@@ -29,27 +29,27 @@
   },
   {
     "id": "OK",
-    "translation": "OK"
+    "translation": "확인"
   },
   {
     "id": "Please enter 'y', 'n', 'yes' or 'no'.",
-    "translation": "Please enter 'y', 'n', 'yes' or 'no'."
+    "translation": "'y', 'n', '예' 또는 '아니오'를 입력하십시오."
   },
   {
     "id": "Please enter a number between 1 to {{.Count}}.",
-    "translation": "Please enter a number between 1 to {{.Count}}."
+    "translation": "1 - {{.Count}}의 수를 입력하십시오."
   },
   {
     "id": "Please enter a valid floating number.",
-    "translation": "Please enter a valid floating number."
+    "translation": "올바른 float 수를 입력하십시오."
   },
   {
     "id": "Please enter a valid number.",
-    "translation": "Please enter a valid number."
+    "translation": "올바른 수를 입력하십시오."
   },
   {
     "id": "Please enter value.",
-    "translation": "Please enter value."
+    "translation": "값을 입력하십시오."
   },
   {
     "id": "REQUEST:",
@@ -65,6 +65,6 @@
   },
   {
     "id": "Unable to save plugin config: ",
-    "translation": "Unable to save plugin config: "
+    "translation": "플러그인 구성을 저장할 수 없음:"
   }
 ]

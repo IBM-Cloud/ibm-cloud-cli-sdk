@@ -1,19 +1,19 @@
 [
   {
     "id": "\nEnter a number",
-    "translation": "\nEnter a number"
+    "translation": "\nGeben Sie eine Zahl ein."
   },
   {
     "id": "An error occurred when creating log file '{{.Path}}':\n{{.Error}}\n\n",
-    "translation": "An error occurred when creating log file '{{.Path}}':\n{{.Error}}\n\n"
+    "translation": "Beim Erstellen der Protokolldatei '{{.Path}}' ist ein Fehler aufgetreten:\n{{.Error}}\n\n"
   },
   {
     "id": "An error occurred while dumping request:\n{{.Error}}\n",
-    "translation": "An error occurred while dumping request:\n{{.Error}}\n"
+    "translation": "Bei der Anforderung zum Erstellen eines Speicherauszugs ist ein Fehler aufgetreten:\n{{.Error}}\n"
   },
   {
     "id": "An error occurred while dumping response:\n{{.Error}}\n",
-    "translation": "An error occurred while dumping response:\n{{.Error}}\n"
+    "translation": "Bei der Antwort bezüglich der Erstellung eines Speicherauszugs ist ein Fehler aufgetreten:\n{{.Error}}\n"
   },
   {
     "id": "Elapsed:",
@@ -21,7 +21,7 @@
   },
   {
     "id": "FAILED",
-    "translation": "FAILED"
+    "translation": "FEHLGESCHLAGEN"
   },
   {
     "id": "Invalid token: ",
@@ -33,23 +33,23 @@
   },
   {
     "id": "Please enter 'y', 'n', 'yes' or 'no'.",
-    "translation": "Please enter 'y', 'n', 'yes' or 'no'."
+    "translation": "Geben Sie 'j', 'n', 'ja' oder 'nein' ein."
   },
   {
     "id": "Please enter a number between 1 to {{.Count}}.",
-    "translation": "Please enter a number between 1 to {{.Count}}."
+    "translation": "Geben Sie eine Zahl zwischen 1 und {{.Count}} ein."
   },
   {
     "id": "Please enter a valid floating number.",
-    "translation": "Please enter a valid floating number."
+    "translation": "Geben Sie eine gültige Gleitkommazahl ein."
   },
   {
     "id": "Please enter a valid number.",
-    "translation": "Please enter a valid number."
+    "translation": "Geben Sie eine gültige Zahl ein."
   },
   {
     "id": "Please enter value.",
-    "translation": "Please enter value."
+    "translation": "Geben Sie einen Wert ein."
   },
   {
     "id": "REQUEST:",
@@ -65,6 +65,6 @@
   },
   {
     "id": "Unable to save plugin config: ",
-    "translation": "Unable to save plugin config: "
+    "translation": "Speichern der Plug-in-Konfiguration nicht möglich: "
   }
 ]

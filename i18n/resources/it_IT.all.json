@@ -1,19 +1,19 @@
 [
   {
     "id": "\nEnter a number",
-    "translation": "\nEnter a number"
+    "translation": "\nImmetti un numero"
   },
   {
     "id": "An error occurred when creating log file '{{.Path}}':\n{{.Error}}\n\n",
-    "translation": "An error occurred when creating log file '{{.Path}}':\n{{.Error}}\n\n"
+    "translation": "Si è verificato un errore durante la creazione del file di log '{{.Path}}':\n{{.Error}}\n\n"
   },
   {
     "id": "An error occurred while dumping request:\n{{.Error}}\n",
-    "translation": "An error occurred while dumping request:\n{{.Error}}\n"
+    "translation": "Si è verificato un errore durante il dump della richiesta:\n{{.Error}}\n"
   },
   {
     "id": "An error occurred while dumping response:\n{{.Error}}\n",
-    "translation": "An error occurred while dumping response:\n{{.Error}}\n"
+    "translation": "Si è verificato un errore durante il dump della risposta:\n{{.Error}}\n"
   },
   {
     "id": "Elapsed:",
@@ -21,7 +21,7 @@
   },
   {
     "id": "FAILED",
-    "translation": "FAILED"
+    "translation": "NON RIUSCITO"
   },
   {
     "id": "Invalid token: ",
@@ -33,23 +33,23 @@
   },
   {
     "id": "Please enter 'y', 'n', 'yes' or 'no'.",
-    "translation": "Please enter 'y', 'n', 'yes' or 'no'."
+    "translation": "Immetti 's', 'n', 'sì' o 'no'."
   },
   {
     "id": "Please enter a number between 1 to {{.Count}}.",
-    "translation": "Please enter a number between 1 to {{.Count}}."
+    "translation": "Immetti un numero compreso tra 1 e {{.Count}}."
   },
   {
     "id": "Please enter a valid floating number.",
-    "translation": "Please enter a valid floating number."
+    "translation": "Immetti un numero decimale valido."
   },
   {
     "id": "Please enter a valid number.",
-    "translation": "Please enter a valid number."
+    "translation": "Immetti un numero valido."
   },
   {
     "id": "Please enter value.",
-    "translation": "Please enter value."
+    "translation": "Immetti un valore."
   },
   {
     "id": "REQUEST:",
@@ -65,6 +65,6 @@
   },
   {
     "id": "Unable to save plugin config: ",
-    "translation": "Unable to save plugin config: "
+    "translation": "Impossibile salvare la configurazione del plug-in: "
   }
 ]

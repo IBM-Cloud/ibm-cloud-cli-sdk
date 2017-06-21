@@ -1,19 +1,19 @@
 [
   {
     "id": "\nEnter a number",
-    "translation": "\nEnter a number"
+    "translation": "\nInsira um número"
   },
   {
     "id": "An error occurred when creating log file '{{.Path}}':\n{{.Error}}\n\n",
-    "translation": "An error occurred when creating log file '{{.Path}}':\n{{.Error}}\n\n"
+    "translation": "Ocorreu um erro ao criar o arquivo de log '{{.Path}}':\n{{.Error}}\n\n"
   },
   {
     "id": "An error occurred while dumping request:\n{{.Error}}\n",
-    "translation": "An error occurred while dumping request:\n{{.Error}}\n"
+    "translation": "Ocorreu um erro ao fazer dump da solicitação:\n{{.Error}}\n"
   },
   {
     "id": "An error occurred while dumping response:\n{{.Error}}\n",
-    "translation": "An error occurred while dumping response:\n{{.Error}}\n"
+    "translation": "Ocorreu um erro ao fazer dump da resposta:\n{{.Error}}\n"
   },
   {
     "id": "Elapsed:",
@@ -21,11 +21,11 @@
   },
   {
     "id": "FAILED",
-    "translation": "FAILED"
+    "translation": "COM FALHA"
   },
   {
     "id": "Invalid token: ",
-    "translation": "Token inválido:"
+    "translation": "Token inválido: "
   },
   {
     "id": "OK",
@@ -33,23 +33,23 @@
   },
   {
     "id": "Please enter 'y', 'n', 'yes' or 'no'.",
-    "translation": "Please enter 'y', 'n', 'yes' or 'no'."
+    "translation": "Insira 'y', 'n', 'yes' ou 'no'."
   },
   {
     "id": "Please enter a number between 1 to {{.Count}}.",
-    "translation": "Please enter a number between 1 to {{.Count}}."
+    "translation": "Insira um número entre 1 e {{.Count}}."
   },
   {
     "id": "Please enter a valid floating number.",
-    "translation": "Please enter a valid floating number."
+    "translation": "Insira um número flutuante válido."
   },
   {
     "id": "Please enter a valid number.",
-    "translation": "Please enter a valid number."
+    "translation": "Digite um número válido."
   },
   {
     "id": "Please enter value.",
-    "translation": "Please enter value."
+    "translation": "Insira um valor."
   },
   {
     "id": "REQUEST:",
@@ -61,10 +61,10 @@
   },
   {
     "id": "Remote server error. Status code: {{.StatusCode}}, error code: {{.ErrorCode}}, message: {{.Message}}",
-    "translation": "Erro do servidor remoto.Código de status: {{.StatusCode}}, código de erro: {{.ErrorCode}}, mensagem: {{.Message}}"
+    "translation": "Erro do servidor remoto. Código de status: {{.StatusCode}}, código de erro: {{.ErrorCode}}, mensagem: {{.Message}}"
   },
   {
     "id": "Unable to save plugin config: ",
-    "translation": "Unable to save plugin config: "
+    "translation": "Não é possível salvar a configuração do plug-in: "
   }
 ]

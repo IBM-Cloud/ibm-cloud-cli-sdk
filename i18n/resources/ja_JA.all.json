@@ -1,19 +1,19 @@
 [
   {
     "id": "\nEnter a number",
-    "translation": "\nEnter a number"
+    "translation": "\n数値を入力してください"
   },
   {
     "id": "An error occurred when creating log file '{{.Path}}':\n{{.Error}}\n\n",
-    "translation": "An error occurred when creating log file '{{.Path}}':\n{{.Error}}\n\n"
+    "translation": "ログ・ファイル '{{.Path}}' を作成中にエラーが発生しました:\n{{.Error}}\n\n"
   },
   {
     "id": "An error occurred while dumping request:\n{{.Error}}\n",
-    "translation": "An error occurred while dumping request:\n{{.Error}}\n"
+    "translation": "要求のダンプ中にエラーが発生しました:\n{{.Error}}\n"
   },
   {
     "id": "An error occurred while dumping response:\n{{.Error}}\n",
-    "translation": "An error occurred while dumping response:\n{{.Error}}\n"
+    "translation": "応答のダンプ中にエラーが発生しました:\n{{.Error}}\n"
   },
   {
     "id": "Elapsed:",
@@ -21,7 +21,7 @@
   },
   {
     "id": "FAILED",
-    "translation": "FAILED"
+    "translation": "失敗"
   },
   {
     "id": "Invalid token: ",
@@ -33,23 +33,23 @@
   },
   {
     "id": "Please enter 'y', 'n', 'yes' or 'no'.",
-    "translation": "Please enter 'y', 'n', 'yes' or 'no'."
+    "translation": "「y」、「n」、「yes」、または「no」を入力してください。"
   },
   {
     "id": "Please enter a number between 1 to {{.Count}}.",
-    "translation": "Please enter a number between 1 to {{.Count}}."
+    "translation": "1 から {{.Count}} までの数値を入力してください。"
   },
   {
     "id": "Please enter a valid floating number.",
-    "translation": "Please enter a valid floating number."
+    "translation": "有効な浮動小数点数を入力してください。"
   },
   {
     "id": "Please enter a valid number.",
-    "translation": "Please enter a valid number."
+    "translation": "有効な数値を入力してください。"
   },
   {
     "id": "Please enter value.",
-    "translation": "Please enter value."
+    "translation": "値を入力してください。"
   },
   {
     "id": "REQUEST:",
@@ -61,10 +61,10 @@
   },
   {
     "id": "Remote server error. Status code: {{.StatusCode}}, error code: {{.ErrorCode}}, message: {{.Message}}",
-    "translation": "リモート・サーバー・エラー。状況コード: {{.StatusCode}}、エラー・コード: {{.ErrorCode}}、メッセージ: {{.Message}}"
+    "translation": "リモート・サーバー・エラー。 状況コード: {{.StatusCode}}、エラー・コード: {{.ErrorCode}}、メッセージ: {{.Message}}"
   },
   {
     "id": "Unable to save plugin config: ",
-    "translation": "Unable to save plugin config: "
+    "translation": "プラグイン構成を保存できません: "
   }
 ]
