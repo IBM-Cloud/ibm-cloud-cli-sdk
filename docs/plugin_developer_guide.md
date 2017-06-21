@@ -159,12 +159,10 @@ func (p *DemoPlugin) GetMetadata() plugin.PluginMetadata {
             {
                 Namespace:   demo.Name,
                 Name:        "start",
-                
             },
             {
                 Namespace:   demo.Name,
                 Name:        "help",
-                
             },
             {
                 Namespace:   demo.Name,
@@ -185,6 +183,85 @@ func (p *DemoPlugin) Run(context plugin.PluginContext, args []string) {
     }
 }
 ```
+
+If you want to organize commands into categories at different levels, you can use sub-namespace. White spaces in namespace will be treated as delimiter for sub-namespaces. For example, considering namespace "a b c", its parent namespace is "a b", and its ancestor namespace is "a".
+
+Following is an example of using sub-namespace:
+
+```go
+import "github.com/IBM-Bluemix/bluemix-cli-sdk/plugin"
+
+type DemoPlugin struct{}
+
+func (p *DemoPlugin) GetMetadata() plugin.PluginMetadata {
+    return plugin.PluginMetadata{
+        Namespaces: []plugin.Namespace{
+            // parent namespace
+            {
+                Name:        "demo",
+                Description: "For demonstration purpose",
+            },
+            // sub namespaces
+            {
+                Name:        "demo app",
+                Description: "For app demonstration",
+            },
+            {
+                Name:        "demo service",
+                Description: "For service demonstration",
+            },
+        },
+
+        Commands: []plugin.Command{
+            {
+                Namespace:   "demo app",
+                Name:        "create",
+                Description: "Create an application",
+            },
+            {
+                Namespace:   "demo app",
+                Name:        "delete",
+                Description: "Delete an application",
+            },
+            {
+                Namespace:   "demo service",
+                Name:        "create",
+                Description: "Create an service instance",
+            },
+            {
+                Namespace:   "demo service",
+                Name:        "delete",
+                Description: "Delete an service instance",
+            },
+        },
+    }
+}
+
+func (p *DemoPlugin) Run(context plugin.PluginContext, args []string) {
+    namespace := context.CommandNamespace()
+    switch namespace {
+    case "demo app":
+        switch args[0] {
+        case "create":
+            // create an application
+        case "delete":
+            // delete an application
+        default:
+            // unrecognized command
+        }
+    case "demo service":
+        switch args[0] {
+        case "create":
+            // create service instance
+        case "delete":
+            // delete service instance
+        default:
+            // unrecognized command
+        }
+    }
+}
+```
+
 
 The following items should be noticed here:
 
