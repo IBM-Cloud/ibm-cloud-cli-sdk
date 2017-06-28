@@ -37,7 +37,7 @@
   },
   {
     "id": "Please enter a number between 1 to {{.Count}}.",
-    "translation": "1 - {{.Count}}의 수를 입력하십시오."
+    "translation": "1 - {{.Count}} 사이의 수를 입력하십시오."
   },
   {
     "id": "Please enter a valid floating number.",

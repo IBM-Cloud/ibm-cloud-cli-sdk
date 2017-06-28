@@ -1,7 +1,7 @@
 [
   {
     "id": "\nEnter a number",
-    "translation": "\nEntrez un nom"
+    "translation": "\nEntrez un nombre"
   },
   {
     "id": "An error occurred when creating log file '{{.Path}}':\n{{.Error}}\n\n",
