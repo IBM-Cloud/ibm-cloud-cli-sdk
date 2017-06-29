@@ -21,7 +21,7 @@
   },
   {
     "id": "FAILED",
-    "translation": "FALLIDO"
+    "translation": "ERROR"
   },
   {
     "id": "Invalid token: ",
@@ -29,7 +29,7 @@
   },
   {
     "id": "OK",
-    "translation": "Aceptar"
+    "translation": "Correcto"
   },
   {
     "id": "Please enter 'y', 'n', 'yes' or 'no'.",
