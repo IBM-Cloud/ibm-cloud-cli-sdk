@@ -432,6 +432,21 @@ OPTIONS:
    -f        Force restart of CF application without prompt, valid only for scaling an app, not a container group
 ```
 
+#### 2.4.1 Command Syntax
+- Use "-" for single letter flags, and use "--" for multiple letter flags, e.g. `-c ACCOUNT_ID` and `--guid`.
+- All user input values should be capital letters, e.g. `bx scale RESOURCE_NAME`
+- For optional parameters and flags, surround them with "[...]", e.g. `bx iam orgs [--guid]`.
+- For exclusive parameters and flags, group them together by "(...)" and separate by "|".
+  - Example: `bluemix test create (NAME | --uuid ID)`
+- You can nest "[...]" and "(...)".
+- If a value accepts multiple type of inputs, it's recommended that for file type the file name should start with "@".
+- If a command has multiple paradigms and it's hard to describe them together, specify each of them in separate lines, e.g.
+```bash
+USAGE:
+  bx test command foo.....
+  bx test command bar.....
+```
+
 ### 2.5. Incorrect Usage
 
 When user uses the command with wrong usage (e.g. incorrect number of arguments, invalid option value, required options not specified and etc.), the message in following format should be displayed:
