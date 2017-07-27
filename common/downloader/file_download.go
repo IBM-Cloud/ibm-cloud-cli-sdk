@@ -11,51 +11,57 @@ import (
 	"strings"
 )
 
+type ProxyReader interface {
+	Proxy(size int64, reader io.Reader) io.Reader
+	Finish()
+}
+
 type FileDownloader struct {
-	saveDir string
-	h       http.Header
-	client  *http.Client
+	SaveDir string
+
+	DefaultHeader http.Header
+	Client        *http.Client
+
+	ProxyReader ProxyReader
 }
 
-func NewFileDownloader(saveDir string) *FileDownloader {
+func New(saveDir string) *FileDownloader {
 	return &FileDownloader{
-		saveDir: saveDir,
-		client:  http.DefaultClient,
+		SaveDir:       saveDir,
+		Client:        http.DefaultClient,
+		DefaultHeader: make(http.Header),
 	}
 }
 
-func (d *FileDownloader) DownloadAs(url string, outputFileName string) (string, int64, error) {
-	if outputFileName == "" {
-		return "", 0, fmt.Errorf("download: output file name is empty")
-	}
-	return d.download(url, outputFileName)
+func (d *FileDownloader) Download(url string) (dest string, size int64, err error) {
+	return d.DownloadTo(url, "")
 }
 
-func (d *FileDownloader) Download(url string) (string, int64, error) {
-	return d.download(url, "")
-}
-
-func (d *FileDownloader) download(url string, outputFileName string) (string, int64, error) {
-	req, err := d.makeRequest(url)
+func (d *FileDownloader) DownloadTo(url string, outputName string) (dest string, size int64, err error) {
+	req, err := d.createRequest(url)
 	if err != nil {
-		return "", 0, err
+		return "", 0, fmt.Errorf("download request error: %v", err)
 	}
 
-	resp, err := d.client.Do(req)
+	client := d.Client
+	if client == nil {
+		client = http.DefaultClient
+	}
+
+	resp, err := client.Do(req)
 	if err != nil {
 		return "", 0, err
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode != 200 {
-		return "", 0, fmt.Errorf("Error downloading the file. Remote return code %d", resp.StatusCode)
+		return "", 0, fmt.Errorf("Unexpected response code %d", resp.StatusCode)
 	}
 
-	if outputFileName == "" {
-		outputFileName = d.determinOutputFileName(resp, url)
+	if outputName == "" {
+		outputName = d.determinOutputName(resp)
 	}
-
-	dest := filepath.Join(d.saveDir, outputFileName)
+	dest = filepath.Join(d.SaveDir, outputName)
 
 	f, err := os.OpenFile(dest, os.O_RDWR|os.O_CREATE|os.O_EXCL, 0600)
 	if err != nil {
@@ -63,7 +69,13 @@ func (d *FileDownloader) download(url string, outputFileName string) (string, in
 	}
 	defer f.Close()
 
-	size, err := io.Copy(f, resp.Body)
+	var r io.Reader = resp.Body
+	if d.ProxyReader != nil {
+		defer d.ProxyReader.Finish()
+		r = d.ProxyReader.Proxy(resp.ContentLength, r)
+	}
+
+	size, err = io.Copy(f, r)
 	if err != nil {
 		return dest, size, err
 	}
@@ -71,42 +83,48 @@ func (d *FileDownloader) download(url string, outputFileName string) (string, in
 	return dest, size, nil
 }
 
-func (d *FileDownloader) SaveDirectory() string {
-	return d.saveDir
+func (d *FileDownloader) RemoveDir() error {
+	return os.RemoveAll(d.SaveDir)
 }
 
-func (d *FileDownloader) determinOutputFileName(resp *http.Response, url string) string {
-	fname := getFileNameFromHeader(resp.Header.Get("Content-Disposition"))
-
-	if fname == "" {
-		fname = getFileNameFromUrl(url)
-	}
-
-	if fname == "" {
-		fname = "index.html"
-	}
-
-	saveDir := d.saveDir
-	if saveDir == "" {
-		saveDir = "."
-	}
-
-	return fname
-}
-
-func getFileNameFromUrl(rawUrl string) string {
-	u, err := url.Parse(rawUrl)
+func (d *FileDownloader) createRequest(url string) (*http.Request, error) {
+	r, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
+		return nil, err
+	}
+
+	if d.DefaultHeader != nil {
+		r.Header = d.DefaultHeader
+	}
+
+	if r.Header.Get("User-Agent") == "" {
+		r.Header.Set("User-Agent", "bluemix-cli")
+	}
+
+	return r, nil
+}
+
+func (d *FileDownloader) determinOutputName(resp *http.Response) string {
+	n := getFileNameFromHeader(resp.Header.Get("Content-Disposition"))
+
+	if n == "" {
+		n = getFileNameFromUrl(resp.Request.URL)
+	}
+
+	if n == "" {
+		n = "index.html"
+	}
+
+	return n
+}
+
+func getFileNameFromUrl(url *url.URL) string {
+	path := path.Clean(url.Path)
+	if path == "." {
 		return ""
 	}
 
-	p := u.Path
-	p = path.Clean(p)
-	if p == "." {
-		return ""
-	}
-
-	fields := strings.Split(p, "/")
+	fields := strings.Split(path, "/")
 	if len(fields) == 0 {
 		return ""
 	}
@@ -129,18 +147,4 @@ func getFileNameFromHeader(header string) string {
 	}
 
 	return ""
-}
-
-func (d *FileDownloader) SetHeader(h http.Header) {
-	d.h = h
-}
-
-func (d *FileDownloader) makeRequest(downloadUrl string) (*http.Request, error) {
-	req, err := http.NewRequest("GET", downloadUrl, nil)
-	if err != nil {
-		return nil, err
-	}
-
-	req.Header = d.h
-	return req, nil
 }
