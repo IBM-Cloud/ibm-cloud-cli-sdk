@@ -211,6 +211,15 @@ type FakePluginContext struct {
 	iMSAccountIDReturnsOnCall map[int]struct {
 		result1 string
 	}
+	ResourceGroupStub        func() models.ResourceGroup
+	resourceGroupMutex       sync.RWMutex
+	resourceGroupArgsForCall []struct{}
+	resourceGroupReturns     struct {
+		result1 models.ResourceGroup
+	}
+	resourceGroupReturnsOnCall map[int]struct {
+		result1 models.ResourceGroup
+	}
 	CurrentSpaceStub        func() models.SpaceFields
 	currentSpaceMutex       sync.RWMutex
 	currentSpaceArgsForCall []struct{}
@@ -1218,6 +1227,46 @@ func (fake *FakePluginContext) IMSAccountIDReturnsOnCall(i int, result1 string) 
 	}{result1}
 }
 
+func (fake *FakePluginContext) ResourceGroup() models.ResourceGroup {
+	fake.resourceGroupMutex.Lock()
+	ret, specificReturn := fake.resourceGroupReturnsOnCall[len(fake.resourceGroupArgsForCall)]
+	fake.resourceGroupArgsForCall = append(fake.resourceGroupArgsForCall, struct{}{})
+	fake.recordInvocation("ResourceGroup", []interface{}{})
+	fake.resourceGroupMutex.Unlock()
+	if fake.ResourceGroupStub != nil {
+		return fake.ResourceGroupStub()
+	}
+	if specificReturn {
+		return ret.result1
+	}
+	return fake.resourceGroupReturns.result1
+}
+
+func (fake *FakePluginContext) ResourceGroupCallCount() int {
+	fake.resourceGroupMutex.RLock()
+	defer fake.resourceGroupMutex.RUnlock()
+	return len(fake.resourceGroupArgsForCall)
+}
+
+func (fake *FakePluginContext) ResourceGroupReturns(result1 models.ResourceGroup) {
+	fake.ResourceGroupStub = nil
+	fake.resourceGroupReturns = struct {
+		result1 models.ResourceGroup
+	}{result1}
+}
+
+func (fake *FakePluginContext) ResourceGroupReturnsOnCall(i int, result1 models.ResourceGroup) {
+	fake.ResourceGroupStub = nil
+	if fake.resourceGroupReturnsOnCall == nil {
+		fake.resourceGroupReturnsOnCall = make(map[int]struct {
+			result1 models.ResourceGroup
+		})
+	}
+	fake.resourceGroupReturnsOnCall[i] = struct {
+		result1 models.ResourceGroup
+	}{result1}
+}
+
 func (fake *FakePluginContext) CurrentSpace() models.SpaceFields {
 	fake.currentSpaceMutex.Lock()
 	ret, specificReturn := fake.currentSpaceReturnsOnCall[len(fake.currentSpaceArgsForCall)]
@@ -1785,6 +1834,8 @@ func (fake *FakePluginContext) Invocations() map[string][][]interface{} {
 	defer fake.accountMutex.RUnlock()
 	fake.iMSAccountIDMutex.RLock()
 	defer fake.iMSAccountIDMutex.RUnlock()
+	fake.resourceGroupMutex.RLock()
+	defer fake.resourceGroupMutex.RUnlock()
 	fake.currentSpaceMutex.RLock()
 	defer fake.currentSpaceMutex.RUnlock()
 	fake.hasSpaceMutex.RLock()

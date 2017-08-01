@@ -48,6 +48,8 @@ type Reader interface {
 	Account() models.Account
 	HasAccount() bool
 	IMSAccountID() string
+	ResourceGroup() models.ResourceGroup
+	HasResourceGroup() bool
 
 	PluginRepos() []models.PluginRepo
 	PluginRepo(string) (models.PluginRepo, bool)
@@ -90,6 +92,7 @@ type ReadWriter interface {
 	SetAccount(models.Account)
 	SetIAMToken(string)
 	SetIAMRefreshToken(string)
+	SetResourceGroup(models.ResourceGroup)
 	SetCheckCLIVersionDisabled(bool)
 	SetCLIInfoEndpoint(string)
 	SetPluginRepo(models.PluginRepo)
