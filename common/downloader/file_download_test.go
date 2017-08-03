@@ -27,12 +27,12 @@ func TestDownloadTestSuite(t *testing.T) {
 func (suite *DownloadTestSuite) SetupTest() {
 	tmpDir, err := ioutil.TempDir("", "testfiledownload")
 	suite.NoError(err)
-	suite.downloader = NewFileDownloader(tmpDir)
+	suite.downloader = New(tmpDir)
 }
 
 func (suite *DownloadTestSuite) TearDownTest() {
-	if suite.downloader.SaveDirectory() != "" {
-		os.RemoveAll(suite.downloader.SaveDirectory())
+	if suite.downloader.SaveDir != "" {
+		os.RemoveAll(suite.downloader.SaveDir)
 	}
 }
 
@@ -48,7 +48,7 @@ func (suite *DownloadTestSuite) TestDownload_GetFileNameFromHeader() {
 	dest, size, err := suite.downloader.Download(fileServer.URL)
 
 	assert.NoError(err)
-	assert.Equal(dest, filepath.Join(suite.downloader.SaveDirectory(), "test.txt"))
+	assert.Equal(dest, filepath.Join(suite.downloader.SaveDir, "test.txt"))
 	assert.True(file_helpers.FileExists(dest))
 	assert.Equal(size, int64(len(resp)))
 }
@@ -62,7 +62,7 @@ func (suite *DownloadTestSuite) TestDownload_GetFileNameFromURL() {
 	dest, _, err := suite.downloader.Download(fileServer.URL + "/test.txt")
 
 	assert.NoError(err)
-	assert.Equal(dest, filepath.Join(suite.downloader.SaveDirectory(), "test.txt"))
+	assert.Equal(dest, filepath.Join(suite.downloader.SaveDir, "test.txt"))
 	assert.True(file_helpers.FileExists(dest))
 }
 
@@ -75,20 +75,20 @@ func (suite *DownloadTestSuite) TestDownload_SaveAsIndexHTML() {
 	dest, _, err := suite.downloader.Download(fileServer.URL)
 
 	assert.NoError(err)
-	assert.Equal(dest, filepath.Join(suite.downloader.SaveDirectory(), "index.html"))
+	assert.Equal(dest, filepath.Join(suite.downloader.SaveDir, "index.html"))
 	assert.True(file_helpers.FileExists(dest))
 }
 
-func (suite *DownloadTestSuite) TestDownloadAs() {
+func (suite *DownloadTestSuite) TestDownloadTo() {
 	assert := assert.New(suite.T())
 
 	fileServer := CreateServerReturnContent("123")
 	defer fileServer.Close()
 
-	dest, _, err := suite.downloader.DownloadAs(fileServer.URL, "out")
+	dest, _, err := suite.downloader.DownloadTo(fileServer.URL, "out")
 
 	assert.NoError(err)
-	assert.Equal(dest, filepath.Join(suite.downloader.SaveDirectory(), "out"))
+	assert.Equal(dest, filepath.Join(suite.downloader.SaveDir, "out"))
 	assert.True(file_helpers.FileExists(dest))
 }
 
@@ -98,7 +98,7 @@ func (suite *DownloadTestSuite) TestDownloadSaveDirNotSet() {
 	fileServer := CreateServerReturnContent("123")
 	defer fileServer.Close()
 
-	suite.downloader = NewFileDownloader("")
+	suite.downloader = new(FileDownloader)
 	dest, _, err := suite.downloader.Download(fileServer.URL + "/test.txt")
 	defer os.Remove(dest)
 
@@ -117,7 +117,7 @@ func (suite *DownloadTestSuite) TestDownloadRequestHeader() {
 
 	h := http.Header{}
 	h.Add("Accept-Language", "en_US")
-	suite.downloader.SetHeader(h)
+	suite.downloader.DefaultHeader = h
 	suite.downloader.Download(fileServer.URL + "/test.txt")
 }
 

@@ -27,6 +27,12 @@
 			"revisionTime": "2015-12-11T00:06:21Z"
 		},
 		{
+			"checksumSHA1": "B3DkIJCjHFwea7Ex3A2V8aaiv9E=",
+			"path": "github.com/mattn/go-runewidth",
+			"revision": "d96d1bd051f2bd9e7e43d602782b37b93b1b5666",
+			"revisionTime": "2015-11-18T07:21:59Z"
+		},
+		{
 			"checksumSHA1": "Jz2tqIo/dZrtMZNUPpCcLh/D9OY=",
 			"path": "github.com/nicksnyder/go-i18n/i18n",
 			"revision": "e89b669dd6cf08115d1eaee6c127bb13081fb20f",
@@ -271,6 +277,12 @@
 			"path": "golang.org/x/sys/unix",
 			"revision": "833a04a10549a95dc34458c195cbad61bbb6cb4d",
 			"revisionTime": "2015-12-11T01:34:15Z"
+		},
+		{
+			"checksumSHA1": "raBtsDwCvkqXSCQI0GHcVAXoOSc=",
+			"path": "gopkg.in/cheggaaa/pb.v1",
+			"revision": "f6ccf2184de4dd34495277e38dc19b6e7fbe0ea2",
+			"revisionTime": "2017-05-08T13:24:47Z"
 		},
 		{
 			"checksumSHA1": "0KwOlQV1dNUh9X8t+5s7nX5bqfk=",
