@@ -11,6 +11,16 @@ import (
 	. "github.com/IBM-Bluemix/bluemix-cli-sdk/i18n"
 )
 
+type PluginConfigTypeError struct {
+	Key          string
+	ExpectedType string
+	Value        interface{}
+}
+
+func (e PluginConfigTypeError) Error() string {
+	return fmt.Sprintf("plugin config: invalid type of value for key '%s', expected type %s, but got %T", e.Key, e.ExpectedType, e.Value)
+}
+
 // PluginConfig defines methods to access plug-in's private configuration stored in a JSON format.
 type PluginConfig interface {
 	// Get returns the value for the given key.
@@ -91,48 +101,32 @@ type PluginConfig interface {
 	Erase(key string) error
 }
 
-type TypeError struct {
-	Key          string
-	ExpectedType string
-}
+type pd map[string]interface{}
 
-func NewTypeError(key string, expectedType string) *TypeError {
-	return &TypeError{
-		Key:          key,
-		ExpectedType: expectedType,
-	}
-}
-
-func (e *TypeError) Error() string {
-	return fmt.Sprintf("plugin config: %s - unable to convert value to type %s.", e.Key, e.ExpectedType)
-}
-
-type configData map[string]interface{}
-
-func (data configData) Marshal() ([]byte, error) {
+func (data pd) Marshal() ([]byte, error) {
 	return json.MarshalIndent(data, "", "  ")
 }
 
-func (data configData) Unmarshal(bytes []byte) error {
+func (data pd) Unmarshal(bytes []byte) error {
 	return json.Unmarshal(bytes, &data)
 }
 
-type pluginConfigImpl struct {
+type pluginConfig struct {
 	initOnce  *sync.Once
 	lock      sync.RWMutex
-	data      configData
+	data      pd
 	persistor configuration.Persistor
 }
 
 func loadPluginConfigFromPath(path string) PluginConfig {
-	return &pluginConfigImpl{
+	return &pluginConfig{
 		initOnce:  new(sync.Once),
 		data:      make(map[string]interface{}),
 		persistor: configuration.NewDiskPersistor(path),
 	}
 }
 
-func (c *pluginConfigImpl) init() {
+func (c *pluginConfig) init() {
 	c.initOnce.Do(func() {
 		err := c.persistor.Load(c.data)
 		if err != nil {
@@ -141,7 +135,7 @@ func (c *pluginConfigImpl) init() {
 	})
 }
 
-func (c *pluginConfigImpl) Get(key string) interface{} {
+func (c *pluginConfig) Get(key string) interface{} {
 	c.lock.RLock()
 	defer c.lock.RUnlock()
 
@@ -150,7 +144,7 @@ func (c *pluginConfigImpl) Get(key string) interface{} {
 	return c.data[key]
 }
 
-func (c *pluginConfigImpl) GetWithDefault(key string, defaultVal interface{}) interface{} {
+func (c *pluginConfig) GetWithDefault(key string, defaultVal interface{}) interface{} {
 	v := c.Get(key)
 	if v == nil {
 		return defaultVal
@@ -158,21 +152,19 @@ func (c *pluginConfigImpl) GetWithDefault(key string, defaultVal interface{}) in
 	return v
 }
 
-func (c *pluginConfigImpl) GetString(key string) (string, error) {
+func (c *pluginConfig) GetString(key string) (string, error) {
 	return c.GetStringWithDefault(key, "")
 }
 
-func (c *pluginConfigImpl) GetStringWithDefault(key string, defaultVal string) (string, error) {
+func (c *pluginConfig) GetStringWithDefault(key string, defaultVal string) (string, error) {
 	v := c.Get(key)
 	if v == nil {
 		return defaultVal, nil
 	}
-
-	ret, ok := toString(v)
-	if !ok {
-		return defaultVal, NewTypeError(key, "string")
+	if s, ok := toString(v); ok {
+		return s, nil
 	}
-	return ret, nil
+	return defaultVal, PluginConfigTypeError{Key: key, ExpectedType: "string", Value: v}
 }
 
 func toString(v interface{}) (string, bool) {
@@ -189,21 +181,19 @@ func toString(v interface{}) (string, bool) {
 	return "", false
 }
 
-func (c *pluginConfigImpl) GetBool(key string) (bool, error) {
+func (c *pluginConfig) GetBool(key string) (bool, error) {
 	return c.GetBoolWithDefault(key, false)
 }
 
-func (c *pluginConfigImpl) GetBoolWithDefault(key string, defaultVal bool) (bool, error) {
+func (c *pluginConfig) GetBoolWithDefault(key string, defaultVal bool) (bool, error) {
 	v := c.Get(key)
 	if v == nil {
 		return defaultVal, nil
 	}
-
-	ret, ok := toBool(v)
-	if !ok {
-		return defaultVal, NewTypeError(key, "bool")
+	if b, ok := toBool(v); ok {
+		return b, nil
 	}
-	return ret, nil
+	return defaultVal, PluginConfigTypeError{Key: key, ExpectedType: "bool", Value: v}
 }
 
 func toBool(v interface{}) (bool, bool) {
@@ -219,21 +209,19 @@ func toBool(v interface{}) (bool, bool) {
 	return false, false
 }
 
-func (c *pluginConfigImpl) GetInt(key string) (int, error) {
+func (c *pluginConfig) GetInt(key string) (int, error) {
 	return c.GetIntWithDefault(key, 0)
 }
 
-func (c *pluginConfigImpl) GetIntWithDefault(key string, defaultVal int) (int, error) {
+func (c *pluginConfig) GetIntWithDefault(key string, defaultVal int) (int, error) {
 	v := c.Get(key)
 	if v == nil {
 		return defaultVal, nil
 	}
-
-	ret, ok := toInt(v)
-	if !ok {
-		return defaultVal, NewTypeError(key, "int")
+	if i, ok := toInt(v); ok {
+		return i, nil
 	}
-	return ret, nil
+	return defaultVal, PluginConfigTypeError{Key: key, ExpectedType: "int", Value: v}
 }
 
 func toInt(v interface{}) (int, bool) {
@@ -249,21 +237,19 @@ func toInt(v interface{}) (int, bool) {
 	return 0, false
 }
 
-func (c *pluginConfigImpl) GetFloat(key string) (float64, error) {
+func (c *pluginConfig) GetFloat(key string) (float64, error) {
 	return c.GetFloatWithDefault(key, 0.00)
 }
 
-func (c *pluginConfigImpl) GetFloatWithDefault(key string, defaultVal float64) (float64, error) {
+func (c *pluginConfig) GetFloatWithDefault(key string, defaultVal float64) (float64, error) {
 	v := c.Get(key)
 	if v == nil {
 		return defaultVal, nil
 	}
-
-	ret, ok := toFloat(v)
-	if !ok {
-		return defaultVal, NewTypeError(key, "float64")
+	if f, ok := toFloat(v); ok {
+		return f, nil
 	}
-	return ret, nil
+	return defaultVal, PluginConfigTypeError{Key: key, ExpectedType: "float", Value: v}
 }
 
 func toFloat(v interface{}) (float64, bool) {
@@ -279,30 +265,26 @@ func toFloat(v interface{}) (float64, bool) {
 	return 0.00, false
 }
 
-func (c *pluginConfigImpl) GetSlice(key string) ([]interface{}, error) {
+func (c *pluginConfig) GetSlice(key string) ([]interface{}, error) {
 	v := c.Get(key)
 	if v == nil {
 		return []interface{}{}, nil
 	}
-
-	_, ok := v.([]interface{})
-	if !ok {
-		return []interface{}{}, NewTypeError(key, "[]interface{}")
+	if s, ok := v.([]interface{}); ok {
+		return s, nil
 	}
-	return v.([]interface{}), nil
+	return []interface{}{}, PluginConfigTypeError{Key: key, ExpectedType: "[]interface{}", Value: v}
 }
 
-func (c *pluginConfigImpl) GetStringSlice(key string) ([]string, error) {
+func (c *pluginConfig) GetStringSlice(key string) ([]string, error) {
 	v := c.Get(key)
 	if v == nil {
 		return []string{}, nil
 	}
-
-	ret, ok := toStringSlice(v)
-	if !ok {
-		return []string{}, NewTypeError(key, "[]string")
+	if ss, ok := toStringSlice(v); ok {
+		return ss, nil
 	}
-	return ret, nil
+	return []string{}, PluginConfigTypeError{Key: key, ExpectedType: "[]string", Value: v}
 }
 
 func toStringSlice(v interface{}) ([]string, bool) {
@@ -322,17 +304,15 @@ func toStringSlice(v interface{}) ([]string, bool) {
 	return ret, true
 }
 
-func (c *pluginConfigImpl) GetIntSlice(key string) ([]int, error) {
+func (c *pluginConfig) GetIntSlice(key string) ([]int, error) {
 	v := c.Get(key)
 	if v == nil {
 		return []int{}, nil
 	}
-
-	ret, ok := toIntSlice(v)
-	if !ok {
-		return []int{}, NewTypeError(key, "[]int")
+	if is, ok := toIntSlice(v); ok {
+		return is, nil
 	}
-	return ret, nil
+	return []int{}, PluginConfigTypeError{Key: key, ExpectedType: "[]int", Value: v}
 }
 
 func toIntSlice(v interface{}) ([]int, bool) {
@@ -341,28 +321,26 @@ func toIntSlice(v interface{}) ([]int, bool) {
 		return []int{}, false
 	}
 
-	ret := make([]int, len(s), len(s))
+	is := make([]int, len(s), len(s))
 	for i := 0; i < len(s); i++ {
 		ii, ok := toInt(s[i])
 		if !ok {
 			return []int{}, false
 		}
-		ret[i] = ii
+		is[i] = ii
 	}
-	return ret, true
+	return is, true
 }
 
-func (c *pluginConfigImpl) GetFloatSlice(key string) ([]float64, error) {
+func (c *pluginConfig) GetFloatSlice(key string) ([]float64, error) {
 	v := c.Get(key)
 	if v == nil {
 		return []float64{}, nil
 	}
-
-	ret, ok := toFloatSlice(v)
-	if !ok {
-		return []float64{}, NewTypeError(key, "[]float64")
+	if fs, ok := toFloatSlice(v); ok {
+		return fs, nil
 	}
-	return ret, nil
+	return []float64{}, PluginConfigTypeError{Key: key, ExpectedType: "[]float64", Value: v}
 }
 
 func toFloatSlice(v interface{}) ([]float64, bool) {
@@ -371,41 +349,37 @@ func toFloatSlice(v interface{}) ([]float64, bool) {
 		return []float64{}, false
 	}
 
-	ret := make([]float64, len(s), len(s))
+	fs := make([]float64, len(s), len(s))
 	for i := 0; i < len(s); i++ {
-		ii, ok := toFloat(s[i])
+		f, ok := toFloat(s[i])
 		if !ok {
 			return []float64{}, false
 		}
-		ret[i] = ii
+		fs[i] = f
 	}
-	return ret, true
+	return fs, true
 }
 
-func (c *pluginConfigImpl) GetStringMap(key string) (map[string]interface{}, error) {
+func (c *pluginConfig) GetStringMap(key string) (map[string]interface{}, error) {
 	v := c.Get(key)
 	if v == nil {
 		return map[string]interface{}{}, nil
 	}
-
-	_, ok := v.(map[string]interface{})
-	if !ok {
-		return map[string]interface{}{}, NewTypeError(key, "map[string]interface{}")
+	if sm, ok := v.(map[string]interface{}); ok {
+		return sm, nil
 	}
-	return v.(map[string]interface{}), nil
+	return map[string]interface{}{}, PluginConfigTypeError{Key: key, ExpectedType: "map[string]interface{}", Value: v}
 }
 
-func (c *pluginConfigImpl) GetStringMapString(key string) (map[string]string, error) {
+func (c *pluginConfig) GetStringMapString(key string) (map[string]string, error) {
 	v := c.Get(key)
 	if v == nil {
 		return map[string]string{}, nil
 	}
-
-	ret, ok := toMapStringMapString(v)
-	if !ok {
-		return map[string]string{}, NewTypeError(key, "map[string]string")
+	if sms, ok := toMapStringMapString(v); ok {
+		return sms, nil
 	}
-	return ret, nil
+	return map[string]string{}, PluginConfigTypeError{Key: key, ExpectedType: "map[string]string", Value: v}
 }
 
 func toMapStringMapString(v interface{}) (map[string]string, bool) {
@@ -414,35 +388,35 @@ func toMapStringMapString(v interface{}) (map[string]string, bool) {
 		return map[string]string{}, false
 	}
 
-	ret := make(map[string]string)
+	sms := make(map[string]string)
 	for k, v := range m {
 		s, ok := toString(v)
 		if !ok {
 			return map[string]string{}, false
 		}
-		ret[k] = s
+		sms[k] = s
 	}
 
-	return ret, true
+	return sms, true
 }
 
-func (c *pluginConfigImpl) Exists(key string) bool {
+func (c *pluginConfig) Exists(key string) bool {
 	return c.Get(key) != nil
 }
 
-func (c *pluginConfigImpl) Set(key string, v interface{}) error {
+func (c *pluginConfig) Set(key string, v interface{}) error {
 	return c.write(func() {
 		c.data[key] = v
 	})
 }
 
-func (c *pluginConfigImpl) Erase(key string) error {
+func (c *pluginConfig) Erase(key string) error {
 	return c.write(func() {
 		delete(c.data, key)
 	})
 }
 
-func (c *pluginConfigImpl) write(cb func()) error {
+func (c *pluginConfig) write(cb func()) error {
 	c.lock.Lock()
 	defer c.lock.Unlock()
 
