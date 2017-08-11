@@ -124,7 +124,7 @@ type pluginConfigImpl struct {
 	persistor configuration.Persistor
 }
 
-func NewPluginConfig(path string) PluginConfig {
+func loadPluginConfigFromPath(path string) PluginConfig {
 	return &pluginConfigImpl{
 		initOnce:  new(sync.Once),
 		data:      make(map[string]interface{}),

@@ -2,31 +2,30 @@ package plugin
 
 import (
 	"encoding/json"
-	"fmt"
 	"os"
 
+	"github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/configuration/config_helpers"
 	"github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/configuration/core_config"
 	"github.com/IBM-Bluemix/bluemix-cli-sdk/i18n"
 )
 
+// Run plugin with os.Args
 func Start(plugin Plugin) {
-	if isMetadataRequest() {
+	Run(plugin, os.Args[1:])
+}
+
+// Run plugin with args
+func Run(plugin Plugin, args []string) {
+	if isMetadataRequest(args) {
 		json, err := json.Marshal(plugin.GetMetadata())
 		if err != nil {
 			panic(err)
 		}
 		os.Stdout.Write(json)
-	} else {
-		Run(plugin, os.Args[1:])
+		return
 	}
-}
 
-func Run(plugin Plugin, args []string) {
-	config := core_config.NewCoreConfig(func(err error) {
-		panic(fmt.Sprintf("Configuration error: %v", err))
-	})
-
-	context := NewPluginContext(plugin.GetMetadata().Name, config)
+	context := GetPluginContext(plugin.GetMetadata().Name)
 
 	// initialization
 	i18n.T = i18n.Tfunc(context.Locale())
@@ -34,7 +33,15 @@ func Run(plugin Plugin, args []string) {
 	plugin.Run(context, args)
 }
 
-func isMetadataRequest() bool {
-	args := os.Args
-	return len(args) == 2 && args[1] == "SendMetadata"
+func GetPluginContext(pluginName string) PluginContext {
+	coreConfig := core_config.NewCoreConfig(
+		func(err error) {
+			panic("configuration error: " + err.Error())
+		})
+	pluginPath := config_helpers.PluginDir(pluginName)
+	return createPluginContext(pluginPath, coreConfig)
+}
+
+func isMetadataRequest(args []string) bool {
+	return len(args) == 1 && args[0] == "SendMetadata"
 }

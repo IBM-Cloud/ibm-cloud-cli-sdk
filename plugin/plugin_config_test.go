@@ -34,7 +34,7 @@ func TestPluginConfig_FileNotExist(t *testing.T) {
 	assert.NoError(err)
 
 	assert.NotPanics(func() {
-		NewPluginConfig(filepath.Join(tmpDir, "whatever"))
+		loadPluginConfigFromPath(filepath.Join(tmpDir, "whatever"))
 	})
 }
 
@@ -44,7 +44,7 @@ func TestPluginConfigExists(t *testing.T) {
 	path := prepareConfigFile()
 	defer os.RemoveAll(filepath.Dir(path))
 
-	config := NewPluginConfig(path)
+	config := loadPluginConfigFromPath(path)
 
 	assert.True(config.Exists("name"))
 	assert.False(config.Exists("not-exist-key"))
@@ -56,7 +56,7 @@ func TestPluginConfigGet(t *testing.T) {
 	path := prepareConfigFile()
 	defer os.RemoveAll(filepath.Dir(path))
 
-	config := NewPluginConfig(path)
+	config := loadPluginConfigFromPath(path)
 
 	testData := []struct {
 		Key           string
@@ -84,7 +84,7 @@ func TestPluginConfigGetString(t *testing.T) {
 	path := prepareConfigFile()
 	defer os.RemoveAll(filepath.Dir(path))
 
-	config := NewPluginConfig(path)
+	config := loadPluginConfigFromPath(path)
 
 	testData := []struct {
 		Key           string
@@ -119,7 +119,7 @@ func TestPluginConfigGetBool(t *testing.T) {
 	path := prepareConfigFile()
 	defer os.RemoveAll(filepath.Dir(path))
 
-	config := NewPluginConfig(path)
+	config := loadPluginConfigFromPath(path)
 
 	testData := []struct {
 		Key           string
@@ -151,7 +151,7 @@ func TestPluginConfigGetInt(t *testing.T) {
 	path := prepareConfigFile()
 	defer os.RemoveAll(filepath.Dir(path))
 
-	config := NewPluginConfig(path)
+	config := loadPluginConfigFromPath(path)
 
 	testData := []struct {
 		Key           string
@@ -186,7 +186,7 @@ func TestPluginConfigGetFloat(t *testing.T) {
 	path := prepareConfigFile()
 	defer os.RemoveAll(filepath.Dir(path))
 
-	config := NewPluginConfig(path)
+	config := loadPluginConfigFromPath(path)
 
 	testData := []struct {
 		Key           string
@@ -218,7 +218,7 @@ func TestPluginConfigGetIntSlice(t *testing.T) {
 	path := prepareConfigFile()
 	defer os.RemoveAll(filepath.Dir(path))
 
-	config := NewPluginConfig(path)
+	config := loadPluginConfigFromPath(path)
 
 	v, err := config.GetIntSlice("nums")
 	assert.NoError(err)
@@ -231,7 +231,7 @@ func TestPluginConfigGetStringSlice(t *testing.T) {
 	path := prepareConfigFile()
 	defer os.RemoveAll(filepath.Dir(path))
 
-	config := NewPluginConfig(path)
+	config := loadPluginConfigFromPath(path)
 
 	v, err := config.GetStringSlice("foos")
 	assert.NoError(err)
@@ -244,7 +244,7 @@ func TestPluginConfigGetFloatSlice(t *testing.T) {
 	path := prepareConfigFile()
 	defer os.RemoveAll(filepath.Dir(path))
 
-	config := NewPluginConfig(path)
+	config := loadPluginConfigFromPath(path)
 
 	v, err := config.GetFloatSlice("nums")
 	assert.NoError(err)
@@ -257,7 +257,7 @@ func TestPluginConfigGetStringMap(t *testing.T) {
 	path := prepareConfigFile()
 	defer os.RemoveAll(filepath.Dir(path))
 
-	config := NewPluginConfig(path)
+	config := loadPluginConfigFromPath(path)
 
 	v, err := config.GetStringMap("strmapstr")
 	assert.NoError(err)
@@ -270,7 +270,7 @@ func TestPluginConfigGetStringMapString(t *testing.T) {
 	path := prepareConfigFile()
 	defer os.RemoveAll(filepath.Dir(path))
 
-	config := NewPluginConfig(path)
+	config := loadPluginConfigFromPath(path)
 
 	v, err := config.GetStringMapString("strmapstr")
 	assert.NoError(err)
@@ -283,7 +283,7 @@ func TestPluginConfigErase(t *testing.T) {
 	path := prepareConfigFile()
 	defer os.RemoveAll(filepath.Dir(path))
 
-	config := NewPluginConfig(path)
+	config := loadPluginConfigFromPath(path)
 
 	assert.NotNil(config.Get("name"))
 	err := config.Erase("name")
@@ -297,7 +297,7 @@ func TestPluginConfigErase_NotExisingKey(t *testing.T) {
 	path := prepareConfigFile()
 	defer os.RemoveAll(filepath.Dir(path))
 
-	config := NewPluginConfig(path)
+	config := loadPluginConfigFromPath(path)
 
 	err := config.Erase("non-existing-key")
 	assert.NoError(err)
@@ -309,7 +309,7 @@ func TestPluginConfigSet(t *testing.T) {
 	path := prepareConfigFile()
 	defer os.RemoveAll(filepath.Dir(path))
 
-	config := NewPluginConfig(path)
+	config := loadPluginConfigFromPath(path)
 
 	err := config.Set("name", "Tom")
 	assert.NoError(err)
@@ -322,7 +322,7 @@ func TestPluginConfigSet_AddNewKey(t *testing.T) {
 	path := prepareConfigFile()
 	defer os.RemoveAll(filepath.Dir(path))
 
-	config := NewPluginConfig(path)
+	config := loadPluginConfigFromPath(path)
 
 	err := config.Set("new", "something new")
 	assert.NoError(err)
