@@ -20,6 +20,7 @@ type BXConfigData struct {
 	ConsoleEndpoint         string
 	Region                  string
 	RegionID                string
+	RegionType              string
 	IAMToken                string
 	IAMRefreshToken         string
 	Account                 models.Account
@@ -112,16 +113,13 @@ func (c *bxConfigRepository) ConsoleEndpoint() (endpoint string) {
 	return
 }
 
-func (c *bxConfigRepository) Region() (region string) {
+func (c *bxConfigRepository) Region() (region models.Region) {
 	c.read(func() {
-		region = c.data.Region
-	})
-	return
-}
-
-func (c *bxConfigRepository) RegionID() (regionID string) {
-	c.read(func() {
-		regionID = c.data.RegionID
+		region = models.Region{
+			ID:   c.data.RegionID,
+			Name: c.data.Region,
+			Type: c.data.RegionType,
+		}
 	})
 	return
 }
@@ -244,15 +242,11 @@ func (c *bxConfigRepository) SetConsoleEndpoint(endpoint string) {
 	})
 }
 
-func (c *bxConfigRepository) SetRegion(region string) {
+func (c *bxConfigRepository) SetRegion(region models.Region) {
 	c.write(func() {
-		c.data.Region = region
-	})
-}
-
-func (c *bxConfigRepository) SetRegionID(regionID string) {
-	c.write(func() {
-		c.data.RegionID = regionID
+		c.data.Region = region.Name
+		c.data.RegionID = region.ID
+		c.data.RegionType = region.Type
 	})
 }
 

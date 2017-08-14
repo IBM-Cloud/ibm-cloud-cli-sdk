@@ -108,8 +108,7 @@ type PluginContext interface {
 	ResourceGroup() models.ResourceGroup
 	CurrentSpace() models.SpaceFields
 	HasSpace() bool
-	Region() string   // region name
-	RegionID() string // region unique ID
+	Region() models.Region
 	Locale() string
 	Trace() string
 	ColorEnabled() string

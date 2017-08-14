@@ -45,12 +45,8 @@ func (c *pluginContext) HasAPIEndpoint() bool {
 	return c.coreConfig.HasAPIEndpoint()
 }
 
-func (c *pluginContext) Region() string {
+func (c *pluginContext) Region() models.Region {
 	return c.coreConfig.Region()
-}
-
-func (c *pluginContext) RegionID() string {
-	return c.coreConfig.RegionID()
 }
 
 func (c *pluginContext) DopplerEndpoint() string {
