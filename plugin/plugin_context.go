@@ -5,7 +5,6 @@ import (
 	"path/filepath"
 
 	"github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/authentication"
-	"github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/configuration/config_helpers"
 	"github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/configuration/core_config"
 	"github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/consts"
 	"github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/models"
@@ -18,14 +17,12 @@ type pluginContext struct {
 	pluginPath   string
 }
 
-func NewPluginContext(pluginName string, coreConfig core_config.ReadWriter) *pluginContext {
-	pluginPath := config_helpers.PluginDir(pluginName)
-	c := &pluginContext{
+func createPluginContext(pluginPath string, coreConfig core_config.ReadWriter) *pluginContext {
+	return &pluginContext{
 		pluginPath:   pluginPath,
-		pluginConfig: NewPluginConfig(filepath.Join(pluginPath, "config.json")),
+		pluginConfig: loadPluginConfigFromPath(filepath.Join(pluginPath, "config.json")),
+		coreConfig:   coreConfig,
 	}
-	c.coreConfig = coreConfig
-	return c
 }
 
 func (c *pluginContext) PluginDirectory() string {
