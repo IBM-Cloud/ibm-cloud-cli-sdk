@@ -23,6 +23,7 @@ type BXConfigData struct {
 	IAMToken                string
 	IAMRefreshToken         string
 	Account                 models.Account
+	ResourceGroup           models.ResourceGroup
 	PluginRepos             []models.PluginRepo
 	Locale                  string
 	Trace                   string
@@ -154,6 +155,20 @@ func (c *bxConfigRepository) IMSAccountID() string {
 	return NewIAMTokenInfo(c.IAMToken()).Accounts.IMSAccountID
 }
 
+func (c *bxConfigRepository) ResourceGroup() (group models.ResourceGroup) {
+	c.read(func() {
+		group = c.data.ResourceGroup
+	})
+	return
+}
+
+func (c *bxConfigRepository) HasResourceGroup() (hasGroup bool) {
+	c.read(func() {
+		hasGroup = c.data.ResourceGroup.GUID != "" && c.data.ResourceGroup.Name != ""
+	})
+	return
+}
+
 func (c *bxConfigRepository) PluginRepos() (repos []models.PluginRepo) {
 	c.read(func() {
 		repos = c.data.PluginRepos
@@ -256,6 +271,12 @@ func (c *bxConfigRepository) SetIAMRefreshToken(token string) {
 func (c *bxConfigRepository) SetAccount(account models.Account) {
 	c.write(func() {
 		c.data.Account = account
+	})
+}
+
+func (c *bxConfigRepository) SetResourceGroup(group models.ResourceGroup) {
+	c.write(func() {
+		c.data.ResourceGroup = group
 	})
 }
 

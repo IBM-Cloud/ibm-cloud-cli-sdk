@@ -105,6 +105,7 @@ type PluginContext interface {
 	AccountID() string
 	Account() models.Account
 	IMSAccountID() string
+	ResourceGroup() models.ResourceGroup
 	CurrentSpace() models.SpaceFields
 	HasSpace() bool
 	Region() string   // region name

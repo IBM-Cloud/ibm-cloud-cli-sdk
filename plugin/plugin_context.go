@@ -130,6 +130,10 @@ func (c *pluginContext) IMSAccountID() string {
 	return c.coreConfig.IMSAccountID()
 }
 
+func (c *pluginContext) ResourceGroup() models.ResourceGroup {
+	return c.coreConfig.ResourceGroup()
+}
+
 func (c *pluginContext) CurrentOrg() models.OrganizationFields {
 	return c.coreConfig.OrganizationFields()
 }
