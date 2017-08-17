@@ -31,15 +31,15 @@ const (
 	ScopeSpace        = "s"
 	ScopeProject      = "p"
 
-	ResourceCFSpace   = "cf-space"
-	ResourceCFApp     = "cf-application"
-	ResourceCFService = "cf-service-instance"
-	ResourceRole      = "role"
+	ResourceTypeCFSpace   = "cf-space"
+	ResourceTypeCFApp     = "cf-application"
+	ResourceTypeCFService = "cf-service-instance"
+	ResourceTypeRole      = "role"
 	// more resources ...
 )
 
 type CRN struct {
-	CRN             string
+	Scheme          string
 	Version         string
 	CName           string
 	CType           string
@@ -54,7 +54,7 @@ type CRN struct {
 
 func New(cloudName string, cloudType string) CRN {
 	return CRN{
-		CRN:     crn,
+		Scheme:  crn,
 		Version: version,
 		CName:   cloudName,
 		CType:   cloudType,
@@ -87,7 +87,7 @@ func Parse(s string) (CRN, error) {
 	}
 
 	crn := CRN{
-		CRN:             segments[0],
+		Scheme:          segments[0],
 		Version:         segments[1],
 		CName:           segments[2],
 		CType:           segments[3],
@@ -112,7 +112,7 @@ func Parse(s string) (CRN, error) {
 
 func (c CRN) String() string {
 	return strings.Join([]string{
-		c.CRN,
+		c.Scheme,
 		c.Version,
 		c.CName,
 		c.CType,

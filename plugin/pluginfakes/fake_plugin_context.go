@@ -247,6 +247,24 @@ type FakePluginContext struct {
 	regionReturnsOnCall map[int]struct {
 		result1 models.Region
 	}
+	CloudNameStub        func() string
+	cloudNameMutex       sync.RWMutex
+	cloudNameArgsForCall []struct{}
+	cloudNameReturns     struct {
+		result1 string
+	}
+	cloudNameReturnsOnCall map[int]struct {
+		result1 string
+	}
+	CloudTypeStub        func() string
+	cloudTypeMutex       sync.RWMutex
+	cloudTypeArgsForCall []struct{}
+	cloudTypeReturns     struct {
+		result1 string
+	}
+	cloudTypeReturnsOnCall map[int]struct {
+		result1 string
+	}
 	LocaleStub        func() string
 	localeMutex       sync.RWMutex
 	localeArgsForCall []struct{}
@@ -1378,6 +1396,86 @@ func (fake *FakePluginContext) RegionReturnsOnCall(i int, result1 models.Region)
 	}{result1}
 }
 
+func (fake *FakePluginContext) CloudName() string {
+	fake.cloudNameMutex.Lock()
+	ret, specificReturn := fake.cloudNameReturnsOnCall[len(fake.cloudNameArgsForCall)]
+	fake.cloudNameArgsForCall = append(fake.cloudNameArgsForCall, struct{}{})
+	fake.recordInvocation("CloudName", []interface{}{})
+	fake.cloudNameMutex.Unlock()
+	if fake.CloudNameStub != nil {
+		return fake.CloudNameStub()
+	}
+	if specificReturn {
+		return ret.result1
+	}
+	return fake.cloudNameReturns.result1
+}
+
+func (fake *FakePluginContext) CloudNameCallCount() int {
+	fake.cloudNameMutex.RLock()
+	defer fake.cloudNameMutex.RUnlock()
+	return len(fake.cloudNameArgsForCall)
+}
+
+func (fake *FakePluginContext) CloudNameReturns(result1 string) {
+	fake.CloudNameStub = nil
+	fake.cloudNameReturns = struct {
+		result1 string
+	}{result1}
+}
+
+func (fake *FakePluginContext) CloudNameReturnsOnCall(i int, result1 string) {
+	fake.CloudNameStub = nil
+	if fake.cloudNameReturnsOnCall == nil {
+		fake.cloudNameReturnsOnCall = make(map[int]struct {
+			result1 string
+		})
+	}
+	fake.cloudNameReturnsOnCall[i] = struct {
+		result1 string
+	}{result1}
+}
+
+func (fake *FakePluginContext) CloudType() string {
+	fake.cloudTypeMutex.Lock()
+	ret, specificReturn := fake.cloudTypeReturnsOnCall[len(fake.cloudTypeArgsForCall)]
+	fake.cloudTypeArgsForCall = append(fake.cloudTypeArgsForCall, struct{}{})
+	fake.recordInvocation("CloudType", []interface{}{})
+	fake.cloudTypeMutex.Unlock()
+	if fake.CloudTypeStub != nil {
+		return fake.CloudTypeStub()
+	}
+	if specificReturn {
+		return ret.result1
+	}
+	return fake.cloudTypeReturns.result1
+}
+
+func (fake *FakePluginContext) CloudTypeCallCount() int {
+	fake.cloudTypeMutex.RLock()
+	defer fake.cloudTypeMutex.RUnlock()
+	return len(fake.cloudTypeArgsForCall)
+}
+
+func (fake *FakePluginContext) CloudTypeReturns(result1 string) {
+	fake.CloudTypeStub = nil
+	fake.cloudTypeReturns = struct {
+		result1 string
+	}{result1}
+}
+
+func (fake *FakePluginContext) CloudTypeReturnsOnCall(i int, result1 string) {
+	fake.CloudTypeStub = nil
+	if fake.cloudTypeReturnsOnCall == nil {
+		fake.cloudTypeReturnsOnCall = make(map[int]struct {
+			result1 string
+		})
+	}
+	fake.cloudTypeReturnsOnCall[i] = struct {
+		result1 string
+	}{result1}
+}
+
 func (fake *FakePluginContext) Locale() string {
 	fake.localeMutex.Lock()
 	ret, specificReturn := fake.localeReturnsOnCall[len(fake.localeArgsForCall)]
@@ -1793,6 +1891,10 @@ func (fake *FakePluginContext) Invocations() map[string][][]interface{} {
 	defer fake.hasSpaceMutex.RUnlock()
 	fake.regionMutex.RLock()
 	defer fake.regionMutex.RUnlock()
+	fake.cloudNameMutex.RLock()
+	defer fake.cloudNameMutex.RUnlock()
+	fake.cloudTypeMutex.RLock()
+	defer fake.cloudTypeMutex.RUnlock()
 	fake.localeMutex.RLock()
 	defer fake.localeMutex.RUnlock()
 	fake.traceMutex.RLock()

@@ -124,6 +124,37 @@ func (c *bxConfigRepository) Region() (region models.Region) {
 	return
 }
 
+func (c *bxConfigRepository) CloudName() string {
+	regionID := c.Region().ID
+	if regionID == "" {
+		return ""
+	}
+
+	splits := strings.Split(regionID, ":")
+	if len(splits) != 3 {
+		return ""
+	}
+
+	customer := splits[0]
+	if customer != "ibm" {
+		return customer
+	}
+
+	deployment := splits[1]
+	switch {
+	case deployment == "yp":
+		return "bluemix"
+	case strings.HasPrefix(deployment, "ys"):
+		return "staging"
+	default:
+		return ""
+	}
+}
+
+func (c *bxConfigRepository) CloudType() string {
+	return c.Region().Type
+}
+
 func (c *bxConfigRepository) IAMToken() (token string) {
 	c.read(func() {
 		token = c.data.IAMToken

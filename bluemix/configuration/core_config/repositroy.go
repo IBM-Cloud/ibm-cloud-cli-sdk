@@ -41,6 +41,8 @@ type Reader interface {
 	// bx config
 	ConsoleEndpoint() string
 	Region() models.Region
+	CloudName() string
+	CloudType() string
 	IAMToken() string
 	IAMRefreshToken() string
 	Account() models.Account

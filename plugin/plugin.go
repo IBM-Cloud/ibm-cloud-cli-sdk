@@ -109,6 +109,8 @@ type PluginContext interface {
 	CurrentSpace() models.SpaceFields
 	HasSpace() bool
 	Region() models.Region
+	CloudName() string
+	CloudType() string
 	Locale() string
 	Trace() string
 	ColorEnabled() string

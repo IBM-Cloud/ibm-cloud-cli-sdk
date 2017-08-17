@@ -49,6 +49,14 @@ func (c *pluginContext) Region() models.Region {
 	return c.coreConfig.Region()
 }
 
+func (c *pluginContext) CloudName() string {
+	return c.coreConfig.CloudName()
+}
+
+func (c *pluginContext) CloudType() string {
+	return c.coreConfig.CloudType()
+}
+
 func (c *pluginContext) DopplerEndpoint() string {
 	return c.coreConfig.DopplerEndpoint()
 }
