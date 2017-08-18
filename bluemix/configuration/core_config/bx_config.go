@@ -372,6 +372,7 @@ func (c *bxConfigRepository) ClearSession() {
 		c.data.IAMToken = ""
 		c.data.IAMRefreshToken = ""
 		c.data.Account = models.Account{}
+		c.data.ResourceGroup = models.ResourceGroup{}
 	})
 }
 
