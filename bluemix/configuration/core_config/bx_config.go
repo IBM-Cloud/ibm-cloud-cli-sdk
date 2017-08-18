@@ -20,6 +20,7 @@ type BXConfigData struct {
 	ConsoleEndpoint         string
 	Region                  string
 	RegionID                string
+	RegionType              string
 	IAMToken                string
 	IAMRefreshToken         string
 	Account                 models.Account
@@ -112,18 +113,46 @@ func (c *bxConfigRepository) ConsoleEndpoint() (endpoint string) {
 	return
 }
 
-func (c *bxConfigRepository) Region() (region string) {
+func (c *bxConfigRepository) Region() (region models.Region) {
 	c.read(func() {
-		region = c.data.Region
+		region = models.Region{
+			ID:   c.data.RegionID,
+			Name: c.data.Region,
+			Type: c.data.RegionType,
+		}
 	})
 	return
 }
 
-func (c *bxConfigRepository) RegionID() (regionID string) {
-	c.read(func() {
-		regionID = c.data.RegionID
-	})
-	return
+func (c *bxConfigRepository) CloudName() string {
+	regionID := c.Region().ID
+	if regionID == "" {
+		return ""
+	}
+
+	splits := strings.Split(regionID, ":")
+	if len(splits) != 3 {
+		return ""
+	}
+
+	customer := splits[0]
+	if customer != "ibm" {
+		return customer
+	}
+
+	deployment := splits[1]
+	switch {
+	case deployment == "yp":
+		return "bluemix"
+	case strings.HasPrefix(deployment, "ys"):
+		return "staging"
+	default:
+		return ""
+	}
+}
+
+func (c *bxConfigRepository) CloudType() string {
+	return c.Region().Type
 }
 
 func (c *bxConfigRepository) IAMToken() (token string) {
@@ -244,15 +273,11 @@ func (c *bxConfigRepository) SetConsoleEndpoint(endpoint string) {
 	})
 }
 
-func (c *bxConfigRepository) SetRegion(region string) {
+func (c *bxConfigRepository) SetRegion(region models.Region) {
 	c.write(func() {
-		c.data.Region = region
-	})
-}
-
-func (c *bxConfigRepository) SetRegionID(regionID string) {
-	c.write(func() {
-		c.data.RegionID = regionID
+		c.data.Region = region.Name
+		c.data.RegionID = region.ID
+		c.data.RegionType = region.Type
 	})
 }
 

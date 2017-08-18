@@ -40,9 +40,9 @@ type Reader interface {
 
 	// bx config
 	ConsoleEndpoint() string
-	Region() string
-	RegionID() string
-
+	Region() models.Region
+	CloudName() string
+	CloudType() string
 	IAMToken() string
 	IAMRefreshToken() string
 	Account() models.Account
@@ -87,8 +87,7 @@ type ReadWriter interface {
 
 	// bx config
 	SetConsoleEndpoint(string)
-	SetRegion(string)
-	SetRegionID(string)
+	SetRegion(models.Region)
 	SetAccount(models.Account)
 	SetIAMToken(string)
 	SetIAMRefreshToken(string)
