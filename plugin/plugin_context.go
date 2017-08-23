@@ -186,3 +186,11 @@ func getFromEnvOrConfig(envKey string, config string) string {
 func (c *pluginContext) CommandNamespace() string {
 	return os.Getenv(consts.ENV_BLUEMIX_PLUGIN_NAMESPACE)
 }
+
+func (c *pluginContext) CLIName() string {
+	cliName := os.Getenv(consts.ENV_BLUEMIX_CLI)
+	if cliName == "" {
+		cliName = "bx"
+	}
+	return cliName
+}
