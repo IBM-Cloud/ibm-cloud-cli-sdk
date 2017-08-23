@@ -346,6 +346,15 @@ type FakePluginContext struct {
 	commandNamespaceReturnsOnCall map[int]struct {
 		result1 string
 	}
+	CLINameStub        func() string
+	cLINameMutex       sync.RWMutex
+	cLINameArgsForCall []struct{}
+	cLINameReturns     struct {
+		result1 string
+	}
+	cLINameReturnsOnCall map[int]struct {
+		result1 string
+	}
 	invocations      map[string][][]interface{}
 	invocationsMutex sync.RWMutex
 }
@@ -1836,6 +1845,46 @@ func (fake *FakePluginContext) CommandNamespaceReturnsOnCall(i int, result1 stri
 	}{result1}
 }
 
+func (fake *FakePluginContext) CLIName() string {
+	fake.cLINameMutex.Lock()
+	ret, specificReturn := fake.cLINameReturnsOnCall[len(fake.cLINameArgsForCall)]
+	fake.cLINameArgsForCall = append(fake.cLINameArgsForCall, struct{}{})
+	fake.recordInvocation("CLIName", []interface{}{})
+	fake.cLINameMutex.Unlock()
+	if fake.CLINameStub != nil {
+		return fake.CLINameStub()
+	}
+	if specificReturn {
+		return ret.result1
+	}
+	return fake.cLINameReturns.result1
+}
+
+func (fake *FakePluginContext) CLINameCallCount() int {
+	fake.cLINameMutex.RLock()
+	defer fake.cLINameMutex.RUnlock()
+	return len(fake.cLINameArgsForCall)
+}
+
+func (fake *FakePluginContext) CLINameReturns(result1 string) {
+	fake.CLINameStub = nil
+	fake.cLINameReturns = struct {
+		result1 string
+	}{result1}
+}
+
+func (fake *FakePluginContext) CLINameReturnsOnCall(i int, result1 string) {
+	fake.CLINameStub = nil
+	if fake.cLINameReturnsOnCall == nil {
+		fake.cLINameReturnsOnCall = make(map[int]struct {
+			result1 string
+		})
+	}
+	fake.cLINameReturnsOnCall[i] = struct {
+		result1 string
+	}{result1}
+}
+
 func (fake *FakePluginContext) Invocations() map[string][][]interface{} {
 	fake.invocationsMutex.RLock()
 	defer fake.invocationsMutex.RUnlock()
@@ -1913,6 +1962,8 @@ func (fake *FakePluginContext) Invocations() map[string][][]interface{} {
 	defer fake.pluginConfigMutex.RUnlock()
 	fake.commandNamespaceMutex.RLock()
 	defer fake.commandNamespaceMutex.RUnlock()
+	fake.cLINameMutex.RLock()
+	defer fake.cLINameMutex.RUnlock()
 	return fake.invocations
 }
 

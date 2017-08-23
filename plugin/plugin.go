@@ -120,4 +120,5 @@ type PluginContext interface {
 	VersionCheckEnabled() bool
 	PluginConfig() PluginConfig
 	CommandNamespace() string
+	CLIName() string
 }
