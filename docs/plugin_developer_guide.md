@@ -417,7 +417,23 @@ ui.Say("Mapping route '%s' to CF application '%s'...",
 
 ### 2.4. Help of Command
 
-In the help content of plugin command, use upper case for all command variables and brackets "[]" around optional command options. For required options, do not wrap brackets around. The following is an example of the out put of the "help" command:
+Use the guidelines below to compose command help.
+- Use "-" for single letter flags, and "--" for multiple letter flags, e.g. `-c ACCOUNT_ID` and `--guid`.
+- All user input values should be capital letters, e.g. `bx scale RESOURCE_NAME`
+- For optional parameters and flags, surround them with "[...]", e.g. `bx iam orgs [--guid]`.
+- For exclusive parameters and flags, group them together by "(...)" and separate by "|".
+  - Example: `bluemix test create (NAME | --uuid ID)`
+- "[...]" and "(...)" can be nested.
+- If a value accepts multiple type of inputs, it's recommended that for file type the file name should start with "@".
+- If a command has multiple paradigms and it's hard to describe them together, specify each of them in separate lines, 
+  e.g.
+  ```bash
+  USAGE:
+    bx test command foo.....
+    bx test command bar.....
+  ```
+
+The following gives an example of the out put of the "help" command:
 
 ```
 NAME:
@@ -431,6 +447,7 @@ OPTIONS:
    -m value  Memory limit (e.g. 256M, 1024M, 1G), valid only for scaling an app, not a container group
    -f        Force restart of CF application without prompt, valid only for scaling an app, not a container group
 ```
+
 
 ### 2.5. Incorrect Usage
 
