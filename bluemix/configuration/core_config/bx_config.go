@@ -21,6 +21,7 @@ type BXConfigData struct {
 	Region                  string
 	RegionID                string
 	RegionType              string
+	IAMID                   string
 	IAMToken                string
 	IAMRefreshToken         string
 	Account                 models.Account
@@ -153,6 +154,10 @@ func (c *bxConfigRepository) CloudName() string {
 
 func (c *bxConfigRepository) CloudType() string {
 	return c.Region().Type
+}
+
+func (c *bxConfigRepository) IAMID() string {
+	return NewIAMTokenInfo(c.IAMToken()).IAMID
 }
 
 func (c *bxConfigRepository) IAMToken() (token string) {

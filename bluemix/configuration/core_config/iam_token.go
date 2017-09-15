@@ -7,11 +7,8 @@ import (
 )
 
 type IAMTokenInfo struct {
-	Identifier string       `json:"identifier"`
-	IAMId      string       `json:"iam_id"`
-	UserName   string       `json:"name"`
-	UserEmail  string       `json:"email"`
-	Accounts   AccountsInfo `json:"account"`
+	IAMID    string       `json:"iam_id"`
+	Accounts AccountsInfo `json:"account"`
 }
 
 type AccountsInfo struct {

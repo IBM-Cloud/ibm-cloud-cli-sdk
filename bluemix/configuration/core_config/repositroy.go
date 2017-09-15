@@ -43,6 +43,7 @@ type Reader interface {
 	Region() models.Region
 	CloudName() string
 	CloudType() string
+	IAMID() string
 	IAMToken() string
 	IAMRefreshToken() string
 	Account() models.Account
