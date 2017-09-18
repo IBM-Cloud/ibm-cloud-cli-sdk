@@ -286,6 +286,12 @@ func (c *bxConfigRepository) SetRegion(region models.Region) {
 	})
 }
 
+func (c *bxConfigRepository) SetIAMID(IAMID string) {
+	c.write(func() {
+		c.data.IAMID = IAMID
+	})
+}
+
 func (c *bxConfigRepository) SetIAMToken(token string) {
 	c.write(func() {
 		c.data.IAMToken = token
@@ -374,6 +380,7 @@ func (c *bxConfigRepository) SetTrace(trace string) {
 
 func (c *bxConfigRepository) ClearSession() {
 	c.write(func() {
+		c.data.IAMID = ""
 		c.data.IAMToken = ""
 		c.data.IAMRefreshToken = ""
 		c.data.Account = models.Account{}

@@ -114,11 +114,11 @@ func (c *pluginContext) RefreshIAMToken() (string, error) {
 	if err != nil {
 		return "", err
 	}
-
 	c.coreConfig.SetIAMToken(iamToken.AccessToken)
 	c.coreConfig.SetIAMRefreshToken(iamToken.RefreshToken)
 	c.coreConfig.SetUAAToken(uaaToken.AccessToken)
 	c.coreConfig.SetUAARefreshToken(uaaToken.RefreshToken)
+	c.coreConfig.SetIAMID(core_config.NewIAMTokenInfo(iamToken.AccessToken).IAMID)
 
 	return iamToken.AccessToken, nil
 }
