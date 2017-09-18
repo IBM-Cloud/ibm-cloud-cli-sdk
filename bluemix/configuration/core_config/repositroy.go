@@ -90,6 +90,7 @@ type ReadWriter interface {
 	SetConsoleEndpoint(string)
 	SetRegion(models.Region)
 	SetAccount(models.Account)
+	SetIAMID(string)
 	SetIAMToken(string)
 	SetIAMRefreshToken(string)
 	SetResourceGroup(models.ResourceGroup)
