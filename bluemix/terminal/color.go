@@ -19,8 +19,9 @@ const (
 	//	blue          = 34
 	magenta = 35
 	cyan    = 36
-	grey    = 37
-	white   = 38
+	white   = 37
+
+	defaultFGColor = 39
 )
 
 var (
@@ -73,7 +74,7 @@ func Decolorize(message string) string {
 }
 
 func HeaderColor(message string) string {
-	return ColorizeBold(message, white)
+	return ColorizeBold(message, defaultFGColor)
 }
 
 func CommandColor(message string) string {
@@ -81,7 +82,7 @@ func CommandColor(message string) string {
 }
 
 func StoppedColor(message string) string {
-	return ColorizeBold(message, grey)
+	return ColorizeBold(message, white)
 }
 
 func AdvisoryColor(message string) string {
@@ -125,7 +126,7 @@ func LogStderrColor(message string) string {
 }
 
 func LogHealthHeaderColor(message string) string {
-	return Colorize(message, grey)
+	return Colorize(message, white)
 }
 
 func LogAppHeaderColor(message string) string {
