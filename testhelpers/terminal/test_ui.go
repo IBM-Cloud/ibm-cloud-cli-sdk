@@ -88,25 +88,25 @@ func (ui *FakeUI) ChoicesPrompt(message string, choices []string, options *term.
 	return p
 }
 
-func (ui *FakeUI) Ask(template string, args ...interface{}) string {
+func (ui *FakeUI) Ask(template string, args ...interface{}) (string, error) {
 	message := fmt.Sprintf(template, args...)
 
 	var answer string
-	ui.Prompt(message,
+	err := ui.Prompt(message,
 		&term.PromptOptions{
 			HideDefault: true,
 			NoLoop:      true,
 		},
 	).Resolve(&answer)
 
-	return answer
+	return answer, err
 }
 
-func (ui *FakeUI) AskForPassword(template string, args ...interface{}) string {
+func (ui *FakeUI) AskForPassword(template string, args ...interface{}) (string, error) {
 	message := fmt.Sprintf(template, args...)
 
 	var passwd string
-	ui.Prompt(
+	err := ui.Prompt(
 		message,
 		&term.PromptOptions{
 			HideDefault: true,
@@ -115,28 +115,28 @@ func (ui *FakeUI) AskForPassword(template string, args ...interface{}) string {
 		},
 	).Resolve(&passwd)
 
-	return passwd
+	return passwd, err
 }
 
-func (ui *FakeUI) Confirm(template string, args ...interface{}) bool {
+func (ui *FakeUI) Confirm(template string, args ...interface{}) (bool, error) {
 	return ui.ConfirmWithDefault(false, template, args...)
 }
 
-func (ui *FakeUI) ConfirmWithDefault(defaultBool bool, template string, args ...interface{}) bool {
+func (ui *FakeUI) ConfirmWithDefault(defaultBool bool, template string, args ...interface{}) (bool, error) {
 	message := fmt.Sprintf(template, args...)
 
 	var yn = defaultBool
-	ui.Prompt(
+	err := ui.Prompt(
 		message,
 		&term.PromptOptions{
 			HideDefault: true,
 			NoLoop:      true,
 		},
 	).Resolve(&yn)
-	return yn
+	return yn, err
 }
 
-func (ui *FakeUI) SelectOne(choices []string, template string, args ...interface{}) int {
+func (ui *FakeUI) SelectOne(choices []string, template string, args ...interface{}) (int, error) {
 	message := fmt.Sprintf(template, args...)
 
 	var selected string
@@ -149,16 +149,16 @@ func (ui *FakeUI) SelectOne(choices []string, template string, args ...interface
 	).Resolve(&selected)
 
 	if err != nil {
-		return -1
+		return -1, err
 	}
 
 	for i, c := range choices {
 		if selected == c {
-			return i
+			return i, nil
 		}
 	}
 
-	return -1
+	return -1, nil
 }
 
 func (ui *FakeUI) Table(headers []string) term.Table {

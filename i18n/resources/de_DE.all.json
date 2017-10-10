@@ -16,6 +16,10 @@
     "translation": "Bei der Antwort bezüglich der Erstellung eines Speicherauszugs ist ein Fehler aufgetreten:\n{{.Error}}\n"
   },
   {
+    "id": "Could not read from input: ",
+    "translation": "Could not read from input: "
+  },
+  {
     "id": "Elapsed:",
     "translation": "Verstrichen:"
   },

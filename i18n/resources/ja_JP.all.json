@@ -16,6 +16,10 @@
     "translation": "応答のダンプ中にエラーが発生しました:\n{{.Error}}\n"
   },
   {
+    "id": "Could not read from input: ",
+    "translation": "Could not read from input: "
+  },
+  {
     "id": "Elapsed:",
     "translation": "経過:"
   },

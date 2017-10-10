@@ -16,6 +16,10 @@
     "translation": "傾出回應時發生錯誤：\n{{.Error}}\n"
   },
   {
+    "id": "Could not read from input: ",
+    "translation": "Could not read from input: "
+  },
+  {
     "id": "Elapsed:",
     "translation": "經歷時間："
   },

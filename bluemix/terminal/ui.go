@@ -21,15 +21,15 @@ type UI interface {
 	ChoicesPrompt(message string, choices []string, options *PromptOptions) *Prompt
 
 	// Deprecated: use Prompt() instead
-	Ask(format string, args ...interface{}) (answer string)
+	Ask(format string, args ...interface{}) (answer string, err error)
 	// Deprecated: use Prompt() instead
-	AskForPassword(format string, args ...interface{}) (answer string)
+	AskForPassword(format string, args ...interface{}) (answer string, err error)
 	// Deprecated: use Prompt() instead
-	Confirm(format string, args ...interface{}) bool
+	Confirm(format string, args ...interface{}) (bool, error)
 	// Deprecated: use Prompt() instead
-	ConfirmWithDefault(defaultBool bool, format string, args ...interface{}) bool
+	ConfirmWithDefault(defaultBool bool, format string, args ...interface{}) (bool, error)
 	// Deprecated: use ChoicesPrompt() instead
-	SelectOne(choices []string, format string, args ...interface{}) int
+	SelectOne(choices []string, format string, args ...interface{}) (int, error)
 
 	Table(headers []string) Table
 	Writer() io.Writer
@@ -87,47 +87,47 @@ func (ui *terminalUI) ChoicesPrompt(message string, choices []string, options *P
 	return p
 }
 
-func (ui *terminalUI) Ask(format string, args ...interface{}) (answer string) {
+func (ui *terminalUI) Ask(format string, args ...interface{}) (answer string, err error) {
 	message := fmt.Sprintf(format, args...)
-	ui.Prompt(message, &PromptOptions{HideDefault: true, NoLoop: true}).Resolve(&answer)
+	err = ui.Prompt(message, &PromptOptions{HideDefault: true, NoLoop: true}).Resolve(&answer)
 	return
 }
 
-func (ui *terminalUI) AskForPassword(format string, args ...interface{}) (passwd string) {
+func (ui *terminalUI) AskForPassword(format string, args ...interface{}) (passwd string, err error) {
 	message := fmt.Sprintf(format, args...)
-	ui.Prompt(message, &PromptOptions{HideInput: true, HideDefault: true, NoLoop: true}).Resolve(&passwd)
+	err = ui.Prompt(message, &PromptOptions{HideInput: true, HideDefault: true, NoLoop: true}).Resolve(&passwd)
 	return
 }
 
-func (ui *terminalUI) Confirm(format string, args ...interface{}) (yn bool) {
+func (ui *terminalUI) Confirm(format string, args ...interface{}) (yn bool, err error) {
 	message := fmt.Sprintf(format, args...)
-	ui.Prompt(message, &PromptOptions{HideDefault: true, NoLoop: true}).Resolve(&yn)
+	err = ui.Prompt(message, &PromptOptions{HideDefault: true, NoLoop: true}).Resolve(&yn)
 	return
 }
 
-func (ui *terminalUI) ConfirmWithDefault(defaultBool bool, format string, args ...interface{}) (yn bool) {
+func (ui *terminalUI) ConfirmWithDefault(defaultBool bool, format string, args ...interface{}) (yn bool, err error) {
 	yn = defaultBool
 	message := fmt.Sprintf(format, args...)
-	ui.Prompt(message, &PromptOptions{HideDefault: true, NoLoop: true}).Resolve(&yn)
+	err = ui.Prompt(message, &PromptOptions{HideDefault: true, NoLoop: true}).Resolve(&yn)
 	return
 }
 
-func (ui *terminalUI) SelectOne(choices []string, format string, args ...interface{}) int {
+func (ui *terminalUI) SelectOne(choices []string, format string, args ...interface{}) (int, error) {
 	var selected string
 	message := fmt.Sprintf(format, args...)
 
 	err := ui.ChoicesPrompt(message, choices, &PromptOptions{HideDefault: true}).Resolve(&selected)
 	if err != nil {
-		return -1
+		return -1, err
 	}
 
 	for i, c := range choices {
 		if selected == c {
-			return i
+			return i, nil
 		}
 	}
 
-	return -1
+	return -1, nil
 }
 
 func (ui *terminalUI) Table(headers []string) Table {
