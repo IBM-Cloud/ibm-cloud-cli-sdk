@@ -16,6 +16,10 @@
     "translation": "Si è verificato un errore durante il dump della risposta:\n{{.Error}}\n"
   },
   {
+    "id": "Could not read from input: ",
+    "translation": "Could not read from input: "
+  },
+  {
     "id": "Elapsed:",
     "translation": "Trascorso:"
   },

@@ -78,7 +78,7 @@ func (p *Prompt) resolveSingle(dest interface{}) error {
 	for {
 		input, readErr := p.read(prompt)
 		if readErr != nil {
-			return readErr
+			return fmt.Errorf(T("Could not read from input: ") + readErr.Error())
 		}
 
 		var err error
@@ -125,7 +125,7 @@ func (p *Prompt) resolveSingle(dest interface{}) error {
 }
 
 func (p *Prompt) singlePrompt(dest interface{}) (string, error) {
-	err := checkDestionation(dest)
+	err := checkDestination(dest)
 	if err != nil {
 		return "", fmt.Errorf("%s (%v)", p.message, err)
 	}
@@ -161,7 +161,7 @@ func (p *Prompt) singlePrompt(dest interface{}) (string, error) {
 	return prompt, nil
 }
 
-func checkDestionation(dest interface{}) error {
+func checkDestination(dest interface{}) error {
 	rv := reflect.ValueOf(dest)
 
 	// check if pointer
@@ -220,7 +220,7 @@ func (p *Prompt) resolveChoices(dest interface{}) error {
 	for {
 		input, readErr := p.read(prompt)
 		if readErr != nil {
-			return readErr
+			return fmt.Errorf(T("Could not read from input: ") + readErr.Error())
 		}
 
 		var selectedNum int

@@ -16,6 +16,10 @@
     "translation": "转储响应时发生错误：\n{{.Error}}\n"
   },
   {
+    "id": "Could not read from input: ",
+    "translation": "Could not read from input: "
+  },
+  {
     "id": "Elapsed:",
     "translation": "经过时长："
   },

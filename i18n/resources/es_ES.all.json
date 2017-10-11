@@ -16,6 +16,10 @@
     "translation": "Se ha producido un error al volcar la respuesta:\n{{.Error}}\n"
   },
   {
+    "id": "Could not read from input: ",
+    "translation": "Could not read from input: "
+  },
+  {
     "id": "Elapsed:",
     "translation": "Transcurrido:"
   },

@@ -16,6 +16,10 @@
     "translation": "응답을 덤프할 때 다음 오류가 발생했습니다. \n{{.Error}}\n"
   },
   {
+    "id": "Could not read from input: ",
+    "translation": "Could not read from input: "
+  },
+  {
     "id": "Elapsed:",
     "translation": "경과 시간:"
   },

@@ -16,6 +16,10 @@
     "translation": "Erreur lors de la réponse de vidage :\n{{.Error}}\n"
   },
   {
+    "id": "Could not read from input: ",
+    "translation": "Could not read from input: "
+  },
+  {
     "id": "Elapsed:",
     "translation": "Ecoulé :"
   },
