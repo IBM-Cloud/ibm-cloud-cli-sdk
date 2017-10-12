@@ -2,9 +2,8 @@ package authentication
 
 import (
 	"encoding/base64"
+	"errors"
 	"fmt"
-	"net/url"
-	"regexp"
 
 	"github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/configuration/core_config"
 	"github.com/IBM-Bluemix/bluemix-cli-sdk/common/rest"
@@ -84,7 +83,12 @@ func (auth *IAMAuthRepository) LinkAccounts(refreshToken string, accounts core_c
 }
 
 func (auth *IAMAuthRepository) getToken(data map[string]string) (Token, Token, error) {
-	tokenRequest := rest.PostRequest(IAMTokenEndpoint(auth.config.APIEndpoint())+"/oidc/token").
+	endpoint, err := auth.endpoint()
+	if err != nil {
+		return Token{}, Token{}, err
+	}
+
+	tokenRequest := rest.PostRequest(endpoint+"/oidc/token").
 		Set("Authorization", "Basic "+base64.StdEncoding.EncodeToString(
 			[]byte(fmt.Sprintf("%s:%s", iamClientID, iamClientSecret)))).
 		Field("response_type", "cloud_iam,uaa").
@@ -127,20 +131,10 @@ func (auth *IAMAuthRepository) getToken(data map[string]string) (Token, Token, e
 	return iamToken, uaaToken, nil
 }
 
-var domainRegExp = regexp.MustCompile(`(^https?://)?[^\.]+(\..+)+`)
-
-func IAMTokenEndpoint(apiEndpoint string) string {
-	if apiEndpoint == "" {
-		return ""
+func (auth *IAMAuthRepository) endpoint() (string, error) {
+	endpoint := auth.config.IAMEndpoint()
+	if endpoint != "" {
+		return endpoint, nil
 	}
-
-	endpoint := domainRegExp.ReplaceAllString(apiEndpoint, "${1}iam${2}")
-
-	u, err := url.Parse(endpoint)
-	if err != nil {
-		return ""
-	}
-
-	u.Scheme = "https"
-	return u.String()
+	return "", errors.New("IAM endpoint is not set.")
 }
