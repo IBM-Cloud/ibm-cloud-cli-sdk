@@ -21,6 +21,7 @@ type BXConfigData struct {
 	Region                  string
 	RegionID                string
 	RegionType              string
+	IAMEndpoint             string
 	IAMID                   string
 	IAMToken                string
 	IAMRefreshToken         string
@@ -156,6 +157,13 @@ func (c *bxConfigRepository) CloudType() string {
 	return c.Region().Type
 }
 
+func (c *bxConfigRepository) IAMEndpoint() (endpoint string) {
+	c.read(func() {
+		endpoint = c.data.IAMEndpoint
+	})
+	return
+}
+
 func (c *bxConfigRepository) IAMID() string {
 	return NewIAMTokenInfo(c.IAMToken()).IAMID
 }
@@ -283,6 +291,12 @@ func (c *bxConfigRepository) SetRegion(region models.Region) {
 		c.data.Region = region.Name
 		c.data.RegionID = region.ID
 		c.data.RegionType = region.Type
+	})
+}
+
+func (c *bxConfigRepository) SetIAMEndpoint(endpoint string) {
+	c.write(func() {
+		c.data.IAMEndpoint = endpoint
 	})
 }
 

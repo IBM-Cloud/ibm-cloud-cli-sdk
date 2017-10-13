@@ -97,7 +97,7 @@ func (c *pluginContext) RefreshUAAToken() (string, error) {
 }
 
 func (c *pluginContext) IAMTokenEndpoint() string {
-	return authentication.IAMTokenEndpoint(c.coreConfig.APIEndpoint())
+	return c.coreConfig.IAMEndpoint()
 }
 
 func (c *pluginContext) IAMToken() string {

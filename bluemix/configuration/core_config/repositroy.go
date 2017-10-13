@@ -43,6 +43,7 @@ type Reader interface {
 	Region() models.Region
 	CloudName() string
 	CloudType() string
+	IAMEndpoint() string
 	IAMID() string
 	IAMToken() string
 	IAMRefreshToken() string
@@ -90,6 +91,7 @@ type ReadWriter interface {
 	SetConsoleEndpoint(string)
 	SetRegion(models.Region)
 	SetAccount(models.Account)
+	SetIAMEndpoint(string)
 	SetIAMToken(string)
 	SetIAMRefreshToken(string)
 	SetResourceGroup(models.ResourceGroup)
