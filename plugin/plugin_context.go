@@ -90,7 +90,7 @@ func (c *pluginContext) RefreshUAAToken() (string, error) {
 		return "", err
 	}
 
-	c.coreConfig.SetUAAToken(token.AccessToken)
+	c.coreConfig.SetUAAToken(token.Token())
 	c.coreConfig.SetUAARefreshToken(token.RefreshToken)
 
 	return token.AccessToken, nil
@@ -110,15 +110,13 @@ func (c *pluginContext) IAMRefreshToken() string {
 
 func (c *pluginContext) RefreshIAMToken() (string, error) {
 	auth := authentication.NewIAMAuthRepository(c.coreConfig, rest.NewClient())
-	iamToken, uaaToken, err := auth.RefreshToken(c.IAMRefreshToken())
+	iamToken, _, err := auth.RefreshToken(c.IAMRefreshToken())
 	if err != nil {
 		return "", err
 	}
 
-	c.coreConfig.SetIAMToken(iamToken.AccessToken)
+	c.coreConfig.SetIAMToken(iamToken.Token())
 	c.coreConfig.SetIAMRefreshToken(iamToken.RefreshToken)
-	c.coreConfig.SetUAAToken(uaaToken.AccessToken)
-	c.coreConfig.SetUAARefreshToken(uaaToken.RefreshToken)
 
 	return iamToken.AccessToken, nil
 }
