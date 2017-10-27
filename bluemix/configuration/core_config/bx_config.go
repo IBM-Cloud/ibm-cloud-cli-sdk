@@ -400,5 +400,6 @@ func (c *bxConfigRepository) ClearAPICache() {
 		c.data.Region = ""
 		c.data.RegionID = ""
 		c.data.ConsoleEndpoint = ""
+		c.data.IAMEndpoint = ""
 	})
 }

@@ -27,19 +27,26 @@ func (e IAMError) detailsOrMessage() string {
 	return e.ErrorMessage
 }
 
-type IAMAuthRepository struct {
+type IAMAuthRepository interface {
+	AuthenticatePassword(username string, password string) (iamToken, uaaToken Token, err error)
+	AuthenticateSSO(passcode string) (iamToken, uaaToken Token, err error)
+	AuthenticateAPIKey(apiKey string) (iamToken, uaaToken Token, err error)
+	RefreshToken(refreshToken string) (iamToken, uaaToken Token, err error)
+	LinkAccounts(refreshToken string, accounts core_config.AccountsInfo) (iamToken, uaaToken Token, err error)
+}
+type iamAuthRepository struct {
 	config core_config.Reader
 	client *rest.Client
 }
 
-func NewIAMAuthRepository(config core_config.Reader, client *rest.Client) *IAMAuthRepository {
-	return &IAMAuthRepository{
+func NewIAMAuthRepository(config core_config.Reader, client *rest.Client) IAMAuthRepository {
+	return &iamAuthRepository{
 		config: config,
 		client: client,
 	}
 }
 
-func (auth *IAMAuthRepository) AuthenticatePassword(username string, password string) (Token, Token, error) {
+func (auth *iamAuthRepository) AuthenticatePassword(username string, password string) (Token, Token, error) {
 	data := map[string]string{
 		"grant_type": "password",
 		"username":   username,
@@ -48,7 +55,7 @@ func (auth *IAMAuthRepository) AuthenticatePassword(username string, password st
 	return auth.getToken(data)
 }
 
-func (auth *IAMAuthRepository) AuthenticateAPIKey(apiKey string) (Token, Token, error) {
+func (auth *iamAuthRepository) AuthenticateAPIKey(apiKey string) (Token, Token, error) {
 	data := map[string]string{
 		"grant_type": "urn:ibm:params:oauth:grant-type:apikey",
 		"apikey":     apiKey,
@@ -56,7 +63,7 @@ func (auth *IAMAuthRepository) AuthenticateAPIKey(apiKey string) (Token, Token, 
 	return auth.getToken(data)
 }
 
-func (auth *IAMAuthRepository) AuthenticateSSO(passcode string) (Token, Token, error) {
+func (auth *iamAuthRepository) AuthenticateSSO(passcode string) (Token, Token, error) {
 	data := map[string]string{
 		"grant_type": "urn:ibm:params:oauth:grant-type:passcode",
 		"passcode":   passcode,
@@ -64,7 +71,7 @@ func (auth *IAMAuthRepository) AuthenticateSSO(passcode string) (Token, Token, e
 	return auth.getToken(data)
 }
 
-func (auth *IAMAuthRepository) RefreshToken(refreshToken string) (Token, Token, error) {
+func (auth *iamAuthRepository) RefreshToken(refreshToken string) (Token, Token, error) {
 	data := map[string]string{
 		"grant_type":    "refresh_token",
 		"refresh_token": refreshToken,
@@ -72,7 +79,7 @@ func (auth *IAMAuthRepository) RefreshToken(refreshToken string) (Token, Token, 
 	return auth.getToken(data)
 }
 
-func (auth *IAMAuthRepository) LinkAccounts(refreshToken string, accounts core_config.AccountsInfo) (Token, Token, error) {
+func (auth *iamAuthRepository) LinkAccounts(refreshToken string, accounts core_config.AccountsInfo) (Token, Token, error) {
 	data := map[string]string{
 		"grant_type":    "refresh_token",
 		"refresh_token": refreshToken,
@@ -82,7 +89,7 @@ func (auth *IAMAuthRepository) LinkAccounts(refreshToken string, accounts core_c
 	return auth.getToken(data)
 }
 
-func (auth *IAMAuthRepository) getToken(data map[string]string) (Token, Token, error) {
+func (auth *iamAuthRepository) getToken(data map[string]string) (Token, Token, error) {
 	endpoint, err := auth.endpoint()
 	if err != nil {
 		return Token{}, Token{}, err
@@ -121,17 +128,21 @@ func (auth *IAMAuthRepository) getToken(data map[string]string) (Token, Token, e
 	}
 
 	iamToken := Token{
-		AccessToken:  fmt.Sprintf("%s %s", tokenResponse.TokenType, tokenResponse.AccessToken),
+		AccessToken:  tokenResponse.AccessToken,
 		RefreshToken: tokenResponse.RefreshToken,
+		TokenType:    tokenResponse.TokenType,
 	}
+
 	uaaToken := Token{
-		AccessToken:  fmt.Sprintf("%s %s", tokenResponse.TokenType, tokenResponse.UAAAccessToken),
+		AccessToken:  tokenResponse.UAAAccessToken,
 		RefreshToken: tokenResponse.UAARefreshToken,
+		TokenType:    tokenResponse.TokenType,
 	}
+
 	return iamToken, uaaToken, nil
 }
 
-func (auth *IAMAuthRepository) endpoint() (string, error) {
+func (auth *iamAuthRepository) endpoint() (string, error) {
 	endpoint := auth.config.IAMEndpoint()
 	if endpoint != "" {
 		return endpoint, nil
