@@ -2,7 +2,6 @@ package authentication
 
 import (
 	"encoding/base64"
-	"errors"
 	"fmt"
 
 	"github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/configuration/core_config"
@@ -34,12 +33,21 @@ type IAMAuthRepository interface {
 	RefreshToken(refreshToken string) (iamToken, uaaToken Token, err error)
 	LinkAccounts(refreshToken string, accounts core_config.AccountsInfo) (iamToken, uaaToken Token, err error)
 }
+
+type IAMConfig struct {
+	// the token endpoint. for example: https://iam.example.com/indentity/token
+	TokenEndpoint string
+	// client ID and secret may be configurable in future
+	// ClientID      string
+	// ClientSecret  string
+}
+
 type iamAuthRepository struct {
-	config core_config.Reader
+	config IAMConfig
 	client *rest.Client
 }
 
-func NewIAMAuthRepository(config core_config.Reader, client *rest.Client) IAMAuthRepository {
+func NewIAMAuthRepository(config IAMConfig, client *rest.Client) IAMAuthRepository {
 	return &iamAuthRepository{
 		config: config,
 		client: client,
@@ -90,12 +98,7 @@ func (auth *iamAuthRepository) LinkAccounts(refreshToken string, accounts core_c
 }
 
 func (auth *iamAuthRepository) getToken(data map[string]string) (Token, Token, error) {
-	endpoint, err := auth.endpoint()
-	if err != nil {
-		return Token{}, Token{}, err
-	}
-
-	tokenRequest := rest.PostRequest(endpoint+"/oidc/token").
+	tokenRequest := rest.PostRequest(auth.config.TokenEndpoint).
 		Set("Authorization", "Basic "+base64.StdEncoding.EncodeToString(
 			[]byte(fmt.Sprintf("%s:%s", iamClientID, iamClientSecret)))).
 		Field("response_type", "cloud_iam,uaa").
@@ -140,12 +143,4 @@ func (auth *iamAuthRepository) getToken(data map[string]string) (Token, Token, e
 	}
 
 	return iamToken, uaaToken, nil
-}
-
-func (auth *iamAuthRepository) endpoint() (string, error) {
-	endpoint := auth.config.IAMEndpoint()
-	if endpoint != "" {
-		return endpoint, nil
-	}
-	return "", errors.New("IAM endpoint is not set.")
 }

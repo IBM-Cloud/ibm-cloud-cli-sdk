@@ -1,6 +1,7 @@
 package plugin
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
 
@@ -109,7 +110,13 @@ func (c *pluginContext) IAMRefreshToken() string {
 }
 
 func (c *pluginContext) RefreshIAMToken() (string, error) {
-	auth := authentication.NewIAMAuthRepository(c.coreConfig, rest.NewClient())
+	endpoint := c.coreConfig.IAMEndpoint()
+	if endpoint == "" {
+		return "", fmt.Errorf("IAM endpoint is not set")
+	}
+
+	config := authentication.IAMConfig{TokenEndpoint: endpoint + "/identity/token"}
+	auth := authentication.NewIAMAuthRepository(config, rest.NewClient())
 	iamToken, _, err := auth.RefreshToken(c.IAMRefreshToken())
 	if err != nil {
 		return "", err
