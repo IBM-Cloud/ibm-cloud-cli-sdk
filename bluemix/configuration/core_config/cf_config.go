@@ -6,6 +6,7 @@ import (
 
 	"github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/configuration"
 	"github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/models"
+	"github.com/fatih/structs"
 )
 
 type CFConfigData struct {
@@ -32,10 +33,12 @@ type CFConfigData struct {
 	PluginRepos              []models.PluginRepo
 	MinCLIVersion            string
 	MinRecommendedCLIVersion string
+	raw                      raw
 }
 
 func NewCFConfigData() *CFConfigData {
 	data := new(CFConfigData)
+	data.raw = make(map[string]interface{})
 
 	data.UAAOAuthClient = "cf"
 	data.UAAOAuthClientSecret = ""
@@ -55,10 +58,17 @@ func (data *CFConfigData) Unmarshal(bytes []byte) error {
 	}
 
 	if data.ConfigVersion != 3 {
-		*data = CFConfigData{}
+		*data = CFConfigData{raw: make(map[string]interface{})}
 		return nil
 	}
 
+	var raw raw
+	err = json.Unmarshal(bytes, &raw)
+	if err != nil {
+		return err
+	}
+
+	data.raw = raw
 	return nil
 }
 
@@ -119,7 +129,23 @@ func (c *cfConfigRepository) write(cb func()) {
 
 	cb()
 
+	c.data.raw = structs.Map(c.data)
+
 	err := c.persistor.Save(c.data)
+	if err != nil {
+		c.onError(err)
+	}
+}
+
+func (c *cfConfigRepository) writeRaw(cb func()) {
+	c.lock.Lock()
+	defer c.lock.Unlock()
+
+	c.init()
+
+	cb()
+
+	err := c.persistor.Save(c.data.raw)
 	if err != nil {
 		c.onError(err)
 	}
@@ -375,14 +401,16 @@ func (c *cfConfigRepository) SetMinRecommendedCFCLIVersion(version string) {
 }
 
 func (c *cfConfigRepository) SetUAAToken(token string) {
-	c.write(func() {
+	c.writeRaw(func() {
 		c.data.AccessToken = token
+		c.data.raw["AccessToken"] = token
 	})
 }
 
 func (c *cfConfigRepository) SetUAARefreshToken(token string) {
-	c.write(func() {
+	c.writeRaw(func() {
 		c.data.RefreshToken = token
+		c.data.raw["RefreshToken"] = token
 	})
 }
 

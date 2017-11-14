@@ -7,6 +7,7 @@ import (
 
 	"github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/configuration"
 	"github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/models"
+	"github.com/fatih/structs"
 )
 
 const (
@@ -15,6 +16,16 @@ const (
 	DEFAULT_PLUGIN_REPO      = "Bluemix"
 	_DEFAULT_PLUGIN_REPO_URL = "https://plugins.ng.bluemix.net"
 )
+
+type raw map[string]interface{}
+
+func (r raw) Marshal() ([]byte, error) {
+	return json.MarshalIndent(r, "", "  ")
+}
+
+func (r raw) Unmarshal(bytes []byte) error {
+	return json.Unmarshal(bytes, r)
+}
 
 type BXConfigData struct {
 	ConsoleEndpoint         string
@@ -35,6 +46,13 @@ type BXConfigData struct {
 	CLIInfoEndpoint         string
 	CheckCLIVersionDisabled bool
 	UsageStatsDisabled      bool
+	raw                     raw
+}
+
+func NewBXConfigData() *BXConfigData {
+	data := new(BXConfigData)
+	data.raw = make(map[string]interface{})
+	return data
 }
 
 func (data *BXConfigData) Marshal() ([]byte, error) {
@@ -42,7 +60,19 @@ func (data *BXConfigData) Marshal() ([]byte, error) {
 }
 
 func (data *BXConfigData) Unmarshal(bytes []byte) error {
-	return json.Unmarshal(bytes, data)
+	err := json.Unmarshal(bytes, data)
+	if err != nil {
+		return err
+	}
+
+	var raw raw
+	err = json.Unmarshal(bytes, &raw)
+	if err != nil {
+		return err
+	}
+	data.raw = raw
+
+	return nil
 }
 
 type bxConfigRepository struct {
@@ -58,7 +88,7 @@ func createBluemixConfigFromPath(configPath string, errHandler func(error)) *bxC
 }
 
 func createBluemixConfigFromPersistor(persistor configuration.Persistor, errHandler func(error)) *bxConfigRepository {
-	data := new(BXConfigData)
+	data := NewBXConfigData()
 	if !persistor.Exists() {
 		data.PluginRepos = []models.PluginRepo{
 			{
@@ -102,7 +132,23 @@ func (c *bxConfigRepository) write(cb func()) {
 
 	cb()
 
+	c.data.raw = structs.Map(c.data)
+
 	err := c.persistor.Save(c.data)
+	if err != nil {
+		c.onError(err)
+	}
+}
+
+func (c *bxConfigRepository) writeRaw(cb func()) {
+	c.lock.Lock()
+	defer c.lock.Unlock()
+
+	c.init()
+
+	cb()
+
+	err := c.persistor.Save(c.data.raw)
 	if err != nil {
 		c.onError(err)
 	}
@@ -301,14 +347,16 @@ func (c *bxConfigRepository) SetIAMEndpoint(endpoint string) {
 }
 
 func (c *bxConfigRepository) SetIAMToken(token string) {
-	c.write(func() {
+	c.writeRaw(func() {
 		c.data.IAMToken = token
+		c.data.raw["IAMToken"] = token
 	})
 }
 
 func (c *bxConfigRepository) SetIAMRefreshToken(token string) {
-	c.write(func() {
+	c.writeRaw(func() {
 		c.data.IAMRefreshToken = token
+		c.data.raw["IAMRefreshToken"] = token
 	})
 }
 
