@@ -315,7 +315,7 @@ var SUPPORTED_LOCALES = []string{
 	"es_ES",
 	"fr_FR",
 	"it_IT",
-	"ja_JA",
+	"ja_JP",
 	"ko_KR",
 	"pt_BR",
 	"zh_Hans",
@@ -420,7 +420,7 @@ ENDJSON
 cp plugin/i18n/resources/en_US.all.json plugin/i18n/resources/de_DE.all.json
 cp plugin/i18n/resources/en_US.all.json plugin/i18n/resources/fr_FR.all.json
 cp plugin/i18n/resources/en_US.all.json plugin/i18n/resources/es_ES.all.json
-cp plugin/i18n/resources/en_US.all.json plugin/i18n/resources/ja_JA.all.json
+cp plugin/i18n/resources/en_US.all.json plugin/i18n/resources/ja_JP.all.json
 cp plugin/i18n/resources/en_US.all.json plugin/i18n/resources/it_IT.all.json
 cp plugin/i18n/resources/en_US.all.json plugin/i18n/resources/pt_BR.all.json
 cp plugin/i18n/resources/en_US.all.json plugin/i18n/resources/ko_KR.all.json
