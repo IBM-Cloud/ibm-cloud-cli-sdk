@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"os"
 
+	"github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix"
 	"github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/configuration/config_helpers"
 	"github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/configuration/core_config"
 	"github.com/IBM-Bluemix/bluemix-cli-sdk/i18n"
@@ -17,7 +18,8 @@ func Start(plugin Plugin) {
 // Run plugin with args
 func Run(plugin Plugin, args []string) {
 	if isMetadataRequest(args) {
-		json, err := json.Marshal(plugin.GetMetadata())
+		metadata := fillMetadata(plugin.GetMetadata())
+		json, err := json.Marshal(metadata)
 		if err != nil {
 			panic(err)
 		}
@@ -31,6 +33,16 @@ func Run(plugin Plugin, args []string) {
 	i18n.T = i18n.Tfunc(context.Locale())
 
 	plugin.Run(context, args)
+}
+
+func fillMetadata(metadata PluginMetadata) PluginMetadata {
+	sdkVersion := bluemix.Version
+	metadata.SDKVersion = VersionType{
+		Major: sdkVersion.Major,
+		Minor: sdkVersion.Minor,
+		Build: sdkVersion.Build,
+	}
+	return metadata
 }
 
 func GetPluginContext(pluginName string) PluginContext {

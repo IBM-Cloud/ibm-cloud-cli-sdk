@@ -13,6 +13,9 @@ type PluginMetadata struct {
 	MinCliVersion VersionType // minimal CLI version required by the plugin
 	Namespaces    []Namespace // command namespaces defined for the plugin
 	Commands      []Command   // list of commands provided by the plugin
+
+	// set by the plugin framework
+	SDKVersion VersionType // version of SDK used by the plugin
 }
 
 type VersionType struct {
