@@ -10,13 +10,6 @@ import (
 	"github.com/fatih/structs"
 )
 
-const (
-	_DEFAULT_CLI_INFO_ENDPOINT = "https://clis.ng.bluemix.net/info"
-
-	DEFAULT_PLUGIN_REPO      = "Bluemix"
-	_DEFAULT_PLUGIN_REPO_URL = "https://plugins.ng.bluemix.net"
-)
-
 type raw map[string]interface{}
 
 func (r raw) Marshal() ([]byte, error) {
@@ -88,18 +81,8 @@ func createBluemixConfigFromPath(configPath string, errHandler func(error)) *bxC
 }
 
 func createBluemixConfigFromPersistor(persistor configuration.Persistor, errHandler func(error)) *bxConfigRepository {
-	data := NewBXConfigData()
-	if !persistor.Exists() {
-		data.PluginRepos = []models.PluginRepo{
-			{
-				Name: DEFAULT_PLUGIN_REPO,
-				URL:  _DEFAULT_PLUGIN_REPO_URL,
-			},
-		}
-	}
-
 	return &bxConfigRepository{
-		data:      data,
+		data:      NewBXConfigData(),
 		persistor: persistor,
 		initOnce:  new(sync.Once),
 		onError:   errHandler,
@@ -306,10 +289,7 @@ func (c *bxConfigRepository) CLIInfoEndpoint() (endpoint string) {
 		endpoint = c.data.CLIInfoEndpoint
 	})
 
-	if endpoint != "" {
-		return endpoint
-	}
-	return _DEFAULT_CLI_INFO_ENDPOINT
+	return endpoint
 }
 
 func (c *bxConfigRepository) CheckCLIVersionDisabled() (disabled bool) {
