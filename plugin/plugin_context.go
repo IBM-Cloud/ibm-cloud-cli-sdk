@@ -94,7 +94,7 @@ func (c *pluginContext) RefreshUAAToken() (string, error) {
 	c.coreConfig.SetUAAToken(token.Token())
 	c.coreConfig.SetUAARefreshToken(token.RefreshToken)
 
-	return token.AccessToken, nil
+	return token.Token(), nil
 }
 
 func (c *pluginContext) IAMTokenEndpoint() string {
@@ -125,7 +125,7 @@ func (c *pluginContext) RefreshIAMToken() (string, error) {
 	c.coreConfig.SetIAMToken(iamToken.Token())
 	c.coreConfig.SetIAMRefreshToken(iamToken.RefreshToken)
 
-	return iamToken.AccessToken, nil
+	return iamToken.Token(), nil
 }
 
 func (c *pluginContext) IsLoggedIn() bool {
