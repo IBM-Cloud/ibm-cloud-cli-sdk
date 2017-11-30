@@ -2,6 +2,7 @@ package authentication
 
 import (
 	"encoding/base64"
+	"encoding/json"
 	"fmt"
 
 	"github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/configuration/core_config"
@@ -117,17 +118,8 @@ func (auth *iamAuthRepository) getToken(data map[string]string) (Token, Token, e
 		TokenType       string `json:"token_type"`
 	}{}
 
-	var apiErr IAMError
-	resp, err := auth.client.Do(tokenRequest, &tokenResponse, &apiErr)
-	if err != nil {
+	if err := auth.sendRequest(tokenRequest, &tokenResponse); err != nil {
 		return Token{}, Token{}, err
-	}
-
-	if apiErr.ErrorCode != "" {
-		if apiErr.ErrorCode == "BXNIM0407E" {
-			return Token{}, Token{}, NewInvalidTokenError(apiErr.detailsOrMessage())
-		}
-		return Token{}, Token{}, NewServerError(resp.StatusCode, apiErr.ErrorCode, apiErr.detailsOrMessage())
 	}
 
 	iamToken := Token{
@@ -135,12 +127,28 @@ func (auth *iamAuthRepository) getToken(data map[string]string) (Token, Token, e
 		RefreshToken: tokenResponse.RefreshToken,
 		TokenType:    tokenResponse.TokenType,
 	}
-
 	uaaToken := Token{
 		AccessToken:  tokenResponse.UAAAccessToken,
 		RefreshToken: tokenResponse.UAARefreshToken,
 		TokenType:    tokenResponse.TokenType,
 	}
-
 	return iamToken, uaaToken, nil
+}
+
+func (auth *iamAuthRepository) sendRequest(req *rest.Request, respV interface{}) error {
+	_, err := auth.client.Do(req, respV, nil)
+	switch err := err.(type) {
+	case *rest.ErrorResponse:
+		var apiErr IAMError
+		if e := json.Unmarshal([]byte(err.Message), &apiErr); e == nil {
+			switch apiErr.ErrorCode {
+			case "":
+			case "BXNIM0407E":
+				return NewInvalidTokenError(apiErr.detailsOrMessage())
+			default:
+				return NewServerError(err.StatusCode, apiErr.ErrorCode, apiErr.detailsOrMessage())
+			}
+		}
+	}
+	return err
 }
