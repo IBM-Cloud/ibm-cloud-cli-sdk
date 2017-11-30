@@ -2,6 +2,7 @@ package authentication
 
 import (
 	"encoding/base64"
+	"encoding/json"
 	"fmt"
 
 	"github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/configuration/core_config"
@@ -142,18 +143,19 @@ func (auth *uaaRepository) DisconnectIAM(uaaToken string) error {
 }
 
 func (auth *uaaRepository) sendRequest(req *rest.Request, respV interface{}) error {
-	var apiErr UAAError
-	resp, err := auth.client.Do(req, respV, &apiErr)
-	if err != nil {
-		return err
+	_, err := auth.client.Do(req, respV, nil)
+	switch err := err.(type) {
+	case *rest.ErrorResponse:
+		var apiErr UAAError
+		if e := json.Unmarshal([]byte(err.Message), &apiErr); e == nil {
+			switch apiErr.ErrorCode {
+			case "":
+			case "invalid-token":
+				return NewInvalidTokenError(apiErr.Description)
+			default:
+				return NewServerError(err.StatusCode, apiErr.ErrorCode, apiErr.Description)
+			}
+		}
 	}
-
-	switch apiErr.ErrorCode {
-	case "":
-		return nil
-	case "invalid-token":
-		return NewInvalidTokenError(apiErr.Description)
-	default:
-		return NewServerError(resp.StatusCode, apiErr.ErrorCode, apiErr.Description)
-	}
+	return err
 }
