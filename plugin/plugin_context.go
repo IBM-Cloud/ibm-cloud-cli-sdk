@@ -117,7 +117,7 @@ func (c *pluginContext) RefreshIAMToken() (string, error) {
 
 	config := authentication.IAMConfig{TokenEndpoint: endpoint + "/identity/token"}
 	auth := authentication.NewIAMAuthRepository(config, rest.NewClient())
-	iamToken, _, err := auth.RefreshToken(c.IAMRefreshToken())
+	iamToken, err := auth.RefreshToken(c.IAMRefreshToken())
 	if err != nil {
 		return "", err
 	}
