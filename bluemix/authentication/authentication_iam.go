@@ -4,6 +4,7 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
+	"strings"
 
 	"github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/configuration/core_config"
 	"github.com/IBM-Bluemix/bluemix-cli-sdk/common/rest"
@@ -28,11 +29,13 @@ func (e IAMError) detailsOrMessage() string {
 }
 
 type IAMAuthRepository interface {
-	AuthenticatePassword(username string, password string) (iamToken, uaaToken Token, err error)
-	AuthenticateSSO(passcode string) (iamToken, uaaToken Token, err error)
-	AuthenticateAPIKey(apiKey string) (iamToken, uaaToken Token, err error)
-	RefreshToken(refreshToken string) (iamToken, uaaToken Token, err error)
-	LinkAccounts(refreshToken string, accounts core_config.AccountsInfo) (iamToken, uaaToken Token, err error)
+	AuthenticatePassword(username string, password string) (iamToken Token, err error)
+	AuthenticateSSO(passcode string) (iamToken Token, err error)
+	AuthenticateAPIKey(apiKey string) (iamToken Token, err error)
+	GetUAAToken(iamAccessToken string) (uaaToken Token, err error)
+	RefreshToken(refreshToken string) (iamToken Token, err error)
+	RefreshTokenToLinkAccounts(refreshToken string, accounts core_config.AccountsInfo) (iamToken Token, err error)
+	RefreshTokenToLinkAccountsAndGetUAAToken(refreshToken string, accounts core_config.AccountsInfo) (iamToken, uaaToken Token, err error)
 }
 
 type IAMConfig struct {
@@ -55,84 +58,135 @@ func NewIAMAuthRepository(config IAMConfig, client *rest.Client) IAMAuthReposito
 	}
 }
 
-func (auth *iamAuthRepository) AuthenticatePassword(username string, password string) (Token, Token, error) {
-	data := map[string]string{
-		"grant_type": "password",
-		"username":   username,
-		"password":   password,
-	}
-	return auth.getToken(data)
+func (auth *iamAuthRepository) AuthenticatePassword(username string, password string) (Token, error) {
+	return auth.getIAMToken("password", map[string]string{"username": username, "password": password})
 }
 
-func (auth *iamAuthRepository) AuthenticateAPIKey(apiKey string) (Token, Token, error) {
-	data := map[string]string{
-		"grant_type": "urn:ibm:params:oauth:grant-type:apikey",
-		"apikey":     apiKey,
-	}
-	return auth.getToken(data)
+func (auth *iamAuthRepository) AuthenticateAPIKey(apiKey string) (Token, error) {
+	return auth.getIAMToken("urn:ibm:params:oauth:grant-type:apikey", map[string]string{"apikey": apiKey})
 }
 
-func (auth *iamAuthRepository) AuthenticateSSO(passcode string) (Token, Token, error) {
-	data := map[string]string{
-		"grant_type": "urn:ibm:params:oauth:grant-type:passcode",
-		"passcode":   passcode,
-	}
-	return auth.getToken(data)
+func (auth *iamAuthRepository) AuthenticateSSO(passcode string) (Token, error) {
+	return auth.getIAMToken("urn:ibm:params:oauth:grant-type:passcode", map[string]string{"passcode": passcode})
 }
 
-func (auth *iamAuthRepository) RefreshToken(refreshToken string) (Token, Token, error) {
-	data := map[string]string{
-		"grant_type":    "refresh_token",
-		"refresh_token": refreshToken,
-	}
-	return auth.getToken(data)
+func (auth *iamAuthRepository) RefreshToken(refreshToken string) (Token, error) {
+	return auth.getIAMToken("refresh_token", map[string]string{"refresh_token": refreshToken})
 }
 
-func (auth *iamAuthRepository) LinkAccounts(refreshToken string, accounts core_config.AccountsInfo) (Token, Token, error) {
-	data := map[string]string{
-		"grant_type":    "refresh_token",
+func (auth *iamAuthRepository) RefreshTokenToLinkAccounts(refreshToken string, accounts core_config.AccountsInfo) (Token, error) {
+	return auth.getIAMToken("refresh_token", map[string]string{
 		"refresh_token": refreshToken,
 		"bss_account":   accounts.AccountID,
 		"ims_account":   accounts.IMSAccountID,
-	}
-	return auth.getToken(data)
+	})
 }
 
-func (auth *iamAuthRepository) getToken(data map[string]string) (Token, Token, error) {
-	tokenRequest := rest.PostRequest(auth.config.TokenEndpoint).
-		Set("Authorization", "Basic "+base64.StdEncoding.EncodeToString(
-			[]byte(fmt.Sprintf("%s:%s", iamClientID, iamClientSecret)))).
-		Field("response_type", "cloud_iam,uaa").
-		Field("uaa_client_id", "cf").
-		Field("uaa_client_secret", "")
-
-	for k, v := range data {
-		tokenRequest.Field(k, v)
+func (auth *iamAuthRepository) getIAMToken(grantType string, data map[string]string) (Token, error) {
+	r := tokenRequest{
+		iamTokenRequired: true,
+		grantType:        grantType,
+		data:             data,
 	}
 
-	var tokenResponse = struct {
-		AccessToken     string `json:"access_token"`
-		RefreshToken    string `json:"refresh_token"`
-		UAAAccessToken  string `json:"uaa_token"`
-		UAARefreshToken string `json:"uaa_refresh_token"`
-		TokenType       string `json:"token_type"`
-	}{}
+	tokens, err := auth.getToken(r)
+	if err != nil {
+		return Token{}, err
+	}
+	return tokens.iamToken(), nil
+}
 
-	if err := auth.sendRequest(tokenRequest, &tokenResponse); err != nil {
+func (auth *iamAuthRepository) GetUAAToken(iamAccessToken string) (Token, error) {
+	r := tokenRequest{
+		uaaTokenRequired: true,
+		grantType:        "urn:ibm:params:oauth:grant-type:derive",
+		data:             map[string]string{"access_token": iamAccessToken},
+	}
+
+	tokens, err := auth.getToken(r)
+	if err != nil {
+		return Token{}, err
+	}
+	return tokens.uaaToken(), nil
+}
+
+func (auth *iamAuthRepository) RefreshTokenToLinkAccountsAndGetUAAToken(refreshToken string, accounts core_config.AccountsInfo) (Token, Token, error) {
+	r := tokenRequest{
+		iamTokenRequired: true,
+		uaaTokenRequired: true,
+		grantType:        "refresh_token",
+		data:             map[string]string{"refresh_token": refreshToken},
+	}
+
+	tokens, err := auth.getToken(r)
+	if err != nil {
 		return Token{}, Token{}, err
 	}
+	return tokens.iamToken(), tokens.uaaToken(), nil
+}
 
-	iamToken := Token{
-		AccessToken:  tokenResponse.AccessToken,
-		RefreshToken: tokenResponse.RefreshToken,
-		TokenType:    tokenResponse.TokenType,
+type tokenRequest struct {
+	iamTokenRequired bool
+	uaaTokenRequired bool
+	grantType        string
+	data             map[string]string
+}
+
+type tokenResponse struct {
+	AccessToken     string `json:"access_token"`
+	RefreshToken    string `json:"refresh_token"`
+	UAAAccessToken  string `json:"uaa_token"`
+	UAARefreshToken string `json:"uaa_refresh_token"`
+	TokenType       string `json:"token_type"`
+}
+
+func (res tokenResponse) iamToken() Token {
+	return Token{
+		AccessToken:  res.AccessToken,
+		RefreshToken: res.RefreshToken,
+		TokenType:    res.TokenType,
 	}
-	uaaToken := Token{
-		AccessToken:  tokenResponse.UAAAccessToken,
-		RefreshToken: tokenResponse.UAARefreshToken,
-		TokenType:    tokenResponse.TokenType,
+}
+
+func (res tokenResponse) uaaToken() Token {
+	return Token{
+		AccessToken:  res.UAAAccessToken,
+		RefreshToken: res.UAARefreshToken,
+		TokenType:    res.TokenType,
 	}
-	return iamToken, uaaToken, nil
+}
+
+func (auth *iamAuthRepository) getToken(r tokenRequest) (tokenResponse, error) {
+	req := rest.PostRequest(auth.config.TokenEndpoint)
+
+	req.Set("Authorization", "Basic "+base64.StdEncoding.EncodeToString([]byte(fmt.Sprintf("%s:%s", iamClientID, iamClientSecret))))
+
+	var grantTypes []string
+	if r.iamTokenRequired {
+		grantTypes = append(grantTypes, "cloud_iam")
+	}
+	if r.uaaTokenRequired {
+		grantTypes = append(grantTypes, "uaa")
+	}
+	req.Field("response_type", strings.Join(grantTypes, ","))
+
+	if r.uaaTokenRequired {
+		req.Field("uaa_client_id", "cf").
+			Field("uaa_client_secret", "")
+	}
+
+	req.Field("grant_type", r.grantType)
+
+	for k, v := range r.data {
+		req.Field(k, v)
+	}
+
+	var tokens tokenResponse
+	err := auth.sendRequest(req, &tokens)
+	if err != nil {
+		return tokenResponse{}, err
+	}
+	return tokens, nil
 }
 
 func (auth *iamAuthRepository) sendRequest(req *rest.Request, respV interface{}) error {
