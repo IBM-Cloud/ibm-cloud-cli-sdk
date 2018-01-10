@@ -288,7 +288,7 @@ func (p *Prompt) choicesPrompt(dest interface{}) (string, error) {
 }
 
 func (p *Prompt) read(prompt string) (string, error) {
-	fmt.Fprintf(p.Writer, fmt.Sprintf("%s%s ", prompt, PromptColor(">")))
+	fmt.Fprintf(p.Writer, "%s%s ", prompt, PromptColor(">"))
 
 	f, ok := p.Reader.(*os.File)
 	isTerminal := ok && terminal.IsTerminal(int(f.Fd()))
