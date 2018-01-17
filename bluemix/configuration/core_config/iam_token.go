@@ -18,6 +18,9 @@ type AccountsInfo struct {
 }
 
 func NewIAMTokenInfo(token string) IAMTokenInfo {
+	if strings.HasPrefix(token, "Bearer ") {
+		token = strings.TrimLeft(token, "Bearer ")
+	}
 	tokenJSON, err := decodeAccessToken(token)
 	if err != nil {
 		return IAMTokenInfo{}
@@ -33,13 +36,7 @@ func NewIAMTokenInfo(token string) IAMTokenInfo {
 }
 
 func decodeAccessToken(token string) (tokenJSON []byte, err error) {
-	tokenParts := strings.Split(token, " ")
-
-	if len(tokenParts) < 2 {
-		return
-	}
-
-	encodedParts := strings.Split(tokenParts[1], ".")
+	encodedParts := strings.Split(token, ".")
 
 	if len(encodedParts) < 3 {
 		return
