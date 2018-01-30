@@ -12,26 +12,48 @@ import (
 )
 
 type UI interface {
+	// Say prints the formated message
 	Say(format string, args ...interface{})
+
+	// Warn prints the formated warning message
 	Warn(format string, args ...interface{})
+
+	// Failed prints the formated failure message
 	Failed(format string, args ...interface{})
+
+	// OK prints 'OK'
 	Ok()
 
+	// Prompt creates a single Prompt
 	Prompt(message string, options *PromptOptions) *Prompt
+
+	// ChoicePrompt creates a choice prompt
 	ChoicesPrompt(message string, choices []string, options *PromptOptions) *Prompt
 
-	// Deprecated: use Prompt() instead
+	// Ask asks for text answer
+	// Deprecated: use Prompt instead
 	Ask(format string, args ...interface{}) (answer string, err error)
-	// Deprecated: use Prompt() instead
+
+	// AskForPassword asks for password
+	// Deprecated: use Prompt instead
 	AskForPassword(format string, args ...interface{}) (answer string, err error)
-	// Deprecated: use Prompt() instead
+
+	// Confirm asks for user confirmation
+	// Deprecated: use Prompt instead
 	Confirm(format string, args ...interface{}) (bool, error)
-	// Deprecated: use Prompt() instead
+
+	// ConfirmWithDefault asks for user confirmation. If user skipped, return
+	// defaultBool Deprecated: use Prompt instead
 	ConfirmWithDefault(defaultBool bool, format string, args ...interface{}) (bool, error)
-	// Deprecated: use ChoicesPrompt() instead
+
+	// SelectOne asks to select one from choices. It returns the selected index.
+	// Deprecated: use ChoicesPrompt instead
 	SelectOne(choices []string, format string, args ...interface{}) (int, error)
 
+	// Table creates a table with the given headers
 	Table(headers []string) Table
+
+	// Writer returns writer of the terminal UI
 	Writer() io.Writer
 }
 
@@ -40,10 +62,12 @@ type terminalUI struct {
 	Out io.Writer
 }
 
+// NewStdUI initialize a terminal UI with os.Stdin and os.Stdout
 func NewStdUI() UI {
 	return NewUI(os.Stdin, colorable.NewColorableStdout())
 }
 
+// NewUI initialize a terminal UI with io.Reader and io.Writer
 func NewUI(in io.Reader, out io.Writer) UI {
 	return &terminalUI{
 		In:  in,

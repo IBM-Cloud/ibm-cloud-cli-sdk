@@ -8,6 +8,7 @@ import (
 	"path/filepath"
 )
 
+// ExtractTgz extracts src archive to the dest directory. Both src and dest must be a path name.
 func ExtractTgz(src string, dest string) error {
 	fd, err := os.Open(src)
 	if err != nil {

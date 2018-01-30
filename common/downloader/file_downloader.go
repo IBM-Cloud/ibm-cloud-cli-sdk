@@ -1,3 +1,4 @@
+// Package downloader provides a simple file downlaoder
 package downloader
 
 import (
@@ -11,20 +12,21 @@ import (
 	"strings"
 )
 
+// ProxyReader is an interface to proxy read bytes
 type ProxyReader interface {
 	Proxy(size int64, reader io.Reader) io.Reader
 	Finish()
 }
 
+// FileDownloader is a file downloader
 type FileDownloader struct {
-	SaveDir string
-
-	DefaultHeader http.Header
-	Client        *http.Client
-
-	ProxyReader ProxyReader
+	SaveDir       string       // path of the directory to save the downloaded file
+	DefaultHeader http.Header  // Default header to applied to the download request
+	Client        *http.Client // HTTP client to use, default is http DefaultClient
+	ProxyReader   ProxyReader
 }
 
+// New creates a file downloader
 func New(saveDir string) *FileDownloader {
 	return &FileDownloader{
 		SaveDir:       saveDir,
@@ -33,10 +35,14 @@ func New(saveDir string) *FileDownloader {
 	}
 }
 
+// Download downloads a file from a URL and returns the path and size of the
+// downloaded file
 func (d *FileDownloader) Download(url string) (dest string, size int64, err error) {
 	return d.DownloadTo(url, "")
 }
 
+// DownloadTo downloads a file from a URL to the file with the specified name in
+// the download directory
 func (d *FileDownloader) DownloadTo(url string, outputName string) (dest string, size int64, err error) {
 	req, err := d.createRequest(url)
 	if err != nil {
@@ -83,6 +89,7 @@ func (d *FileDownloader) DownloadTo(url string, outputName string) (dest string,
 	return dest, size, nil
 }
 
+// RemoveDir removes the download directory
 func (d *FileDownloader) RemoveDir() error {
 	return os.RemoveAll(d.SaveDir)
 }
