@@ -1,3 +1,5 @@
+// Package core_config provides functions to load core configuration.
+// The package is for internal only.
 package core_config
 
 import (

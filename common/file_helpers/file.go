@@ -1,3 +1,4 @@
+// Package file_helpers provides file operation helpers.
 package file_helpers
 
 import (
@@ -8,6 +9,7 @@ import (
 	"path/filepath"
 )
 
+// FileExists checks if the file exist or not
 func FileExists(path string) bool {
 	_, err := os.Stat(path)
 	if err == nil {
@@ -19,6 +21,8 @@ func FileExists(path string) bool {
 	return false
 }
 
+// RemoveFile removes the file.
+// If the file does not exist, it do nothing and return nil.
 func RemoveFile(path string) error {
 	if FileExists(path) {
 		return os.Remove(path)
@@ -26,6 +30,7 @@ func RemoveFile(path string) error {
 	return nil
 }
 
+// CopyFile copies file contents of src to dest. Both of stc and dest must be a path name.
 func CopyFile(src string, dest string) (err error) {
 	srcFile, err := os.Open(src)
 	if err != nil {
@@ -52,6 +57,9 @@ func CopyFile(src string, dest string) (err error) {
 	return
 }
 
+// CopyDir copies src directory recursively to dest.
+// Both of src and dest must be a path name.
+// It returns error if dest already exist.
 func CopyDir(src string, dest string) (err error) {
 	srcStat, err := os.Stat(src)
 	if err != nil {

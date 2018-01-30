@@ -11,93 +11,86 @@ import (
 	. "github.com/IBM-Bluemix/bluemix-cli-sdk/i18n"
 )
 
-type PluginConfigTypeError struct {
+// PluginConfigInvalidTypeError describes the value for a given key in plugin configuration
+// was not appropriate for a value of a specific type.
+type PluginConfigInvalidTypeError struct {
 	Key          string
 	ExpectedType string
 	Value        interface{}
 }
 
-func (e PluginConfigTypeError) Error() string {
+func (e PluginConfigInvalidTypeError) Error() string {
 	return fmt.Sprintf("plugin config: invalid type of value for key '%s', expected type %s, but got %T", e.Key, e.ExpectedType, e.Value)
 }
 
-// PluginConfig defines methods to access plug-in's private configuration stored in a JSON format.
+// PluginConfig defines methods to access plug-in's private configuration stored
+// in a JSON format.
 type PluginConfig interface {
-	// Get returns the value for the given key.
-	// The return value is nil, float64, bool, string, []interface{} or map[string]interface.
-	// If key not exists, return nil.
+	// Get returns the value for a given key.
+	// The value can be float64, bool, string, []interface{},
+	// map[string]interface or nil if the key not exist.
 	Get(key string) interface{}
 
-	// Get returns the value for the given key.
-	// The return value is nil, float64, bool, string, []interface{} or map[string]interface.
-	// If key not exists, return defaultVal.
+	// GetWithDefault returns the value for a given key, or defaultVal if the
+	// key not exist.
 	GetWithDefault(key string, defaultVal interface{}) interface{}
 
-	// GetString returns string value for the given key.
-	// If key not exists, return "".
+	// GetString returns string value for a given key.
 	GetString(key string) (string, error)
 
-	// GetStringWithDefault returns string value for the given key.
-	// If key not exists, return defaultVal.
+	// GetStringWithDefault returns string value for a given key or defaultVal
+	// if the key not exist.
 	GetStringWithDefault(key string, defaultVal string) (string, error)
 
-	// GetBool returns boolean value for the given key.
-	// If key not exists, return false.
-	// If the value is a string, attempts to convert it to bool.
+	// GetBool returns boolean value for a given key.
+	// If the value is a string, it attempts to convert it to bool.
 	GetBool(key string) (bool, error)
 
-	// GetBoolWithDefault returns boolean value for the given key.
-	// If key not exists, return defaultVal.
-	// If the value is a string, attempts to convert it to bool.
+	// GetBoolWithDefault returns boolean value for a given key or defaultVal if
+	// the key not exist.
 	GetBoolWithDefault(key string, defaultVal bool) (bool, error)
 
-	// GetInt returns int value for the given key.
-	// If key not exists, return 0.
+	// GetInt returns int value for a given key.
 	// If the value is float or string, attempts to convert it to int.
 	GetInt(key string) (int, error)
 
-	// GetIntWithDefault returns int value for the given key.
-	// If key not exists, return defaultVal.
-	// If the value is float or string, attempts to convert it to int.
+	// GetIntWithDefault returns int value for a given key or defaultVal if the
+	// key not exist.
+	// If the value is float or string, it attempts to convert it to int.
 	GetIntWithDefault(key string, defaultVal int) (int, error)
 
-	// GetFloat returns float64 value for the given key.
-	// If key not exists, return 0.0.
-	// If the value is int or string, attempts to convert it to float64.
+	// GetFloat returns float64 value for a given key.
+	// If the value is int or string, it attempts to convert it to float64.
 	GetFloat(key string) (float64, error)
 
-	// GetFloat returns float64 value for the given key.
-	// If key not exists, return defaultVal
-	// If the value is int or string, attempts to convert it to float64.
+	// GetFloatWithDefault returns float64 value for a given key or defaultVal
+	// if the key not exist.
+	// If the value is int or string, it attempts to convert it to float64.
 	GetFloatWithDefault(key string, defaultVal float64) (float64, error)
 
-	// GetStringSlice return string slice for the given key.
-	// If key not exists, return empty string slice.
+	// GetStringSlice return string slice for a given key.
+	// If the key not exists, return empty string slice.
 	GetStringSlice(key string) ([]string, error)
 
-	// GetIntSlice return string slice for the given key.
-	// If key not exists, return empty int slice.
+	// GetIntSlice return string slice for a given key.
 	GetIntSlice(key string) ([]int, error)
 
-	// GetFloatSlice return string slice for the given key.
-	// If key not exists, return empty float slice.
+	// GetFloatSlice return string slice for a given key.
 	GetFloatSlice(key string) ([]float64, error)
 
-	// GetStringMap return map[string]interface{} for the given key.
-	// If key not exists, return empty map.
+	// GetStringMap return map[string]interface{} for a given key.
 	GetStringMap(key string) (map[string]interface{}, error)
 
-	// GetStringMap return map[string]string for the given key.
-	// If key not exists, return empty map.
+	// GetStringMap return map[string]string for a given key.
 	GetStringMapString(key string) (map[string]string, error)
 
-	// Exists checks whether the key exists or not.
+	// Exists checks whether the value for a given key exists or not.
 	Exists(key string) bool
 
-	// Set sets the value for the given key.
+	// Set sets the value for a given key.
 	Set(string, interface{}) error
 
-	// Erase delete the given key.
+	// Erase delete a given key.
 	Erase(key string) error
 }
 
@@ -164,7 +157,7 @@ func (c *pluginConfig) GetStringWithDefault(key string, defaultVal string) (stri
 	if s, ok := toString(v); ok {
 		return s, nil
 	}
-	return defaultVal, PluginConfigTypeError{Key: key, ExpectedType: "string", Value: v}
+	return defaultVal, PluginConfigInvalidTypeError{Key: key, ExpectedType: "string", Value: v}
 }
 
 func toString(v interface{}) (string, bool) {
@@ -193,7 +186,7 @@ func (c *pluginConfig) GetBoolWithDefault(key string, defaultVal bool) (bool, er
 	if b, ok := toBool(v); ok {
 		return b, nil
 	}
-	return defaultVal, PluginConfigTypeError{Key: key, ExpectedType: "bool", Value: v}
+	return defaultVal, PluginConfigInvalidTypeError{Key: key, ExpectedType: "bool", Value: v}
 }
 
 func toBool(v interface{}) (bool, bool) {
@@ -221,7 +214,7 @@ func (c *pluginConfig) GetIntWithDefault(key string, defaultVal int) (int, error
 	if i, ok := toInt(v); ok {
 		return i, nil
 	}
-	return defaultVal, PluginConfigTypeError{Key: key, ExpectedType: "int", Value: v}
+	return defaultVal, PluginConfigInvalidTypeError{Key: key, ExpectedType: "int", Value: v}
 }
 
 func toInt(v interface{}) (int, bool) {
@@ -249,7 +242,7 @@ func (c *pluginConfig) GetFloatWithDefault(key string, defaultVal float64) (floa
 	if f, ok := toFloat(v); ok {
 		return f, nil
 	}
-	return defaultVal, PluginConfigTypeError{Key: key, ExpectedType: "float", Value: v}
+	return defaultVal, PluginConfigInvalidTypeError{Key: key, ExpectedType: "float", Value: v}
 }
 
 func toFloat(v interface{}) (float64, bool) {
@@ -273,7 +266,7 @@ func (c *pluginConfig) GetSlice(key string) ([]interface{}, error) {
 	if s, ok := v.([]interface{}); ok {
 		return s, nil
 	}
-	return []interface{}{}, PluginConfigTypeError{Key: key, ExpectedType: "[]interface{}", Value: v}
+	return []interface{}{}, PluginConfigInvalidTypeError{Key: key, ExpectedType: "[]interface{}", Value: v}
 }
 
 func (c *pluginConfig) GetStringSlice(key string) ([]string, error) {
@@ -284,7 +277,7 @@ func (c *pluginConfig) GetStringSlice(key string) ([]string, error) {
 	if ss, ok := toStringSlice(v); ok {
 		return ss, nil
 	}
-	return []string{}, PluginConfigTypeError{Key: key, ExpectedType: "[]string", Value: v}
+	return []string{}, PluginConfigInvalidTypeError{Key: key, ExpectedType: "[]string", Value: v}
 }
 
 func toStringSlice(v interface{}) ([]string, bool) {
@@ -312,7 +305,7 @@ func (c *pluginConfig) GetIntSlice(key string) ([]int, error) {
 	if is, ok := toIntSlice(v); ok {
 		return is, nil
 	}
-	return []int{}, PluginConfigTypeError{Key: key, ExpectedType: "[]int", Value: v}
+	return []int{}, PluginConfigInvalidTypeError{Key: key, ExpectedType: "[]int", Value: v}
 }
 
 func toIntSlice(v interface{}) ([]int, bool) {
@@ -340,7 +333,7 @@ func (c *pluginConfig) GetFloatSlice(key string) ([]float64, error) {
 	if fs, ok := toFloatSlice(v); ok {
 		return fs, nil
 	}
-	return []float64{}, PluginConfigTypeError{Key: key, ExpectedType: "[]float64", Value: v}
+	return []float64{}, PluginConfigInvalidTypeError{Key: key, ExpectedType: "[]float64", Value: v}
 }
 
 func toFloatSlice(v interface{}) ([]float64, bool) {
@@ -368,7 +361,7 @@ func (c *pluginConfig) GetStringMap(key string) (map[string]interface{}, error) 
 	if sm, ok := v.(map[string]interface{}); ok {
 		return sm, nil
 	}
-	return map[string]interface{}{}, PluginConfigTypeError{Key: key, ExpectedType: "map[string]interface{}", Value: v}
+	return map[string]interface{}{}, PluginConfigInvalidTypeError{Key: key, ExpectedType: "map[string]interface{}", Value: v}
 }
 
 func (c *pluginConfig) GetStringMapString(key string) (map[string]string, error) {
@@ -379,7 +372,7 @@ func (c *pluginConfig) GetStringMapString(key string) (map[string]string, error)
 	if sms, ok := toMapStringMapString(v); ok {
 		return sms, nil
 	}
-	return map[string]string{}, PluginConfigTypeError{Key: key, ExpectedType: "map[string]string", Value: v}
+	return map[string]string{}, PluginConfigInvalidTypeError{Key: key, ExpectedType: "map[string]string", Value: v}
 }
 
 func toMapStringMapString(v interface{}) (map[string]string, bool) {

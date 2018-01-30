@@ -1,46 +1,4 @@
-// Package rest provides a simple REST client for creating and sending
-// API requests.
-
-// Examples:
-// Creating request
-// 		// GET request
-// 		GetRequest("http://www.example.com").
-// 			Set("Accept", "application/json").
-// 			Query("foo1", "bar1").
-// 			Query("foo2", "bar2")
-//
-// 		// JSON body
-// 		foo = Foo{Bar: "val"}
-// 		PostRequest("http://www.example.com").
-// 			Body(foo)
-
-// 		// String body
-// 		PostRequest("http://www.example.com").
-// 			Body("{\"bar\": \"val\"}")
-
-// 		// Stream body
-// 		PostRequest("http://www.example.com").
-// 			Body(strings.NewReader("abcde"))
-
-// 		// Multipart POST request
-// 		var f *os.File
-// 		PostRequest("http://www.example.com").
-// 			Field("foo", "bar").
-// 			File("file1", File{Name: f.Name(), Content: f}).
-// 			File("file2", File{Name: "1.txt", Content: []byte("abcde"), Type: "text/plain")
-
-// 		// Build to an HTTP request
-// 		GetRequest("http://www.example.com").Build()
-
-// Sending request:
-// 		client := NewClient()
-// 		var foo = struct {
-// 			Bar string
-// 		}{}
-// 		var apiErr = struct {
-// 			Message string
-// 		}{}
-// 		resp, err := client.Do(request, &foo, &apiErr)
+// Package rest provides a simple HTTP and REST request builder and client.
 package rest
 
 import (
@@ -52,30 +10,26 @@ import (
 	"net/http"
 )
 
+// ErrEmptyResponseBody means the client receives an unexpected empty response from server
 var ErrEmptyResponseBody = errors.New("empty response body")
 
+// ErrorResponse is the status code and response received from the server when an error occurs.
 type ErrorResponse struct {
-	// Response status code
-	StatusCode int
-
-	// Response text
-	Message string
+	StatusCode int    //  Response status code
+	Message    string // Response text
 }
 
 func (e *ErrorResponse) Error() string {
 	return fmt.Sprintf("Error response from server. Status code: %v; message: %v", e.StatusCode, e.Message)
 }
 
-// Client is a REST client. It's recommend that a client be created with the
-// NewClient() method.
+// Client is a simple HTTP and REST client. Create it with NewClient method.
 type Client struct {
-	// The HTTP client to be used. Default is HTTP's defaultClient.
-	HTTPClient *http.Client
-	// Defaualt header for all outgoing HTTP requests.
-	DefaultHeader http.Header
+	HTTPClient    *http.Client // HTTP client, default is HTTP DefaultClient
+	DefaultHeader http.Header  // Default header applied to all outgoing HTTP request.
 }
 
-// NewClient creates a new REST client.
+// NewClient creates a client.
 func NewClient() *Client {
 	return &Client{
 		HTTPClient:    http.DefaultClient,
@@ -83,15 +37,15 @@ func NewClient() *Client {
 	}
 }
 
-// Do sends an request and returns an HTTP response. The resp.Body will be
-// consumed and closed in the method.
+// Do sends a request and returns a HTTP response whose body is consumed and
+// closed.
 //
-// For 2XX response, it will be JSON decoded into the value pointed to by
-// respv.
+// If respV is not nil, the value it points to is JSON decoded when server
+// returns a successful response.
 //
-// For non-2XX response, an attempt will be made to unmarshal the response
-// into the value pointed to by errV. If unmarshal failed, an ErrorResponse
-// error with status code and response text is returned.
+// If errV is not nil, the value it points to is JSON decoded when server
+// returns an unsuccessfully response. If the response text is not a JSON
+// string, a more generic ErrorResponse error is returned.
 func (c *Client) Do(r *Request, respV interface{}, errV interface{}) (*http.Response, error) {
 	req, err := c.makeRequest(r)
 	if err != nil {

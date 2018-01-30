@@ -11,15 +11,21 @@ import (
 	. "github.com/IBM-Bluemix/bluemix-cli-sdk/i18n"
 )
 
-// TraceLoggingTransport is a thin wrapper around Transport. It dumps HTTP
-// request and response using trace logger, based on the "BLUEMIX_TRACE"
-// environment variable. Sensitive user data will be replaced by text
-// "[PRIVATE DATA HIDDEN]".
+// TraceLoggingTransport is a thin wrapper around Transport.
+// It dumps HTTP request and response using trace logger, created based on the
+// "BLUEMIX_TRACE" environment variable. Sensitive user data will be replaced by
+// text "[PRIVATE DATA HIDDEN]".
+//
+// Example:
+//   client := &gohttp.Client{ Transport:
+//       http.NewTraceLoggingTransport(),
+//   }
+//   client.Get("http://www.example.com")
 type TraceLoggingTransport struct {
 	rt http.RoundTripper
 }
 
-// NewTraceLoggingTransport returns a TraceLoggingTransport wrapping around
+// NewTraceLoggingTransport creates a TraceLoggingTransport wrapping around
 // the passed RoundTripper. If the passed RoundTripper is nil, HTTP
 // DefaultTransport is used.
 func NewTraceLoggingTransport(rt http.RoundTripper) *TraceLoggingTransport {

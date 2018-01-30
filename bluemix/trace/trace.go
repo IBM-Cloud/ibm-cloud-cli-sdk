@@ -67,12 +67,12 @@ func NewLogger(bluemix_trace string) Printer {
 	}
 }
 
-// NewStdLogger return a printer that writes to StdOut.
+// NewStdLogger creates a a printer that writes to StdOut.
 func NewStdLogger() PrinterCloser {
 	return newLoggerImpl(os.Stderr, "", 0)
 }
 
-// NewFileLoffer return a printer that writes to the given file path.
+// NewFileLogger creates a printer that writes to the given file path.
 func NewFileLogger(path string) PrinterCloser {
 	file, err := os.OpenFile(path, os.O_CREATE|os.O_RDWR|os.O_APPEND, 0666)
 	if err != nil {
@@ -83,7 +83,7 @@ func NewFileLogger(path string) PrinterCloser {
 	return newLoggerImpl(file, "", 0)
 }
 
-// Santitize returns a clean string with sentive user data in the input
+// Sanitize returns a clean string with sensitive user data in the input
 // replaced by PRIVATE_DATA_PLACEHOLDER.
 func Sanitize(input string) string {
 	re := regexp.MustCompile(`(?m)^Authorization: .*`)

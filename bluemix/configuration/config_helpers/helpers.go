@@ -1,3 +1,4 @@
+// Package config_helpers provides helper functions to locate configuration files.
 package config_helpers
 
 import (

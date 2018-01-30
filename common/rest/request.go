@@ -1,3 +1,44 @@
+// Request examples:
+//   // create a simple GET request
+//   req := GetRequest("http://www.example.com")
+//
+//   // set header
+//   req.Set("Accept", "application/json")
+//
+//   // set query parameters
+//   req.Query("foo1", "bar1")
+//   req.Query("foo2", "bar2")
+//
+//   // Build to a HTTP request
+//   req.Build()
+//
+//   // method chaining is also supported
+//   // the above is equal to:
+//   GetRequest("http://www.example.com").
+//       Set("Accept", "application/json").
+//       Query("foo1", "bar1").
+//       Query("foo2", "bar2").
+//       Build()
+//
+//   // struct body
+//   foo = Foo{Bar: "val"}
+//   PostRequest("http://www.example.com").
+//       Body(foo)
+//
+//   // String body
+//   PostRequest("http://www.example.com").
+//       Body("{\"bar\": \"val\"}")
+//
+//   // Stream body
+//   PostRequest("http://www.example.com").
+//       Body(strings.NewReader("abcde"))
+//
+//   // Multipart POST request
+//   var f *os.File
+//   PostRequest("http://www.example.com").
+//       Field("foo", "bar").
+//       File("file1", File{Name: f.Name(), Content: f}).
+//       File("file2", File{Name: "1.txt", Content: []byte("abcde"), Type: "text/plain"})
 package rest
 
 import (
@@ -18,17 +59,16 @@ const (
 	formUrlEncodedContentType = "application/x-www-form-urlencoded"
 )
 
-// File represents a file upload in the POST request
+// File represents a file upload in HTTP request
 type File struct {
 	// File name
-	Name string
-	// File content
-	Content io.Reader
-	// Mime type, defaults to "application/octet-stream"
-	Type string
+	Name    string    // name of the file to be uploaded
+	Content io.Reader // content of the file
+	Type    string    // Mime type, default is "application/octet-stream"
 }
 
-// Request is a REST request. It also acts like a HTTP request builder.
+// Request represent a REST request. It provides helper functions to build a
+// HTTP request.
 type Request struct {
 	method string
 	rawUrl string
@@ -44,7 +84,7 @@ type Request struct {
 	body interface{}
 }
 
-// NewRequest creates a new REST request with the given rawUrl.
+// NewRequest creates a new request with a given rawUrl.
 func NewRequest(rawUrl string) *Request {
 	return &Request{
 		rawUrl:      rawUrl,
@@ -61,33 +101,33 @@ func (r *Request) Method(method string) *Request {
 	return r
 }
 
-// GetRequest creates a REST request with GET method and the given rawUrl.
+// GetRequest creates a request with GET method and the given rawUrl.
 func GetRequest(rawUrl string) *Request {
 	return NewRequest(rawUrl).Method("GET")
 }
 
-// HeadRequest creates a REST request with HEAD method and the given rawUrl.
+// HeadRequest creates a request with HEAD method and the given rawUrl.
 func HeadRequest(rawUrl string) *Request {
 	return NewRequest(rawUrl).Method("HEAD")
 }
 
-// PostRequest creates a REST request with POST method and the given rawUrl.
+// PostRequest creates a request with POST method and the given rawUrl.
 func PostRequest(rawUrl string) *Request {
 	return NewRequest(rawUrl).Method("POST")
 }
 
-// PutRequest creates a REST request with PUT method and the given rawUrl.
+// PutRequest creates a request with PUT method and the given rawUrl.
 func PutRequest(rawUrl string) *Request {
 	return NewRequest(rawUrl).Method("PUT")
 }
 
-// DeleteRequest creates a REST request with DELETE method and the given
+// DeleteRequest creates a request with DELETE method and the given
 // rawUrl.
 func DeleteRequest(rawUrl string) *Request {
 	return NewRequest(rawUrl).Method("DELETE")
 }
 
-// PatchRequest creates a REST request with PATCH method and the given
+// PatchRequest creates a request with PATCH method and the given
 // rawUrl.
 func PatchRequest(rawUrl string) *Request {
 	return NewRequest(rawUrl).Method("PATCH")
