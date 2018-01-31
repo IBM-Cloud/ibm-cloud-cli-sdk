@@ -1,96 +1,96 @@
-# Bluemix CLI Plugin Developer's Guide
+# Bluemix CLI Plug-in Developer's Guide
 
-This guide introduces how to develop a Bluemix CLI plugin by using utilities and libraries provided by Bluemix CLI SDK. It also covers specifications including wording, format and color of the terminal output that we highly recommend developers to follow.
+This guide introduces how to develop a Bluemix CLI plug-in by using utilities and libraries provided by Bluemix CLI SDK. It also covers specifications including wording, format and color of the terminal output that we highly recommend developers to follow.
 
-## 1. Plugin Context Management
+## 1. Plug-in Context Management
 
-Bluemix CLI SDK provides a set of APIs to register and manage plugins. It is similar to  CF plugin interface, but has more Bluemix specific extensions.
+Bluemix CLI SDK provides a set of APIs to register and manage plug-ins. It is similar to CF plug-in interface, but has more Bluemix specific extensions.
 
-### 1.1. Register a New Plugin
+### 1.1. Register a New Plug-in
 
-_Step 1:_ Define a new struct for Bluemix CLI plugin and associate Run and GetMetadata methods to that struct:
+1.  Define a new struct for Bluemix CLI plug-in and associate `Run` and `GetMetadata` methods to that struct:
 
-```go
-import (
-    "github.com/IBM-Bluemix/bluemix-cli-sdk/plugin"
-)
+    ```go
+    import (
+        "github.com/IBM-Bluemix/bluemix-cli-sdk/plugin"
+    )
 
-type DemoPlugin struct {}
+    type DemoPlugin struct {}
 
-func (demo *DemoPlugin) Run(context plugin.PluginContext, args []string) {}
+    func (demo *DemoPlugin) Run(context plugin.PluginContext, args []string) {}
 
-func (demo *DemoPlugin) GetMetadata() plugin.PluginMetadata {}
-```
+    func (demo *DemoPlugin) GetMetadata() plugin.PluginMetadata {}
+    ```
 
-_Step 2:_ In main function, invoke plugin.Start method to register the plugin:
+2.  In main function, invoke `plugin.Start` method to register the plug-in:
 
-```go
-func main() {
-    plugin.Start(new(DemoPlugin))
-}
-```
+    ```go
+    func main() {
+        plugin.Start(new(DemoPlugin))
+    }
+    ```
 
-_Step 3:_ Return a plugin.PluginMetadata struct to finalize the registration of the plugin in GetMetadata method:
+3.  Return a `plugin.PluginMetadata` struct to finalize the registration of the plug-in in `GetMetadata` method:
 
-```go
-func (demo *DemoPlugin) GetMetadata() plugin.PluginMetadata {
-    return plugin.PluginMetadata{
-        Name: "demo-plugin",
-        Version: plugin.VersionType{
-            Major: 1,
-            Minor: 0,
-            Build: 0,
-        },
-        MinCliVersion: plugin.VersionType{
-            Major: 0,
-            Minor: 0,
-            Build: 1,
-        },
-        Commands: []plugin.Command{
-            {
-                Name:        "echo",
-                Alias:       "ec",
-                Description: "Echo a message on terminal.",
-                Usage:       "bluemix echo MESSAGE [-u]",
-                Flags: []plugin.Flag{
-                    {
-                        Name: "u",
-                        Description: "Change the message to upper case.",
-                        HasValue: false,
+    ```go
+    func (demo *DemoPlugin) GetMetadata() plugin.PluginMetadata {
+        return plugin.PluginMetadata{
+            Name: "demo-plugin",
+            Version: plugin.VersionType{
+                Major: 1,
+                Minor: 0,
+                Build: 0,
+            },
+            MinCliVersion: plugin.VersionType{
+                Major: 0,
+                Minor: 0,
+                Build: 1,
+            },
+            Commands: []plugin.Command{
+                {
+                    Name:        "echo",
+                    Alias:       "ec",
+                    Description: "Echo a message on terminal.",
+                    Usage:       "bluemix echo MESSAGE [-u]",
+                    Flags: []plugin.Flag{
+                        {
+                            Name: "u",
+                            Description: "Change the message to upper case.",
+                            HasValue: false,
+                        },
                     },
                 },
             },
-        },
+        }
     }
-}
-```
+    ```
 
-Below is the explanation of some of the fields in plugin.PluginMetadata struct:
+    **Understanding the fields in this `plugin.PluginMetadata` struct:**
+    - _Name_: The name of plug-in. It will be displayed when using `bluemix plugin list` command or can be used to uninstall the plug-in through `bluemix plugin uninstall` command.
+    - _Version_: The version of plug-in.
+    - _MinCliVersion_: The minimal version of Bluemix CLI required by the plug-in.
+    - _Commands_: The array of `plugin.Commands` to register the plug-in commands.
+    - _Alias_: Alias of the Alias usually is a short name of the command.
+    - _Command.Flags_: The command flags (options) which will be displayed as a part of help output of the command.
 
-- Name: The name of plugin. It will be displayed when using `bluemix plugin list` command or can be used to uninstall the plugin through `bluemix plugin uninstall` command.
-- Version: The version of plugin.
-- MinCliVersion: The minimal version of Bluemix CLI required by the plugin.
-- Commands: The array of plugin.Commands to register the plugin commands.
-- Alias: Alias of the Alias usually is a short name of the command.
-- Command.Flags: The command flags (options) which will be displayed as a part of help output of the command.
+4.  Add the logic of plug-in command process in Run method, for example:
 
-_Step 4:_ Add the logic of plugin command process in Run method, for example:
-
-```go
-func (demo *DemoPlugin) Run(context plugin.PluginContext, args []string) {
-    if args[0] == "echo" {
-        // echo command logic here
+    ```go
+    func (demo *DemoPlugin) Run(context plugin.PluginContext, args []string) {
+        if args[0] == "echo" {
+            // echo command logic here
+        }
     }
-}
-```
+    ```
 
-PluginContext provides the most useful methods which allow you to get command line properties from CF configuration as well as Bluemix specific properties.
+`PluginContext` provides the most useful methods which allow you to get command line properties from CF configuration as well as Bluemix specific properties.
 
 ### 1.2. Namespace
 
-Bluemix CLI introduced a new concept called "Namespace". A namespace is a category of commands which have similar functionality. Some namespaces are predefined by Bluemix CLI and can be shared by plugins, others are non-shared namespaces which can be defined in each plugin. Plugin can reference a predefined namespace in Bluemix CLI or define a non-shared namespace by its own.
+Bluemix CLI introduced a new concept called "Namespace". A namespace is a category of commands which have similar functionality. Some namespaces are predefined by Bluemix CLI and can be shared by plug-ins, but others are non-shared namespaces which can be defined in each plug-in. The plug-in can reference a predefined namespace in Bluemix CLI or define a non-shared namespace by its own. You can also use sub-namespaces to organize commands into categories.
 
-The following are shared-namespaces currently predefined in Bluemix CLI:
+#### Shared namespaces
+The following are shared namespaces are currently predefined in Bluemix CLI and can be shared across plug-ins:
 
 | Namespace | Description |
 | --- | --- |
@@ -102,9 +102,9 @@ The following are shared-namespaces currently predefined in Bluemix CLI:
 | security | Manage security settings |
 | bss | Retrieve usage and billing information |
 | cf | Run Cloud Foundry CLI with Bluemix context |
-| plugin | Manage plugin repositories and plugins |
+| plugin | Manage plug-in repositories and plug-ins |
 
-For shared namespace, it can be referenced by plugin as the following example:
+For shared namespace, refer to the namespace in the plug-in:
 
 ```go
 import "github.com/IBM-Bluemix/bluemix-cli-sdk/plugin"
@@ -137,7 +137,8 @@ func (p *CatalogExtPlugin) Run(context plugin.PluginContext, args []string) {
 }
 ```
 
-For non-shared namespace, it can be defined in plugin like:
+#### Non-shared namespaces
+Define a non-shared namespace for your plug-in:
 
 ```go
 import "github.com/IBM-Bluemix/bluemix-cli-sdk/plugin"
@@ -184,6 +185,7 @@ func (p *DemoPlugin) Run(context plugin.PluginContext, args []string) {
 }
 ```
 
+#### Sub-namespaces
 If you want to organize commands into categories at different levels, you can use sub-namespace. White spaces in namespace will be treated as delimiter for sub-namespaces. For example, considering namespace "a b c", its parent namespace is "a b", and its ancestor namespace is "a".
 
 Following is an example of using sub-namespace:
@@ -262,21 +264,21 @@ func (p *DemoPlugin) Run(context plugin.PluginContext, args []string) {
 }
 ```
 
-
+#### Notes on namespaces
 The following items should be noticed here:
 
-- The command registered in plugin can be associated with at most one namespace.
+- The command registered in `plugin` can be associated with at most one namespace.
 - If a command is not associated with any namespace, it will be registered as a root command. For example, if a command is associated with the network namespace, it must be executed by typing "bluemix network xxx", but if no namespace is associated with a command, the command will be invoked by "bluemix xxx" directly.
-- All shared namespaces can only be defined in Bluemix CLI and referenced by plugins.
-- Developer can define multiple non-shared namespaces in one plugin.
-- If the plugin only belongs to non-shared namespaces, a special command with name "\*" can be defined, which means even if a user typed in a command which is not defined in current namespace, the plugin will still be invoked, otherwise, an error message will be displayed by Bluemix CLI. Taking the above code snippet as an example, if user typed in "bluemix demo others", then "default" logic in "Run" method will be hit.
-- If multiple plugins define a namespace with the same name, they will follow "first install first serve strategy", which means the latter plugins can't be installed successfully due to the namespace conflict.
+- All shared namespaces can only be defined in Bluemix CLI and referenced by plug-ins.
+- Developer can define multiple non-shared namespaces in one plug-in.
+- If the plug-in only belongs to non-shared namespaces, a special command with name "\*" can be defined, which means even if a user typed in a command which is not defined in current namespace, the plug-in will still be invoked, otherwise, an error message will be displayed by Bluemix CLI. Taking the above code snippet as an example, if user typed in "bluemix demo others", then "default" logic in "Run" method will be hit.
+- If multiple plug-ins define a namespace with the same name, they will follow a "first install first serve" strategy, which means the latter plug-ins can't be installed successfully due to the namespace conflict.
 - Developer can define help command for non-shared namespace. If it is not defined, the help content will be generated by Bluemix CLI automatically based on registered commands. For shared namespaces the help command was predefined in Bluemix CLI.
 - **Important:** No matter whether the command belongs to a namespace, args[0] will always be the command name or alias instead of the namespace name. You can get the namespace via `PluginContext.CommandNamespace()`.
 
-### 1.3. Manage Plugin's Configuration
+### 1.3. Manage Plug-in Configuration
 
-Bluemix CLI SDK provides APIs to allow you to access the plugin's own configuration saved in JSON format. Each plugin will have it's own configuration file be created automatically on installation. Take the following code as an example:
+Bluemix CLI SDK provides APIs to allow you to access the plug-in's own configuration saved in JSON format. Each plug-in will have its own configuration file be created automatically on installation. Take the following code as an example:
 
 ```go
 func (demo *DemoPlugin) Run(context plugin.PluginContext, args []string){
@@ -313,87 +315,87 @@ func (demo *DemoPlugin) Run(context plugin.PluginContext, args []string){
 
 # 2. Wording, Format and Color of Output
 
-To keep user experience consistent, developers of Bluemix CLI plugin should apply specific wordings, formats and colors to the terminal output. Bluemix CLI SDK provides the utility to help plugin developers easily format and colorize the message output. We strongly recommend developers to comply with the following specifications so that the plugins are consistent with each other in terms of user experience. 
+To keep user experience consistent, developers of Bluemix CLI plug-in should apply specific wordings, formats and colors to the terminal output. Bluemix CLI SDK provides the utility to help plug-in developers easily format and colorize the message output. We strongly recommend developers to comply with the following specifications so that the plug-ins are consistent with each other in terms of user experience.
 
-We tried to make the formats and colors to be similar to CF CLI too, to make the experience to be similar to CF as much as possible. 
+We tried to make the formats and colors to be similar to CF CLI too, to make the experience to be similar to CF as much as possible.
 
 ### 2.1. Global Specification
 
 1. Do NOT use "Please" in any message.
-  Correct:
-  <pre class="bx-console-block">Use '<span class="yellow">bluemix login</span>' to login first.</pre>
-  Invalid:
-  <pre class="bx-console-block">Please use '<span class="yellow">bluemix login</span>' to login first.</pre>
+   Correct:
+   <pre class="bx-console-block">First log in by running '<span class="yellow">bluemix login</span>'.</pre>
+   Invalid:
+   <pre class="bx-console-block">Please use '<span class="yellow">bluemix login</span>' to login first.</pre>
+
 2. Capitalize the first letter for all sentences and short descriptions. For example:
   <pre class="bx-console-block">Change the instance count for an app or container group.</pre>
   <pre class="bx-console-block">-i   Number of instances</pre>
+
 3. Add "..." at the end of "in-progress" messages. For example:
   <pre class="bx-console-block">Scaling container group '<span class="cyan">xxx</span>'...</pre>
+
 4. Use "plug-in" instead of "plugin" in all places.
 
-### 2.2. Plugin and Command Name
+### 2.2. Plug-in and Command Name
 
-To name the plugin for a service
+**To name the plug-in for a service**:
 
-- Use full name of the service in all lower case, and hyphen to replace space, for example 'my-service'
-- Use abbreviation only when it’s commonly accepted, for example use 'vpn' for Virtual Private Network service
+- Use full name of the service in all lower case, and hyphen to replace space, for example 'my-service'.
+- Use abbreviation only when it’s commonly accepted, for example use 'vpn' for Virtual Private Network service.
 
-To name the commands:
+**To name the commands**:
 
 - Use lower case words and hyphen
 - Follow a “noun-verb” sequence
-- For command that list objects, use plural of the object name (or "object-list” if plural won’t work)
-- Use common verbs like add, create, bind, update, delete …
+- For commands that list objects, use the plural of the object name, such as `objects`. If a plural will not work, use the name and list, such as `object-list`.
+- Use common verbs such as add, create, bind, update, delete …
 
-For example, the following command names are correct:
+The following command names are formatted correctly, and provides a possible description for the command:
 
-route-map
+- `route-map`: Map out the route from one place to another in a location application.
 
-route-unmap
+- `route-unmap`: Unmap a previously mapped route.
 
-template-run
+- `template-run`: Run a selected template.
 
-plugin-repo-add
+- `plugin-repo-add`: Add a plug-in repository.
 
-plugin-repo-remove
+- `plugin-repo-remove`: Remove a plug-in repository.
 
-templates
+- `templates`: Get a list of templates.
 
-...
+The following command names are invalid, and explain why:
 
-The following command names are invalid:
+- `Map-Route`: Uses uppercase letters (M, R). Does not follow "noun-verb" word order (the route needs to be mapped, but as this is written, the order implies that the map needs to be routed).
 
-Map-Route
+- `map-route`: Does not follow "noun-verb" word order (the route needs to be mapped, but as this is written, the order implies that the map needs to be routed).
 
-map-route
+- `map route`: Uses a space instead of a hyphen. Does not follow "noun-verb" word order (the route needs to be mapped, but as this is written, the order implies that the map needs to be routed).
 
-map route
+- `route map`: Uses a space instead of a hyphen.
 
-route map
+- `route\_map`: Uses unallowed characters (`\_`) instead of a hyphen.
 
-route\_map
+- `add-plugin-repo`: Does not follow "noun-verb" word order. The verb "add" should be the last part of the command name.
 
-add-plugin-repo
+- `plugin-add-repo`: Does not follow the "noun-verb" word order. The verb "add" should be the last part of the command name.
 
-plugin-add-repo
 
-...
-
-Use single quotation marks (') around the command in output message and the command itself should be yellow with **bold**. For example:
+**Command formatting in output messages**:
+Use single quotation marks (') around the command name and options in output message. The command itself should be yellow with **bold**.  Where possible, place command names at the end of the sentence, not in the middle. For example:
 
 ```
-You have not logged in. Use 'bluemix login'to login first.
+You are not logged in. Log in by running 'bluemix login'.
 ```
 
-
-You can use the following APIs provided by Bluemix CLI SDK to print the above message:
+You can use the following APIs provided by Bluemix CLI SDK to print the previous example message:
 
 ```go
 import "github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/terminal"
 
 ui := terminal.NewStdUI()
 
-ui.Say(`You have not logged in. Use "%s" to login first.`, 
+ui.Say(`You are not logged in. Log in by running "%s".`,
     terminal.CommandColor("bluemix login"))
 
 ```
@@ -406,7 +408,7 @@ Add single quotation marks (') around entity names and keep the entity names in 
 Mapping route 'my-app.ng.bluemix.net' to CF application 'my-app'...
 ```
 
-The Bluemix CLI SDK also provides API to help you print the above message:
+The Bluemix CLI SDK also provides API to help you print the previous example message:
 
 ```go
 ui.Say("Mapping route '%s' to CF application '%s'...",
@@ -425,7 +427,7 @@ Use the guidelines below to compose command help.
   - Example: `bluemix test create (NAME | --uuid ID)`
 - "[...]" and "(...)" can be nested.
 - If a value accepts multiple type of inputs, it's recommended that for file type the file name should start with "@".
-- If a command has multiple paradigms and it's hard to describe them together, specify each of them in separate lines, 
+- If a command has multiple paradigms and it's hard to describe them together, specify each of them in separate lines,
   e.g.
   ```bash
   USAGE:
@@ -433,43 +435,49 @@ Use the guidelines below to compose command help.
     bx test command bar.....
   ```
 
-The following gives an example of the out put of the "help" command:
+The following gives an example of the output of the `help` command:
 
 ```
 NAME:
-   scale - Change the instance count for an app or container group
+   scale - Change the instance count for an app or container group.
 USAGE:
    bx scale RESOURCE_NAME [-i INSTANCES] [-k DISK] [-m MEMORY] [-f]
-   RESOURCE_NAME is the name of app or container group to be scaled
+   RESOURCE_NAME is the name of the app or container group to be scaled.
 OPTIONS:
-   -i value  Number of instances
-   -k value  Disk limit (e.g. 256M, 1024M, 1G), valid only for scaling an app, not a container group
-   -m value  Memory limit (e.g. 256M, 1024M, 1G), valid only for scaling an app, not a container group
-   -f        Force restart of CF application without prompt, valid only for scaling an app, not a container group
+   -i value  Number of instances.
+   -k value  Disk limit (e.g. 256M, 1024M, 1G). Valid only for scaling an app, not a container group.
+   -m value  Memory limit (e.g. 256M, 1024M, 1G). Valid only for scaling an app, not a container group.
+   -f        Force restart of CF application without prompt. Valid only for scaling an app, not a container group.
 ```
 
 
 ### 2.5. Incorrect Usage
 
-When user uses the command with wrong usage (e.g. incorrect number of arguments, invalid option value, required options not specified and etc.), the message in following format should be displayed:
+When users run a command with wrong usage (e.g. incorrect number of arguments, invalid option value, required options not specified and etc.), the message should be displayed in the following format:
 
 ```
 Incorrect usage.
 NAME:
-   scale - Change the instance count for an app or container group
+   scale - Change the instance count for an app or container group.
 USAGE:
    bx scale RESOURCE_NAME [-i INSTANCES] [-k DISK] [-m MEMORY] [-f]
-   RESOURCE_NAME is the name of app or container group to be scaled
+   RESOURCE_NAME is the name of the app or container group to be scaled.
 OPTIONS:
-   -i value  Number of instances
-   -k value  Disk limit (e.g. 256M, 1024M, 1G), valid only for scaling an app, not a container group
-   -m value  Memory limit (e.g. 256M, 1024M, 1G), valid only for scaling an app, not a container group
-   -f        Force restart of CF application without prompt, valid only for scaling an app, not a container group
+   -i value  Number of instances.
+   -k value  Disk limit (e.g. 256M, 1024M, 1G). Valid only for scaling an app, not a container group.
+   -m value  Memory limit (e.g. 256M, 1024M, 1G). Valid only for scaling an app, not a container group.
+   -f        Force restart of CF application without prompt. Valid only for scaling an app, not a container group.
+```
+
+If possible, provide details to help the users figure out what was wrong with their usage. For example:
+
+```
+Incorrect usage. The '-k' option is not valid for a container group.
 ```
 
 ### 2.6. Command Failure
 
-If a command failed due to the client-side or server-side error, the following output format need to be complied with:
+If a command failed due to the client-side or server-side error, explain the error and provide guidance on how to resolve the issue, such as shown in the following output:
 
 ```
 Creating application 'my-app'...
@@ -482,10 +490,10 @@ Use another name and try again.
 Scaling container group 'xxx'...
 FAILED
 A server error occurred while scaling the container group.
-Try again later. If the problem continues, go to Support.
+Try again later. If the problem continues, contact IBM Cloud Support.
 ```
 
-To summarize, the failure message must start with "FAILED" in red with **bold** and followed by the detailed error message in new line like above examples. A recovery solution must be provided, e.g. "Use another name and try again." and "Try again later." in above examples.
+To summarize, the failure message must start with "FAILED" in red with **bold** and followed by the detailed error message in a new line as previously shown. A recovery solution must be provided, such as "Use another name and try again." or "Try again later."
 
 Bluemix CLI also provides Failed method to print out failure message:
 
@@ -494,7 +502,7 @@ func Run() error {
     ui.Say("Scaling container group '%s'...", terminal.EntityNameColor("xxx"))
     ...
     if err != nil {
-        ui.Failed("A server error occurred while scaling the container group.\nTry again later. If the problem continues, go to Support.")
+        ui.Failed("A server error occurred while scaling the container group.\nTry again later. If the problem continues, contact IBM Cloud Support.")
         return err
     }
     ...
@@ -526,8 +534,7 @@ All of command warnings should be magenta with **bold** like:
 
 ```
 WARNING:
-   Providing your password as a command line option is not recommended
-   Your password might be visible to others and might be recorded in your shell history
+   If you enter your password as a command option, your password might be visible to others or recorded in your shell history.
 ```
 
 Take the following code as an example for the warning message output:
@@ -541,14 +548,14 @@ ui.Warn("WARNING:...")
 The important information displayed to the end-user should be cyan with **bold**. For example:
 
 ```
-The newer version of Bluemix CLI is available.
+A newer version of the Bluemix CLI is available.
 You can download it from http://xxx.xxx.xxx
 ```
 
 The corresponding code snippet:
 
 ```go
-ui.Say(terminal.PromptColor("The new version of Bluemix CLI ..."))
+ui.Say(terminal.PromptColor("A newer version of the Bluemix CLI ..."))
 ```
 
 ### 2.10. User Input Prompt
@@ -561,7 +568,7 @@ Following specifications should be followed to prompt for user input:
 
 Following are examples and code snippets:
 
-####Text prompt
+#### Text prompt
 
 ```
 Logging in to https://api.ng.bluemix.net...
@@ -590,7 +597,7 @@ if err ! = nil {
 ui.OK()
 ```
 
-####Confirmation prompt
+#### Confirmation prompt
 
 ```
 Are you sure you want to remove the file? [y/N]> y
@@ -641,7 +648,7 @@ ui.Say("upgrading '%s'...", terminal.EntityNameColor(selected))
 
 ### 2.11. Table Output
 
-For consistent user experience, developers of Bluemix CLI plugin should comply with the following table output specifications:
+For consistent user experience, developers of Bluemix CLI plug-ins should comply with the following table output specifications:
 
 1. Table header should be bold.
 2. Each word in table header should be capitalized.
@@ -651,10 +658,10 @@ The following is an example:
 
 ```
 Name       Description
-my-app     this is my application.
+my-app     This is my application.
 demo-app   This is a long long long ...
            description.
-```           
+```
 
 Using APIs provided by Bluemix CLI can let you easily print results in table format:
 ```go
@@ -664,7 +671,7 @@ func (demo *DemoPlugin) PrintTable() {
     ui := terminal.NewStdUI()
 
     table := ui.Table([]string{"Name", "Description"})
-    table.Add("my-app", "Description of my app.")
+    table.Add("my-app", "This is my application.")
     table.Add("demo-app", "This is a long long long ...\ndescription.")
     table.Print()
 }
@@ -674,7 +681,8 @@ func (demo *DemoPlugin) PrintTable() {
 
 Bluemix CLI provides utility for tracing based on "BLUEMIX\_TRACE" environment variable. The trace will be disabled if environment variable "BLUEMIX\_TRACE" was not set or it was set to "false" (case ignored), which means, in that case, the invocation of trace API has no effect. If "BLUEMIX\_TRACE" was set to "true" (case ignored), the trace will be printed on the terminal. Otherwise, the value of "BLUEMIX\_TRACE" will be treated as the path of trace file.
 
-It's pretty much easy on using Bluemix CLI trace API.
+An example to use Bluemix CLI trace API:
+
 ```go
 import "github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/trace"
 
@@ -683,9 +691,9 @@ func (demo *DemoPlugin) Run(context plugin.PluginContext, args []string) {
     trace.Logger = trace.NewLogger(context.Trace())
 
     // start using the trace logger
-    trace.Logger.Println("Start to initialize Demo plugin.")
+    trace.Logger.Println("Start to initialize Demo plug-in.")
     ...
-    trace.Logger.Printf("%s plugin initialized.", "Demo")
+    trace.Logger.Printf("%s plug-in initialized.", "Demo")
 }
 ```
 
@@ -693,73 +701,78 @@ func (demo *DemoPlugin) Run(context plugin.PluginContext, args []string) {
 
 ### 4.1. HTTP tracing
 
-TraceLoggingTransport in package 'bluemix-cli-sdk/bluemix/http' is a thin wrapper around HTTP transport. It dumps each HTTP request and its response by using the trace logger.
+TraceLoggingTransport in package `bluemix-cli-sdk/bluemix/http` is a thin wrapper around HTTP transport. It dumps each HTTP request and its response by using the trace logger.
 
-First, you need to initialize the trace logger.
-```go
-trace.Logger = trace.NewLogger(pluginContext.Trace())
-```
+1. Initialize the trace logger.
 
-Then you can create a HTTP client with TraceLoggingTransport to send the request:
-```go
-import (
-    "github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/http"
-    gohttp "net/http"
-)
+   ```go
+   trace.Logger = trace.NewLogger(pluginContext.Trace())
+   ```
 
-client := &gohttp.Client{
-    Transport: http.NewTraceLoggingTransport(gohttp.DefaultTransport)
-}
-client.Get("http://www.example.com")
-```
-Then during each round-trip, the trace logger dumps the request and its response.
+2. Create a HTTP client with TraceLoggingTransport to send the request:
+   ```go
+   import (
+       "github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/http"
+       gohttp "net/http"
+   )
+
+   client := &gohttp.Client{
+       Transport: http.NewTraceLoggingTransport(gohttp.DefaultTransport)
+   }
+   client.Get("http://www.example.com")
+   ```
+
+Now during each round-trip, the trace logger dumps the request and its response.
 
 ### 4.2. REST client
 
-HTTP interaction with a remote server is a common task in both core and plugin commands. Package “bluemix-cli-sdk/common/rest” provides APIs for building a REST API request and a REST client for sending the request.
+HTTP interaction with a remote server is a common task in both core and plug-in commands. Package `bluemix-cli-sdk/common/rest` provides APIs for building a REST API request and a REST client for sending the request.
 
-For example, to create a GET request:
-```go
-import "github.com/IBM-Bluemix/bluemix-cli-sdk/common/rest"
+Examples for GET requests, query strings, HTTP headers, POST requests, and file uploads.
 
-var r = rest.GetRequest("http://www.example.com")
-// equal to
-// var r = NewRequest(“http://www.example.com”).Method(“GET”)
-```
+* To create a GET request:
+  ```go
+  import "github.com/IBM-Bluemix/bluemix-cli-sdk/common/rest"
 
-To add a query string in the URL:
-```go
-r.Query("foo", "bar")
-```
+  var r = rest.GetRequest("http://www.example.com")
+  // equal to
+  // var r = NewRequest(“http://www.example.com”).Method(“GET”)
+  ```
 
-To add or set HTTP headers in the request:
-```go
-r.Add("Accept-Encoding","gzip")
-r.Set("Accept", "application/json")
-```
+* To add a query string in the URL:
+  ```go
+  r.Query("foo", "bar")
+  ```
 
-To create a POST request, and send form data:
-```go
-var r = rest.PostRequest("http://www.example.com")
-r.Field("foo", "bar")
-```
+* To add or set HTTP headers in the request:
+  ```go
+  r.Add("Accept-Encoding","gzip")
+  r.Set("Accept", "application/json")
+  ```
 
-And to upload a file:
-```go
-f, err := os.Open("1.img")
-if err != nil {
-   // handle error
-}
-r.File("file1", rest.File{
-    Name: f.Name(),
-    Content: f,
-    Type: "image/jpeg", // Optional. Default is "application/octet-stream"
-})
-```
+* To create a POST request, and send form data:
+  ```go
+  var r = rest.PostRequest("http://www.example.com")
+  r.Field("foo", "bar")
+  ```
+
+* To upload a file:
+  ```go
+  f, err := os.Open("1.img")
+  if err != nil {
+     // handle error
+  }
+  r.File("file1", rest.File{
+      Name: f.Name(),
+      Content: f,
+      Type: "image/jpeg", // Optional. Default is "application/octet-stream"
+  })
+  ```
 
 You can send form data and upload multiple files in a same request.
 
 To post a JSON data in the request, you can simply pass a Go struct to the Body () method. The method automatically encodes the Go struct to a JSON string.
+
 For example:
 ```go
 type Foo struct
@@ -769,7 +782,7 @@ var r = rest.PostRequest("http://www.example.com")
 r.Body(Foo{Name: "bar"})
 ```
 
-The Body() method also supports raw string and steam. The above example can also be written as:
+The Body() method also supports raw string and steam. The previous example can also be written as:
 ```go
 r.Body("{\"name\": \"bar\"}")
 // Or
@@ -855,83 +868,85 @@ func TestStart() {
 
 ## 6. Globalization
 
-Bluemix CLI tends to be used globally. Both Bluemix CLI and its plugins should support globalization. We have enabled internalization (i18n) for CLI's base commands with the help of the third-party tool "[go-i18n](https://github.com/nicksnyder/go-i18n)". To keep user experience consistent, we recommend plugin developers follow CLI's way of i18n enablement.
+Bluemix CLI tends to be used globally. Both Bluemix CLI and its plug-ins should support globalization. We have enabled internationalization (i18n) for CLI's base commands with the help of the third-party tool "[go-i18n](https://github.com/nicksnyder/go-i18n)". To keep user experience consistent, we recommend plug-in developers follow the CLI's way of i18n enablement.
 
 Here's the workflow:
 
-_Step 1:_ Add new strings or replace existing strings with `T()` function calls to load the translated strings.  For example:
+1.  Add new strings or replace existing strings with `T()` function calls to load the translated strings.  For example:
 
-```go
-T("Installing the plugin...")
+    ```go
+    T("Installing the plugin...")
 
-//With variable substitution
-T("Plugin '{{.Name}}' was successfully installed.",
-map[string]interface{}{"Name": pluginName})
-```
+    //With variable substitution
+    T("Plugin '{{.Name}}' was successfully installed.",
+    map[string]interface{}{"Name": pluginName})
+    ```
 
-Note: T is type of [TranslateFunc](https://godoc.org/github.com/nicksnyder/go-i18n/i18n#TranslateFunc) which is set in i18n initialization (see #4).
+    **Note**: `T` is type of [TranslateFunc](https://godoc.org/github.com/nicksnyder/go-i18n/i18n#TranslateFunc) which is set in i18n initialization (see Step 4).
 
-_Step 2:_ Prepare translation files. Add all strings in en-us.all.json, and then use go-i18n CLI to generate translation files for other languages. A sample en-us.all.json is like:
+2.  Prepare translation files.
+    1.  Add all strings in en-us.all.json, and then use go-i18n CLI to generate translation files for other languages. A sample en-us.all.json is like:
 
-```javascript
-[
-   {
-          "id": "Installing the plugin…",
-          "translation": "Installing the plugin…"
-   },
-   {
-          "id": "Plugin '{{.Name}}' was successfully installed.",
-          "translation": " Plugin '{{.Name}}' was successfully installed."
-   },
-   ...
-]
-```
+        ```javascript
+        [
+           {
+                  "id": "Installing the plug-in…",
+                  "translation": "Installing the plug-in…"
+           },
+           {
+                  "id": "Plug-in '{{.Name}}' was successfully installed.",
+                  "translation": " Plug-in '{{.Name}}' was successfully installed."
+           },
+           ...
+        ]
+        ```
 
-To generate translation files for other language, e.g, zh\_Hans (Simplified Chinese) and fr\_BR, create empty files zh-hans.all.json and fr-br.all.json, and run:
+      2.  To generate translation files for other language, such as: `zh\_Hans` (Simplified Chinese) and `fr\_BR`:
+          1.  Create empty files `zh-hans.all.json` and `fr-br.all.json`, and run:
+          2.  Run:
+              ```bash
+              goi18n –outputdir <directory\_of\_generated\_translation\_files> en-us.all.json zh-hans.all.json fr-br.all.json
+              ```
 
-```bash
-goi18n –outputdir <directory\_of\_generated\_translation\_files> en-us.all.json zh-hans.all.json fr-br.all.json
-```
+          The previous command will generate 2 output files for each language: `xx-yy.all.json` contains all strings for the language, and `xx-yy.untranslated.json` contains untranslated strings. After the strings are translated, they should be merged back into `xx-yy.all.json`. For more details, refer to goi18n CLI's help by 'goi18n –help'.
 
-The above command will generate 2 output files for each language: xx-yy.all.json contains all strings for the language, and xx-yy.untranslated.json contains untranslated strings. After the strings are translated, they should be merged back into xx-yy.all.json. For more details, refer to goi18n CLI's help by 'goi18n –help'.
+3.  Package translation files. Bluemix CLI is to be built as a stand-alone binary distribution. In order to load i18n resource files in code, we use [go-bindata](https://github.com/jteeuwen/go-bindata) to auto-generate Go source code from all i18n resource files and the compile them into the binary. You can write a script to do it automatically during build. A sample script could be like:
 
-_Step 3:_ Package translation files.
-Bluemix CLI is to be built as a stand-alone binary distribution. In order to load i18n resource files in code, we use [go-bindata](https://github.com/jteeuwen/go-bindata) to auto-generate Go source code from all i18n resource files and the compile them into the binary. You can write a script to do it automatically during build. A sample script could be like:
+    ```bash
+    #!/bin/bash
 
-```bash
-#!/bin/bash
+    set -e
 
-set -e
+    go get github.com/jteeuwen/go-bindata/...
 
-go get github.com/jteeuwen/go-bindata/...
+    echo "Generating i18n resource file ..."
+    $GOPATH/bin/go-bindata -pkg resources -o bluemix/resources/i18n\_resources.go bluemix/i18n/resources
+    ```
 
-echo "Generating i18n resource file ..."
-$GOPATH/bin/go-bindata -pkg resources -o bluemix/resources/i18n\_resources.go bluemix/i18n/resources
-```
+    After execution, a source file `bluemix/resources/i18n\_resources.go` with package name `resources` is generated to embed all files under bluemix/i18n/resource. To access a resource file, invoke resources.Asset("bluemix/i18n/resources/<fileName>") which returns bytes of the file.
 
-After execution, a source file 'bluemix/resources/i18n\_resources.go' with package name 'resources' is generated to embed all files under bluemix/i18n/resource. To access a resource file, invoke resources.Asset("bluemix/i18n/resources/<fileName>") which returns bytes of the file.
+4.  Initialize i18n
 
-_Step 4:_ Initialize i18n
-    `T()` must be initialized before use. During i18n initialization in Bluemix CLI, user locale is used if it's set in ~/.bluemix/config.json ( plugin can get user locale via PluginContext.Locale() ); otherwise, system locale is auto discovered (see [jibber\_jabber](https://github.com/cloudfoundry/jibber_jabber)) and used. If system locale is not detected or supported, default locale en\_US is then used. Next, we initialize the translate function with the locale. A sample code could be like:
+    `T()` must be initialized before use. During i18n initialization in Bluemix CLI, user locale is used if it's set in `~/.bluemix/config.json` (plug-in can get user locale via `PluginContext.Locale()`). Otherwise, system locale is auto discovered (see [jibber\_jabber](https://github.com/cloudfoundry/jibber_jabber)) and used. If system locale is not detected or supported, default locale `en\_US` is then used. Next, we initialize the translate function with the locale. Sample code:
 
-```go
-func initWithLocale(locale string) goi18n.TranslateFunc {
-    err := loadFromAsset(locale)
-    if err != nil {
-        panic(err)
+    ```go
+    func initWithLocale(locale string) goi18n.TranslateFunc {
+        err := loadFromAsset(locale)
+        if err != nil {
+            panic(err)
+        }
+        return goi18n.MustTfunc(locale, DEFAULT_LOCALE)
     }
-    return goi18n.MustTfunc(locale, DEFAULT_LOCALE)
-}
 
-// load translation asset for the given locale
-func loadFromAsset(locale string) (err error) {
-    assetName := locale + ".all.json"
-    assetKey := filepath.Join(resourcePath, assetName)
-    bytes, err := resources.Asset(assetKey)
-    if err != nil {
-       return
+    // load translation asset for the given locale
+    func loadFromAsset(locale string) (err error) {
+        assetName := locale + ".all.json"
+        assetKey := filepath.Join(resourcePath, assetName)
+        bytes, err := resources.Asset(assetKey)
+        if err != nil {
+           return
+        }
+        err = goi18n.ParseTranslationFileBytes(assetName, bytes)
+        return
     }
-    err = goi18n.ParseTranslationFileBytes(assetName, bytes)
-    return
-}
-```
+    ```
