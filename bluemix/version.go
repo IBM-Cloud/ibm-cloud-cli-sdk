@@ -1,9 +1,11 @@
 package bluemix
 
-var Version = VersionType{Major: 1, Minor: 0, Build: 0}
+// Version is the SDK version
+var Version = VersionType{Major: 0, Minor: 1, Build: 0}
 
+// VersionType describe version info
 type VersionType struct {
-	Major int
-	Minor int
-	Build int
+	Major int // major version
+	Minor int // minor version
+	Build int // build number
 }
