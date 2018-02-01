@@ -33,7 +33,8 @@ type PromptOptions struct {
 	ValidateFunc ValidateFunc // customized input validation function
 }
 
-// Create Prompt with NewPrompt or NewChoicesPrompt
+// Prompt represents a terminal prompt. Create Prompt with NewPrompt or
+// NewChoicesPrompt
 type Prompt struct {
 	message string
 	choices []string
@@ -44,6 +45,7 @@ type Prompt struct {
 	Writer io.Writer
 }
 
+// NewPrompt returns a single prompt
 func NewPrompt(message string, options *PromptOptions) *Prompt {
 	p := &Prompt{
 		message: message,
@@ -56,12 +58,14 @@ func NewPrompt(message string, options *PromptOptions) *Prompt {
 	return p
 }
 
+// NewChoicesPrompt returns a choice prompt
 func NewChoicesPrompt(message string, choices []string, options *PromptOptions) *Prompt {
 	p := NewPrompt(message, options)
 	p.choices = choices
 	return p
 }
 
+// Resolve reads user input and resolves it to the destination value
 func (p *Prompt) Resolve(dest interface{}) error {
 	if len(p.choices) > 0 {
 		return p.resolveChoices(dest)
@@ -288,7 +292,7 @@ func (p *Prompt) choicesPrompt(dest interface{}) (string, error) {
 }
 
 func (p *Prompt) read(prompt string) (string, error) {
-	fmt.Fprintf(p.Writer, fmt.Sprintf("%s%s ", prompt, PromptColor(">")))
+	fmt.Fprintf(p.Writer, "%s%s ", prompt, PromptColor(">"))
 
 	f, ok := p.Reader.(*os.File)
 	isTerminal := ok && terminal.IsTerminal(int(f.Fd()))

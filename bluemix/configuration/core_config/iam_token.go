@@ -7,9 +7,11 @@ import (
 )
 
 type IAMTokenInfo struct {
-	IAMID     string       `json:"iam_id"`
-	UserEmail string       `json:"email"`
-	Accounts  AccountsInfo `json:"account"`
+	IAMID       string       `json:"iam_id"`
+	UserEmail   string       `json:"email"`
+	Accounts    AccountsInfo `json:"account"`
+	Subject     string       `json:"sub"`
+	SubjectType string       `json:"sub_type"`
 }
 
 type AccountsInfo struct {
@@ -33,13 +35,7 @@ func NewIAMTokenInfo(token string) IAMTokenInfo {
 }
 
 func decodeAccessToken(token string) (tokenJSON []byte, err error) {
-	tokenParts := strings.Split(token, " ")
-
-	if len(tokenParts) < 2 {
-		return
-	}
-
-	encodedParts := strings.Split(tokenParts[1], ".")
+	encodedParts := strings.Split(token, ".")
 
 	if len(encodedParts) < 3 {
 		return

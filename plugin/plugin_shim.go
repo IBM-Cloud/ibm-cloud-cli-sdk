@@ -10,13 +10,13 @@ import (
 	"github.com/IBM-Bluemix/bluemix-cli-sdk/i18n"
 )
 
-// Run plugin with os.Args
+// Start starts the plugin.
 func Start(plugin Plugin) {
-	Run(plugin, os.Args[1:])
+	StartWithArgs(plugin, os.Args[1:])
 }
 
-// Run plugin with args
-func Run(plugin Plugin, args []string) {
+// StartWithArgs starts the plugin with the given arguments.
+func StartWithArgs(plugin Plugin, args []string) {
 	if isMetadataRequest(args) {
 		metadata := fillMetadata(plugin.GetMetadata())
 		json, err := json.Marshal(metadata)
@@ -27,7 +27,7 @@ func Run(plugin Plugin, args []string) {
 		return
 	}
 
-	context := GetPluginContext(plugin.GetMetadata().Name)
+	context := InitPluginContext(plugin.GetMetadata().Name)
 
 	// initialization
 	i18n.T = i18n.Tfunc(context.Locale())
@@ -45,7 +45,8 @@ func fillMetadata(metadata PluginMetadata) PluginMetadata {
 	return metadata
 }
 
-func GetPluginContext(pluginName string) PluginContext {
+// InitPluginContext initializes a plugin context for a given plugin
+func InitPluginContext(pluginName string) PluginContext {
 	coreConfig := core_config.NewCoreConfig(
 		func(err error) {
 			panic("configuration error: " + err.Error())

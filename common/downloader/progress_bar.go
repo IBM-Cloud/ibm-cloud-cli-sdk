@@ -6,6 +6,8 @@ import (
 	pb "gopkg.in/cheggaaa/pb.v1"
 )
 
+// ProgressBar is an implementation of ProxyReader that displays a process bar
+// during file downloading.
 type ProgressBar struct {
 	bar *pb.ProgressBar
 	out io.Writer
