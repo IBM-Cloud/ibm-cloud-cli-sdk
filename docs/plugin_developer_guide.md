@@ -2,6 +2,8 @@
 
 This guide introduces how to develop a Bluemix CLI plug-in by using utilities and libraries provided by Bluemix CLI SDK. It also covers specifications including wording, format and color of the terminal output that we highly recommend developers to follow.
 
+You can see the API doc in [GoDoc](https://godoc.org/github.com/IBM-Cloud/ibm-cloud-cli-sdk).
+
 ## 1. Plug-in Context Management
 
 Bluemix CLI SDK provides a set of APIs to register and manage plug-ins. It is similar to CF plug-in interface, but has more Bluemix specific extensions.
