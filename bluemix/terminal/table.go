@@ -2,6 +2,7 @@ package terminal
 
 import (
 	"fmt"
+	"github.com/mattn/go-runewidth"
 	"io"
 	"strings"
 )
@@ -111,16 +112,11 @@ func calculateStringWidth(s string) int {
 
 	var width int
 	for range s {
-		_, runeSize, err := r.ReadRune()
+		rn, _, err := r.ReadRune()
 		if err != nil {
 			panic(fmt.Sprintf("error when calculating visible size of: %s", s))
 		}
-
-		if runeSize == 3 {
-			width += 2
-		} else {
-			width++
-		}
+		width += runewidth.RuneWidth(rn)
 	}
 
 	return width
