@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"io"
 	"strings"
-	"unicode/utf8"
 )
 
 type Table interface {
@@ -72,7 +71,7 @@ func (t *PrintableTable) Print() {
 
 func (t *PrintableTable) calculateMaxSize(row []string) {
 	for index, value := range row {
-		cellLength := utf8.RuneCountInString(Decolorize(value))
+		cellLength := calculateStringWidth(Decolorize(value))
 		if t.maxSizes[index] < cellLength {
 			t.maxSizes[index] = cellLength
 		}
@@ -102,7 +101,27 @@ func (t *PrintableTable) printRow(row []string) {
 func (t *PrintableTable) cellValue(col int, value string) string {
 	padding := ""
 	if col < len(t.headers)-1 {
-		padding = strings.Repeat(" ", t.maxSizes[col]-utf8.RuneCountInString(Decolorize(value)))
+		padding = strings.Repeat(" ", t.maxSizes[col]-calculateStringWidth(Decolorize(value)))
 	}
 	return fmt.Sprintf("%s%s   ", value, padding)
+}
+
+func calculateStringWidth(s string) int {
+	r := strings.NewReader(s)
+
+	var width int
+	for range s {
+		_, runeSize, err := r.ReadRune()
+		if err != nil {
+			panic(fmt.Sprintf("error when calculating visible size of: %s", s))
+		}
+
+		if runeSize == 3 {
+			width += 2
+		} else {
+			width++
+		}
+	}
+
+	return width
 }
