@@ -72,7 +72,7 @@ func (t *PrintableTable) Print() {
 
 func (t *PrintableTable) calculateMaxSize(row []string) {
 	for index, value := range row {
-		cellLength := calculateStringWidth(Decolorize(value))
+		cellLength := runewidth.StringWidth(Decolorize(value))
 		if t.maxSizes[index] < cellLength {
 			t.maxSizes[index] = cellLength
 		}
@@ -102,22 +102,7 @@ func (t *PrintableTable) printRow(row []string) {
 func (t *PrintableTable) cellValue(col int, value string) string {
 	padding := ""
 	if col < len(t.headers)-1 {
-		padding = strings.Repeat(" ", t.maxSizes[col]-calculateStringWidth(Decolorize(value)))
+		padding = strings.Repeat(" ", t.maxSizes[col]-runewidth.StringWidth(Decolorize(value)))
 	}
 	return fmt.Sprintf("%s%s   ", value, padding)
-}
-
-func calculateStringWidth(s string) int {
-	r := strings.NewReader(s)
-
-	var width int
-	for range s {
-		rn, _, err := r.ReadRune()
-		if err != nil {
-			panic(fmt.Sprintf("error when calculating visible size of: %s", s))
-		}
-		width += runewidth.RuneWidth(rn)
-	}
-
-	return width
 }
