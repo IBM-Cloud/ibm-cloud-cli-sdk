@@ -110,7 +110,10 @@ func (c *pluginContext) IAMRefreshToken() string {
 }
 
 func (c *pluginContext) RefreshIAMToken() (string, error) {
-	endpoint := c.coreConfig.IAMEndpoint()
+	endpoint := os.Getenv("IAM_ENDPOINT")
+	if endpoint == "" {
+		endpoint = c.coreConfig.IAMEndpoint()
+	}
 	if endpoint == "" {
 		return "", fmt.Errorf("IAM endpoint is not set")
 	}
