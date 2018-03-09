@@ -21,17 +21,18 @@ func (r raw) Unmarshal(bytes []byte) error {
 }
 
 type BXConfigData struct {
+	APIEndpoint             string
 	ConsoleEndpoint         string
 	Region                  string
 	RegionID                string
 	RegionType              string
 	IAMEndpoint             string
-	IAMID                   string
 	IAMToken                string
 	IAMRefreshToken         string
 	Account                 models.Account
 	ResourceGroup           models.ResourceGroup
 	PluginRepos             []models.PluginRepo
+	SSLDisabled             bool
 	Locale                  string
 	Trace                   string
 	ColorEnabled            string
@@ -68,7 +69,7 @@ func (data *BXConfigData) Unmarshal(bytes []byte) error {
 	return nil
 }
 
-type bxConfigRepository struct {
+type bxConfig struct {
 	data      *BXConfigData
 	persistor configuration.Persistor
 	initOnce  *sync.Once
@@ -76,12 +77,8 @@ type bxConfigRepository struct {
 	onError   func(error)
 }
 
-func createBluemixConfigFromPath(configPath string, errHandler func(error)) *bxConfigRepository {
-	return createBluemixConfigFromPersistor(configuration.NewDiskPersistor(configPath), errHandler)
-}
-
-func createBluemixConfigFromPersistor(persistor configuration.Persistor, errHandler func(error)) *bxConfigRepository {
-	return &bxConfigRepository{
+func createBluemixConfigFromPersistor(persistor configuration.Persistor, errHandler func(error)) *bxConfig {
+	return &bxConfig{
 		data:      NewBXConfigData(),
 		persistor: persistor,
 		initOnce:  new(sync.Once),
@@ -89,7 +86,7 @@ func createBluemixConfigFromPersistor(persistor configuration.Persistor, errHand
 	}
 }
 
-func (c *bxConfigRepository) init() {
+func (c *bxConfig) init() {
 	c.initOnce.Do(func() {
 		err := c.persistor.Load(c.data)
 		if err != nil {
@@ -98,7 +95,7 @@ func (c *bxConfigRepository) init() {
 	})
 }
 
-func (c *bxConfigRepository) read(cb func()) {
+func (c *bxConfig) read(cb func()) {
 	c.lock.RLock()
 	defer c.lock.RUnlock()
 
@@ -107,7 +104,7 @@ func (c *bxConfigRepository) read(cb func()) {
 	cb()
 }
 
-func (c *bxConfigRepository) write(cb func()) {
+func (c *bxConfig) write(cb func()) {
 	c.lock.Lock()
 	defer c.lock.Unlock()
 
@@ -123,7 +120,7 @@ func (c *bxConfigRepository) write(cb func()) {
 	}
 }
 
-func (c *bxConfigRepository) writeRaw(cb func()) {
+func (c *bxConfig) writeRaw(cb func()) {
 	c.lock.Lock()
 	defer c.lock.Unlock()
 
@@ -137,14 +134,32 @@ func (c *bxConfigRepository) writeRaw(cb func()) {
 	}
 }
 
-func (c *bxConfigRepository) ConsoleEndpoint() (endpoint string) {
+func (c *bxConfig) APIEndpoint() (endpoint string) {
+	c.read(func() {
+		endpoint = c.data.APIEndpoint
+	})
+	return
+}
+
+func (c *bxConfig) HasAPIEndpoint() bool {
+	return c.APIEndpoint() != ""
+}
+
+func (c *bxConfig) IsSSLDisabled() (disabled bool) {
+	c.read(func() {
+		disabled = c.data.SSLDisabled
+	})
+	return
+}
+
+func (c *bxConfig) ConsoleEndpoint() (endpoint string) {
 	c.read(func() {
 		endpoint = c.data.ConsoleEndpoint
 	})
 	return
 }
 
-func (c *bxConfigRepository) Region() (region models.Region) {
+func (c *bxConfig) CurrentRegion() (region models.Region) {
 	c.read(func() {
 		region = models.Region{
 			ID:   c.data.RegionID,
@@ -155,8 +170,8 @@ func (c *bxConfigRepository) Region() (region models.Region) {
 	return
 }
 
-func (c *bxConfigRepository) CloudName() string {
-	regionID := c.Region().ID
+func (c *bxConfig) CloudName() string {
+	regionID := c.CurrentRegion().ID
 	if regionID == "" {
 		return ""
 	}
@@ -182,72 +197,89 @@ func (c *bxConfigRepository) CloudName() string {
 	}
 }
 
-func (c *bxConfigRepository) CloudType() string {
-	return c.Region().Type
+func (c *bxConfig) CloudType() string {
+	return c.CurrentRegion().Type
 }
 
-func (c *bxConfigRepository) IAMEndpoint() (endpoint string) {
+func (c *bxConfig) IAMEndpoint() (endpoint string) {
 	c.read(func() {
 		endpoint = c.data.IAMEndpoint
 	})
 	return
 }
 
-func (c *bxConfigRepository) IAMID() string {
-	return NewIAMTokenInfo(c.IAMToken()).IAMID
-}
-
-func (c *bxConfigRepository) IAMToken() (token string) {
+func (c *bxConfig) IAMToken() (token string) {
 	c.read(func() {
 		token = c.data.IAMToken
 	})
 	return
 }
 
-func (c *bxConfigRepository) IAMRefreshToken() (token string) {
+func (c *bxConfig) IAMRefreshToken() (token string) {
 	c.read(func() {
 		token = c.data.IAMRefreshToken
 	})
 	return
 }
 
-func (c *bxConfigRepository) Account() (account models.Account) {
+func (c *bxConfig) UserEmail() (email string) {
+	c.read(func() {
+		email = NewIAMTokenInfo(c.data.IAMToken).UserEmail
+	})
+	return
+}
+
+func (c *bxConfig) IAMID() (guid string) {
+	c.read(func() {
+		guid = NewIAMTokenInfo(c.data.IAMToken).IAMID
+	})
+	return
+}
+
+func (c *bxConfig) IsLoggedIn() (loggedIn bool) {
+	c.read(func() {
+		loggedIn = c.data.IAMToken != ""
+	})
+	return
+}
+
+func (c *bxConfig) CurrentAccount() (account models.Account) {
 	c.read(func() {
 		account = c.data.Account
 	})
 	return
 }
 
-func (c *bxConfigRepository) HasAccount() bool {
-	return c.Account().GUID != ""
+func (c *bxConfig) HasTargetedAccount() bool {
+	return c.CurrentAccount().GUID != ""
 }
 
-func (c *bxConfigRepository) IMSAccountID() string {
+func (c *bxConfig) IMSAccountID() string {
 	return NewIAMTokenInfo(c.IAMToken()).Accounts.IMSAccountID
 }
 
-func (c *bxConfigRepository) ResourceGroup() (group models.ResourceGroup) {
+func (c *bxConfig) CurrentResourceGroup() (group models.ResourceGroup) {
 	c.read(func() {
 		group = c.data.ResourceGroup
 	})
 	return
 }
 
-func (c *bxConfigRepository) HasResourceGroup() (hasGroup bool) {
+func (c *bxConfig) HasTargetedResourceGroup() (hasGroup bool) {
 	c.read(func() {
 		hasGroup = c.data.ResourceGroup.GUID != "" && c.data.ResourceGroup.Name != ""
 	})
 	return
 }
 
-func (c *bxConfigRepository) PluginRepos() (repos []models.PluginRepo) {
+func (c *bxConfig) PluginRepos() (repos []models.PluginRepo) {
 	c.read(func() {
 		repos = c.data.PluginRepos
 	})
 	return
 }
 
-func (c *bxConfigRepository) PluginRepo(name string) (models.PluginRepo, bool) {
+func (c *bxConfig) PluginRepo(name string) (models.PluginRepo, bool) {
 	for _, r := range c.PluginRepos() {
 		if strings.EqualFold(r.Name, name) {
 			return r, true
@@ -256,35 +288,35 @@ func (c *bxConfigRepository) PluginRepo(name string) (models.PluginRepo, bool) {
 	return models.PluginRepo{}, false
 }
 
-func (c *bxConfigRepository) Locale() (locale string) {
+func (c *bxConfig) Locale() (locale string) {
 	c.read(func() {
 		locale = c.data.Locale
 	})
 	return
 }
 
-func (c *bxConfigRepository) Trace() (trace string) {
+func (c *bxConfig) Trace() (trace string) {
 	c.read(func() {
 		trace = c.data.Trace
 	})
 	return
 }
 
-func (c *bxConfigRepository) ColorEnabled() (enabled string) {
+func (c *bxConfig) ColorEnabled() (enabled string) {
 	c.read(func() {
 		enabled = c.data.ColorEnabled
 	})
 	return
 }
 
-func (c *bxConfigRepository) HTTPTimeout() (timeout int) {
+func (c *bxConfig) HTTPTimeout() (timeout int) {
 	c.read(func() {
 		timeout = c.data.HTTPTimeout
 	})
 	return
 }
 
-func (c *bxConfigRepository) CLIInfoEndpoint() (endpoint string) {
+func (c *bxConfig) CLIInfoEndpoint() (endpoint string) {
 	c.read(func() {
 		endpoint = c.data.CLIInfoEndpoint
 	})
@@ -292,27 +324,33 @@ func (c *bxConfigRepository) CLIInfoEndpoint() (endpoint string) {
 	return endpoint
 }
 
-func (c *bxConfigRepository) CheckCLIVersionDisabled() (disabled bool) {
+func (c *bxConfig) CheckCLIVersionDisabled() (disabled bool) {
 	c.read(func() {
 		disabled = c.data.CheckCLIVersionDisabled
 	})
 	return
 }
 
-func (c *bxConfigRepository) UsageStatsDisabled() (disabled bool) {
+func (c *bxConfig) UsageStatsDisabled() (disabled bool) {
 	c.read(func() {
 		disabled = c.data.UsageStatsDisabled
 	})
 	return
 }
 
-func (c *bxConfigRepository) SetConsoleEndpoint(endpoint string) {
+func (c *bxConfig) SetAPIEndpoint(endpoint string) {
+	c.write(func() {
+		c.data.APIEndpoint = endpoint
+	})
+}
+
+func (c *bxConfig) SetConsoleEndpoint(endpoint string) {
 	c.write(func() {
 		c.data.ConsoleEndpoint = endpoint
 	})
 }
 
-func (c *bxConfigRepository) SetRegion(region models.Region) {
+func (c *bxConfig) SetRegion(region models.Region) {
 	c.write(func() {
 		c.data.Region = region.Name
 		c.data.RegionID = region.ID
@@ -320,45 +358,45 @@ func (c *bxConfigRepository) SetRegion(region models.Region) {
 	})
 }
 
-func (c *bxConfigRepository) SetIAMEndpoint(endpoint string) {
+func (c *bxConfig) SetIAMEndpoint(endpoint string) {
 	c.write(func() {
 		c.data.IAMEndpoint = endpoint
 	})
 }
 
-func (c *bxConfigRepository) SetIAMToken(token string) {
+func (c *bxConfig) SetIAMToken(token string) {
 	c.writeRaw(func() {
 		c.data.IAMToken = token
 		c.data.raw["IAMToken"] = token
 	})
 }
 
-func (c *bxConfigRepository) SetIAMRefreshToken(token string) {
+func (c *bxConfig) SetIAMRefreshToken(token string) {
 	c.writeRaw(func() {
 		c.data.IAMRefreshToken = token
 		c.data.raw["IAMRefreshToken"] = token
 	})
 }
 
-func (c *bxConfigRepository) SetAccount(account models.Account) {
+func (c *bxConfig) SetAccount(account models.Account) {
 	c.write(func() {
 		c.data.Account = account
 	})
 }
 
-func (c *bxConfigRepository) SetResourceGroup(group models.ResourceGroup) {
+func (c *bxConfig) SetResourceGroup(group models.ResourceGroup) {
 	c.write(func() {
 		c.data.ResourceGroup = group
 	})
 }
 
-func (c *bxConfigRepository) SetPluginRepo(pluginRepo models.PluginRepo) {
+func (c *bxConfig) SetPluginRepo(pluginRepo models.PluginRepo) {
 	c.write(func() {
 		c.data.PluginRepos = append(c.data.PluginRepos, pluginRepo)
 	})
 }
 
-func (c *bxConfigRepository) UnSetPluginRepo(repoName string) {
+func (c *bxConfig) UnsetPluginRepo(repoName string) {
 	c.write(func() {
 		i := 0
 		for ; i < len(c.data.PluginRepos); i++ {
@@ -372,49 +410,55 @@ func (c *bxConfigRepository) UnSetPluginRepo(repoName string) {
 	})
 }
 
-func (c *bxConfigRepository) SetHTTPTimeout(timeout int) {
+func (c *bxConfig) SetSSLDisabled(disabled bool) {
+	c.write(func() {
+		c.data.SSLDisabled = disabled
+	})
+}
+
+func (c *bxConfig) SetHTTPTimeout(timeout int) {
 	c.write(func() {
 		c.data.HTTPTimeout = timeout
 	})
 }
 
-func (c *bxConfigRepository) SetCheckCLIVersionDisabled(disabled bool) {
+func (c *bxConfig) SetCheckCLIVersionDisabled(disabled bool) {
 	c.write(func() {
 		c.data.CheckCLIVersionDisabled = disabled
 	})
 }
 
-func (c *bxConfigRepository) SetCLIInfoEndpoint(endpoint string) {
+func (c *bxConfig) SetCLIInfoEndpoint(endpoint string) {
 	c.write(func() {
 		c.data.CLIInfoEndpoint = endpoint
 	})
 }
 
-func (c *bxConfigRepository) SetUsageStatsDisabled(disabled bool) {
+func (c *bxConfig) SetUsageStatsDisabled(disabled bool) {
 	c.write(func() {
 		c.data.UsageStatsDisabled = disabled
 	})
 }
 
-func (c *bxConfigRepository) SetColorEnabled(enabled string) {
+func (c *bxConfig) SetColorEnabled(enabled string) {
 	c.write(func() {
 		c.data.ColorEnabled = enabled
 	})
 }
 
-func (c *bxConfigRepository) SetLocale(locale string) {
+func (c *bxConfig) SetLocale(locale string) {
 	c.write(func() {
 		c.data.Locale = locale
 	})
 }
 
-func (c *bxConfigRepository) SetTrace(trace string) {
+func (c *bxConfig) SetTrace(trace string) {
 	c.write(func() {
 		c.data.Trace = trace
 	})
 }
 
-func (c *bxConfigRepository) ClearSession() {
+func (c *bxConfig) ClearSession() {
 	c.write(func() {
 		c.data.IAMToken = ""
 		c.data.IAMRefreshToken = ""
@@ -423,7 +467,7 @@ func (c *bxConfigRepository) ClearSession() {
 	})
 }
 
-func (c *bxConfigRepository) ClearAPICache() {
+func (c *bxConfig) UnsetAPI() {
 	c.write(func() {
 		c.data.Region = ""
 		c.data.RegionID = ""
