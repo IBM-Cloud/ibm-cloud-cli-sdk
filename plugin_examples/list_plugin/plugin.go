@@ -40,10 +40,12 @@ func (p *ListPlugin) GetMetadata() plugin.PluginMetadata {
 func (p *ListPlugin) Run(context plugin.PluginContext, args []string) {
 	p.init(context)
 
+	cf := context.CF()
+
 	ui := terminal.NewStdUI()
 	client := &rest.Client{
 		HTTPClient:    NewHTTPClient(context),
-		DefaultHeader: DefaultHeader(context),
+		DefaultHeader: DefaultHeader(cf),
 	}
 
 	var err error
@@ -51,8 +53,8 @@ func (p *ListPlugin) Run(context plugin.PluginContext, args []string) {
 	case "list":
 		err = commands.NewList(ui,
 			context,
-			api.NewCCClient(context.APIEndpoint(), client),
-			api.NewContainerClient(containerEndpoint(context), client),
+			api.NewCCClient(cf.APIEndpoint(), client),
+			api.NewContainerClient(containerEndpoint(cf.APIEndpoint()), client),
 		).Run(args[1:])
 	}
 
@@ -86,16 +88,16 @@ func NewHTTPClient(context plugin.PluginContext) *http.Client {
 	}
 }
 
-func DefaultHeader(context plugin.PluginContext) http.Header {
-	context.RefreshUAAToken()
+func DefaultHeader(cf plugin.CFContext) http.Header {
+	cf.RefreshUAAToken()
 
 	h := http.Header{}
-	h.Add("Authorization", context.UAAToken())
+	h.Add("Authorization", cf.UAAToken())
 	return h
 }
 
-func containerEndpoint(context plugin.PluginContext) string {
-	return regexp.MustCompile(`(^https?://)?[^\.]+(\..+)+`).ReplaceAllString(context.APIEndpoint(), "${1}containers-api${2}")
+func containerEndpoint(cfAPIEndpoint string) string {
+	return regexp.MustCompile(`(^https?://)?[^\.]+(\..+)+`).ReplaceAllString(cfAPIEndpoint, "${1}containers-api${2}")
 }
 
 func main() {

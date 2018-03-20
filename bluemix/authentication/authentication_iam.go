@@ -47,11 +47,11 @@ type IAMConfig struct {
 }
 
 type iamAuthRepository struct {
-	config IAMConfig
+	config *IAMConfig
 	client *rest.Client
 }
 
-func NewIAMAuthRepository(config IAMConfig, client *rest.Client) IAMAuthRepository {
+func NewIAMAuthRepository(config *IAMConfig, client *rest.Client) IAMAuthRepository {
 	return &iamAuthRepository{
 		config: config,
 		client: client,
@@ -158,7 +158,6 @@ func (res tokenResponse) uaaToken() Token {
 
 func (auth *iamAuthRepository) getToken(r tokenRequest) (tokenResponse, error) {
 	req := rest.PostRequest(auth.config.TokenEndpoint)
-
 	req.Set("Authorization", "Basic "+base64.StdEncoding.EncodeToString([]byte(fmt.Sprintf("%s:%s", iamClientID, iamClientSecret))))
 
 	var grantTypes []string
