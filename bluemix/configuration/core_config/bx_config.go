@@ -469,8 +469,10 @@ func (c *bxConfig) ClearSession() {
 
 func (c *bxConfig) UnsetAPI() {
 	c.write(func() {
+		c.data.APIEndpoint = ""
 		c.data.Region = ""
 		c.data.RegionID = ""
+		c.data.RegionType = ""
 		c.data.ConsoleEndpoint = ""
 		c.data.IAMEndpoint = ""
 	})
