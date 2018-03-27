@@ -450,6 +450,11 @@ func (c *cfConfig) UnsetAPI() {
 	c.write(func() {
 		c.data.APIVersion = ""
 		c.data.Target = ""
+		c.data.AuthorizationEndpoint = ""
+		c.data.UaaEndpoint = ""
+		c.data.RoutingAPIEndpoint = ""
+		c.data.LoggregatorEndpoint = ""
+		c.data.DopplerEndpoint = ""
 	})
 }
 

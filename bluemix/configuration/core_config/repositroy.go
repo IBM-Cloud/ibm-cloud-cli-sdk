@@ -121,6 +121,11 @@ func (c repository) HasTargetedCF() bool {
 	return c.cfConfig.HasAPIEndpoint()
 }
 
+func (c repository) SetSSLDisabled(disabled bool) {
+	c.bxConfig.SetSSLDisabled(disabled)
+	c.cfConfig.SetSSLDisabled(disabled)
+}
+
 func (c repository) SetColorEnabled(enabled string) {
 	c.bxConfig.SetColorEnabled(enabled)
 	c.cfConfig.SetColorEnabled(enabled)
