@@ -7,7 +7,6 @@ import (
 
 	"github.com/mattn/go-colorable"
 
-	"github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/trace"
 	. "github.com/IBM-Bluemix/bluemix-cli-sdk/i18n"
 )
 
@@ -92,9 +91,6 @@ func (ui *terminalUI) Failed(format string, args ...interface{}) {
 	ui.Say(FailureColor(T("FAILED")))
 	ui.Say(format, args...)
 	ui.Say("")
-
-	trace.Logger.Print("FAILED")
-	trace.Logger.Printf(format+"\n", args...)
 }
 
 func (ui *terminalUI) Prompt(message string, options *PromptOptions) *Prompt {
