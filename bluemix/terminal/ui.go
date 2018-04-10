@@ -7,8 +7,8 @@ import (
 
 	"github.com/mattn/go-colorable"
 
-	"github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/trace"
-	. "github.com/IBM-Bluemix/bluemix-cli-sdk/i18n"
+	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/trace"
+	. "github.com/IBM-Cloud/ibm-cloud-cli-sdk/i18n"
 )
 
 type UI interface {

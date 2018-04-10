@@ -5,7 +5,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/IBM-Bluemix/bluemix-cli-sdk/common/file_helpers"
+	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/common/file_helpers"
 )
 
 const (

@@ -7,8 +7,8 @@ import (
 	"strconv"
 	"sync"
 
-	"github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/configuration"
-	. "github.com/IBM-Bluemix/bluemix-cli-sdk/i18n"
+	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/configuration"
+	. "github.com/IBM-Cloud/ibm-cloud-cli-sdk/i18n"
 )
 
 // PluginConfigInvalidTypeError describes the value for a given key in plugin configuration

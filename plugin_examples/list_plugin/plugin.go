@@ -7,14 +7,14 @@ import (
 	"regexp"
 	"time"
 
-	bhttp "github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/http"
-	"github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/terminal"
-	"github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/trace"
-	"github.com/IBM-Bluemix/bluemix-cli-sdk/common/rest"
-	"github.com/IBM-Bluemix/bluemix-cli-sdk/plugin"
-	"github.com/IBM-Bluemix/bluemix-cli-sdk/plugin_examples/list_plugin/api"
-	"github.com/IBM-Bluemix/bluemix-cli-sdk/plugin_examples/list_plugin/commands"
-	"github.com/IBM-Bluemix/bluemix-cli-sdk/plugin_examples/list_plugin/i18n"
+	bhttp "github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/http"
+	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/terminal"
+	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/trace"
+	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/common/rest"
+	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/plugin"
+	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/plugin_examples/list_plugin/api"
+	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/plugin_examples/list_plugin/commands"
+	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/plugin_examples/list_plugin/i18n"
 )
 
 type ListPlugin struct{}

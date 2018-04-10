@@ -1,13 +1,13 @@
 // Package plugin provides types and functions common among plugins.
 //
-// See examples in "github.com/IBM-Bluemix/bluemix-cli-sdk/plugin_examples".
+// See examples in "github.com/IBM-Cloud/ibm-cloud-cli-sdk/plugin_examples".
 package plugin
 
 import (
 	"fmt"
 	"strings"
 
-	"github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/models"
+	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/models"
 )
 
 // PluginMetadata describes metadata of a plugin.

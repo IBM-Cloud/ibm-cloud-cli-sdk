@@ -218,8 +218,8 @@ cat <<ENDGO > plugin/metadata/command.go
 package metadata
 
 import (
-	"github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/terminal"
-	"github.com/IBM-Bluemix/bluemix-cli-sdk/plugin"
+	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/terminal"
+	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/plugin"
 	"github.com/urfave/cli"
 )
 
@@ -300,7 +300,7 @@ import (
 
 	goi18n "github.com/nicksnyder/go-i18n/i18n"
 
-	"github.ibm.com/Bluemix/bluemix-cli-sdk/bluemix/configuration/core_config"
+	"github.ibm.com/Bluemix/ibm-cloud-cli-sdk/bluemix/configuration/core_config"
 	"${project_path}/plugin/i18n/detection"
 	"${project_path}/plugin/resources"
 )
@@ -436,10 +436,10 @@ import (
 	"os"
 	"reflect"
 
-	"github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/terminal"
+	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/terminal"
 	"github.com/urfave/cli"
 
-	"github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/trace"
+	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/trace"
 	"${project_path}/plugin/metadata"
 	"${project_path}/plugin/commands"
 	"${project_path}/plugin/errors"
@@ -447,7 +447,7 @@ import (
 	. "${project_path}/plugin/i18n"
 	"${project_path}/plugin/version"
 
-	"github.com/IBM-Bluemix/bluemix-cli-sdk/plugin"
+	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/plugin"
 )
 
 // plugin name
@@ -575,7 +575,7 @@ cat <<ENDGO > main.go
 package main
 
 import (
-	"github.com/IBM-Bluemix/bluemix-cli-sdk/plugin"
+	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/plugin"
 	${plugin_name//-/_}_plugin "${project_path}/plugin"
 )
 

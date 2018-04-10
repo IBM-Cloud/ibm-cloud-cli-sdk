@@ -1,12 +1,12 @@
 package commands_test
 
 import (
-	sdkmodels "github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/models"
-	"github.com/IBM-Bluemix/bluemix-cli-sdk/plugin/pluginfakes"
-	"github.com/IBM-Bluemix/bluemix-cli-sdk/plugin_examples/list_plugin/api/fakes"
-	. "github.com/IBM-Bluemix/bluemix-cli-sdk/plugin_examples/list_plugin/commands"
-	"github.com/IBM-Bluemix/bluemix-cli-sdk/plugin_examples/list_plugin/models"
-	"github.com/IBM-Bluemix/bluemix-cli-sdk/testhelpers/terminal"
+	sdkmodels "github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/models"
+	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/plugin/pluginfakes"
+	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/plugin_examples/list_plugin/api/fakes"
+	. "github.com/IBM-Cloud/ibm-cloud-cli-sdk/plugin_examples/list_plugin/commands"
+	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/plugin_examples/list_plugin/models"
+	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/testhelpers/terminal"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
