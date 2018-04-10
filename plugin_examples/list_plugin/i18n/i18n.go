@@ -9,8 +9,8 @@ import (
 	"github.com/nicksnyder/go-i18n/i18n"
 	"github.com/nicksnyder/go-i18n/i18n/language"
 
-	"github.com/IBM-Bluemix/bluemix-cli-sdk/plugin"
-	"github.com/IBM-Bluemix/bluemix-cli-sdk/plugin_examples/list_plugin/resources"
+	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/plugin"
+	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/plugin_examples/list_plugin/resources"
 )
 
 const (

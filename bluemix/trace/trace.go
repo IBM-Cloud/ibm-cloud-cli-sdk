@@ -8,7 +8,7 @@ import (
 	"regexp"
 	"strings"
 
-	. "github.com/IBM-Bluemix/bluemix-cli-sdk/i18n"
+	. "github.com/IBM-Cloud/ibm-cloud-cli-sdk/i18n"
 )
 
 type Printer interface {

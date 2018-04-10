@@ -6,9 +6,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/terminal"
-	"github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/trace"
-	. "github.com/IBM-Bluemix/bluemix-cli-sdk/i18n"
+	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/terminal"
+	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/trace"
+	. "github.com/IBM-Cloud/ibm-cloud-cli-sdk/i18n"
 )
 
 // TraceLoggingTransport is a thin wrapper around Transport.

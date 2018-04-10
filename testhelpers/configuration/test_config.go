@@ -1,8 +1,8 @@
 package configuration
 
 import (
-	"github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/configuration"
-	"github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/configuration/core_config"
+	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/configuration"
+	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/configuration/core_config"
 )
 
 type FakePersistor struct{}

@@ -6,7 +6,7 @@ import (
 	"io"
 	"strings"
 
-	term "github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/terminal"
+	term "github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/terminal"
 )
 
 type choicesPrompt struct {

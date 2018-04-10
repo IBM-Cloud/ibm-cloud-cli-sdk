@@ -10,7 +10,7 @@ import (
 
 	"github.com/stretchr/testify/suite"
 
-	"github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/trace"
+	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/trace"
 )
 
 type testLogger struct {
