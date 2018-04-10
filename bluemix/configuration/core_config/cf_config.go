@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"sync"
 
-	"github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/configuration"
-	"github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/models"
+	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/configuration"
+	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/models"
 	"github.com/fatih/structs"
 )
 

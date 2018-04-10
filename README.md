@@ -4,7 +4,7 @@ Bluemix CLI plugin SDK provides predefined plugin interface, utilities and libra
 
 # Get started
 
-You firstly need [Go](http://www.golang.org) installed on your machine, and set up a [GOPATH](http://golang.org/doc/code.html#GOPATH). Then clone this repository into `$GOPATH/src/github.com/IBM-Bluemix/bluemix-cli-sdk`. 
+You firstly need [Go](http://www.golang.org) installed on your machine, and set up a [GOPATH](http://golang.org/doc/code.html#GOPATH). Then clone this repository into `$GOPATH/src/github.com/IBM-Cloud/ibm-cloud-cli-sdk`. 
 
 This project uses [govendor](https://github.com/kardianos/govendor) to manage dependencies. Go to the project directory and run the following command to restore the dependencies into vendor folder:
 
@@ -53,15 +53,15 @@ For more usage of Bluemix plugin management, run `bluemix help plugin`
 
 # Develop plugins
 
-Refer to [plugin developer guide](https://github.com/IBM-Bluemix/bluemix-cli-sdk/blob/master/docs/plugin_developer_guide.md) for how to develop a plugin.
+Refer to [plugin developer guide](https://github.com/IBM-Cloud/ibm-cloud-cli-sdk/blob/master/docs/plugin_developer_guide.md) for how to develop a plugin.
 
-See plugin examples [here](https://github.com/IBM-Bluemix/bluemix-cli-sdk/tree/master/plugin_examples)
+See plugin examples [here](https://github.com/IBM-Cloud/ibm-cloud-cli-sdk/tree/master/plugin_examples)
 
 # Publish plugins
 
 Bluemix has a public plugin repository by default installed in Bluemix CLI. Run `bluemix plugin`, you can see a repository named `Bluemix` (`https://plugins.ng.bluemix.net`). The repository support multiple version of plugin. You can list all plugins in the repository by using `bluemix plugin repo-plugins -r Bluemix`.
 
-To publish, update or remove your plugin in Bluemix plugin repository, you can simply [create an issue on GitHub](https://github.com/IBM-Bluemix/bluemix-cli-sdk/issues/new) following below samples:
+To publish, update or remove your plugin in Bluemix plugin repository, you can simply [create an issue on GitHub](https://github.com/IBM-Cloud/ibm-cloud-cli-sdk/issues/new) following below samples:
 
 **Example to publish a new plugin**:
 
@@ -175,11 +175,11 @@ Content:
 
 # Issues
 
-Report problems by [adding an issue on GitHub](https://github.com/IBM-Bluemix/bluemix-cli-sdk/issues/new).
+Report problems by [adding an issue on GitHub](https://github.com/IBM-Cloud/ibm-cloud-cli-sdk/issues/new).
 
 # License
 
-This project is released under version 2.0 of the [Apache License](https://github.com/IBM-Bluemix/bluemix-cli-sdk/blob/master/LICENSE)
+This project is released under version 2.0 of the [Apache License](https://github.com/IBM-Cloud/ibm-cloud-cli-sdk/blob/master/LICENSE)
 
 
 

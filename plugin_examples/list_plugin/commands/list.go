@@ -5,11 +5,11 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/terminal"
-	"github.com/IBM-Bluemix/bluemix-cli-sdk/plugin"
-	"github.com/IBM-Bluemix/bluemix-cli-sdk/plugin_examples/list_plugin/api"
-	. "github.com/IBM-Bluemix/bluemix-cli-sdk/plugin_examples/list_plugin/i18n"
-	"github.com/IBM-Bluemix/bluemix-cli-sdk/plugin_examples/list_plugin/models"
+	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/terminal"
+	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/plugin"
+	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/plugin_examples/list_plugin/api"
+	. "github.com/IBM-Cloud/ibm-cloud-cli-sdk/plugin_examples/list_plugin/i18n"
+	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/plugin_examples/list_plugin/models"
 )
 
 type List struct {

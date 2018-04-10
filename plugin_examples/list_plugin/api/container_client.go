@@ -3,8 +3,8 @@ package api
 import (
 	"fmt"
 
-	"github.com/IBM-Bluemix/bluemix-cli-sdk/common/rest"
-	"github.com/IBM-Bluemix/bluemix-cli-sdk/plugin_examples/list_plugin/models"
+	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/common/rest"
+	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/plugin_examples/list_plugin/models"
 )
 
 type ContainerError struct {

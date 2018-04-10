@@ -63,8 +63,8 @@ import (
 
 	"github.com/urfave/cli"
 
-	"github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/terminal"
-	"github.com/IBM-Bluemix/bluemix-cli-sdk/plugin"
+	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/terminal"
+	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/plugin"
 
 	"${project_path}/plugin/metadata"
 	. "${project_path}/plugin/i18n"

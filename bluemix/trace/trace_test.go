@@ -3,7 +3,7 @@ package trace_test
 import (
 	"testing"
 
-	"github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/trace"
+	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/trace"
 	"github.com/stretchr/testify/assert"
 )
 

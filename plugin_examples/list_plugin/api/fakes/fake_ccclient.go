@@ -4,8 +4,8 @@ package fakes
 import (
 	"sync"
 
-	"github.com/IBM-Bluemix/bluemix-cli-sdk/plugin_examples/list_plugin/api"
-	"github.com/IBM-Bluemix/bluemix-cli-sdk/plugin_examples/list_plugin/models"
+	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/plugin_examples/list_plugin/api"
+	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/plugin_examples/list_plugin/models"
 )
 
 type FakeCCClient struct {

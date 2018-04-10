@@ -14,7 +14,7 @@ Bluemix CLI SDK provides a set of APIs to register and manage plug-ins. It is si
 
     ```go
     import (
-        "github.com/IBM-Bluemix/bluemix-cli-sdk/plugin"
+        "github.com/IBM-Cloud/ibm-cloud-cli-sdk/plugin"
     )
 
     type DemoPlugin struct {}
@@ -109,7 +109,7 @@ The following are shared namespaces are currently predefined in Bluemix CLI and 
 For shared namespace, refer to the namespace in the plug-in:
 
 ```go
-import "github.com/IBM-Bluemix/bluemix-cli-sdk/plugin"
+import "github.com/IBM-Cloud/ibm-cloud-cli-sdk/plugin"
 
 func (p *CatalogExtPlugin) GetMetadata() plugin.PluginMetadata {
     return plugin.PluginMetadata{
@@ -143,7 +143,7 @@ func (p *CatalogExtPlugin) Run(context plugin.PluginContext, args []string) {
 Define a non-shared namespace for your plug-in:
 
 ```go
-import "github.com/IBM-Bluemix/bluemix-cli-sdk/plugin"
+import "github.com/IBM-Cloud/ibm-cloud-cli-sdk/plugin"
 
 
 func (p *DemoPlugin) GetMetadata() plugin.PluginMetadata {
@@ -193,7 +193,7 @@ If you want to organize commands into categories at different levels, you can us
 Following is an example of using sub-namespace:
 
 ```go
-import "github.com/IBM-Bluemix/bluemix-cli-sdk/plugin"
+import "github.com/IBM-Cloud/ibm-cloud-cli-sdk/plugin"
 
 type DemoPlugin struct{}
 
@@ -393,7 +393,7 @@ You are not logged in. Log in by running 'bluemix login'.
 You can use the following APIs provided by Bluemix CLI SDK to print the previous example message:
 
 ```go
-import "github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/terminal"
+import "github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/terminal"
 
 ui := terminal.NewStdUI()
 
@@ -667,7 +667,7 @@ demo-app   This is a long long long ...
 
 Using APIs provided by Bluemix CLI can let you easily print results in table format:
 ```go
-import "github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/terminal"
+import "github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/terminal"
 
 func (demo *DemoPlugin) PrintTable() {
     ui := terminal.NewStdUI()
@@ -686,7 +686,7 @@ Bluemix CLI provides utility for tracing based on "BLUEMIX\_TRACE" environment v
 An example to use Bluemix CLI trace API:
 
 ```go
-import "github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/trace"
+import "github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/trace"
 
 func (demo *DemoPlugin) Run(context plugin.PluginContext, args []string) {
     // first, initialize the trace logger
@@ -703,7 +703,7 @@ func (demo *DemoPlugin) Run(context plugin.PluginContext, args []string) {
 
 ### 4.1. HTTP tracing
 
-TraceLoggingTransport in package `bluemix-cli-sdk/bluemix/http` is a thin wrapper around HTTP transport. It dumps each HTTP request and its response by using the trace logger.
+TraceLoggingTransport in package `ibm-cloud-cli-sdk/bluemix/http` is a thin wrapper around HTTP transport. It dumps each HTTP request and its response by using the trace logger.
 
 1. Initialize the trace logger.
 
@@ -714,7 +714,7 @@ TraceLoggingTransport in package `bluemix-cli-sdk/bluemix/http` is a thin wrappe
 2. Create a HTTP client with TraceLoggingTransport to send the request:
    ```go
    import (
-       "github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/http"
+       "github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/http"
        gohttp "net/http"
    )
 
@@ -728,13 +728,13 @@ Now during each round-trip, the trace logger dumps the request and its response.
 
 ### 4.2. REST client
 
-HTTP interaction with a remote server is a common task in both core and plug-in commands. Package `bluemix-cli-sdk/common/rest` provides APIs for building a REST API request and a REST client for sending the request.
+HTTP interaction with a remote server is a common task in both core and plug-in commands. Package `ibm-cloud-cli-sdk/common/rest` provides APIs for building a REST API request and a REST client for sending the request.
 
 Examples for GET requests, query strings, HTTP headers, POST requests, and file uploads.
 
 * To create a GET request:
   ```go
-  import "github.com/IBM-Bluemix/bluemix-cli-sdk/common/rest"
+  import "github.com/IBM-Cloud/ibm-cloud-cli-sdk/common/rest"
 
   var r = rest.GetRequest("http://www.example.com")
   // equal to
@@ -834,8 +834,8 @@ FakeUI can intercept all of output and store the output in a buffer temporarily,
 ```go
 // Here is the source code to be tested:
 import (
-    "github.com/IBM-Bluemix/bluemix-cli-sdk/plugin"
-    "github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/terminal"
+    "github.com/IBM-Cloud/ibm-cloud-cli-sdk/plugin"
+    "github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/terminal"
 )
 
 type DemoPluginstruct {}
@@ -854,7 +854,7 @@ func (demo *DemoPlugin) Start(ui terminal.UI){
 }
 
 // The following is the testing code:
-import "github.com/IBM-Bluemix/bluemix-cli-sdk/testhelpers/terminal"
+import "github.com/IBM-Cloud/ibm-cloud-cli-sdk/testhelpers/terminal"
 
 func TestStart() {
     demoPlugin := DemoPlugin{}
