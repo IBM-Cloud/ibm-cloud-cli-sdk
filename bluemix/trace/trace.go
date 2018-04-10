@@ -83,38 +83,19 @@ func NewFileLogger(path string) PrinterCloser {
 	return newLoggerImpl(file, "", 0)
 }
 
+var privateDataPlaceholder = "[PRIVATE DATA HIDDEN]"
+
 // Sanitize returns a clean string with sensitive user data in the input
 // replaced by PRIVATE_DATA_PLACEHOLDER.
 func Sanitize(input string) string {
-	re := regexp.MustCompile(`(?m)^Authorization: .*`)
-	sanitized := re.ReplaceAllString(input, "Authorization: "+privateDataPlaceholder())
+	re := regexp.MustCompile(`(?m)^(Authorization|X-Auth\S*): .*`)
+	sanitized := re.ReplaceAllString(input, "$1: "+privateDataPlaceholder)
 
-	re = regexp.MustCompile(`(?m)^X-Auth-Token: .*`)
-	sanitized = re.ReplaceAllString(sanitized, "X-Auth-Token: "+privateDataPlaceholder())
+	re = regexp.MustCompile(`(?i)(password|token|apikey|passcode)=[^&]*(&|$)`)
+	sanitized = re.ReplaceAllString(sanitized, "$1="+privateDataPlaceholder+"$2")
 
-	re = regexp.MustCompile(`password=[^&]*&`)
-	sanitized = re.ReplaceAllString(sanitized, "password="+privateDataPlaceholder()+"&")
-
-	re = regexp.MustCompile(`refresh_token=[^&]*&`)
-	sanitized = re.ReplaceAllString(sanitized, "refresh_token="+privateDataPlaceholder()+"&")
-
-	re = regexp.MustCompile(`apikey=[^&]*&`)
-	sanitized = re.ReplaceAllString(sanitized, "apikey="+privateDataPlaceholder()+"&")
-
-	sanitized = sanitizeJSON("token", sanitized)
-	sanitized = sanitizeJSON("password", sanitized)
-	sanitized = sanitizeJSON("apikey", sanitized)
-	sanitized = sanitizeJSON("passcode", sanitized)
+	re = regexp.MustCompile(`(?i)"([^"]*(password|token|apikey)[^"_]*)":\s*"[^\,]*"`)
+	sanitized = re.ReplaceAllString(sanitized, fmt.Sprintf(`"$1":"%s"`, privateDataPlaceholder))
 
 	return sanitized
-}
-
-func sanitizeJSON(propertySubstring string, json string) string {
-	regex := regexp.MustCompile(fmt.Sprintf(`(?i)"([^"]*%s[^"]*)":\s*"[^\,]*"`, propertySubstring))
-	return regex.ReplaceAllString(json, fmt.Sprintf(`"$1":"%s"`, privateDataPlaceholder()))
-}
-
-// privateDataPlaceholder returns the text to replace the sentive data.
-func privateDataPlaceholder() string {
-	return "[PRIVATE DATA HIDDEN]"
 }

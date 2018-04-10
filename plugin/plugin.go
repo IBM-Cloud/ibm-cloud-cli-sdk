@@ -66,6 +66,7 @@ type Command struct {
 	Description string // short description of the command
 	Usage       string // usage detail to be displayed in command help
 	Flags       []Flag // command options
+	Hidden      bool   // true to hide the command in help text
 }
 
 // FullName returns Command's fully-qualified name prefixed with namespace
@@ -87,6 +88,7 @@ type Flag struct {
 	Name        string // name of the option
 	Description string // description of the option
 	HasValue    bool   // whether the option requires a value or not
+	Hidden      bool   // true to hide the option in command help
 }
 
 // Plugin is an interface for Bluemix CLI plugins.
