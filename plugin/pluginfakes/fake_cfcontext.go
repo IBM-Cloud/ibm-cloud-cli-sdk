@@ -4,8 +4,8 @@ package pluginfakes
 import (
 	"sync"
 
-	"github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/models"
-	"github.com/IBM-Bluemix/bluemix-cli-sdk/plugin"
+	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/models"
+	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/plugin"
 )
 
 type FakeCFContext struct {
