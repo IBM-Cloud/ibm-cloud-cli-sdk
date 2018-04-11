@@ -69,6 +69,8 @@ type Repository interface {
 
 	CFConfig() CFConfig
 	HasTargetedCF() bool
+	HasTargetedCFEE() bool
+	SetCFEETargeted(bool)
 }
 
 // Deprecated
@@ -130,6 +132,10 @@ func (c repository) HasTargetedCF() bool {
 	return c.cfConfig.HasAPIEndpoint()
 }
 
+func (c repository) HasTargetedCFEE() bool {
+	return c.HasTargetedCF() && c.CFEETargeted()
+}
+
 func (c repository) SetSSLDisabled(disabled bool) {
 	c.bxConfig.SetSSLDisabled(disabled)
 	c.cfConfig.SetSSLDisabled(disabled)
@@ -152,6 +158,7 @@ func (c repository) SetLocale(locale string) {
 
 func (c repository) UnsetAPI() {
 	c.bxConfig.UnsetAPI()
+	c.bxConfig.SetCFEETargeted(false)
 	c.cfConfig.UnsetAPI()
 }
 
