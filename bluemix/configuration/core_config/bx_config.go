@@ -5,6 +5,7 @@ import (
 	"strings"
 	"sync"
 
+	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix"
 	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/configuration"
 	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/models"
 	"github.com/fatih/structs"
@@ -40,6 +41,7 @@ type BXConfigData struct {
 	CLIInfoEndpoint         string
 	CheckCLIVersionDisabled bool
 	UsageStatsDisabled      bool
+	SDKVersion              string
 	raw                     raw
 }
 
@@ -112,6 +114,7 @@ func (c *bxConfig) write(cb func()) {
 
 	cb()
 
+	c.data.SDKVersion = bluemix.Version.String()
 	c.data.raw = structs.Map(c.data)
 
 	err := c.persistor.Save(c.data)
@@ -334,6 +337,13 @@ func (c *bxConfig) CheckCLIVersionDisabled() (disabled bool) {
 func (c *bxConfig) UsageStatsDisabled() (disabled bool) {
 	c.read(func() {
 		disabled = c.data.UsageStatsDisabled
+	})
+	return
+}
+
+func (c *bxConfig) SDKVersion() (version string) {
+	c.read(func() {
+		version = c.data.SDKVersion
 	})
 	return
 }
