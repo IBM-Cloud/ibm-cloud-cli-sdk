@@ -36,6 +36,7 @@ type Repository interface {
 	Locale() string
 	Trace() string
 	ColorEnabled() string
+	SDKVersion() string
 
 	UnsetAPI()
 	SetAPIEndpoint(string)
