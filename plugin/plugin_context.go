@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strconv"
+	"strings"
 
 	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/authentication"
 	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/configuration/core_config"
@@ -46,6 +48,44 @@ func createPluginContext(pluginPath string, coreConfig core_config.ReadWriter) *
 		ReadWriter:   coreConfig,
 		cfConfig:     cfConfigWrapper{coreConfig.CFConfig()},
 	}
+}
+
+func (c *pluginContext) APIEndpoint() string {
+	if compareVersion(c.SDKVersion(), "0.1.1") < 0 {
+		return c.ReadWriter.CFConfig().APIEndpoint()
+	}
+	return c.ReadWriter.APIEndpoint()
+}
+
+func compareVersion(v1, v2 string) int {
+	s1 := strings.Split(v1, ".")
+	s2 := strings.Split(v2, ".")
+
+	n := len(s1)
+	if len(s2) > n {
+		n = len(s2)
+	}
+
+	for i := 0; i < n; i++ {
+		var p1, p2 int
+		if len(s1) > i {
+			p1, _ = strconv.Atoi(s1[i])
+		}
+		if len(s2) > i {
+			p2, _ = strconv.Atoi(s2[i])
+		}
+		if p1 > p2 {
+			return 1
+		}
+		if p1 < p2 {
+			return -1
+		}
+	}
+	return 0
+}
+
+func (c *pluginContext) HasAPIEndpoint() bool {
+	return c.APIEndpoint() != ""
 }
 
 func (c *pluginContext) PluginDirectory() string {
