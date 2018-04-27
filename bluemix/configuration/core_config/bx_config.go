@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"strings"
 	"sync"
+	"time"
 
 	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix"
 	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/configuration"
@@ -22,27 +23,30 @@ func (r raw) Unmarshal(bytes []byte) error {
 }
 
 type BXConfigData struct {
-	APIEndpoint             string
-	ConsoleEndpoint         string
-	Region                  string
-	RegionID                string
-	RegionType              string
-	IAMEndpoint             string
-	IAMToken                string
-	IAMRefreshToken         string
-	Account                 models.Account
-	ResourceGroup           models.ResourceGroup
-	PluginRepos             []models.PluginRepo
-	SSLDisabled             bool
-	Locale                  string
-	Trace                   string
-	ColorEnabled            string
-	HTTPTimeout             int
-	CLIInfoEndpoint         string
-	CheckCLIVersionDisabled bool
-	UsageStatsDisabled      bool
-	SDKVersion              string
-	raw                     raw
+	APIEndpoint                string
+	ConsoleEndpoint            string
+	Region                     string
+	RegionID                   string
+	RegionType                 string
+	IAMEndpoint                string
+	IAMToken                   string
+	IAMRefreshToken            string
+	Account                    models.Account
+	ResourceGroup              models.ResourceGroup
+	PluginRepos                []models.PluginRepo
+	SSLDisabled                bool
+	Locale                     string
+	Trace                      string
+	ColorEnabled               string
+	HTTPTimeout                int
+	CLIInfoEndpoint            string
+	CheckCLIVersionDisabled    bool
+	UsageStatsDisabled         bool
+	SDKVersion                 string
+	UpdateCheckInterval        time.Duration
+	UpdateRetryCheckInterval   time.Duration
+	UpdateNotificationInterval time.Duration
+	raw                        raw
 }
 
 func NewBXConfigData() *BXConfigData {
@@ -334,6 +338,27 @@ func (c *bxConfig) CheckCLIVersionDisabled() (disabled bool) {
 	return
 }
 
+func (c *bxConfig) UpdateCheckInterval() (interval time.Duration) {
+	c.read(func() {
+		interval = c.data.UpdateCheckInterval
+	})
+	return
+}
+
+func (c *bxConfig) UpdateRetryCheckInterval() (interval time.Duration) {
+	c.read(func() {
+		interval = c.data.UpdateRetryCheckInterval
+	})
+	return
+}
+
+func (c *bxConfig) UpdateNotificationInterval() (interval time.Duration) {
+	c.read(func() {
+		interval = c.data.UpdateNotificationInterval
+	})
+	return
+}
+
 func (c *bxConfig) UsageStatsDisabled() (disabled bool) {
 	c.read(func() {
 		disabled = c.data.UsageStatsDisabled
@@ -435,6 +460,24 @@ func (c *bxConfig) SetHTTPTimeout(timeout int) {
 func (c *bxConfig) SetCheckCLIVersionDisabled(disabled bool) {
 	c.write(func() {
 		c.data.CheckCLIVersionDisabled = disabled
+	})
+}
+
+func (c *bxConfig) SetUpdateCheckInterval(interval time.Duration) {
+	c.write(func() {
+		c.data.UpdateCheckInterval = interval
+	})
+}
+
+func (c *bxConfig) SetUpdateRetryCheckInterval(interval time.Duration) {
+	c.write(func() {
+		c.data.UpdateRetryCheckInterval = interval
+	})
+}
+
+func (c *bxConfig) SetUpdateNotificationInterval(interval time.Duration) {
+	c.write(func() {
+		c.data.UpdateNotificationInterval = interval
 	})
 }
 
