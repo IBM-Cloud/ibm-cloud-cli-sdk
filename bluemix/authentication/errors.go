@@ -34,3 +34,15 @@ func NewServerError(statusCode int, errorCode string, description string) *Serve
 		Description: description,
 	}
 }
+
+type InvalidGrantTypeError struct {
+	Description string
+}
+
+func NewInvalidGrantTypeError(descrption string) *InvalidGrantTypeError {
+	return &InvalidGrantTypeError{Description: descrption}
+}
+
+func (e *InvalidGrantTypeError) Error() string {
+	return T("Invalid grant type: ") + e.Description
+}
