@@ -31,6 +31,10 @@ func PluginRepoDir() string {
 	return filepath.Join(ConfigDir(), "plugins")
 }
 
+func PluginRepoCacheDir() string {
+	return filepath.Join(PluginRepoDir(), ".cache")
+}
+
 func PluginsConfigFilePath() string {
 	return filepath.Join(PluginRepoDir(), "config.json")
 }

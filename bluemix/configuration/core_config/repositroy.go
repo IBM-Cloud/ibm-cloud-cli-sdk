@@ -3,6 +3,8 @@
 package core_config
 
 import (
+	"time"
+
 	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/configuration"
 	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/configuration/config_helpers"
 	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/models"
@@ -32,6 +34,9 @@ type Repository interface {
 	HTTPTimeout() int
 	CLIInfoEndpoint() string
 	CheckCLIVersionDisabled() bool
+	UpdateCheckInterval() time.Duration
+	UpdateRetryCheckInterval() time.Duration
+	UpdateNotificationInterval() time.Duration
 	UsageStatsDisabled() bool
 	Locale() string
 	Trace() string
@@ -55,6 +60,9 @@ type Repository interface {
 	SetSSLDisabled(bool)
 	SetHTTPTimeout(int)
 	SetUsageStatsDisabled(bool)
+	SetUpdateCheckInterval(time.Duration)
+	SetUpdateRetryCheckInterval(time.Duration)
+	SetUpdateNotificationInterval(time.Duration)
 	SetLocale(string)
 	SetTrace(string)
 	SetColorEnabled(string)
