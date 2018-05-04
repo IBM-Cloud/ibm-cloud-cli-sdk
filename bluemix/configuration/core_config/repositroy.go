@@ -161,6 +161,8 @@ func (c repository) ClearSession() {
 }
 
 func NewCoreConfig(errHandler func(error)) ReadWriter {
+	config_helpers.MigrateFromOldConfig() // error ignored
+
 	return NewCoreConfigFromPath(config_helpers.CFConfigFilePath(), config_helpers.ConfigFilePath(), errHandler)
 }
 
