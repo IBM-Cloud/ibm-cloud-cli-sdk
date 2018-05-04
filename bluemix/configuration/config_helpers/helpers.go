@@ -5,22 +5,52 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
+
+	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/common/file_helpers"
 )
 
-var BluemixTmpDir = bluemixTmpDir()
-
-func bluemixTmpDir() string {
-	d := filepath.Join(ConfigDir(), "tmp")
-	os.MkdirAll(d, 0755)
-	return d
+func ConfigDir() string {
+	// TODO: switched to newConfigDir after all plugin has bumped SDK
+	if new := newConfigDir(); file_helpers.FileExists(new) {
+		return new
+	}
+	return oldConfigDir()
 }
 
-func ConfigDir() string {
+// func MigrateFromOldConfig() error {
+// 	new := newConfigDir()
+// 	if file_helpers.FileExists(new) {
+// 		return nil
+// 	}
+
+// 	old := oldConfigDir()
+// 	if !file_helpers.FileExists(old) {
+// 		return nil
+// 	}
+
+// 	if err := file_helpers.CopyDir(old, new); err != nil {
+// 		return err
+// 	}
+// 	return os.RemoveAll(old)
+// }
+
+func newConfigDir() string {
+	return filepath.Join(homeDir(), ".ibmcloud")
+}
+
+func oldConfigDir() string {
+	return filepath.Join(homeDir(), ".bluemix")
+}
+
+func homeDir() string {
 	if os.Getenv("BLUEMIX_HOME") != "" {
-		return filepath.Join(os.Getenv("BLUEMIX_HOME"), ".bluemix")
-	} else {
-		return filepath.Join(UserHomeDir(), ".bluemix")
+		return os.Getenv("BLUEMIX_HOME")
 	}
+	return UserHomeDir()
+}
+
+func TempDir() string {
+	return filepath.Join(ConfigDir(), "tmp")
 }
 
 func ConfigFilePath() string {
