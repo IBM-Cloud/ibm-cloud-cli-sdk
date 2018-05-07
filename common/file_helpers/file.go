@@ -53,6 +53,8 @@ func CopyFile(src string, dest string) (err error) {
 	}
 	defer destFile.Close()
 
+	destFile.Chmod(srcStat.Mode())
+
 	_, err = io.Copy(destFile, srcFile)
 	return
 }
@@ -70,17 +72,12 @@ func CopyDir(src string, dest string) (err error) {
 		return fmt.Errorf("%s is not a directory.", src)
 	}
 
-	_, err = os.Stat(dest)
-	if !os.IsNotExist(err) {
-		return fmt.Errorf("Destination %s already exists.", dest)
-	}
-
-	entries, err := ioutil.ReadDir(src)
+	err = os.MkdirAll(dest, srcStat.Mode())
 	if err != nil {
 		return
 	}
 
-	err = os.MkdirAll(dest, srcStat.Mode())
+	entries, err := ioutil.ReadDir(src)
 	if err != nil {
 		return
 	}
