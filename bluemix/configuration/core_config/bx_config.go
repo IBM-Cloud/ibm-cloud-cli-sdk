@@ -33,6 +33,7 @@ type BXConfigData struct {
 	IAMRefreshToken            string
 	Account                    models.Account
 	ResourceGroup              models.ResourceGroup
+	CFEETargeted               bool
 	PluginRepos                []models.PluginRepo
 	SSLDisabled                bool
 	Locale                     string
@@ -373,6 +374,13 @@ func (c *bxConfig) SDKVersion() (version string) {
 	return
 }
 
+func (c *bxConfig) CFEETargeted() (targeted bool) {
+	c.read(func() {
+		targeted = c.data.CFEETargeted
+	})
+	return
+}
+
 func (c *bxConfig) SetAPIEndpoint(endpoint string) {
 	c.write(func() {
 		c.data.APIEndpoint = endpoint
@@ -508,6 +516,12 @@ func (c *bxConfig) SetLocale(locale string) {
 func (c *bxConfig) SetTrace(trace string) {
 	c.write(func() {
 		c.data.Trace = trace
+	})
+}
+
+func (c *bxConfig) SetCFEETargeted(targeted bool) {
+	c.write(func() {
+		c.data.CFEETargeted = targeted
 	})
 }
 
