@@ -7,9 +7,9 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix"
 	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/authentication"
 	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/configuration/core_config"
-	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/consts"
 	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/common/rest"
 )
 
@@ -119,11 +119,11 @@ func (c *pluginContext) RefreshIAMToken() (string, error) {
 }
 
 func (c *pluginContext) Trace() string {
-	return getFromEnvOrConfig(consts.ENV_BLUEMIX_TRACE, c.ReadWriter.Trace())
+	return envOrConfig(bluemix.EnvTrace, c.ReadWriter.Trace())
 }
 
 func (c *pluginContext) ColorEnabled() string {
-	return getFromEnvOrConfig(consts.ENV_BLUEMIX_COLOR, c.ReadWriter.ColorEnabled())
+	return envOrConfig(bluemix.EnvColor, c.ReadWriter.ColorEnabled())
 }
 
 func (c *pluginContext) VersionCheckEnabled() bool {
@@ -138,21 +138,17 @@ func (c *pluginContext) HasTargetedCF() bool {
 	return c.cfConfig.HasAPIEndpoint()
 }
 
-func getFromEnvOrConfig(envKey string, config string) string {
-	if envVal := os.Getenv(envKey); envVal != "" {
-		return envVal
+func envOrConfig(env bluemix.Env, config string) string {
+	if v := env.Get(); v != "" {
+		return v
 	}
 	return config
 }
 
 func (c *pluginContext) CommandNamespace() string {
-	return os.Getenv(consts.ENV_BLUEMIX_PLUGIN_NAMESPACE)
+	return bluemix.EnvPluginNamespace.Get()
 }
 
 func (c *pluginContext) CLIName() string {
-	cliName := os.Getenv(consts.ENV_BLUEMIX_CLI)
-	if cliName == "" {
-		cliName = "bx"
-	}
-	return cliName
+	return bluemix.EnvCLIName.Get()
 }
