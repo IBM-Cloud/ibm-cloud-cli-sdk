@@ -124,6 +124,18 @@ type repository struct {
 	cfConfig *cfConfig
 }
 
+func (c repository) IsLoggedIn() bool {
+	return c.bxConfig.IsLoggedIn() || c.cfConfig.IsLoggedIn()
+}
+
+func (c repository) UserEmail() string {
+	email := c.bxConfig.UserEmail()
+	if email == "" {
+		email = c.cfConfig.UserEmail()
+	}
+	return email
+}
+
 func (c repository) CFConfig() CFConfig {
 	return c.cfConfig
 }
