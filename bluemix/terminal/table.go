@@ -12,19 +12,36 @@ type Table interface {
 }
 
 type PrintableTable struct {
-	writer        io.Writer
-	headers       []string
-	headerPrinted bool
-	maxSizes      []int
-	rows          [][]string //each row is single line
+	writer             io.Writer
+	headers            []string
+	headerPrinted      bool
+	maxSizes           []int
+	rows               [][]string //each row is single line
+	collapsibleColumns []string
 }
 
-func NewTable(w io.Writer, headers []string) Table {
-	return &PrintableTable{
+type TableOpt func(Table)
+
+func WithCollapsibleColumns(headers ...string) TableOpt {
+	return func(t Table) {
+		pt, ok := t.(*PrintableTable)
+		if !ok {
+			return
+		}
+		pt.collapsibleColumns = append([]string{}, headers...)
+	}
+}
+
+func NewTable(w io.Writer, headers []string, opts ...TableOpt) Table {
+	table := &PrintableTable{
 		writer:   w,
 		headers:  headers,
 		maxSizes: make([]int, len(headers)),
 	}
+	for _, opt := range opts {
+		opt(table)
+	}
+	return table
 }
 
 func (t *PrintableTable) Add(row ...string) {
@@ -53,6 +70,10 @@ func (t *PrintableTable) Add(row ...string) {
 }
 
 func (t *PrintableTable) Print() {
+	if len(t.collapsibleColumns) > 0 {
+		t.collapse()
+	}
+
 	for _, row := range append(t.rows, t.headers) {
 		t.calculateMaxSize(row)
 	}
@@ -104,6 +125,52 @@ func (t *PrintableTable) cellValue(col int, value string) string {
 		padding = strings.Repeat(" ", t.maxSizes[col]-calculateStringWidth(Decolorize(value)))
 	}
 	return fmt.Sprintf("%s%s   ", value, padding)
+}
+
+func (t *PrintableTable) collapse() {
+	jend := len(t.headers)-1
+	for j := 0; j < jend; j++ {
+		if !t.isCollapsible(t.headers[j]) {
+			continue
+		}
+
+		// "shift" left to delete jth column while preserving order
+		t.headers = append(t.headers[:j], t.headers[j+1:jend+1]...)
+		for i := range t.rows {
+			t.rows[i] = append(t.rows[i][:j],t.rows[i][j+1:jend+1]...)
+		}
+
+		j--
+		jend--
+
+	}
+}
+
+func (t *PrintableTable) isCollapsible(header string) bool {
+	var collapsible bool
+	for _, cc := range t.collapsibleColumns {
+		if cc == header {
+			collapsible = true
+			break
+		}
+	}
+	if !collapsible {
+		return false
+	}
+
+	for j, col := range t.headers {
+		if col != header {
+			continue
+		}
+
+		for _, row := range t.rows {
+			if row[j] != "" {
+				return false
+			}
+		}
+		return true
+	}
+	return false
 }
 
 func calculateStringWidth(s string) int {
