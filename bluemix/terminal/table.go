@@ -129,21 +129,20 @@ func (t *PrintableTable) cellValue(col int, value string) string {
 }
 
 func (t *PrintableTable) collapse() {
-	jend := len(t.headers)-1
+	jend := len(t.headers)
 	for j := 0; j < jend; j++ {
 		if !t.isCollapsible(t.headers[j]) {
 			continue
 		}
 
 		// "shift" left to delete jth column while preserving order
-		t.headers = append(t.headers[:j], t.headers[j+1:jend+1]...)
+		t.headers = append(t.headers[:j], t.headers[j+1:jend]...)
 		for i := range t.rows {
-			t.rows[i] = append(t.rows[i][:j],t.rows[i][j+1:jend+1]...)
+			t.rows[i] = append(t.rows[i][:j],t.rows[i][j+1:jend]...)
 		}
 
 		j--
 		jend--
-
 	}
 }
 
