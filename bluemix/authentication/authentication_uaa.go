@@ -5,8 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/configuration/core_config"
-	"github.com/IBM-Bluemix/bluemix-cli-sdk/common/rest"
+	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/common/rest"
 )
 
 const (
@@ -30,12 +29,16 @@ type UAARepository interface {
 	RefreshToken(uaaRefreshToken string) (Token, error)
 }
 
+type UAAConfig struct {
+	UAAEndpoint string
+}
+
 type uaaRepository struct {
-	config core_config.Reader
+	config *UAAConfig
 	client *rest.Client
 }
 
-func NewUAARepository(config core_config.Reader, client *rest.Client) UAARepository {
+func NewUAARepository(config *UAAConfig, client *rest.Client) UAARepository {
 	return &uaaRepository{
 		config: config,
 		client: client,
@@ -110,7 +113,7 @@ func (auth *uaaRepository) getTokenAndConnectIAM(v map[string]string, iamToken s
 }
 
 func (auth *uaaRepository) getToken(data map[string]string) (Token, error) {
-	req := rest.PostRequest(auth.config.AuthenticationEndpoint()+"/oauth/token").
+	req := rest.PostRequest(auth.config.UAAEndpoint+"/oauth/token").
 		Set("Authorization", "Basic "+base64.StdEncoding.EncodeToString(
 			[]byte(fmt.Sprintf("%s:%s", uaaClientID, uaaClientSecret)))).
 		Field("scope", "")
@@ -137,7 +140,7 @@ func (auth *uaaRepository) getToken(data map[string]string) (Token, error) {
 }
 
 func (auth *uaaRepository) DisconnectIAM(uaaToken string) error {
-	req := rest.PostRequest(auth.config.AuthenticationEndpoint()+"/oauth/token/disconnect").
+	req := rest.PostRequest(auth.config.UAAEndpoint+"/oauth/token/disconnect").
 		Set("Authorization", uaaToken)
 	return auth.sendRequest(req, nil)
 }

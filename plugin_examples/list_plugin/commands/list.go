@@ -5,16 +5,16 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/terminal"
-	"github.com/IBM-Bluemix/bluemix-cli-sdk/plugin"
-	"github.com/IBM-Bluemix/bluemix-cli-sdk/plugin_examples/list_plugin/api"
-	. "github.com/IBM-Bluemix/bluemix-cli-sdk/plugin_examples/list_plugin/i18n"
-	"github.com/IBM-Bluemix/bluemix-cli-sdk/plugin_examples/list_plugin/models"
+	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/terminal"
+	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/plugin"
+	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/plugin_examples/list_plugin/api"
+	. "github.com/IBM-Cloud/ibm-cloud-cli-sdk/plugin_examples/list_plugin/i18n"
+	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/plugin_examples/list_plugin/models"
 )
 
 type List struct {
 	ui              terminal.UI
-	context         plugin.PluginContext
+	cf              plugin.CFContext
 	ccClient        api.CCClient
 	containerClient api.ContainerClient
 }
@@ -27,20 +27,20 @@ func NewList(
 
 	return &List{
 		ui:              ui,
-		context:         context,
+		cf:              context.CF(),
 		ccClient:        ccClient,
 		containerClient: containerClient,
 	}
 }
 
 func (cmd *List) Run(args []string) error {
-	err := checkTarget(cmd.context)
+	err := checkTarget(cmd.cf)
 	if err != nil {
 		return err
 	}
 
-	orgId := cmd.context.CurrentOrg().GUID
-	spaceId := cmd.context.CurrentSpace().GUID
+	orgId := cmd.cf.CurrentOrganization().GUID
+	spaceId := cmd.cf.CurrentSpace().GUID
 
 	summary, err := cmd.ccClient.AppsAndServices(spaceId)
 	if err != nil {
@@ -75,7 +75,7 @@ func (cmd *List) printApps(apps []models.App, orgUsage models.OrgUsage) {
 		T("CloudFoundy Applications  {{.Used}}/{{.Limit}} used",
 			map[string]interface{}{
 				"Used":  formattedGB(orgUsage.TotalMemoryUsed()),
-				"Limit": formattedGB(cmd.context.CurrentOrg().QuotaDefinition.InstanceMemoryLimitInMB)}), 33))
+				"Limit": formattedGB(cmd.cf.CurrentOrganization().QuotaDefinition.InstanceMemoryLimitInMB)}), 33))
 
 	table := cmd.ui.Table([]string{T("Name"), T("Routes"), T("Memory (MB)"), T("Instances"), T("State")})
 	for _, a := range apps {
@@ -95,7 +95,7 @@ func (cmd *List) printServices(services []models.ServiceInstance, orgUsage model
 	cmd.ui.Say(terminal.ColorizeBold(
 		T("Services {{.Count}}/{{.Limit}} used", map[string]interface{}{
 			"Count": orgUsage.ServicesCount(),
-			"Limit": cmd.context.CurrentOrg().QuotaDefinition.ServicesLimit}), 33))
+			"Limit": cmd.cf.CurrentOrganization().QuotaDefinition.ServicesLimit}), 33))
 
 	table := cmd.ui.Table([]string{T("Name"), T("Service Offering"), T("Plan")})
 	for _, s := range services {
@@ -165,18 +165,18 @@ func (cmd *List) printContainers(containers []models.Container, quotaAndUsage mo
 	cmd.ui.Say("")
 }
 
-func checkTarget(context plugin.PluginContext) error {
-	if !context.HasAPIEndpoint() {
-		return fmt.Errorf(T("No API endpoint set. Use '{{.Command}}' to set an endpoint.",
-			map[string]interface{}{"Command": terminal.CommandColor("bx api")}))
+func checkTarget(cf plugin.CFContext) error {
+	if !cf.HasAPIEndpoint() {
+		return fmt.Errorf(T("No CF API endpoint set. Use '{{.Command}}' to target a CloudFoundry environment.",
+			map[string]interface{}{"Command": terminal.CommandColor("bx target --cf")}))
 	}
 
-	if !context.IsLoggedIn() {
+	if !cf.IsLoggedIn() {
 		return fmt.Errorf(T("Not logged in. Use '{{.Command}}' to log in.",
-			map[string]interface{}{"Command": terminal.CommandColor("bx login")}))
+			map[string]interface{}{"Command": terminal.CommandColor("bx target --cf")}))
 	}
 
-	if !context.HasSpace() {
+	if !cf.HasTargetedSpace() {
 		return fmt.Errorf(T("No space targeted. Use '{{.Command}}' to target an org and a space.",
 			map[string]interface{}{"Command": terminal.CommandColor("bx target -o ORG -s SPACE")}))
 	}

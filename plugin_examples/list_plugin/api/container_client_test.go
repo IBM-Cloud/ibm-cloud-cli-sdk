@@ -3,8 +3,8 @@ package api_test
 import (
 	"net/http"
 
-	"github.com/IBM-Bluemix/bluemix-cli-sdk/common/rest"
-	. "github.com/IBM-Bluemix/bluemix-cli-sdk/plugin_examples/list_plugin/api"
+	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/common/rest"
+	. "github.com/IBM-Cloud/ibm-cloud-cli-sdk/plugin_examples/list_plugin/api"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"

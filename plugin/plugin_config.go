@@ -7,8 +7,8 @@ import (
 	"strconv"
 	"sync"
 
-	"github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/configuration"
-	. "github.com/IBM-Bluemix/bluemix-cli-sdk/i18n"
+	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/configuration"
+	. "github.com/IBM-Cloud/ibm-cloud-cli-sdk/i18n"
 )
 
 // PluginConfigInvalidTypeError describes the value for a given key in plugin configuration
@@ -286,7 +286,7 @@ func toStringSlice(v interface{}) ([]string, bool) {
 		return []string{}, false
 	}
 
-	ret := make([]string, len(s), len(s))
+	ret := make([]string, len(s))
 	for i := 0; i < len(s); i++ {
 		ii, ok := toString(s[i])
 		if !ok {
@@ -314,7 +314,7 @@ func toIntSlice(v interface{}) ([]int, bool) {
 		return []int{}, false
 	}
 
-	is := make([]int, len(s), len(s))
+	is := make([]int, len(s))
 	for i := 0; i < len(s); i++ {
 		ii, ok := toInt(s[i])
 		if !ok {
@@ -342,7 +342,7 @@ func toFloatSlice(v interface{}) ([]float64, bool) {
 		return []float64{}, false
 	}
 
-	fs := make([]float64, len(s), len(s))
+	fs := make([]float64, len(s))
 	for i := 0; i < len(s); i++ {
 		f, ok := toFloat(s[i])
 		if !ok {

@@ -6,8 +6,8 @@ import (
 
 	"testing"
 
-	"github.com/IBM-Bluemix/bluemix-cli-sdk/plugin/pluginfakes"
-	"github.com/IBM-Bluemix/bluemix-cli-sdk/plugin_examples/list_plugin/i18n"
+	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/plugin/pluginfakes"
+	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/plugin_examples/list_plugin/i18n"
 )
 
 func TestCommands(t *testing.T) {

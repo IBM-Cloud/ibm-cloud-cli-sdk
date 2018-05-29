@@ -1,13 +1,13 @@
 // Package plugin provides types and functions common among plugins.
 //
-// See examples in "github.com/IBM-Bluemix/bluemix-cli-sdk/plugin_examples".
+// See examples in "github.com/IBM-Cloud/ibm-cloud-cli-sdk/plugin_examples".
 package plugin
 
 import (
 	"fmt"
 	"strings"
 
-	"github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/models"
+	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/models"
 )
 
 // PluginMetadata describes metadata of a plugin.
@@ -66,6 +66,7 @@ type Command struct {
 	Description string // short description of the command
 	Usage       string // usage detail to be displayed in command help
 	Flags       []Flag // command options
+	Hidden      bool   // true to hide the command in help text
 }
 
 // FullName returns Command's fully-qualified name prefixed with namespace
@@ -87,6 +88,7 @@ type Flag struct {
 	Name        string // name of the option
 	Description string // description of the option
 	HasValue    bool   // whether the option requires a value or not
+	Hidden      bool   // true to hide the option in command help
 }
 
 // Plugin is an interface for Bluemix CLI plugins.
@@ -106,27 +108,19 @@ type Plugin interface {
 // carries service endpoints info, login session, user configuration, plugin
 // configuration and provides utility methods.
 type PluginContext interface {
-	// APIVersion returns the version of the Cloud Controller API
-	APIVersion() string
-
-	// APIEndpoint returns the targeted API endpoint of Cloud Controller
+	// APIEndpoint returns the targeted API endpoint of IBM Cloud
 	APIEndpoint() string
 
-	// HasAPIEndpoint() returns whether a Cloud Controller API endpoint has been
-	// targeted
+	// HasAPIEndpoint() returns whether an IBM Cloud has been targeted, does not
+	// necessarily mean the user has targeted a CF environment.
+	// Call HasTargetedCF() to return whether a CF environment has been targeted.
 	HasAPIEndpoint() bool
-
-	// deprecate loggergator endpoint, use Doppler endpoint instead
-	// LoggregatorEndpoint() string
-
-	//DopplerEndpoint returns the Doppler endpoint
-	DopplerEndpoint() string
 
 	// ConsoleEndpoint returns the Bluemix Console endpoint
 	ConsoleEndpoint() string
 
-	// Region returns the targeted region
-	Region() models.Region
+	// IAMTEndpoint return the endpoint of IAM token service
+	IAMEndpoint() string
 
 	// CloudName returns the name of the target cloud
 	CloudName() string
@@ -135,48 +129,8 @@ type PluginContext interface {
 	// 'dedicated' etc)
 	CloudType() string
 
-	// Username returns the name of the logged in user
-	Username() string
-
-	// UserGUID returns the GUID of the logged in user
-	UserGUID() string
-
-	// UserEmail returns the Email of the logged in user
-	UserEmail() string
-
-	// IsLoggedIn returns if a user has logged in
-	IsLoggedIn() bool
-
-	// Account returns the targeted BSS account
-	Account() models.Account
-
-	// Deprecated: use Account instead
-	//
-	// AccountID returns the ID of the targeted BSS account
-	AccountID() string
-
-	// IMSAccountID returns ID of the IMS account linked to the targeted BSS
-	// account
-	IMSAccountID() string
-
-	// UAAEndpoint returns endpoint of UAA token service
-	UAAEndpoint() string
-
-	// UAAToken returns the UAA access token
-	// If the token is outdated, call RefreshUAAToken to refresh it
-	UAAToken() string
-
-	// UAARefreshToken return the UAA refreshed token
-	UAARefreshToken() string
-
-	// RefreshUAAToken refreshes and returns the UAA access token
-	RefreshUAAToken() (string, error)
-
-	// RefreshIAMToken refreshes and returns the IAM access token
-	RefreshIAMToken() (string, error)
-
-	// IAMTokenEndpoint return the endpoint of IAM token service
-	IAMTokenEndpoint() string
+	// Region returns the targeted region
+	CurrentRegion() models.Region
 
 	// IAMToken returns the IAM access token
 	IAMToken() string
@@ -184,20 +138,38 @@ type PluginContext interface {
 	// IAMRefreshToken returns the IAM refresh token
 	IAMRefreshToken() string
 
+	// RefreshIAMToken refreshes and returns the IAM access token
+	RefreshIAMToken() (string, error)
+
+	// UserEmail returns the Email of the logged in user
+	UserEmail() string
+
+	// IsLoggedIn returns if a user has logged into IBM cloud, does not
+	// necessarily mean the user has logged in a CF environment.
+	// Call CF().IsLoggedIn() to return whether user has been logged into the CF environment.
+	IsLoggedIn() bool
+
+	// IMSAccountID returns ID of the IMS account linked to the targeted BSS
+	// account
+	IMSAccountID() string
+
+	// Account returns the targeted a BSS account
+	CurrentAccount() models.Account
+
+	// HasTargetedAccount returns whether an account has been targeted
+	HasTargetedAccount() bool
+
 	// ResourceGroup returns the targeted resource group
-	ResourceGroup() models.ResourceGroup
+	CurrentResourceGroup() models.ResourceGroup
 
-	// CurrentOrg returns the targeted organization
-	CurrentOrg() models.OrganizationFields
+	// HasTargetedResourceGroup returns whether a resource group has been targeted
+	HasTargetedResourceGroup() bool
 
-	// HasOrganization returns if an organization has been targeted
-	HasOrganization() bool
+	// CF returns the context of the targeted CloudFoundry environment
+	CF() CFContext
 
-	// CurrentSpace returns the targeted space
-	CurrentSpace() models.SpaceFields
-
-	// HasSpace returns if a space has been targeted
-	HasSpace() bool
+	// HasTargetedCF returns whether a CloudFoundry environment has been targeted
+	HasTargetedCF() bool
 
 	// Locale returns user specified locale
 	Locale() string
@@ -229,4 +201,56 @@ type PluginContext interface {
 
 	// CLIName returns binary name of the Bluemix CLI that is invoking the plugin
 	CLIName() string
+}
+
+// CFContext is a context of the targeted CloudFoundry environment into plugin
+type CFContext interface {
+	// APIVersion returns the cloud controller API version
+	APIVersion() string
+
+	// APIEndpoint returns the Cloud Foundry API endpoint
+	APIEndpoint() string
+
+	// HasAPIEndpoint returns whether a Cloud Foundry API endpoint is set
+	HasAPIEndpoint() bool
+
+	//DopplerEndpoint returns the Doppler endpoint
+	DopplerEndpoint() string
+
+	// UAAEndpoint returns endpoint of UAA token service
+	UAAEndpoint() string
+
+	// ISLoggedIn returns if a user has logged into the cloudfoundry instance
+	IsLoggedIn() bool
+
+	// Username returns the name of the logged in user
+	Username() string
+
+	// UserEmail returns the Email of the logged in user
+	UserEmail() string
+
+	// UserGUID returns the GUID of the logged in user
+	UserGUID() string
+
+	// UAAToken returns the UAA access token
+	// If the token is outdated, call RefreshUAAToken to refresh it
+	UAAToken() string
+
+	// UAARefreshToken return the UAA refreshed token
+	UAARefreshToken() string
+
+	// RefreshUAAToken refreshes and returns the UAA access token
+	RefreshUAAToken() (string, error)
+
+	// CurrentOrganization returns the targeted organization
+	CurrentOrganization() models.OrganizationFields
+
+	// HasTargetedOrganization returns if an organization has been targeted
+	HasTargetedOrganization() bool
+
+	// CurrentSpace returns the targeted space
+	CurrentSpace() models.SpaceFields
+
+	// HasTargetedSpace returns if a space has been targeted
+	HasTargetedSpace() bool
 }

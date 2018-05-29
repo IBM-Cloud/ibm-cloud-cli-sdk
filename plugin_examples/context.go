@@ -3,8 +3,8 @@ package main
 import (
 	"strconv"
 
-	"github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/terminal"
-	"github.com/IBM-Bluemix/bluemix-cli-sdk/plugin"
+	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/terminal"
+	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/plugin"
 )
 
 type PrintContext struct {
@@ -23,14 +23,16 @@ func NewPrintContext() *PrintContext {
 
 func (p *PrintContext) Run(context plugin.PluginContext, args []string) {
 	table := p.ui.Table([]string{"Name", "Value"})
-	table.Add("Username", context.Username())
-	table.Add("Org", context.CurrentOrg().Name)
-	table.Add("Space", context.CurrentSpace().Name)
+	table.Add("API endpoint", context.APIEndpoint())
+	table.Add("IAM endpoint", context.IAMEndpoint())
+	table.Add("Username", context.UserEmail())
 
-	table.Add("CC endpoint", context.APIEndpoint())
-	table.Add("UAA endpoint", context.UAAEndpoint())
-	table.Add("IAM endpoint", context.IAMTokenEndpoint())
-	table.Add("Doppler logging endpoint", context.DopplerEndpoint())
+	cf := context.CF()
+	table.Add("CC endpoint", cf.APIEndpoint())
+	table.Add("UAA endpoint", cf.UAAEndpoint())
+	table.Add("Doppler logging endpoint", cf.DopplerEndpoint())
+	table.Add("Org", cf.CurrentOrganization().Name)
+	table.Add("Space", cf.CurrentSpace().Name)
 
 	table.Add("Color enabled", context.ColorEnabled())
 	table.Add("HTTP timeout (second)", strconv.Itoa(context.HTTPTimeout()))

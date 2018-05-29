@@ -4,10 +4,10 @@ import (
 	"encoding/json"
 	"os"
 
-	"github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix"
-	"github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/configuration/config_helpers"
-	"github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/configuration/core_config"
-	"github.com/IBM-Bluemix/bluemix-cli-sdk/i18n"
+	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix"
+	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/configuration/config_helpers"
+	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/configuration/core_config"
+	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/i18n"
 )
 
 // Start starts the plugin.

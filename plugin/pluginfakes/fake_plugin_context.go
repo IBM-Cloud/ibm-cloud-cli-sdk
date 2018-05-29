@@ -4,20 +4,11 @@ package pluginfakes
 import (
 	"sync"
 
-	"github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/models"
-	"github.com/IBM-Bluemix/bluemix-cli-sdk/plugin"
+	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/models"
+	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/plugin"
 )
 
 type FakePluginContext struct {
-	APIVersionStub        func() string
-	aPIVersionMutex       sync.RWMutex
-	aPIVersionArgsForCall []struct{}
-	aPIVersionReturns     struct {
-		result1 string
-	}
-	aPIVersionReturnsOnCall map[int]struct {
-		result1 string
-	}
 	APIEndpointStub        func() string
 	aPIEndpointMutex       sync.RWMutex
 	aPIEndpointArgsForCall []struct{}
@@ -36,15 +27,6 @@ type FakePluginContext struct {
 	hasAPIEndpointReturnsOnCall map[int]struct {
 		result1 bool
 	}
-	DopplerEndpointStub        func() string
-	dopplerEndpointMutex       sync.RWMutex
-	dopplerEndpointArgsForCall []struct{}
-	dopplerEndpointReturns     struct {
-		result1 string
-	}
-	dopplerEndpointReturnsOnCall map[int]struct {
-		result1 string
-	}
 	ConsoleEndpointStub        func() string
 	consoleEndpointMutex       sync.RWMutex
 	consoleEndpointArgsForCall []struct{}
@@ -54,52 +36,41 @@ type FakePluginContext struct {
 	consoleEndpointReturnsOnCall map[int]struct {
 		result1 string
 	}
-	UAAEndpointStub        func() string
-	uAAEndpointMutex       sync.RWMutex
-	uAAEndpointArgsForCall []struct{}
-	uAAEndpointReturns     struct {
+	IAMEndpointStub        func() string
+	iAMEndpointMutex       sync.RWMutex
+	iAMEndpointArgsForCall []struct{}
+	iAMEndpointReturns     struct {
 		result1 string
 	}
-	uAAEndpointReturnsOnCall map[int]struct {
+	iAMEndpointReturnsOnCall map[int]struct {
 		result1 string
 	}
-	UAATokenStub        func() string
-	uAATokenMutex       sync.RWMutex
-	uAATokenArgsForCall []struct{}
-	uAATokenReturns     struct {
+	CloudNameStub        func() string
+	cloudNameMutex       sync.RWMutex
+	cloudNameArgsForCall []struct{}
+	cloudNameReturns     struct {
 		result1 string
 	}
-	uAATokenReturnsOnCall map[int]struct {
+	cloudNameReturnsOnCall map[int]struct {
 		result1 string
 	}
-	UAARefreshTokenStub        func() string
-	uAARefreshTokenMutex       sync.RWMutex
-	uAARefreshTokenArgsForCall []struct{}
-	uAARefreshTokenReturns     struct {
+	CloudTypeStub        func() string
+	cloudTypeMutex       sync.RWMutex
+	cloudTypeArgsForCall []struct{}
+	cloudTypeReturns     struct {
 		result1 string
 	}
-	uAARefreshTokenReturnsOnCall map[int]struct {
+	cloudTypeReturnsOnCall map[int]struct {
 		result1 string
 	}
-	RefreshUAATokenStub        func() (string, error)
-	refreshUAATokenMutex       sync.RWMutex
-	refreshUAATokenArgsForCall []struct{}
-	refreshUAATokenReturns     struct {
-		result1 string
-		result2 error
+	CurrentRegionStub        func() models.Region
+	currentRegionMutex       sync.RWMutex
+	currentRegionArgsForCall []struct{}
+	currentRegionReturns     struct {
+		result1 models.Region
 	}
-	refreshUAATokenReturnsOnCall map[int]struct {
-		result1 string
-		result2 error
-	}
-	IAMTokenEndpointStub        func() string
-	iAMTokenEndpointMutex       sync.RWMutex
-	iAMTokenEndpointArgsForCall []struct{}
-	iAMTokenEndpointReturns     struct {
-		result1 string
-	}
-	iAMTokenEndpointReturnsOnCall map[int]struct {
-		result1 string
+	currentRegionReturnsOnCall map[int]struct {
+		result1 models.Region
 	}
 	IAMTokenStub        func() string
 	iAMTokenMutex       sync.RWMutex
@@ -130,24 +101,6 @@ type FakePluginContext struct {
 		result1 string
 		result2 error
 	}
-	UsernameStub        func() string
-	usernameMutex       sync.RWMutex
-	usernameArgsForCall []struct{}
-	usernameReturns     struct {
-		result1 string
-	}
-	usernameReturnsOnCall map[int]struct {
-		result1 string
-	}
-	UserGUIDStub        func() string
-	userGUIDMutex       sync.RWMutex
-	userGUIDArgsForCall []struct{}
-	userGUIDReturns     struct {
-		result1 string
-	}
-	userGUIDReturnsOnCall map[int]struct {
-		result1 string
-	}
 	UserEmailStub        func() string
 	userEmailMutex       sync.RWMutex
 	userEmailArgsForCall []struct{}
@@ -166,42 +119,6 @@ type FakePluginContext struct {
 	isLoggedInReturnsOnCall map[int]struct {
 		result1 bool
 	}
-	CurrentOrgStub        func() models.OrganizationFields
-	currentOrgMutex       sync.RWMutex
-	currentOrgArgsForCall []struct{}
-	currentOrgReturns     struct {
-		result1 models.OrganizationFields
-	}
-	currentOrgReturnsOnCall map[int]struct {
-		result1 models.OrganizationFields
-	}
-	HasOrganizationStub        func() bool
-	hasOrganizationMutex       sync.RWMutex
-	hasOrganizationArgsForCall []struct{}
-	hasOrganizationReturns     struct {
-		result1 bool
-	}
-	hasOrganizationReturnsOnCall map[int]struct {
-		result1 bool
-	}
-	AccountIDStub        func() string
-	accountIDMutex       sync.RWMutex
-	accountIDArgsForCall []struct{}
-	accountIDReturns     struct {
-		result1 string
-	}
-	accountIDReturnsOnCall map[int]struct {
-		result1 string
-	}
-	AccountStub        func() models.Account
-	accountMutex       sync.RWMutex
-	accountArgsForCall []struct{}
-	accountReturns     struct {
-		result1 models.Account
-	}
-	accountReturnsOnCall map[int]struct {
-		result1 models.Account
-	}
 	IMSAccountIDStub        func() string
 	iMSAccountIDMutex       sync.RWMutex
 	iMSAccountIDArgsForCall []struct{}
@@ -211,59 +128,59 @@ type FakePluginContext struct {
 	iMSAccountIDReturnsOnCall map[int]struct {
 		result1 string
 	}
-	ResourceGroupStub        func() models.ResourceGroup
-	resourceGroupMutex       sync.RWMutex
-	resourceGroupArgsForCall []struct{}
-	resourceGroupReturns     struct {
-		result1 models.ResourceGroup
+	CurrentAccountStub        func() models.Account
+	currentAccountMutex       sync.RWMutex
+	currentAccountArgsForCall []struct{}
+	currentAccountReturns     struct {
+		result1 models.Account
 	}
-	resourceGroupReturnsOnCall map[int]struct {
-		result1 models.ResourceGroup
+	currentAccountReturnsOnCall map[int]struct {
+		result1 models.Account
 	}
-	CurrentSpaceStub        func() models.SpaceFields
-	currentSpaceMutex       sync.RWMutex
-	currentSpaceArgsForCall []struct{}
-	currentSpaceReturns     struct {
-		result1 models.SpaceFields
-	}
-	currentSpaceReturnsOnCall map[int]struct {
-		result1 models.SpaceFields
-	}
-	HasSpaceStub        func() bool
-	hasSpaceMutex       sync.RWMutex
-	hasSpaceArgsForCall []struct{}
-	hasSpaceReturns     struct {
+	HasTargetedAccountStub        func() bool
+	hasTargetedAccountMutex       sync.RWMutex
+	hasTargetedAccountArgsForCall []struct{}
+	hasTargetedAccountReturns     struct {
 		result1 bool
 	}
-	hasSpaceReturnsOnCall map[int]struct {
+	hasTargetedAccountReturnsOnCall map[int]struct {
 		result1 bool
 	}
-	RegionStub        func() models.Region
-	regionMutex       sync.RWMutex
-	regionArgsForCall []struct{}
-	regionReturns     struct {
-		result1 models.Region
+	CurrentResourceGroupStub        func() models.ResourceGroup
+	currentResourceGroupMutex       sync.RWMutex
+	currentResourceGroupArgsForCall []struct{}
+	currentResourceGroupReturns     struct {
+		result1 models.ResourceGroup
 	}
-	regionReturnsOnCall map[int]struct {
-		result1 models.Region
+	currentResourceGroupReturnsOnCall map[int]struct {
+		result1 models.ResourceGroup
 	}
-	CloudNameStub        func() string
-	cloudNameMutex       sync.RWMutex
-	cloudNameArgsForCall []struct{}
-	cloudNameReturns     struct {
-		result1 string
+	HasTargetedResourceGroupStub        func() bool
+	hasTargetedResourceGroupMutex       sync.RWMutex
+	hasTargetedResourceGroupArgsForCall []struct{}
+	hasTargetedResourceGroupReturns     struct {
+		result1 bool
 	}
-	cloudNameReturnsOnCall map[int]struct {
-		result1 string
+	hasTargetedResourceGroupReturnsOnCall map[int]struct {
+		result1 bool
 	}
-	CloudTypeStub        func() string
-	cloudTypeMutex       sync.RWMutex
-	cloudTypeArgsForCall []struct{}
-	cloudTypeReturns     struct {
-		result1 string
+	CFStub        func() plugin.CFContext
+	cFMutex       sync.RWMutex
+	cFArgsForCall []struct{}
+	cFReturns     struct {
+		result1 plugin.CFContext
 	}
-	cloudTypeReturnsOnCall map[int]struct {
-		result1 string
+	cFReturnsOnCall map[int]struct {
+		result1 plugin.CFContext
+	}
+	HasTargetedCFStub        func() bool
+	hasTargetedCFMutex       sync.RWMutex
+	hasTargetedCFArgsForCall []struct{}
+	hasTargetedCFReturns     struct {
+		result1 bool
+	}
+	hasTargetedCFReturnsOnCall map[int]struct {
+		result1 bool
 	}
 	LocaleStub        func() string
 	localeMutex       sync.RWMutex
@@ -359,46 +276,6 @@ type FakePluginContext struct {
 	invocationsMutex sync.RWMutex
 }
 
-func (fake *FakePluginContext) APIVersion() string {
-	fake.aPIVersionMutex.Lock()
-	ret, specificReturn := fake.aPIVersionReturnsOnCall[len(fake.aPIVersionArgsForCall)]
-	fake.aPIVersionArgsForCall = append(fake.aPIVersionArgsForCall, struct{}{})
-	fake.recordInvocation("APIVersion", []interface{}{})
-	fake.aPIVersionMutex.Unlock()
-	if fake.APIVersionStub != nil {
-		return fake.APIVersionStub()
-	}
-	if specificReturn {
-		return ret.result1
-	}
-	return fake.aPIVersionReturns.result1
-}
-
-func (fake *FakePluginContext) APIVersionCallCount() int {
-	fake.aPIVersionMutex.RLock()
-	defer fake.aPIVersionMutex.RUnlock()
-	return len(fake.aPIVersionArgsForCall)
-}
-
-func (fake *FakePluginContext) APIVersionReturns(result1 string) {
-	fake.APIVersionStub = nil
-	fake.aPIVersionReturns = struct {
-		result1 string
-	}{result1}
-}
-
-func (fake *FakePluginContext) APIVersionReturnsOnCall(i int, result1 string) {
-	fake.APIVersionStub = nil
-	if fake.aPIVersionReturnsOnCall == nil {
-		fake.aPIVersionReturnsOnCall = make(map[int]struct {
-			result1 string
-		})
-	}
-	fake.aPIVersionReturnsOnCall[i] = struct {
-		result1 string
-	}{result1}
-}
-
 func (fake *FakePluginContext) APIEndpoint() string {
 	fake.aPIEndpointMutex.Lock()
 	ret, specificReturn := fake.aPIEndpointReturnsOnCall[len(fake.aPIEndpointArgsForCall)]
@@ -479,46 +356,6 @@ func (fake *FakePluginContext) HasAPIEndpointReturnsOnCall(i int, result1 bool) 
 	}{result1}
 }
 
-func (fake *FakePluginContext) DopplerEndpoint() string {
-	fake.dopplerEndpointMutex.Lock()
-	ret, specificReturn := fake.dopplerEndpointReturnsOnCall[len(fake.dopplerEndpointArgsForCall)]
-	fake.dopplerEndpointArgsForCall = append(fake.dopplerEndpointArgsForCall, struct{}{})
-	fake.recordInvocation("DopplerEndpoint", []interface{}{})
-	fake.dopplerEndpointMutex.Unlock()
-	if fake.DopplerEndpointStub != nil {
-		return fake.DopplerEndpointStub()
-	}
-	if specificReturn {
-		return ret.result1
-	}
-	return fake.dopplerEndpointReturns.result1
-}
-
-func (fake *FakePluginContext) DopplerEndpointCallCount() int {
-	fake.dopplerEndpointMutex.RLock()
-	defer fake.dopplerEndpointMutex.RUnlock()
-	return len(fake.dopplerEndpointArgsForCall)
-}
-
-func (fake *FakePluginContext) DopplerEndpointReturns(result1 string) {
-	fake.DopplerEndpointStub = nil
-	fake.dopplerEndpointReturns = struct {
-		result1 string
-	}{result1}
-}
-
-func (fake *FakePluginContext) DopplerEndpointReturnsOnCall(i int, result1 string) {
-	fake.DopplerEndpointStub = nil
-	if fake.dopplerEndpointReturnsOnCall == nil {
-		fake.dopplerEndpointReturnsOnCall = make(map[int]struct {
-			result1 string
-		})
-	}
-	fake.dopplerEndpointReturnsOnCall[i] = struct {
-		result1 string
-	}{result1}
-}
-
 func (fake *FakePluginContext) ConsoleEndpoint() string {
 	fake.consoleEndpointMutex.Lock()
 	ret, specificReturn := fake.consoleEndpointReturnsOnCall[len(fake.consoleEndpointArgsForCall)]
@@ -559,206 +396,163 @@ func (fake *FakePluginContext) ConsoleEndpointReturnsOnCall(i int, result1 strin
 	}{result1}
 }
 
-func (fake *FakePluginContext) UAAEndpoint() string {
-	fake.uAAEndpointMutex.Lock()
-	ret, specificReturn := fake.uAAEndpointReturnsOnCall[len(fake.uAAEndpointArgsForCall)]
-	fake.uAAEndpointArgsForCall = append(fake.uAAEndpointArgsForCall, struct{}{})
-	fake.recordInvocation("UAAEndpoint", []interface{}{})
-	fake.uAAEndpointMutex.Unlock()
-	if fake.UAAEndpointStub != nil {
-		return fake.UAAEndpointStub()
+func (fake *FakePluginContext) IAMEndpoint() string {
+	fake.iAMEndpointMutex.Lock()
+	ret, specificReturn := fake.iAMEndpointReturnsOnCall[len(fake.iAMEndpointArgsForCall)]
+	fake.iAMEndpointArgsForCall = append(fake.iAMEndpointArgsForCall, struct{}{})
+	fake.recordInvocation("IAMEndpoint", []interface{}{})
+	fake.iAMEndpointMutex.Unlock()
+	if fake.IAMEndpointStub != nil {
+		return fake.IAMEndpointStub()
 	}
 	if specificReturn {
 		return ret.result1
 	}
-	return fake.uAAEndpointReturns.result1
+	return fake.iAMEndpointReturns.result1
 }
 
-func (fake *FakePluginContext) UAAEndpointCallCount() int {
-	fake.uAAEndpointMutex.RLock()
-	defer fake.uAAEndpointMutex.RUnlock()
-	return len(fake.uAAEndpointArgsForCall)
+func (fake *FakePluginContext) IAMEndpointCallCount() int {
+	fake.iAMEndpointMutex.RLock()
+	defer fake.iAMEndpointMutex.RUnlock()
+	return len(fake.iAMEndpointArgsForCall)
 }
 
-func (fake *FakePluginContext) UAAEndpointReturns(result1 string) {
-	fake.UAAEndpointStub = nil
-	fake.uAAEndpointReturns = struct {
+func (fake *FakePluginContext) IAMEndpointReturns(result1 string) {
+	fake.IAMEndpointStub = nil
+	fake.iAMEndpointReturns = struct {
 		result1 string
 	}{result1}
 }
 
-func (fake *FakePluginContext) UAAEndpointReturnsOnCall(i int, result1 string) {
-	fake.UAAEndpointStub = nil
-	if fake.uAAEndpointReturnsOnCall == nil {
-		fake.uAAEndpointReturnsOnCall = make(map[int]struct {
+func (fake *FakePluginContext) IAMEndpointReturnsOnCall(i int, result1 string) {
+	fake.IAMEndpointStub = nil
+	if fake.iAMEndpointReturnsOnCall == nil {
+		fake.iAMEndpointReturnsOnCall = make(map[int]struct {
 			result1 string
 		})
 	}
-	fake.uAAEndpointReturnsOnCall[i] = struct {
+	fake.iAMEndpointReturnsOnCall[i] = struct {
 		result1 string
 	}{result1}
 }
 
-func (fake *FakePluginContext) UAAToken() string {
-	fake.uAATokenMutex.Lock()
-	ret, specificReturn := fake.uAATokenReturnsOnCall[len(fake.uAATokenArgsForCall)]
-	fake.uAATokenArgsForCall = append(fake.uAATokenArgsForCall, struct{}{})
-	fake.recordInvocation("UAAToken", []interface{}{})
-	fake.uAATokenMutex.Unlock()
-	if fake.UAATokenStub != nil {
-		return fake.UAATokenStub()
+func (fake *FakePluginContext) CloudName() string {
+	fake.cloudNameMutex.Lock()
+	ret, specificReturn := fake.cloudNameReturnsOnCall[len(fake.cloudNameArgsForCall)]
+	fake.cloudNameArgsForCall = append(fake.cloudNameArgsForCall, struct{}{})
+	fake.recordInvocation("CloudName", []interface{}{})
+	fake.cloudNameMutex.Unlock()
+	if fake.CloudNameStub != nil {
+		return fake.CloudNameStub()
 	}
 	if specificReturn {
 		return ret.result1
 	}
-	return fake.uAATokenReturns.result1
+	return fake.cloudNameReturns.result1
 }
 
-func (fake *FakePluginContext) UAATokenCallCount() int {
-	fake.uAATokenMutex.RLock()
-	defer fake.uAATokenMutex.RUnlock()
-	return len(fake.uAATokenArgsForCall)
+func (fake *FakePluginContext) CloudNameCallCount() int {
+	fake.cloudNameMutex.RLock()
+	defer fake.cloudNameMutex.RUnlock()
+	return len(fake.cloudNameArgsForCall)
 }
 
-func (fake *FakePluginContext) UAATokenReturns(result1 string) {
-	fake.UAATokenStub = nil
-	fake.uAATokenReturns = struct {
+func (fake *FakePluginContext) CloudNameReturns(result1 string) {
+	fake.CloudNameStub = nil
+	fake.cloudNameReturns = struct {
 		result1 string
 	}{result1}
 }
 
-func (fake *FakePluginContext) UAATokenReturnsOnCall(i int, result1 string) {
-	fake.UAATokenStub = nil
-	if fake.uAATokenReturnsOnCall == nil {
-		fake.uAATokenReturnsOnCall = make(map[int]struct {
+func (fake *FakePluginContext) CloudNameReturnsOnCall(i int, result1 string) {
+	fake.CloudNameStub = nil
+	if fake.cloudNameReturnsOnCall == nil {
+		fake.cloudNameReturnsOnCall = make(map[int]struct {
 			result1 string
 		})
 	}
-	fake.uAATokenReturnsOnCall[i] = struct {
+	fake.cloudNameReturnsOnCall[i] = struct {
 		result1 string
 	}{result1}
 }
 
-func (fake *FakePluginContext) UAARefreshToken() string {
-	fake.uAARefreshTokenMutex.Lock()
-	ret, specificReturn := fake.uAARefreshTokenReturnsOnCall[len(fake.uAARefreshTokenArgsForCall)]
-	fake.uAARefreshTokenArgsForCall = append(fake.uAARefreshTokenArgsForCall, struct{}{})
-	fake.recordInvocation("UAARefreshToken", []interface{}{})
-	fake.uAARefreshTokenMutex.Unlock()
-	if fake.UAARefreshTokenStub != nil {
-		return fake.UAARefreshTokenStub()
+func (fake *FakePluginContext) CloudType() string {
+	fake.cloudTypeMutex.Lock()
+	ret, specificReturn := fake.cloudTypeReturnsOnCall[len(fake.cloudTypeArgsForCall)]
+	fake.cloudTypeArgsForCall = append(fake.cloudTypeArgsForCall, struct{}{})
+	fake.recordInvocation("CloudType", []interface{}{})
+	fake.cloudTypeMutex.Unlock()
+	if fake.CloudTypeStub != nil {
+		return fake.CloudTypeStub()
 	}
 	if specificReturn {
 		return ret.result1
 	}
-	return fake.uAARefreshTokenReturns.result1
+	return fake.cloudTypeReturns.result1
 }
 
-func (fake *FakePluginContext) UAARefreshTokenCallCount() int {
-	fake.uAARefreshTokenMutex.RLock()
-	defer fake.uAARefreshTokenMutex.RUnlock()
-	return len(fake.uAARefreshTokenArgsForCall)
+func (fake *FakePluginContext) CloudTypeCallCount() int {
+	fake.cloudTypeMutex.RLock()
+	defer fake.cloudTypeMutex.RUnlock()
+	return len(fake.cloudTypeArgsForCall)
 }
 
-func (fake *FakePluginContext) UAARefreshTokenReturns(result1 string) {
-	fake.UAARefreshTokenStub = nil
-	fake.uAARefreshTokenReturns = struct {
+func (fake *FakePluginContext) CloudTypeReturns(result1 string) {
+	fake.CloudTypeStub = nil
+	fake.cloudTypeReturns = struct {
 		result1 string
 	}{result1}
 }
 
-func (fake *FakePluginContext) UAARefreshTokenReturnsOnCall(i int, result1 string) {
-	fake.UAARefreshTokenStub = nil
-	if fake.uAARefreshTokenReturnsOnCall == nil {
-		fake.uAARefreshTokenReturnsOnCall = make(map[int]struct {
+func (fake *FakePluginContext) CloudTypeReturnsOnCall(i int, result1 string) {
+	fake.CloudTypeStub = nil
+	if fake.cloudTypeReturnsOnCall == nil {
+		fake.cloudTypeReturnsOnCall = make(map[int]struct {
 			result1 string
 		})
 	}
-	fake.uAARefreshTokenReturnsOnCall[i] = struct {
+	fake.cloudTypeReturnsOnCall[i] = struct {
 		result1 string
 	}{result1}
 }
 
-func (fake *FakePluginContext) RefreshUAAToken() (string, error) {
-	fake.refreshUAATokenMutex.Lock()
-	ret, specificReturn := fake.refreshUAATokenReturnsOnCall[len(fake.refreshUAATokenArgsForCall)]
-	fake.refreshUAATokenArgsForCall = append(fake.refreshUAATokenArgsForCall, struct{}{})
-	fake.recordInvocation("RefreshUAAToken", []interface{}{})
-	fake.refreshUAATokenMutex.Unlock()
-	if fake.RefreshUAATokenStub != nil {
-		return fake.RefreshUAATokenStub()
-	}
-	if specificReturn {
-		return ret.result1, ret.result2
-	}
-	return fake.refreshUAATokenReturns.result1, fake.refreshUAATokenReturns.result2
-}
-
-func (fake *FakePluginContext) RefreshUAATokenCallCount() int {
-	fake.refreshUAATokenMutex.RLock()
-	defer fake.refreshUAATokenMutex.RUnlock()
-	return len(fake.refreshUAATokenArgsForCall)
-}
-
-func (fake *FakePluginContext) RefreshUAATokenReturns(result1 string, result2 error) {
-	fake.RefreshUAATokenStub = nil
-	fake.refreshUAATokenReturns = struct {
-		result1 string
-		result2 error
-	}{result1, result2}
-}
-
-func (fake *FakePluginContext) RefreshUAATokenReturnsOnCall(i int, result1 string, result2 error) {
-	fake.RefreshUAATokenStub = nil
-	if fake.refreshUAATokenReturnsOnCall == nil {
-		fake.refreshUAATokenReturnsOnCall = make(map[int]struct {
-			result1 string
-			result2 error
-		})
-	}
-	fake.refreshUAATokenReturnsOnCall[i] = struct {
-		result1 string
-		result2 error
-	}{result1, result2}
-}
-
-func (fake *FakePluginContext) IAMTokenEndpoint() string {
-	fake.iAMTokenEndpointMutex.Lock()
-	ret, specificReturn := fake.iAMTokenEndpointReturnsOnCall[len(fake.iAMTokenEndpointArgsForCall)]
-	fake.iAMTokenEndpointArgsForCall = append(fake.iAMTokenEndpointArgsForCall, struct{}{})
-	fake.recordInvocation("IAMTokenEndpoint", []interface{}{})
-	fake.iAMTokenEndpointMutex.Unlock()
-	if fake.IAMTokenEndpointStub != nil {
-		return fake.IAMTokenEndpointStub()
+func (fake *FakePluginContext) CurrentRegion() models.Region {
+	fake.currentRegionMutex.Lock()
+	ret, specificReturn := fake.currentRegionReturnsOnCall[len(fake.currentRegionArgsForCall)]
+	fake.currentRegionArgsForCall = append(fake.currentRegionArgsForCall, struct{}{})
+	fake.recordInvocation("CurrentRegion", []interface{}{})
+	fake.currentRegionMutex.Unlock()
+	if fake.CurrentRegionStub != nil {
+		return fake.CurrentRegionStub()
 	}
 	if specificReturn {
 		return ret.result1
 	}
-	return fake.iAMTokenEndpointReturns.result1
+	return fake.currentRegionReturns.result1
 }
 
-func (fake *FakePluginContext) IAMTokenEndpointCallCount() int {
-	fake.iAMTokenEndpointMutex.RLock()
-	defer fake.iAMTokenEndpointMutex.RUnlock()
-	return len(fake.iAMTokenEndpointArgsForCall)
+func (fake *FakePluginContext) CurrentRegionCallCount() int {
+	fake.currentRegionMutex.RLock()
+	defer fake.currentRegionMutex.RUnlock()
+	return len(fake.currentRegionArgsForCall)
 }
 
-func (fake *FakePluginContext) IAMTokenEndpointReturns(result1 string) {
-	fake.IAMTokenEndpointStub = nil
-	fake.iAMTokenEndpointReturns = struct {
-		result1 string
+func (fake *FakePluginContext) CurrentRegionReturns(result1 models.Region) {
+	fake.CurrentRegionStub = nil
+	fake.currentRegionReturns = struct {
+		result1 models.Region
 	}{result1}
 }
 
-func (fake *FakePluginContext) IAMTokenEndpointReturnsOnCall(i int, result1 string) {
-	fake.IAMTokenEndpointStub = nil
-	if fake.iAMTokenEndpointReturnsOnCall == nil {
-		fake.iAMTokenEndpointReturnsOnCall = make(map[int]struct {
-			result1 string
+func (fake *FakePluginContext) CurrentRegionReturnsOnCall(i int, result1 models.Region) {
+	fake.CurrentRegionStub = nil
+	if fake.currentRegionReturnsOnCall == nil {
+		fake.currentRegionReturnsOnCall = make(map[int]struct {
+			result1 models.Region
 		})
 	}
-	fake.iAMTokenEndpointReturnsOnCall[i] = struct {
-		result1 string
+	fake.currentRegionReturnsOnCall[i] = struct {
+		result1 models.Region
 	}{result1}
 }
 
@@ -885,86 +679,6 @@ func (fake *FakePluginContext) RefreshIAMTokenReturnsOnCall(i int, result1 strin
 	}{result1, result2}
 }
 
-func (fake *FakePluginContext) Username() string {
-	fake.usernameMutex.Lock()
-	ret, specificReturn := fake.usernameReturnsOnCall[len(fake.usernameArgsForCall)]
-	fake.usernameArgsForCall = append(fake.usernameArgsForCall, struct{}{})
-	fake.recordInvocation("Username", []interface{}{})
-	fake.usernameMutex.Unlock()
-	if fake.UsernameStub != nil {
-		return fake.UsernameStub()
-	}
-	if specificReturn {
-		return ret.result1
-	}
-	return fake.usernameReturns.result1
-}
-
-func (fake *FakePluginContext) UsernameCallCount() int {
-	fake.usernameMutex.RLock()
-	defer fake.usernameMutex.RUnlock()
-	return len(fake.usernameArgsForCall)
-}
-
-func (fake *FakePluginContext) UsernameReturns(result1 string) {
-	fake.UsernameStub = nil
-	fake.usernameReturns = struct {
-		result1 string
-	}{result1}
-}
-
-func (fake *FakePluginContext) UsernameReturnsOnCall(i int, result1 string) {
-	fake.UsernameStub = nil
-	if fake.usernameReturnsOnCall == nil {
-		fake.usernameReturnsOnCall = make(map[int]struct {
-			result1 string
-		})
-	}
-	fake.usernameReturnsOnCall[i] = struct {
-		result1 string
-	}{result1}
-}
-
-func (fake *FakePluginContext) UserGUID() string {
-	fake.userGUIDMutex.Lock()
-	ret, specificReturn := fake.userGUIDReturnsOnCall[len(fake.userGUIDArgsForCall)]
-	fake.userGUIDArgsForCall = append(fake.userGUIDArgsForCall, struct{}{})
-	fake.recordInvocation("UserGUID", []interface{}{})
-	fake.userGUIDMutex.Unlock()
-	if fake.UserGUIDStub != nil {
-		return fake.UserGUIDStub()
-	}
-	if specificReturn {
-		return ret.result1
-	}
-	return fake.userGUIDReturns.result1
-}
-
-func (fake *FakePluginContext) UserGUIDCallCount() int {
-	fake.userGUIDMutex.RLock()
-	defer fake.userGUIDMutex.RUnlock()
-	return len(fake.userGUIDArgsForCall)
-}
-
-func (fake *FakePluginContext) UserGUIDReturns(result1 string) {
-	fake.UserGUIDStub = nil
-	fake.userGUIDReturns = struct {
-		result1 string
-	}{result1}
-}
-
-func (fake *FakePluginContext) UserGUIDReturnsOnCall(i int, result1 string) {
-	fake.UserGUIDStub = nil
-	if fake.userGUIDReturnsOnCall == nil {
-		fake.userGUIDReturnsOnCall = make(map[int]struct {
-			result1 string
-		})
-	}
-	fake.userGUIDReturnsOnCall[i] = struct {
-		result1 string
-	}{result1}
-}
-
 func (fake *FakePluginContext) UserEmail() string {
 	fake.userEmailMutex.Lock()
 	ret, specificReturn := fake.userEmailReturnsOnCall[len(fake.userEmailArgsForCall)]
@@ -1045,166 +759,6 @@ func (fake *FakePluginContext) IsLoggedInReturnsOnCall(i int, result1 bool) {
 	}{result1}
 }
 
-func (fake *FakePluginContext) CurrentOrg() models.OrganizationFields {
-	fake.currentOrgMutex.Lock()
-	ret, specificReturn := fake.currentOrgReturnsOnCall[len(fake.currentOrgArgsForCall)]
-	fake.currentOrgArgsForCall = append(fake.currentOrgArgsForCall, struct{}{})
-	fake.recordInvocation("CurrentOrg", []interface{}{})
-	fake.currentOrgMutex.Unlock()
-	if fake.CurrentOrgStub != nil {
-		return fake.CurrentOrgStub()
-	}
-	if specificReturn {
-		return ret.result1
-	}
-	return fake.currentOrgReturns.result1
-}
-
-func (fake *FakePluginContext) CurrentOrgCallCount() int {
-	fake.currentOrgMutex.RLock()
-	defer fake.currentOrgMutex.RUnlock()
-	return len(fake.currentOrgArgsForCall)
-}
-
-func (fake *FakePluginContext) CurrentOrgReturns(result1 models.OrganizationFields) {
-	fake.CurrentOrgStub = nil
-	fake.currentOrgReturns = struct {
-		result1 models.OrganizationFields
-	}{result1}
-}
-
-func (fake *FakePluginContext) CurrentOrgReturnsOnCall(i int, result1 models.OrganizationFields) {
-	fake.CurrentOrgStub = nil
-	if fake.currentOrgReturnsOnCall == nil {
-		fake.currentOrgReturnsOnCall = make(map[int]struct {
-			result1 models.OrganizationFields
-		})
-	}
-	fake.currentOrgReturnsOnCall[i] = struct {
-		result1 models.OrganizationFields
-	}{result1}
-}
-
-func (fake *FakePluginContext) HasOrganization() bool {
-	fake.hasOrganizationMutex.Lock()
-	ret, specificReturn := fake.hasOrganizationReturnsOnCall[len(fake.hasOrganizationArgsForCall)]
-	fake.hasOrganizationArgsForCall = append(fake.hasOrganizationArgsForCall, struct{}{})
-	fake.recordInvocation("HasOrganization", []interface{}{})
-	fake.hasOrganizationMutex.Unlock()
-	if fake.HasOrganizationStub != nil {
-		return fake.HasOrganizationStub()
-	}
-	if specificReturn {
-		return ret.result1
-	}
-	return fake.hasOrganizationReturns.result1
-}
-
-func (fake *FakePluginContext) HasOrganizationCallCount() int {
-	fake.hasOrganizationMutex.RLock()
-	defer fake.hasOrganizationMutex.RUnlock()
-	return len(fake.hasOrganizationArgsForCall)
-}
-
-func (fake *FakePluginContext) HasOrganizationReturns(result1 bool) {
-	fake.HasOrganizationStub = nil
-	fake.hasOrganizationReturns = struct {
-		result1 bool
-	}{result1}
-}
-
-func (fake *FakePluginContext) HasOrganizationReturnsOnCall(i int, result1 bool) {
-	fake.HasOrganizationStub = nil
-	if fake.hasOrganizationReturnsOnCall == nil {
-		fake.hasOrganizationReturnsOnCall = make(map[int]struct {
-			result1 bool
-		})
-	}
-	fake.hasOrganizationReturnsOnCall[i] = struct {
-		result1 bool
-	}{result1}
-}
-
-func (fake *FakePluginContext) AccountID() string {
-	fake.accountIDMutex.Lock()
-	ret, specificReturn := fake.accountIDReturnsOnCall[len(fake.accountIDArgsForCall)]
-	fake.accountIDArgsForCall = append(fake.accountIDArgsForCall, struct{}{})
-	fake.recordInvocation("AccountID", []interface{}{})
-	fake.accountIDMutex.Unlock()
-	if fake.AccountIDStub != nil {
-		return fake.AccountIDStub()
-	}
-	if specificReturn {
-		return ret.result1
-	}
-	return fake.accountIDReturns.result1
-}
-
-func (fake *FakePluginContext) AccountIDCallCount() int {
-	fake.accountIDMutex.RLock()
-	defer fake.accountIDMutex.RUnlock()
-	return len(fake.accountIDArgsForCall)
-}
-
-func (fake *FakePluginContext) AccountIDReturns(result1 string) {
-	fake.AccountIDStub = nil
-	fake.accountIDReturns = struct {
-		result1 string
-	}{result1}
-}
-
-func (fake *FakePluginContext) AccountIDReturnsOnCall(i int, result1 string) {
-	fake.AccountIDStub = nil
-	if fake.accountIDReturnsOnCall == nil {
-		fake.accountIDReturnsOnCall = make(map[int]struct {
-			result1 string
-		})
-	}
-	fake.accountIDReturnsOnCall[i] = struct {
-		result1 string
-	}{result1}
-}
-
-func (fake *FakePluginContext) Account() models.Account {
-	fake.accountMutex.Lock()
-	ret, specificReturn := fake.accountReturnsOnCall[len(fake.accountArgsForCall)]
-	fake.accountArgsForCall = append(fake.accountArgsForCall, struct{}{})
-	fake.recordInvocation("Account", []interface{}{})
-	fake.accountMutex.Unlock()
-	if fake.AccountStub != nil {
-		return fake.AccountStub()
-	}
-	if specificReturn {
-		return ret.result1
-	}
-	return fake.accountReturns.result1
-}
-
-func (fake *FakePluginContext) AccountCallCount() int {
-	fake.accountMutex.RLock()
-	defer fake.accountMutex.RUnlock()
-	return len(fake.accountArgsForCall)
-}
-
-func (fake *FakePluginContext) AccountReturns(result1 models.Account) {
-	fake.AccountStub = nil
-	fake.accountReturns = struct {
-		result1 models.Account
-	}{result1}
-}
-
-func (fake *FakePluginContext) AccountReturnsOnCall(i int, result1 models.Account) {
-	fake.AccountStub = nil
-	if fake.accountReturnsOnCall == nil {
-		fake.accountReturnsOnCall = make(map[int]struct {
-			result1 models.Account
-		})
-	}
-	fake.accountReturnsOnCall[i] = struct {
-		result1 models.Account
-	}{result1}
-}
-
 func (fake *FakePluginContext) IMSAccountID() string {
 	fake.iMSAccountIDMutex.Lock()
 	ret, specificReturn := fake.iMSAccountIDReturnsOnCall[len(fake.iMSAccountIDArgsForCall)]
@@ -1245,243 +799,243 @@ func (fake *FakePluginContext) IMSAccountIDReturnsOnCall(i int, result1 string) 
 	}{result1}
 }
 
-func (fake *FakePluginContext) ResourceGroup() models.ResourceGroup {
-	fake.resourceGroupMutex.Lock()
-	ret, specificReturn := fake.resourceGroupReturnsOnCall[len(fake.resourceGroupArgsForCall)]
-	fake.resourceGroupArgsForCall = append(fake.resourceGroupArgsForCall, struct{}{})
-	fake.recordInvocation("ResourceGroup", []interface{}{})
-	fake.resourceGroupMutex.Unlock()
-	if fake.ResourceGroupStub != nil {
-		return fake.ResourceGroupStub()
+func (fake *FakePluginContext) CurrentAccount() models.Account {
+	fake.currentAccountMutex.Lock()
+	ret, specificReturn := fake.currentAccountReturnsOnCall[len(fake.currentAccountArgsForCall)]
+	fake.currentAccountArgsForCall = append(fake.currentAccountArgsForCall, struct{}{})
+	fake.recordInvocation("CurrentAccount", []interface{}{})
+	fake.currentAccountMutex.Unlock()
+	if fake.CurrentAccountStub != nil {
+		return fake.CurrentAccountStub()
 	}
 	if specificReturn {
 		return ret.result1
 	}
-	return fake.resourceGroupReturns.result1
+	return fake.currentAccountReturns.result1
 }
 
-func (fake *FakePluginContext) ResourceGroupCallCount() int {
-	fake.resourceGroupMutex.RLock()
-	defer fake.resourceGroupMutex.RUnlock()
-	return len(fake.resourceGroupArgsForCall)
+func (fake *FakePluginContext) CurrentAccountCallCount() int {
+	fake.currentAccountMutex.RLock()
+	defer fake.currentAccountMutex.RUnlock()
+	return len(fake.currentAccountArgsForCall)
 }
 
-func (fake *FakePluginContext) ResourceGroupReturns(result1 models.ResourceGroup) {
-	fake.ResourceGroupStub = nil
-	fake.resourceGroupReturns = struct {
-		result1 models.ResourceGroup
+func (fake *FakePluginContext) CurrentAccountReturns(result1 models.Account) {
+	fake.CurrentAccountStub = nil
+	fake.currentAccountReturns = struct {
+		result1 models.Account
 	}{result1}
 }
 
-func (fake *FakePluginContext) ResourceGroupReturnsOnCall(i int, result1 models.ResourceGroup) {
-	fake.ResourceGroupStub = nil
-	if fake.resourceGroupReturnsOnCall == nil {
-		fake.resourceGroupReturnsOnCall = make(map[int]struct {
-			result1 models.ResourceGroup
+func (fake *FakePluginContext) CurrentAccountReturnsOnCall(i int, result1 models.Account) {
+	fake.CurrentAccountStub = nil
+	if fake.currentAccountReturnsOnCall == nil {
+		fake.currentAccountReturnsOnCall = make(map[int]struct {
+			result1 models.Account
 		})
 	}
-	fake.resourceGroupReturnsOnCall[i] = struct {
-		result1 models.ResourceGroup
+	fake.currentAccountReturnsOnCall[i] = struct {
+		result1 models.Account
 	}{result1}
 }
 
-func (fake *FakePluginContext) CurrentSpace() models.SpaceFields {
-	fake.currentSpaceMutex.Lock()
-	ret, specificReturn := fake.currentSpaceReturnsOnCall[len(fake.currentSpaceArgsForCall)]
-	fake.currentSpaceArgsForCall = append(fake.currentSpaceArgsForCall, struct{}{})
-	fake.recordInvocation("CurrentSpace", []interface{}{})
-	fake.currentSpaceMutex.Unlock()
-	if fake.CurrentSpaceStub != nil {
-		return fake.CurrentSpaceStub()
+func (fake *FakePluginContext) HasTargetedAccount() bool {
+	fake.hasTargetedAccountMutex.Lock()
+	ret, specificReturn := fake.hasTargetedAccountReturnsOnCall[len(fake.hasTargetedAccountArgsForCall)]
+	fake.hasTargetedAccountArgsForCall = append(fake.hasTargetedAccountArgsForCall, struct{}{})
+	fake.recordInvocation("HasTargetedAccount", []interface{}{})
+	fake.hasTargetedAccountMutex.Unlock()
+	if fake.HasTargetedAccountStub != nil {
+		return fake.HasTargetedAccountStub()
 	}
 	if specificReturn {
 		return ret.result1
 	}
-	return fake.currentSpaceReturns.result1
+	return fake.hasTargetedAccountReturns.result1
 }
 
-func (fake *FakePluginContext) CurrentSpaceCallCount() int {
-	fake.currentSpaceMutex.RLock()
-	defer fake.currentSpaceMutex.RUnlock()
-	return len(fake.currentSpaceArgsForCall)
+func (fake *FakePluginContext) HasTargetedAccountCallCount() int {
+	fake.hasTargetedAccountMutex.RLock()
+	defer fake.hasTargetedAccountMutex.RUnlock()
+	return len(fake.hasTargetedAccountArgsForCall)
 }
 
-func (fake *FakePluginContext) CurrentSpaceReturns(result1 models.SpaceFields) {
-	fake.CurrentSpaceStub = nil
-	fake.currentSpaceReturns = struct {
-		result1 models.SpaceFields
-	}{result1}
-}
-
-func (fake *FakePluginContext) CurrentSpaceReturnsOnCall(i int, result1 models.SpaceFields) {
-	fake.CurrentSpaceStub = nil
-	if fake.currentSpaceReturnsOnCall == nil {
-		fake.currentSpaceReturnsOnCall = make(map[int]struct {
-			result1 models.SpaceFields
-		})
-	}
-	fake.currentSpaceReturnsOnCall[i] = struct {
-		result1 models.SpaceFields
-	}{result1}
-}
-
-func (fake *FakePluginContext) HasSpace() bool {
-	fake.hasSpaceMutex.Lock()
-	ret, specificReturn := fake.hasSpaceReturnsOnCall[len(fake.hasSpaceArgsForCall)]
-	fake.hasSpaceArgsForCall = append(fake.hasSpaceArgsForCall, struct{}{})
-	fake.recordInvocation("HasSpace", []interface{}{})
-	fake.hasSpaceMutex.Unlock()
-	if fake.HasSpaceStub != nil {
-		return fake.HasSpaceStub()
-	}
-	if specificReturn {
-		return ret.result1
-	}
-	return fake.hasSpaceReturns.result1
-}
-
-func (fake *FakePluginContext) HasSpaceCallCount() int {
-	fake.hasSpaceMutex.RLock()
-	defer fake.hasSpaceMutex.RUnlock()
-	return len(fake.hasSpaceArgsForCall)
-}
-
-func (fake *FakePluginContext) HasSpaceReturns(result1 bool) {
-	fake.HasSpaceStub = nil
-	fake.hasSpaceReturns = struct {
+func (fake *FakePluginContext) HasTargetedAccountReturns(result1 bool) {
+	fake.HasTargetedAccountStub = nil
+	fake.hasTargetedAccountReturns = struct {
 		result1 bool
 	}{result1}
 }
 
-func (fake *FakePluginContext) HasSpaceReturnsOnCall(i int, result1 bool) {
-	fake.HasSpaceStub = nil
-	if fake.hasSpaceReturnsOnCall == nil {
-		fake.hasSpaceReturnsOnCall = make(map[int]struct {
+func (fake *FakePluginContext) HasTargetedAccountReturnsOnCall(i int, result1 bool) {
+	fake.HasTargetedAccountStub = nil
+	if fake.hasTargetedAccountReturnsOnCall == nil {
+		fake.hasTargetedAccountReturnsOnCall = make(map[int]struct {
 			result1 bool
 		})
 	}
-	fake.hasSpaceReturnsOnCall[i] = struct {
+	fake.hasTargetedAccountReturnsOnCall[i] = struct {
 		result1 bool
 	}{result1}
 }
 
-func (fake *FakePluginContext) Region() models.Region {
-	fake.regionMutex.Lock()
-	ret, specificReturn := fake.regionReturnsOnCall[len(fake.regionArgsForCall)]
-	fake.regionArgsForCall = append(fake.regionArgsForCall, struct{}{})
-	fake.recordInvocation("Region", []interface{}{})
-	fake.regionMutex.Unlock()
-	if fake.RegionStub != nil {
-		return fake.RegionStub()
+func (fake *FakePluginContext) CurrentResourceGroup() models.ResourceGroup {
+	fake.currentResourceGroupMutex.Lock()
+	ret, specificReturn := fake.currentResourceGroupReturnsOnCall[len(fake.currentResourceGroupArgsForCall)]
+	fake.currentResourceGroupArgsForCall = append(fake.currentResourceGroupArgsForCall, struct{}{})
+	fake.recordInvocation("CurrentResourceGroup", []interface{}{})
+	fake.currentResourceGroupMutex.Unlock()
+	if fake.CurrentResourceGroupStub != nil {
+		return fake.CurrentResourceGroupStub()
 	}
 	if specificReturn {
 		return ret.result1
 	}
-	return fake.regionReturns.result1
+	return fake.currentResourceGroupReturns.result1
 }
 
-func (fake *FakePluginContext) RegionCallCount() int {
-	fake.regionMutex.RLock()
-	defer fake.regionMutex.RUnlock()
-	return len(fake.regionArgsForCall)
+func (fake *FakePluginContext) CurrentResourceGroupCallCount() int {
+	fake.currentResourceGroupMutex.RLock()
+	defer fake.currentResourceGroupMutex.RUnlock()
+	return len(fake.currentResourceGroupArgsForCall)
 }
 
-func (fake *FakePluginContext) RegionReturns(result1 models.Region) {
-	fake.RegionStub = nil
-	fake.regionReturns = struct {
-		result1 models.Region
+func (fake *FakePluginContext) CurrentResourceGroupReturns(result1 models.ResourceGroup) {
+	fake.CurrentResourceGroupStub = nil
+	fake.currentResourceGroupReturns = struct {
+		result1 models.ResourceGroup
 	}{result1}
 }
 
-func (fake *FakePluginContext) RegionReturnsOnCall(i int, result1 models.Region) {
-	fake.RegionStub = nil
-	if fake.regionReturnsOnCall == nil {
-		fake.regionReturnsOnCall = make(map[int]struct {
-			result1 models.Region
+func (fake *FakePluginContext) CurrentResourceGroupReturnsOnCall(i int, result1 models.ResourceGroup) {
+	fake.CurrentResourceGroupStub = nil
+	if fake.currentResourceGroupReturnsOnCall == nil {
+		fake.currentResourceGroupReturnsOnCall = make(map[int]struct {
+			result1 models.ResourceGroup
 		})
 	}
-	fake.regionReturnsOnCall[i] = struct {
-		result1 models.Region
+	fake.currentResourceGroupReturnsOnCall[i] = struct {
+		result1 models.ResourceGroup
 	}{result1}
 }
 
-func (fake *FakePluginContext) CloudName() string {
-	fake.cloudNameMutex.Lock()
-	ret, specificReturn := fake.cloudNameReturnsOnCall[len(fake.cloudNameArgsForCall)]
-	fake.cloudNameArgsForCall = append(fake.cloudNameArgsForCall, struct{}{})
-	fake.recordInvocation("CloudName", []interface{}{})
-	fake.cloudNameMutex.Unlock()
-	if fake.CloudNameStub != nil {
-		return fake.CloudNameStub()
+func (fake *FakePluginContext) HasTargetedResourceGroup() bool {
+	fake.hasTargetedResourceGroupMutex.Lock()
+	ret, specificReturn := fake.hasTargetedResourceGroupReturnsOnCall[len(fake.hasTargetedResourceGroupArgsForCall)]
+	fake.hasTargetedResourceGroupArgsForCall = append(fake.hasTargetedResourceGroupArgsForCall, struct{}{})
+	fake.recordInvocation("HasTargetedResourceGroup", []interface{}{})
+	fake.hasTargetedResourceGroupMutex.Unlock()
+	if fake.HasTargetedResourceGroupStub != nil {
+		return fake.HasTargetedResourceGroupStub()
 	}
 	if specificReturn {
 		return ret.result1
 	}
-	return fake.cloudNameReturns.result1
+	return fake.hasTargetedResourceGroupReturns.result1
 }
 
-func (fake *FakePluginContext) CloudNameCallCount() int {
-	fake.cloudNameMutex.RLock()
-	defer fake.cloudNameMutex.RUnlock()
-	return len(fake.cloudNameArgsForCall)
+func (fake *FakePluginContext) HasTargetedResourceGroupCallCount() int {
+	fake.hasTargetedResourceGroupMutex.RLock()
+	defer fake.hasTargetedResourceGroupMutex.RUnlock()
+	return len(fake.hasTargetedResourceGroupArgsForCall)
 }
 
-func (fake *FakePluginContext) CloudNameReturns(result1 string) {
-	fake.CloudNameStub = nil
-	fake.cloudNameReturns = struct {
-		result1 string
+func (fake *FakePluginContext) HasTargetedResourceGroupReturns(result1 bool) {
+	fake.HasTargetedResourceGroupStub = nil
+	fake.hasTargetedResourceGroupReturns = struct {
+		result1 bool
 	}{result1}
 }
 
-func (fake *FakePluginContext) CloudNameReturnsOnCall(i int, result1 string) {
-	fake.CloudNameStub = nil
-	if fake.cloudNameReturnsOnCall == nil {
-		fake.cloudNameReturnsOnCall = make(map[int]struct {
-			result1 string
+func (fake *FakePluginContext) HasTargetedResourceGroupReturnsOnCall(i int, result1 bool) {
+	fake.HasTargetedResourceGroupStub = nil
+	if fake.hasTargetedResourceGroupReturnsOnCall == nil {
+		fake.hasTargetedResourceGroupReturnsOnCall = make(map[int]struct {
+			result1 bool
 		})
 	}
-	fake.cloudNameReturnsOnCall[i] = struct {
-		result1 string
+	fake.hasTargetedResourceGroupReturnsOnCall[i] = struct {
+		result1 bool
 	}{result1}
 }
 
-func (fake *FakePluginContext) CloudType() string {
-	fake.cloudTypeMutex.Lock()
-	ret, specificReturn := fake.cloudTypeReturnsOnCall[len(fake.cloudTypeArgsForCall)]
-	fake.cloudTypeArgsForCall = append(fake.cloudTypeArgsForCall, struct{}{})
-	fake.recordInvocation("CloudType", []interface{}{})
-	fake.cloudTypeMutex.Unlock()
-	if fake.CloudTypeStub != nil {
-		return fake.CloudTypeStub()
+func (fake *FakePluginContext) CF() plugin.CFContext {
+	fake.cFMutex.Lock()
+	ret, specificReturn := fake.cFReturnsOnCall[len(fake.cFArgsForCall)]
+	fake.cFArgsForCall = append(fake.cFArgsForCall, struct{}{})
+	fake.recordInvocation("CF", []interface{}{})
+	fake.cFMutex.Unlock()
+	if fake.CFStub != nil {
+		return fake.CFStub()
 	}
 	if specificReturn {
 		return ret.result1
 	}
-	return fake.cloudTypeReturns.result1
+	return fake.cFReturns.result1
 }
 
-func (fake *FakePluginContext) CloudTypeCallCount() int {
-	fake.cloudTypeMutex.RLock()
-	defer fake.cloudTypeMutex.RUnlock()
-	return len(fake.cloudTypeArgsForCall)
+func (fake *FakePluginContext) CFCallCount() int {
+	fake.cFMutex.RLock()
+	defer fake.cFMutex.RUnlock()
+	return len(fake.cFArgsForCall)
 }
 
-func (fake *FakePluginContext) CloudTypeReturns(result1 string) {
-	fake.CloudTypeStub = nil
-	fake.cloudTypeReturns = struct {
-		result1 string
+func (fake *FakePluginContext) CFReturns(result1 plugin.CFContext) {
+	fake.CFStub = nil
+	fake.cFReturns = struct {
+		result1 plugin.CFContext
 	}{result1}
 }
 
-func (fake *FakePluginContext) CloudTypeReturnsOnCall(i int, result1 string) {
-	fake.CloudTypeStub = nil
-	if fake.cloudTypeReturnsOnCall == nil {
-		fake.cloudTypeReturnsOnCall = make(map[int]struct {
-			result1 string
+func (fake *FakePluginContext) CFReturnsOnCall(i int, result1 plugin.CFContext) {
+	fake.CFStub = nil
+	if fake.cFReturnsOnCall == nil {
+		fake.cFReturnsOnCall = make(map[int]struct {
+			result1 plugin.CFContext
 		})
 	}
-	fake.cloudTypeReturnsOnCall[i] = struct {
-		result1 string
+	fake.cFReturnsOnCall[i] = struct {
+		result1 plugin.CFContext
+	}{result1}
+}
+
+func (fake *FakePluginContext) HasTargetedCF() bool {
+	fake.hasTargetedCFMutex.Lock()
+	ret, specificReturn := fake.hasTargetedCFReturnsOnCall[len(fake.hasTargetedCFArgsForCall)]
+	fake.hasTargetedCFArgsForCall = append(fake.hasTargetedCFArgsForCall, struct{}{})
+	fake.recordInvocation("HasTargetedCF", []interface{}{})
+	fake.hasTargetedCFMutex.Unlock()
+	if fake.HasTargetedCFStub != nil {
+		return fake.HasTargetedCFStub()
+	}
+	if specificReturn {
+		return ret.result1
+	}
+	return fake.hasTargetedCFReturns.result1
+}
+
+func (fake *FakePluginContext) HasTargetedCFCallCount() int {
+	fake.hasTargetedCFMutex.RLock()
+	defer fake.hasTargetedCFMutex.RUnlock()
+	return len(fake.hasTargetedCFArgsForCall)
+}
+
+func (fake *FakePluginContext) HasTargetedCFReturns(result1 bool) {
+	fake.HasTargetedCFStub = nil
+	fake.hasTargetedCFReturns = struct {
+		result1 bool
+	}{result1}
+}
+
+func (fake *FakePluginContext) HasTargetedCFReturnsOnCall(i int, result1 bool) {
+	fake.HasTargetedCFStub = nil
+	if fake.hasTargetedCFReturnsOnCall == nil {
+		fake.hasTargetedCFReturnsOnCall = make(map[int]struct {
+			result1 bool
+		})
+	}
+	fake.hasTargetedCFReturnsOnCall[i] = struct {
+		result1 bool
 	}{result1}
 }
 
@@ -1888,62 +1442,44 @@ func (fake *FakePluginContext) CLINameReturnsOnCall(i int, result1 string) {
 func (fake *FakePluginContext) Invocations() map[string][][]interface{} {
 	fake.invocationsMutex.RLock()
 	defer fake.invocationsMutex.RUnlock()
-	fake.aPIVersionMutex.RLock()
-	defer fake.aPIVersionMutex.RUnlock()
 	fake.aPIEndpointMutex.RLock()
 	defer fake.aPIEndpointMutex.RUnlock()
 	fake.hasAPIEndpointMutex.RLock()
 	defer fake.hasAPIEndpointMutex.RUnlock()
-	fake.dopplerEndpointMutex.RLock()
-	defer fake.dopplerEndpointMutex.RUnlock()
 	fake.consoleEndpointMutex.RLock()
 	defer fake.consoleEndpointMutex.RUnlock()
-	fake.uAAEndpointMutex.RLock()
-	defer fake.uAAEndpointMutex.RUnlock()
-	fake.uAATokenMutex.RLock()
-	defer fake.uAATokenMutex.RUnlock()
-	fake.uAARefreshTokenMutex.RLock()
-	defer fake.uAARefreshTokenMutex.RUnlock()
-	fake.refreshUAATokenMutex.RLock()
-	defer fake.refreshUAATokenMutex.RUnlock()
-	fake.iAMTokenEndpointMutex.RLock()
-	defer fake.iAMTokenEndpointMutex.RUnlock()
+	fake.iAMEndpointMutex.RLock()
+	defer fake.iAMEndpointMutex.RUnlock()
+	fake.cloudNameMutex.RLock()
+	defer fake.cloudNameMutex.RUnlock()
+	fake.cloudTypeMutex.RLock()
+	defer fake.cloudTypeMutex.RUnlock()
+	fake.currentRegionMutex.RLock()
+	defer fake.currentRegionMutex.RUnlock()
 	fake.iAMTokenMutex.RLock()
 	defer fake.iAMTokenMutex.RUnlock()
 	fake.iAMRefreshTokenMutex.RLock()
 	defer fake.iAMRefreshTokenMutex.RUnlock()
 	fake.refreshIAMTokenMutex.RLock()
 	defer fake.refreshIAMTokenMutex.RUnlock()
-	fake.usernameMutex.RLock()
-	defer fake.usernameMutex.RUnlock()
-	fake.userGUIDMutex.RLock()
-	defer fake.userGUIDMutex.RUnlock()
 	fake.userEmailMutex.RLock()
 	defer fake.userEmailMutex.RUnlock()
 	fake.isLoggedInMutex.RLock()
 	defer fake.isLoggedInMutex.RUnlock()
-	fake.currentOrgMutex.RLock()
-	defer fake.currentOrgMutex.RUnlock()
-	fake.hasOrganizationMutex.RLock()
-	defer fake.hasOrganizationMutex.RUnlock()
-	fake.accountIDMutex.RLock()
-	defer fake.accountIDMutex.RUnlock()
-	fake.accountMutex.RLock()
-	defer fake.accountMutex.RUnlock()
 	fake.iMSAccountIDMutex.RLock()
 	defer fake.iMSAccountIDMutex.RUnlock()
-	fake.resourceGroupMutex.RLock()
-	defer fake.resourceGroupMutex.RUnlock()
-	fake.currentSpaceMutex.RLock()
-	defer fake.currentSpaceMutex.RUnlock()
-	fake.hasSpaceMutex.RLock()
-	defer fake.hasSpaceMutex.RUnlock()
-	fake.regionMutex.RLock()
-	defer fake.regionMutex.RUnlock()
-	fake.cloudNameMutex.RLock()
-	defer fake.cloudNameMutex.RUnlock()
-	fake.cloudTypeMutex.RLock()
-	defer fake.cloudTypeMutex.RUnlock()
+	fake.currentAccountMutex.RLock()
+	defer fake.currentAccountMutex.RUnlock()
+	fake.hasTargetedAccountMutex.RLock()
+	defer fake.hasTargetedAccountMutex.RUnlock()
+	fake.currentResourceGroupMutex.RLock()
+	defer fake.currentResourceGroupMutex.RUnlock()
+	fake.hasTargetedResourceGroupMutex.RLock()
+	defer fake.hasTargetedResourceGroupMutex.RUnlock()
+	fake.cFMutex.RLock()
+	defer fake.cFMutex.RUnlock()
+	fake.hasTargetedCFMutex.RLock()
+	defer fake.hasTargetedCFMutex.RUnlock()
 	fake.localeMutex.RLock()
 	defer fake.localeMutex.RUnlock()
 	fake.traceMutex.RLock()

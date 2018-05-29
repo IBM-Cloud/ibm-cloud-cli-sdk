@@ -7,14 +7,14 @@ import (
 	"regexp"
 	"time"
 
-	bhttp "github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/http"
-	"github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/terminal"
-	"github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/trace"
-	"github.com/IBM-Bluemix/bluemix-cli-sdk/common/rest"
-	"github.com/IBM-Bluemix/bluemix-cli-sdk/plugin"
-	"github.com/IBM-Bluemix/bluemix-cli-sdk/plugin_examples/list_plugin/api"
-	"github.com/IBM-Bluemix/bluemix-cli-sdk/plugin_examples/list_plugin/commands"
-	"github.com/IBM-Bluemix/bluemix-cli-sdk/plugin_examples/list_plugin/i18n"
+	bhttp "github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/http"
+	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/terminal"
+	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/trace"
+	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/common/rest"
+	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/plugin"
+	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/plugin_examples/list_plugin/api"
+	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/plugin_examples/list_plugin/commands"
+	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/plugin_examples/list_plugin/i18n"
 )
 
 type ListPlugin struct{}
@@ -40,10 +40,12 @@ func (p *ListPlugin) GetMetadata() plugin.PluginMetadata {
 func (p *ListPlugin) Run(context plugin.PluginContext, args []string) {
 	p.init(context)
 
+	cf := context.CF()
+
 	ui := terminal.NewStdUI()
 	client := &rest.Client{
 		HTTPClient:    NewHTTPClient(context),
-		DefaultHeader: DefaultHeader(context),
+		DefaultHeader: DefaultHeader(cf),
 	}
 
 	var err error
@@ -51,8 +53,8 @@ func (p *ListPlugin) Run(context plugin.PluginContext, args []string) {
 	case "list":
 		err = commands.NewList(ui,
 			context,
-			api.NewCCClient(context.APIEndpoint(), client),
-			api.NewContainerClient(containerEndpoint(context), client),
+			api.NewCCClient(cf.APIEndpoint(), client),
+			api.NewContainerClient(containerEndpoint(cf.APIEndpoint()), client),
 		).Run(args[1:])
 	}
 
@@ -86,16 +88,16 @@ func NewHTTPClient(context plugin.PluginContext) *http.Client {
 	}
 }
 
-func DefaultHeader(context plugin.PluginContext) http.Header {
-	context.RefreshUAAToken()
+func DefaultHeader(cf plugin.CFContext) http.Header {
+	cf.RefreshUAAToken()
 
 	h := http.Header{}
-	h.Add("Authorization", context.UAAToken())
+	h.Add("Authorization", cf.UAAToken())
 	return h
 }
 
-func containerEndpoint(context plugin.PluginContext) string {
-	return regexp.MustCompile(`(^https?://)?[^\.]+(\..+)+`).ReplaceAllString(context.APIEndpoint(), "${1}containers-api${2}")
+func containerEndpoint(cfAPIEndpoint string) string {
+	return regexp.MustCompile(`(^https?://)?[^\.]+(\..+)+`).ReplaceAllString(cfAPIEndpoint, "${1}containers-api${2}")
 }
 
 func main() {

@@ -1,12 +1,12 @@
 package commands_test
 
 import (
-	sdkmodels "github.com/IBM-Bluemix/bluemix-cli-sdk/bluemix/models"
-	"github.com/IBM-Bluemix/bluemix-cli-sdk/plugin/pluginfakes"
-	"github.com/IBM-Bluemix/bluemix-cli-sdk/plugin_examples/list_plugin/api/fakes"
-	. "github.com/IBM-Bluemix/bluemix-cli-sdk/plugin_examples/list_plugin/commands"
-	"github.com/IBM-Bluemix/bluemix-cli-sdk/plugin_examples/list_plugin/models"
-	"github.com/IBM-Bluemix/bluemix-cli-sdk/testhelpers/terminal"
+	sdkmodels "github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/models"
+	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/plugin/pluginfakes"
+	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/plugin_examples/list_plugin/api/fakes"
+	. "github.com/IBM-Cloud/ibm-cloud-cli-sdk/plugin_examples/list_plugin/commands"
+	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/plugin_examples/list_plugin/models"
+	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/testhelpers/terminal"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
@@ -14,7 +14,7 @@ import (
 
 var _ = Describe("ListCommand", func() {
 	var ui *terminal.FakeUI
-	var context *pluginfakes.FakePluginContext
+	var cf *pluginfakes.FakeCFContext
 	var ccClient *fakes.FakeCCClient
 	var containerClient *fakes.FakeContainerClient
 	var cmd *List
@@ -22,14 +22,18 @@ var _ = Describe("ListCommand", func() {
 
 	BeforeEach(func() {
 		ui = terminal.NewFakeUI()
-		context = new(pluginfakes.FakePluginContext)
+		cf = new(pluginfakes.FakeCFContext)
+		cf.HasAPIEndpointReturns(true)
+		cf.IsLoggedInReturns(true)
+		cf.HasTargetedSpaceReturns(true)
+
+		context := new(pluginfakes.FakePluginContext)
+		context.CFReturns(cf)
+
 		ccClient = new(fakes.FakeCCClient)
 		containerClient = new(fakes.FakeContainerClient)
 		cmd = NewList(ui, context, ccClient, containerClient)
 
-		context.HasAPIEndpointReturns(true)
-		context.IsLoggedInReturns(true)
-		context.HasSpaceReturns(true)
 	})
 
 	JustBeforeEach(func() {
@@ -38,7 +42,7 @@ var _ = Describe("ListCommand", func() {
 
 	Context("When API endpoint not set", func() {
 		BeforeEach(func() {
-			context.HasAPIEndpointReturns(false)
+			cf.HasAPIEndpointReturns(false)
 		})
 
 		It("Should fail", func() {
@@ -49,7 +53,7 @@ var _ = Describe("ListCommand", func() {
 
 	Context("When user not logged in", func() {
 		BeforeEach(func() {
-			context.IsLoggedInReturns(false)
+			cf.IsLoggedInReturns(false)
 		})
 
 		It("Should fail", func() {
@@ -60,7 +64,7 @@ var _ = Describe("ListCommand", func() {
 
 	Context("When user not target a space", func() {
 		BeforeEach(func() {
-			context.HasSpaceReturns(false)
+			cf.HasTargetedSpaceReturns(false)
 		})
 
 		It("Should fail", func() {
@@ -71,7 +75,7 @@ var _ = Describe("ListCommand", func() {
 
 	Context("When user is logged in and a space is target", func() {
 		BeforeEach(func() {
-			context.CurrentOrgReturns(sdkmodels.OrganizationFields{
+			cf.CurrentOrganizationReturns(sdkmodels.OrganizationFields{
 				QuotaDefinition: sdkmodels.QuotaFields{
 					InstanceMemoryLimitInMB: 2048,
 					ServicesLimit:           10,
