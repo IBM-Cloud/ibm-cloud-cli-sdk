@@ -6,6 +6,7 @@ import (
 	"path/filepath"
 	"runtime"
 
+	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix"
 	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/common/file_helpers"
 )
 
@@ -43,8 +44,8 @@ func oldConfigDir() string {
 }
 
 func homeDir() string {
-	if os.Getenv("BLUEMIX_HOME") != "" {
-		return os.Getenv("BLUEMIX_HOME")
+	if homeDir := bluemix.EnvConfigHome.Get(); homeDir != "" {
+		return homeDir
 	}
 	return UserHomeDir()
 }

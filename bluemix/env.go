@@ -31,6 +31,15 @@ func (e Env) Get() string {
 	return ""
 }
 
+func (e Env) Set(val string) error {
+	for _, n := range e.names {
+		if err := os.Setenv(n, val); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 func newEnv(names ...string) Env {
 	return Env{names: names}
 }
