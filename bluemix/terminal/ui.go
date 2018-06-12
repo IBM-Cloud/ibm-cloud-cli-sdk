@@ -75,7 +75,11 @@ func NewUI(in io.Reader, out io.Writer) UI {
 }
 
 func (ui *terminalUI) Say(format string, args ...interface{}) {
-	fmt.Fprintf(ui.Out, format+"\n", args...)
+	if args != nil {
+		fmt.Fprintf(ui.Out, format+"\n", args...)
+	} else {
+		fmt.Fprint(ui.Out, format+"\n")
+	}
 }
 
 func (ui *terminalUI) Warn(format string, args ...interface{}) {
