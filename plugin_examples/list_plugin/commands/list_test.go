@@ -47,7 +47,7 @@ var _ = Describe("ListCommand", func() {
 
 		It("Should fail", func() {
 			Expect(err).To(HaveOccurred())
-			Expect(err.Error()).To(ContainSubstring("No API endpoint set"))
+			Expect(err.Error()).To(ContainSubstring("No CF API endpoint set"))
 		})
 	})
 

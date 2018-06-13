@@ -3,6 +3,8 @@
 package core_config
 
 import (
+	"time"
+
 	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/configuration"
 	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/configuration/config_helpers"
 	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/models"
@@ -32,6 +34,9 @@ type Repository interface {
 	HTTPTimeout() int
 	CLIInfoEndpoint() string
 	CheckCLIVersionDisabled() bool
+	UpdateCheckInterval() time.Duration
+	UpdateRetryCheckInterval() time.Duration
+	UpdateNotificationInterval() time.Duration
 	UsageStatsDisabled() bool
 	Locale() string
 	Trace() string
@@ -55,12 +60,17 @@ type Repository interface {
 	SetSSLDisabled(bool)
 	SetHTTPTimeout(int)
 	SetUsageStatsDisabled(bool)
+	SetUpdateCheckInterval(time.Duration)
+	SetUpdateRetryCheckInterval(time.Duration)
+	SetUpdateNotificationInterval(time.Duration)
 	SetLocale(string)
 	SetTrace(string)
 	SetColorEnabled(string)
 
 	CFConfig() CFConfig
 	HasTargetedCF() bool
+	HasTargetedCFEE() bool
+	SetCFEETargeted(bool)
 }
 
 // Deprecated
@@ -114,12 +124,28 @@ type repository struct {
 	cfConfig *cfConfig
 }
 
+func (c repository) IsLoggedIn() bool {
+	return c.bxConfig.IsLoggedIn() || c.cfConfig.IsLoggedIn()
+}
+
+func (c repository) UserEmail() string {
+	email := c.bxConfig.UserEmail()
+	if email == "" {
+		email = c.cfConfig.UserEmail()
+	}
+	return email
+}
+
 func (c repository) CFConfig() CFConfig {
 	return c.cfConfig
 }
 
 func (c repository) HasTargetedCF() bool {
 	return c.cfConfig.HasAPIEndpoint()
+}
+
+func (c repository) HasTargetedCFEE() bool {
+	return c.HasTargetedCF() && c.CFEETargeted()
 }
 
 func (c repository) SetSSLDisabled(disabled bool) {
@@ -144,6 +170,7 @@ func (c repository) SetLocale(locale string) {
 
 func (c repository) UnsetAPI() {
 	c.bxConfig.UnsetAPI()
+	c.bxConfig.SetCFEETargeted(false)
 	c.cfConfig.UnsetAPI()
 }
 
@@ -153,6 +180,7 @@ func (c repository) ClearSession() {
 }
 
 func NewCoreConfig(errHandler func(error)) ReadWriter {
+	// config_helpers.MigrateFromOldConfig() // error ignored
 	return NewCoreConfigFromPath(config_helpers.CFConfigFilePath(), config_helpers.ConfigFilePath(), errHandler)
 }
 

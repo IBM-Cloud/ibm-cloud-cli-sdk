@@ -1,16 +1,16 @@
-# Bluemix CLI Plug-in Developer's Guide
+# IBM Cloud CLI Plug-in Developer's Guide
 
-This guide introduces how to develop a Bluemix CLI plug-in by using utilities and libraries provided by Bluemix CLI SDK. It also covers specifications including wording, format and color of the terminal output that we highly recommend developers to follow.
+This guide introduces how to develop a IBM Cloud CLI plug-in by using utilities and libraries provided by the CLI SDK. It also covers specifications including wording, format and color of the terminal output that we highly recommend developers to follow.
 
 You can see the API doc in [GoDoc](https://godoc.org/github.com/IBM-Cloud/ibm-cloud-cli-sdk).
 
 ## 1. Plug-in Context Management
 
-Bluemix CLI SDK provides a set of APIs to register and manage plug-ins. It is similar to CF plug-in interface, but has more Bluemix specific extensions.
+IBM Cloud CLI SDK provides a set of APIs to register and manage plug-ins. It also provides a set of utilities and libaries to simplify the plug-in development. 
 
 ### 1.1. Register a New Plug-in
 
-1.  Define a new struct for Bluemix CLI plug-in and associate `Run` and `GetMetadata` methods to that struct:
+1.  Define a new struct for IBM Cloud CLI plug-in and associate `Run` and `GetMetadata` methods to that struct:
 
     ```go
     import (
@@ -53,7 +53,7 @@ Bluemix CLI SDK provides a set of APIs to register and manage plug-ins. It is si
                     Name:        "echo",
                     Alias:       "ec",
                     Description: "Echo a message on terminal.",
-                    Usage:       "bluemix echo MESSAGE [-u]",
+                    Usage:       "ibmcloud echo MESSAGE [-u]",
                     Flags: []plugin.Flag{
                         {
                             Name: "u",
@@ -68,14 +68,14 @@ Bluemix CLI SDK provides a set of APIs to register and manage plug-ins. It is si
     ```
 
     **Understanding the fields in this `plugin.PluginMetadata` struct:**
-    - _Name_: The name of plug-in. It will be displayed when using `bluemix plugin list` command or can be used to uninstall the plug-in through `bluemix plugin uninstall` command.
+    - _Name_: The name of plug-in. It will be displayed when using `ibmcloud plugin list` command or can be used to uninstall the plug-in through `ibmcloud plugin uninstall` command.
     - _Version_: The version of plug-in.
-    - _MinCliVersion_: The minimal version of Bluemix CLI required by the plug-in.
+    - _MinCliVersion_: The minimal version of IBM Cloud CLI required by the plug-in.
     - _Commands_: The array of `plugin.Commands` to register the plug-in commands.
     - _Alias_: Alias of the Alias usually is a short name of the command.
     - _Command.Flags_: The command flags (options) which will be displayed as a part of help output of the command.
 
-4.  Add the logic of plug-in command process in Run method, for example:
+4.  Add the logic of plug-in command process in `Run` method, for example:
 
     ```go
     func (demo *DemoPlugin) Run(context plugin.PluginContext, args []string) {
@@ -85,25 +85,25 @@ Bluemix CLI SDK provides a set of APIs to register and manage plug-ins. It is si
     }
     ```
 
-`PluginContext` provides the most useful methods which allow you to get command line properties from CF configuration as well as Bluemix specific properties.
+`PluginContext` provides the most useful methods which allow you to get command line properties from CF configuration as well as IBM Cloud  specific properties.
 
 ### 1.2. Namespace
 
-Bluemix CLI introduced a new concept called "Namespace". A namespace is a category of commands which have similar functionality. Some namespaces are predefined by Bluemix CLI and can be shared by plug-ins, but others are non-shared namespaces which can be defined in each plug-in. The plug-in can reference a predefined namespace in Bluemix CLI or define a non-shared namespace by its own. You can also use sub-namespaces to organize commands into categories.
+IBM Cloud  CLI introduced a new concept called "Namespace". A namespace is a category of commands which have similar functionality. Some namespaces are predefined by IBM Cloud  CLI and can be shared by plug-ins, but others are non-shared namespaces which can be defined in each plug-in. The plug-in can reference a predefined namespace in IBM Cloud  CLI or define a non-shared namespace by its own. You can also use sub-namespaces to organize commands into categories.
 
 #### Shared namespaces
-The following are shared namespaces are currently predefined in Bluemix CLI and can be shared across plug-ins:
+The following are shared namespaces are currently predefined in IBM Cloud  CLI and can be shared across plug-ins:
 
 | Namespace | Description |
 | --- | --- |
-| iam | Manage accounts, orgs, spaces and users |
-| catalog | Manage Bluemix catalog |
-| app | Manage Bluemix applications |
-| service | Manage Bluemix services |
-| network | Manage network settings including region, domain and route|
-| security | Manage security settings |
-| bss | Retrieve usage and billing information |
-| cf | Run Cloud Foundry CLI with Bluemix context |
+| account | Manage accounts, orgs, spaces and users |
+| iam | Manage identities and accesses |
+| catalog | Manage IBM Cloud catalog |
+| app | Manage IBM Cloud applications |
+| service | Manage IBM Cloud services |
+| resource | Manage the IBM cloud resources |
+| billing | Retrieve usage and billing information |
+| cf | Run Cloud Foundry CLI with IBM Cloud context |
 | plugin | Manage plug-in repositories and plug-ins |
 
 For shared namespace, refer to the namespace in the plug-in:
@@ -269,18 +269,17 @@ func (p *DemoPlugin) Run(context plugin.PluginContext, args []string) {
 #### Notes on namespaces
 The following items should be noticed here:
 
-- The command registered in `plugin` can be associated with at most one namespace.
-- If a command is not associated with any namespace, it will be registered as a root command. For example, if a command is associated with the network namespace, it must be executed by typing "bluemix network xxx", but if no namespace is associated with a command, the command will be invoked by "bluemix xxx" directly.
-- All shared namespaces can only be defined in Bluemix CLI and referenced by plug-ins.
+- If a command is not associated with any namespace, it will be registered as a root command. For example, if a command is associated with the app namespace, it must be executed by typing "ibmcloud app xxx", but if no namespace is associated with a command, the command will be invoked by "ibmcloud xxx" directly.
+- All shared namespaces can only be defined in IBM Cloud CLI and referenced by plug-ins.
 - Developer can define multiple non-shared namespaces in one plug-in.
-- If the plug-in only belongs to non-shared namespaces, a special command with name "\*" can be defined, which means even if a user typed in a command which is not defined in current namespace, the plug-in will still be invoked, otherwise, an error message will be displayed by Bluemix CLI. Taking the above code snippet as an example, if user typed in "bluemix demo others", then "default" logic in "Run" method will be hit.
+- If the plug-in only belongs to non-shared namespaces, a special command with name "\*" can be defined, which means even if a user typed in a command which is not defined in current namespace, the plug-in will still be invoked, otherwise, an error message will be displayed by IBM Cloud CLI. Taking the above code snippet as an example, if user typed in "ibmcloud demo others", then "default" logic in "Run" method will be hit.
 - If multiple plug-ins define a namespace with the same name, they will follow a "first install first serve" strategy, which means the latter plug-ins can't be installed successfully due to the namespace conflict.
-- Developer can define help command for non-shared namespace. If it is not defined, the help content will be generated by Bluemix CLI automatically based on registered commands. For shared namespaces the help command was predefined in Bluemix CLI.
+- Developer can define help command for non-shared namespace. If it is not defined, the help content will be generated by IBM Cloud CLI automatically based on registered commands. For shared namespaces the help command was predefined in IBM Cloud CLI.
 - **Important:** No matter whether the command belongs to a namespace, args[0] will always be the command name or alias instead of the namespace name. You can get the namespace via `PluginContext.CommandNamespace()`.
 
 ### 1.3. Manage Plug-in Configuration
 
-Bluemix CLI SDK provides APIs to allow you to access the plug-in's own configuration saved in JSON format. Each plug-in will have its own configuration file be created automatically on installation. Take the following code as an example:
+IBM Cloud CLI SDK provides APIs to allow you to access the plug-in's own configuration saved in JSON format. Each plug-in will have its own configuration file be created automatically on installation. Take the following code as an example:
 
 ```go
 func (demo *DemoPlugin) Run(context plugin.PluginContext, args []string){
@@ -317,17 +316,16 @@ func (demo *DemoPlugin) Run(context plugin.PluginContext, args []string){
 
 # 2. Wording, Format and Color of Output
 
-To keep user experience consistent, developers of Bluemix CLI plug-in should apply specific wordings, formats and colors to the terminal output. Bluemix CLI SDK provides the utility to help plug-in developers easily format and colorize the message output. We strongly recommend developers to comply with the following specifications so that the plug-ins are consistent with each other in terms of user experience.
+To keep user experience consistent, developers of IBM Cloud CLI plug-in should apply specific wordings, formats and colors to the terminal output. IBM Cloud CLI SDK provides the utility to help plug-in developers easily format and colorize the message output. We strongly recommend developers to comply with the following specifications so that the plug-ins are consistent with each other in terms of user experience.
 
-We tried to make the formats and colors to be similar to CF CLI too, to make the experience to be similar to CF as much as possible.
 
 ### 2.1. Global Specification
 
 1. Do NOT use "Please" in any message.
    Correct:
-   <pre class="bx-console-block">First log in by running '<span class="yellow">bluemix login</span>'.</pre>
+   <pre class="bx-console-block">First log in by running '<span class="yellow">ibmcloud login</span>'.</pre>
    Invalid:
-   <pre class="bx-console-block">Please use '<span class="yellow">bluemix login</span>' to login first.</pre>
+   <pre class="bx-console-block">Please use '<span class="yellow">ibmcloud login</span>' to login first.</pre>
 
 2. Capitalize the first letter for all sentences and short descriptions. For example:
   <pre class="bx-console-block">Change the instance count for an app or container group.</pre>
@@ -349,8 +347,10 @@ We tried to make the formats and colors to be similar to CF CLI too, to make the
 
 - Use lower case words and hyphen
 - Follow a “noun-verb” sequence
-- For commands that list objects, use the plural of the object name, such as `objects`. If a plural will not work, use the name and list, such as `object-list`.
+- For commands that list objects, use the plural of the object name, e.g. `ibmcloud iam api-keys`. If a plural will not work, or it is alreday described in namespace, use `list`, such as `ibmcloud app list`.
+- For commands that retrieve the details of an object, use the object name, e.g. `ibmcloud iam api-key`. If it does not work, use `show`, e.g. `ibmcloud app show`
 - Use common verbs such as add, create, bind, update, delete …
+- Use `remove` to remove an object from a collection or another object it associated with. Use `delete` to erase an object.
 
 The following command names are formatted correctly, and provides a possible description for the command:
 
@@ -366,7 +366,7 @@ The following command names are formatted correctly, and provides a possible des
 
 - `templates`: Get a list of templates.
 
-The following command names are invalid, and explain why:
+The following command names are invalid:
 
 - `Map-Route`: Uses uppercase letters (M, R). Does not follow "noun-verb" word order (the route needs to be mapped, but as this is written, the order implies that the map needs to be routed).
 
@@ -387,10 +387,10 @@ The following command names are invalid, and explain why:
 Use single quotation marks (') around the command name and options in output message. The command itself should be yellow with **bold**.  Where possible, place command names at the end of the sentence, not in the middle. For example:
 
 ```
-You are not logged in. Log in by running 'bluemix login'.
+You are not logged in. Log in by running 'ibmcloud login'.
 ```
 
-You can use the following APIs provided by Bluemix CLI SDK to print the previous example message:
+You can use the following APIs provided by IBM Cloud CLI SDK to print the previous example message:
 
 ```go
 import "github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/terminal"
@@ -398,7 +398,7 @@ import "github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/terminal"
 ui := terminal.NewStdUI()
 
 ui.Say(`You are not logged in. Log in by running "%s".`,
-    terminal.CommandColor("bluemix login"))
+    terminal.CommandColor("ibmcloud login"))
 
 ```
 
@@ -410,7 +410,7 @@ Add single quotation marks (') around entity names and keep the entity names in 
 Mapping route 'my-app.ng.bluemix.net' to CF application 'my-app'...
 ```
 
-The Bluemix CLI SDK also provides API to help you print the previous example message:
+The IBM Cloud CLI SDK also provides API to help you print the previous example message:
 
 ```go
 ui.Say("Mapping route '%s' to CF application '%s'...",
@@ -426,7 +426,7 @@ Use the guidelines below to compose command help.
 - All user input values should be capital letters, e.g. `bx scale RESOURCE_NAME`
 - For optional parameters and flags, surround them with "[...]", e.g. `bx iam orgs [--guid]`.
 - For exclusive parameters and flags, group them together by "(...)" and separate by "|".
-  - Example: `bluemix test create (NAME | --uuid ID)`
+  - Example: `ibmcloud test create (NAME | --uuid ID)`
 - "[...]" and "(...)" can be nested.
 - If a value accepts multiple type of inputs, it's recommended that for file type the file name should start with "@".
 - If a command has multiple paradigms and it's hard to describe them together, specify each of them in separate lines,
@@ -497,7 +497,7 @@ Try again later. If the problem continues, contact IBM Cloud Support.
 
 To summarize, the failure message must start with "FAILED" in red with **bold** and followed by the detailed error message in a new line as previously shown. A recovery solution must be provided, such as "Use another name and try again." or "Try again later."
 
-Bluemix CLI also provides Failed method to print out failure message:
+IBM Cloud CLI also provides Failed method to print out failure message:
 
 ```go
 func Run() error {
@@ -550,14 +550,14 @@ ui.Warn("WARNING:...")
 The important information displayed to the end-user should be cyan with **bold**. For example:
 
 ```
-A newer version of the Bluemix CLI is available.
+A newer version of the IBM Cloud CLI is available.
 You can download it from http://xxx.xxx.xxx
 ```
 
 The corresponding code snippet:
 
 ```go
-ui.Say(terminal.PromptColor("A newer version of the Bluemix CLI ..."))
+ui.Say(terminal.PromptColor("A newer version of the IBM Cloud CLI ..."))
 ```
 
 ### 2.10. User Input Prompt
@@ -650,7 +650,7 @@ ui.Say("upgrading '%s'...", terminal.EntityNameColor(selected))
 
 ### 2.11. Table Output
 
-For consistent user experience, developers of Bluemix CLI plug-ins should comply with the following table output specifications:
+For consistent user experience, developers of IBM Cloud CLI plug-ins should comply with the following table output specifications:
 
 1. Table header should be bold.
 2. Each word in table header should be capitalized.
@@ -665,7 +665,7 @@ demo-app   This is a long long long ...
            description.
 ```
 
-Using APIs provided by Bluemix CLI can let you easily print results in table format:
+Using APIs provided by IBM Cloud CLI can let you easily print results in table format:
 ```go
 import "github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/terminal"
 
@@ -681,9 +681,9 @@ func (demo *DemoPlugin) PrintTable() {
 
 ## 3. Tracing
 
-Bluemix CLI provides utility for tracing based on "BLUEMIX\_TRACE" environment variable. The trace will be disabled if environment variable "BLUEMIX\_TRACE" was not set or it was set to "false" (case ignored), which means, in that case, the invocation of trace API has no effect. If "BLUEMIX\_TRACE" was set to "true" (case ignored), the trace will be printed on the terminal. Otherwise, the value of "BLUEMIX\_TRACE" will be treated as the path of trace file.
+IBM Cloud CLI provides utility for tracing based on "BLUEMIX\_TRACE" environment variable. The trace will be disabled if environment variable "BLUEMIX\_TRACE" was not set or it was set to "false" (case ignored), which means, in that case, the invocation of trace API has no effect. If "BLUEMIX\_TRACE" was set to "true" (case ignored), the trace will be printed on the terminal. Otherwise, the value of "BLUEMIX\_TRACE" will be treated as the path of trace file.
 
-An example to use Bluemix CLI trace API:
+An example to use IBM Cloud CLI trace API:
 
 ```go
 import "github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/trace"
@@ -808,7 +808,7 @@ client.HTTPClient = &http.Client{
 Also, you can set default HTTP header for all outgoing requests:
 ```go
 h := http.Header{}
-h.Set("User-Agent", "Bluemix CLI")
+h.Set("User-Agent", "IBM Cloud CLI")
 Client.DefaultHeader = h
 ```
 
@@ -827,7 +827,7 @@ if errorV != nil || err != nil {
 
 ## 5. Utility for Unit Testing
 
-We highly recommended that terminal.StdUI was used in your code for output, because it can be replaced by FakeUI which is a utility provided by Bluemix CLI for easy unit testing.
+We highly recommended that terminal.StdUI was used in your code for output, because it can be replaced by FakeUI which is a utility provided by IBM Cloud CLI for easy unit testing.
 
 FakeUI can intercept all of output and store the output in a buffer temporarily, so that you can compare the actual output and expected output easily. Take the following code snippet as an example:
 
@@ -870,7 +870,7 @@ func TestStart() {
 
 ## 6. Globalization
 
-Bluemix CLI tends to be used globally. Both Bluemix CLI and its plug-ins should support globalization. We have enabled internationalization (i18n) for CLI's base commands with the help of the third-party tool "[go-i18n](https://github.com/nicksnyder/go-i18n)". To keep user experience consistent, we recommend plug-in developers follow the CLI's way of i18n enablement.
+IBM Cloud CLI tends to be used globally. Both IBM Cloud CLI and its plug-ins should support globalization. We have enabled internationalization (i18n) for CLI's base commands with the help of the third-party tool "[go-i18n](https://github.com/nicksnyder/go-i18n)". To keep user experience consistent, we recommend plug-in developers follow the CLI's way of i18n enablement.
 
 Here's the workflow:
 
@@ -912,7 +912,7 @@ Here's the workflow:
 
           The previous command will generate 2 output files for each language: `xx-yy.all.json` contains all strings for the language, and `xx-yy.untranslated.json` contains untranslated strings. After the strings are translated, they should be merged back into `xx-yy.all.json`. For more details, refer to goi18n CLI's help by 'goi18n –help'.
 
-3.  Package translation files. Bluemix CLI is to be built as a stand-alone binary distribution. In order to load i18n resource files in code, we use [go-bindata](https://github.com/jteeuwen/go-bindata) to auto-generate Go source code from all i18n resource files and the compile them into the binary. You can write a script to do it automatically during build. A sample script could be like:
+3.  Package translation files. IBM Cloud CLI is to be built as a stand-alone binary distribution. In order to load i18n resource files in code, we use [go-bindata](https://github.com/jteeuwen/go-bindata) to auto-generate Go source code from all i18n resource files and the compile them into the binary. You can write a script to do it automatically during build. A sample script could be like:
 
     ```bash
     #!/bin/bash
@@ -929,7 +929,7 @@ Here's the workflow:
 
 4.  Initialize i18n
 
-    `T()` must be initialized before use. During i18n initialization in Bluemix CLI, user locale is used if it's set in `~/.bluemix/config.json` (plug-in can get user locale via `PluginContext.Locale()`). Otherwise, system locale is auto discovered (see [jibber\_jabber](https://github.com/cloudfoundry/jibber_jabber)) and used. If system locale is not detected or supported, default locale `en\_US` is then used. Next, we initialize the translate function with the locale. Sample code:
+    `T()` must be initialized before use. During i18n initialization in IBM Cloud CLI, user locale is used if it's set in `~/.bluemix/config.json` (plug-in can get user locale via `PluginContext.Locale()`). Otherwise, system locale is auto discovered (see [jibber\_jabber](https://github.com/cloudfoundry/jibber_jabber)) and used. If system locale is not detected or supported, default locale `en\_US` is then used. Next, we initialize the translate function with the locale. Sample code:
 
     ```go
     func initWithLocale(locale string) goi18n.TranslateFunc {

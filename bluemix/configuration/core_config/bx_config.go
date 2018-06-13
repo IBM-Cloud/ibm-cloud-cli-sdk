@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"strings"
 	"sync"
+	"time"
 
 	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix"
 	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/configuration"
@@ -22,27 +23,31 @@ func (r raw) Unmarshal(bytes []byte) error {
 }
 
 type BXConfigData struct {
-	APIEndpoint             string
-	ConsoleEndpoint         string
-	Region                  string
-	RegionID                string
-	RegionType              string
-	IAMEndpoint             string
-	IAMToken                string
-	IAMRefreshToken         string
-	Account                 models.Account
-	ResourceGroup           models.ResourceGroup
-	PluginRepos             []models.PluginRepo
-	SSLDisabled             bool
-	Locale                  string
-	Trace                   string
-	ColorEnabled            string
-	HTTPTimeout             int
-	CLIInfoEndpoint         string
-	CheckCLIVersionDisabled bool
-	UsageStatsDisabled      bool
-	SDKVersion              string
-	raw                     raw
+	APIEndpoint                string
+	ConsoleEndpoint            string
+	Region                     string
+	RegionID                   string
+	RegionType                 string
+	IAMEndpoint                string
+	IAMToken                   string
+	IAMRefreshToken            string
+	Account                    models.Account
+	ResourceGroup              models.ResourceGroup
+	CFEETargeted               bool
+	PluginRepos                []models.PluginRepo
+	SSLDisabled                bool
+	Locale                     string
+	Trace                      string
+	ColorEnabled               string
+	HTTPTimeout                int
+	CLIInfoEndpoint            string
+	CheckCLIVersionDisabled    bool
+	UsageStatsDisabled         bool
+	SDKVersion                 string
+	UpdateCheckInterval        time.Duration
+	UpdateRetryCheckInterval   time.Duration
+	UpdateNotificationInterval time.Duration
+	raw                        raw
 }
 
 func NewBXConfigData() *BXConfigData {
@@ -334,6 +339,27 @@ func (c *bxConfig) CheckCLIVersionDisabled() (disabled bool) {
 	return
 }
 
+func (c *bxConfig) UpdateCheckInterval() (interval time.Duration) {
+	c.read(func() {
+		interval = c.data.UpdateCheckInterval
+	})
+	return
+}
+
+func (c *bxConfig) UpdateRetryCheckInterval() (interval time.Duration) {
+	c.read(func() {
+		interval = c.data.UpdateRetryCheckInterval
+	})
+	return
+}
+
+func (c *bxConfig) UpdateNotificationInterval() (interval time.Duration) {
+	c.read(func() {
+		interval = c.data.UpdateNotificationInterval
+	})
+	return
+}
+
 func (c *bxConfig) UsageStatsDisabled() (disabled bool) {
 	c.read(func() {
 		disabled = c.data.UsageStatsDisabled
@@ -344,6 +370,13 @@ func (c *bxConfig) UsageStatsDisabled() (disabled bool) {
 func (c *bxConfig) SDKVersion() (version string) {
 	c.read(func() {
 		version = c.data.SDKVersion
+	})
+	return
+}
+
+func (c *bxConfig) CFEETargeted() (targeted bool) {
+	c.read(func() {
+		targeted = c.data.CFEETargeted
 	})
 	return
 }
@@ -438,6 +471,24 @@ func (c *bxConfig) SetCheckCLIVersionDisabled(disabled bool) {
 	})
 }
 
+func (c *bxConfig) SetUpdateCheckInterval(interval time.Duration) {
+	c.write(func() {
+		c.data.UpdateCheckInterval = interval
+	})
+}
+
+func (c *bxConfig) SetUpdateRetryCheckInterval(interval time.Duration) {
+	c.write(func() {
+		c.data.UpdateRetryCheckInterval = interval
+	})
+}
+
+func (c *bxConfig) SetUpdateNotificationInterval(interval time.Duration) {
+	c.write(func() {
+		c.data.UpdateNotificationInterval = interval
+	})
+}
+
 func (c *bxConfig) SetCLIInfoEndpoint(endpoint string) {
 	c.write(func() {
 		c.data.CLIInfoEndpoint = endpoint
@@ -465,6 +516,12 @@ func (c *bxConfig) SetLocale(locale string) {
 func (c *bxConfig) SetTrace(trace string) {
 	c.write(func() {
 		c.data.Trace = trace
+	})
+}
+
+func (c *bxConfig) SetCFEETargeted(targeted bool) {
+	c.write(func() {
+		c.data.CFEETargeted = targeted
 	})
 }
 

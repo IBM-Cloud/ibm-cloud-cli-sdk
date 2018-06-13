@@ -153,6 +153,8 @@ func (auth *uaaRepository) sendRequest(req *rest.Request, respV interface{}) err
 		if e := json.Unmarshal([]byte(err.Message), &apiErr); e == nil {
 			switch apiErr.ErrorCode {
 			case "":
+			case "invalid_grant":
+				return NewInvalidGrantTypeError(apiErr.Description)
 			case "invalid-token":
 				return NewInvalidTokenError(apiErr.Description)
 			default:

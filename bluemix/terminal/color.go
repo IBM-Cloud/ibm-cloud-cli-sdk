@@ -7,7 +7,7 @@ import (
 
 	"golang.org/x/crypto/ssh/terminal"
 
-	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/consts"
+	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix"
 )
 
 type Color uint
@@ -52,11 +52,13 @@ func ColorsEnabled() bool {
 }
 
 func userEnabledColors() bool {
-	return UserAskedForColors == "true" || os.Getenv(consts.ENV_BLUEMIX_COLOR) == "true"
+	return UserAskedForColors == "true" || bluemix.EnvColor.Get() == "true"
+
 }
 
 func userDidNotDisableColor() bool {
-	return os.Getenv(consts.ENV_BLUEMIX_COLOR) != "false" && (UserAskedForColors != "false" || os.Getenv(consts.ENV_BLUEMIX_COLOR) == "true")
+	colorEnv := bluemix.EnvColor.Get()
+	return colorEnv != "false" && (UserAskedForColors != "false" || colorEnv == "true")
 }
 
 func Colorize(message string, color Color) string {
