@@ -5,7 +5,6 @@ package plugin
 
 import (
 	"fmt"
-	"strings"
 
 	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/models"
 )
@@ -45,42 +44,34 @@ func (v VersionType) String() string {
 // Namespace also supports hierarchy. For example, namespace 'A' can have a sub
 // namespace 'B'. And the full qualified name of namespace B is 'A B'.
 type Namespace struct {
-	Name        string // full qualified name of the namespace
-	Description string // description of the namespace
+	ParentName  string   // full qualified name of the parent namespace
+	Name        string   // base name
+	Aliases     []string // aliases
+	Description string   // description of the namespace
 }
 
-// ParentName returns the name of its parent namespace
-func (n Namespace) ParentName() string {
-	i := strings.LastIndex(n.Name, " ")
-	if i < 0 {
-		return ""
-	}
-	return n.Name[:i]
+func (n Namespace) NameAndAliases() []string {
+	return append([]string{n.Name}, n.Aliases...)
 }
 
 // Command describes the metadata of a plugin command
 type Command struct {
-	Namespace   string // full qualified name of the command's namespace
-	Name        string // name of the command
-	Alias       string // command alias, usually the command's short name
-	Description string // short description of the command
-	Usage       string // usage detail to be displayed in command help
-	Flags       []Flag // command options
-	Hidden      bool   // true to hide the command in help text
+	Namespace   string   // full qualified name of the command's namespace
+	Name        string   // name of the command
+	Alias       string   // Deprecated: use Aliases instead.
+	Aliases     []string // command aliases
+	Description string   // short description of the command
+	Usage       string   // usage detail to be displayed in command help
+	Flags       []Flag   // command options
+	Hidden      bool     // true to hide the command in help text
 }
 
-// FullName returns Command's fully-qualified name prefixed with namespace
-func (c Command) FullName() string {
-	return strings.TrimSpace(strings.Join([]string{c.Namespace, c.Name}, " "))
-}
-
-// FullNames returns Commands's full-qualified names prefixed with namespace
-func (c Command) FullNames() []string {
-	names := []string{c.FullName()}
-	if c.Alias != "" {
-		names = append(names, strings.TrimSpace(strings.Join([]string{c.Namespace, c.Alias}, " ")))
+func (c Command) NameAndAliases() []string {
+	as := c.Aliases
+	if len(as) == 0 && c.Alias != "" {
+		as = []string{c.Alias}
 	}
-	return names
+	return append([]string{c.Name}, as...)
 }
 
 // Flag describes a command option
