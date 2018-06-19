@@ -12,6 +12,7 @@ import (
 // PluginMetadata describes metadata of a plugin.
 type PluginMetadata struct {
 	Name          string      // name of the plugin
+	Aliases       []string    // aliases of the plugin
 	Version       VersionType // version of the plugin
 	MinCliVersion VersionType // minimal version of CLI required by the plugin
 	Namespaces    []Namespace // list of namespaces provided by the plugin
@@ -20,6 +21,10 @@ type PluginMetadata struct {
 	// SDKVersion is SDK version used by the plugin.
 	// It is set by the plugin framework to check SDK compatibility with the CLI.
 	SDKVersion VersionType
+}
+
+func (p PluginMetadata) NameAndAliases() []string {
+	return append([]string{p.Name}, p.Aliases...)
 }
 
 // VersionType describes the version info
