@@ -12,6 +12,7 @@ var (
 	EnvHTTPTimeout  = newEnv("IBMCLOUD_HTTP_TIMEOUT", "BLUEMIX_HTTP_TIMEOUT")
 	EnvAPIKey       = newEnv("IBMCLOUD_API_KEY", "BLUEMIX_API_KEY")
 	EnvConfigHome   = newEnv("IBMCLOUD_HOME", "BLUEMIX_HOME")
+	EnvConfigDir    = newEnv("IBMCLOUD_CONFIG_HOME")
 
 	// for internal use
 	EnvCLIName         = newEnv("IBMCLOUD_CLI", "BLUEMIX_CLI")

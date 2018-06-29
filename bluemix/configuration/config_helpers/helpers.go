@@ -36,6 +36,9 @@ func ConfigDir() string {
 // }
 
 func newConfigDir() string {
+	if configDir := bluemix.EnvConfigDir.Get(); configDir != "" {
+		return configDir
+	}
 	return filepath.Join(homeDir(), ".ibmcloud")
 }
 
