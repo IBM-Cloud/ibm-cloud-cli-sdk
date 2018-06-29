@@ -11,20 +11,23 @@ import (
 )
 
 func ConfigDir() string {
-	// TODO: switched to newConfigDir after all plugin has bumped SDK
-	if new := newConfigDir(); file_helpers.FileExists(new) {
+	if dir := bluemix.EnvConfigDir.Get(); dir != "" {
+		return dir
+	}
+	// TODO: switched to the new default config after all plugin has bumped SDK
+	if new := defaultConfigDirNew(); file_helpers.FileExists(new) {
 		return new
 	}
-	return oldConfigDir()
+	return defaultConfigDirOld()
 }
 
 // func MigrateFromOldConfig() error {
-// 	new := newConfigDir()
+// 	new := defaultConfigDirNew()
 // 	if file_helpers.FileExists(new) {
 // 		return nil
 // 	}
 
-// 	old := oldConfigDir()
+// 	old := defaultConfigDirOld()
 // 	if !file_helpers.FileExists(old) {
 // 		return nil
 // 	}
@@ -35,11 +38,11 @@ func ConfigDir() string {
 // 	return os.RemoveAll(old)
 // }
 
-func newConfigDir() string {
+func defaultConfigDirNew() string {
 	return filepath.Join(homeDir(), ".ibmcloud")
 }
 
-func oldConfigDir() string {
+func defaultConfigDirOld() string {
 	return filepath.Join(homeDir(), ".bluemix")
 }
 
