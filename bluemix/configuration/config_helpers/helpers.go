@@ -37,6 +37,13 @@ func ConfigDir() string {
 
 func newConfigDir() string {
 	if configDir := bluemix.EnvConfigDir.Get(); configDir != "" {
+		if !file_helpers.FileExists(configDir) {
+			err := os.MkdirAll(configDir, 0777)
+			if err != nil {
+				// if the directory did not exist and could not be created, use the default
+				return filepath.Join(homeDir(), ".ibmcloud")
+			}
+		}
 		return configDir
 	}
 	return filepath.Join(homeDir(), ".ibmcloud")

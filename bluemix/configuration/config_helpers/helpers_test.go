@@ -7,6 +7,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/common/file_helpers"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -20,8 +21,20 @@ import (
 // 	"github.ibm.com/bluemix-cli-release/build/src/github.ibm.com/Bluemix/bluemix-cli-common/file_helpers"
 // )
 
-func captureEnv() []string {
-	return os.Environ()
+func captureAndPrepareEnv(a *assert.Assertions) ([]string, string) {
+	env := os.Environ()
+
+	userHome, err := ioutil.TempDir("", "config_dir_test")
+	a.NoError(err)
+
+	os.Unsetenv("IBMCLOUD_CONFIG_HOME")
+	os.Unsetenv("IBMCLOUD_HOME")
+	os.Unsetenv("BLUEMIX_HOME")
+	os.Setenv("HOME", userHome)
+
+	a.NoError(os.RemoveAll(userHome))
+
+	return env, userHome
 }
 
 func resetEnv(env []string) {
@@ -32,43 +45,84 @@ func resetEnv(env []string) {
 	}
 }
 
-func TestConfigDir(t *testing.T) {
+// If $USER_HOME/.ibmcloud does not exist, $USER_HOME/.bluemix should be used
+func TestConfigDir_NothingSet_NothingExists(t *testing.T) {
 	assert := assert.New(t)
 
-	env := captureEnv()
+	env, userHome := captureAndPrepareEnv(assert)
 	defer resetEnv(env)
-
-	userHome, err := ioutil.TempDir("", "config_dir_test")
-	assert.NoError(err)
-
-	os.Unsetenv("IBMCLOUD_CONFIG_HOME")
-	os.Unsetenv("IBMCLOUD_HOME")
-	os.Unsetenv("BLUEMIX_HOME")
-	os.Setenv("HOME", userHome)
-
-	assert.NoError(os.RemoveAll(userHome))
+	defer os.RemoveAll(userHome)
 
 	// directory should not exist - will use bluemix
 	assert.Equal(filepath.Join(userHome, ".bluemix"), ConfigDir())
+}
+
+// If $USER_HOME/.ibmcloud exists, it should be used
+func TestConfigDir_NothingSet_IBMCloudExists(t *testing.T) {
+	assert := assert.New(t)
+
+	env, userHome := captureAndPrepareEnv(assert)
+	defer resetEnv(env)
+	defer os.RemoveAll(userHome)
 
 	// create a .ibmcloud directory and it should be returned
 	ibmcloudDir := filepath.Join(userHome, ".ibmcloud")
 	assert.NoError(os.MkdirAll(ibmcloudDir, 0755))
 	assert.Equal(ibmcloudDir, ConfigDir())
+}
+
+// If only BLUEMIX_HOME is set, $BLUEMIX_HOME/.bluemix should be used
+func TestConfigDir_BluemixHomeSet_NothingExists(t *testing.T) {
+	assert := assert.New(t)
+
+	env, userHome := captureAndPrepareEnv(assert)
+	defer resetEnv(env)
+	defer os.RemoveAll(userHome)
 
 	// if only BLUEMIX_HOME is set, BLUEMIX_HOME is used
 	os.Setenv("BLUEMIX_HOME", "/my_bluemix_home")
 	assert.Equal(filepath.Join("/my_bluemix_home", ".bluemix"), ConfigDir())
+}
+
+// If BLUEMIX_HOME and IBMCLOUD_HOME are set and $IBMCLOUD_HOME/.ibmcloud does not exist, $IBMCLOUD_HOME/.bluemix should be used
+func TestConfigDir_BluemixHomesAndIbmCloudHomeSet_NothingExists(t *testing.T) {
+	assert := assert.New(t)
+
+	env, userHome := captureAndPrepareEnv(assert)
+	defer resetEnv(env)
+	defer os.RemoveAll(userHome)
 
 	// if BLUEMIX_HOME and IBMCLOUD_HOME is set, IBMCLOUD_HOME is used
+	os.Setenv("BLUEMIX_HOME", "/my_bluemix_home")
 	os.Setenv("IBMCLOUD_HOME", "/my_ibmcloud_home")
 	assert.Equal(filepath.Join("/my_ibmcloud_home", ".bluemix"), ConfigDir())
+}
+
+// If IBMCLOUD_CONFIG_HOME is set but does not exist, $IBMCLOUD_CONFIG_HOME should be created and used
+func TestConfigDir_IbmCloudConfigHomeSet_NothingExists(t *testing.T) {
+	assert := assert.New(t)
+
+	env, userHome := captureAndPrepareEnv(assert)
+	defer resetEnv(env)
+	defer os.RemoveAll(userHome)
 
 	// if IBMCLOUD_CONFIG_HOME is set but does not exist, IBMCLOUD_HOME is used
-	os.Setenv("IBMCLOUD_CONFIG_HOME", "/my_ibmcloud_config_home")
-	assert.Equal(filepath.Join("/my_ibmcloud_home", ".bluemix"), ConfigDir())
+	assert.False(file_helpers.FileExists(userHome))
+	os.Setenv("IBMCLOUD_CONFIG_HOME", userHome)
+	assert.Equal(userHome, ConfigDir())
+	assert.True(file_helpers.FileExists(userHome))
+}
+
+// If IBMCLOUD_CONFIG_HOME is set and it exists, $IBMCLOUD_CONFIG_HOME should be used
+func TestConfigDir_IbmCloudConfigHomeSet_Exists(t *testing.T) {
+	assert := assert.New(t)
+
+	env, userHome := captureAndPrepareEnv(assert)
+	defer resetEnv(env)
+	defer os.RemoveAll(userHome)
 
 	// if IBMCLOUD_CONFIG_HOME is set and exists, IBMCLOUD_CONFIG_HOME is used
+	assert.NoError(os.MkdirAll(userHome, 0777))
 	os.Setenv("IBMCLOUD_CONFIG_HOME", userHome)
 	assert.Equal(userHome, ConfigDir())
 }
