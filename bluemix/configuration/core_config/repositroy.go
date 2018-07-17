@@ -71,6 +71,8 @@ type Repository interface {
 	HasTargetedCF() bool
 	HasTargetedCFEE() bool
 	SetCFEETargeted(bool)
+	CFEEEnvID() string
+	SetCFEEEnvID(string)
 }
 
 // Deprecated
@@ -171,6 +173,7 @@ func (c repository) SetLocale(locale string) {
 func (c repository) UnsetAPI() {
 	c.bxConfig.UnsetAPI()
 	c.bxConfig.SetCFEETargeted(false)
+	c.bxConfig.SetCFEEEnvID("")
 	c.cfConfig.UnsetAPI()
 }
 
