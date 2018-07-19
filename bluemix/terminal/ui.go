@@ -5,8 +5,6 @@ import (
 	"io"
 	"os"
 
-	"github.com/mattn/go-colorable"
-
 	. "github.com/IBM-Cloud/ibm-cloud-cli-sdk/i18n"
 )
 
@@ -63,7 +61,7 @@ type terminalUI struct {
 
 // NewStdUI initialize a terminal UI with os.Stdin and os.Stdout
 func NewStdUI() UI {
-	return NewUI(os.Stdin, colorable.NewColorableStdout())
+	return NewUI(os.Stdin, Output)
 }
 
 // NewUI initialize a terminal UI with io.Reader and io.Writer
