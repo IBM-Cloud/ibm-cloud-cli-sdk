@@ -101,13 +101,15 @@ func Parse(s string) (CRN, error) {
 
 	scopeSegments := segments[6]
 	if scopeSegments != "" {
-		scopeParts := strings.Split(scopeSegments, scopeSeparator)
-		if len(scopeParts) == 2 {
-			crn.ScopeType, crn.Scope = scopeParts[0], scopeParts[1]
-		} else if scopeSegments == "global" {
+		if scopeSegments == "global" {
 			crn.Scope = "global"
 		} else {
-			return CRN{}, ErrMalformedScope
+			scopeParts := strings.Split(scopeSegments, scopeSeparator)
+			if len(scopeParts) == 2 {
+				crn.ScopeType, crn.Scope = scopeParts[0], scopeParts[1]
+			} else {
+				return CRN{}, ErrMalformedScope
+			}
 		}
 	}
 
@@ -131,12 +133,7 @@ func (c CRN) String() string {
 
 func (c CRN) ScopeSegment() string {
 	if c.ScopeType == "" {
-		switch c.Scope {
-		case "":
-			return ""
-		case "global":
-			return "global"
-		}
+		return c.Scope
 	}
 	return c.ScopeType + scopeSeparator + c.Scope
 }
