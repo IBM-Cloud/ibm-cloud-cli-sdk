@@ -123,7 +123,25 @@ type CFConfig interface {
 
 type repository struct {
 	*bxConfig
-	cfConfig *cfConfig
+	cfConfig cfConfigWrapper
+}
+
+type cfConfigWrapper struct {
+	*cfConfig
+	bx *bxConfig
+}
+
+func (wrapper cfConfigWrapper) UnsetAPI() {
+	wrapper.cfConfig.UnsetAPI()
+	wrapper.bx.SetCFEEEnvID("")
+	wrapper.bx.SetCFEETargeted(false)
+}
+
+func newRepository(bx *bxConfig, cf *cfConfig) repository {
+	return repository{
+		bxConfig: bx,
+		cfConfig: cfConfigWrapper{cfConfig: cf, bx: bx},
+	}
 }
 
 func (c repository) IsLoggedIn() bool {
@@ -144,10 +162,6 @@ func (c repository) CFConfig() CFConfig {
 
 func (c repository) HasTargetedCF() bool {
 	return c.cfConfig.HasAPIEndpoint()
-}
-
-func (c repository) HasTargetedCFEE() bool {
-	return c.HasTargetedCF() && c.CFEETargeted()
 }
 
 func (c repository) SetSSLDisabled(disabled bool) {
@@ -192,8 +206,5 @@ func NewCoreConfigFromPath(cfConfigPath string, bxConfigPath string, errHandler 
 }
 
 func NewCoreConfigFromPersistor(cfPersistor configuration.Persistor, bxPersistor configuration.Persistor, errHandler func(error)) ReadWriter {
-	return repository{
-		cfConfig: createCFConfigFromPersistor(cfPersistor, errHandler),
-		bxConfig: createBluemixConfigFromPersistor(bxPersistor, errHandler),
-	}
+	return newRepository(createBluemixConfigFromPersistor(bxPersistor, errHandler), createCFConfigFromPersistor(cfPersistor, errHandler))
 }
