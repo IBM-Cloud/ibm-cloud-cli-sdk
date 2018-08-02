@@ -34,6 +34,7 @@ type BXConfigData struct {
 	Account                    models.Account
 	ResourceGroup              models.ResourceGroup
 	CFEETargeted               bool
+	CFEEEnvID                  string
 	PluginRepos                []models.PluginRepo
 	SSLDisabled                bool
 	Locale                     string
@@ -381,6 +382,13 @@ func (c *bxConfig) CFEETargeted() (targeted bool) {
 	return
 }
 
+func (c *bxConfig) CFEEEnvID() (envID string) {
+	c.read(func() {
+		envID = c.data.CFEEEnvID
+	})
+	return
+}
+
 func (c *bxConfig) SetAPIEndpoint(endpoint string) {
 	c.write(func() {
 		c.data.APIEndpoint = endpoint
@@ -522,6 +530,12 @@ func (c *bxConfig) SetTrace(trace string) {
 func (c *bxConfig) SetCFEETargeted(targeted bool) {
 	c.write(func() {
 		c.data.CFEETargeted = targeted
+	})
+}
+
+func (c *bxConfig) SetCFEEEnvID(envID string) {
+	c.write(func() {
+		c.data.CFEEEnvID = envID
 	})
 }
 
