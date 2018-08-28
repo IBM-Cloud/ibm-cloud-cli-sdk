@@ -375,7 +375,7 @@ func (c *bxConfig) SDKVersion() (version string) {
 	return
 }
 
-func (c *bxConfig) CFEETargeted() (targeted bool) {
+func (c *bxConfig) HasTargetedCFEE() (targeted bool) {
 	c.read(func() {
 		targeted = c.data.CFEETargeted
 	})
