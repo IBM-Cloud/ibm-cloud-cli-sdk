@@ -347,7 +347,7 @@ To keep user experience consistent, developers of IBM Cloud CLI plug-in should a
 
 - Use lower case words and hyphen
 - Follow a “noun-verb” sequence
-- For commands that list objects, use the plural of the object name, e.g. `ibmcloud iam api-keys`. If a plural will not work, or it is alreday described in namespace, use `list`, such as `ibmcloud app list`.
+- For commands that list objects, use the plural of the object name, e.g. `ibmcloud iam api-keys`. If a plural will not work, or it is already described in namespace, use `list`, such as `ibmcloud app list`.
 - For commands that retrieve the details of an object, use the object name, e.g. `ibmcloud iam api-key`. If it does not work, use `show`, e.g. `ibmcloud app show`
 - Use common verbs such as add, create, bind, update, delete …
 - Use `remove` to remove an object from a collection or another object it associated with. Use `delete` to erase an object.
