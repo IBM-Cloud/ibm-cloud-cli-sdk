@@ -10,6 +10,7 @@ import (
 	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/plugin_examples/list_plugin/api"
 	. "github.com/IBM-Cloud/ibm-cloud-cli-sdk/plugin_examples/list_plugin/i18n"
 	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/plugin_examples/list_plugin/models"
+	"github.com/fatih/color"
 )
 
 type List struct {
@@ -71,11 +72,11 @@ func (cmd *List) Run(args []string) error {
 }
 
 func (cmd *List) printApps(apps []models.App, orgUsage models.OrgUsage) {
-	cmd.ui.Say(terminal.ColorizeBold(
+	cmd.ui.Say(terminal.Colorize(
 		T("CloudFoundy Applications  {{.Used}}/{{.Limit}} used",
 			map[string]interface{}{
 				"Used":  formattedGB(orgUsage.TotalMemoryUsed()),
-				"Limit": formattedGB(cmd.cf.CurrentOrganization().QuotaDefinition.InstanceMemoryLimitInMB)}), 33))
+				"Limit": formattedGB(cmd.cf.CurrentOrganization().QuotaDefinition.InstanceMemoryLimitInMB)}), color.New(color.FgYellow, color.Bold)))
 
 	table := cmd.ui.Table([]string{T("Name"), T("Routes"), T("Memory (MB)"), T("Instances"), T("State")})
 	for _, a := range apps {
@@ -92,10 +93,10 @@ func (cmd *List) printApps(apps []models.App, orgUsage models.OrgUsage) {
 }
 
 func (cmd *List) printServices(services []models.ServiceInstance, orgUsage models.OrgUsage) {
-	cmd.ui.Say(terminal.ColorizeBold(
+	cmd.ui.Say(terminal.Colorize(
 		T("Services {{.Count}}/{{.Limit}} used", map[string]interface{}{
 			"Count": orgUsage.ServicesCount(),
-			"Limit": cmd.cf.CurrentOrganization().QuotaDefinition.ServicesLimit}), 33))
+			"Limit": cmd.cf.CurrentOrganization().QuotaDefinition.ServicesLimit}), color.New(color.FgYellow, color.Bold)))
 
 	table := cmd.ui.Table([]string{T("Name"), T("Service Offering"), T("Plan")})
 	for _, s := range services {
@@ -110,14 +111,14 @@ func (cmd *List) printServices(services []models.ServiceInstance, orgUsage model
 }
 
 func (cmd *List) printContainers(containers []models.Container, quotaAndUsage models.ContainersQuotaAndUsage) {
-	cmd.ui.Say(terminal.ColorizeBold(
+	cmd.ui.Say(terminal.Colorize(
 		T("Containers  {{.MemoryUsed}}/{{.MemoryLimit}}  {{.IPCount}}/{{.IPLimit}} Public IPs Requested|{{.BoundIPCount}} Used",
 			map[string]interface{}{
 				"MemoryUsed":   formattedGB(quotaAndUsage.Usage.MemoryInMB),
 				"MemoryLimit":  formattedGB(quotaAndUsage.Limits.MemoryLimitInMB),
 				"IPCount":      quotaAndUsage.Usage.FloatingIpsCount,
 				"IPLimit":      quotaAndUsage.Limits.FloatingIpCountLimit,
-				"BoundIPCount": quotaAndUsage.Usage.BoundFloatingIpsCount}), 33))
+				"BoundIPCount": quotaAndUsage.Usage.BoundFloatingIpsCount}), color.New(color.FgYellow, color.Bold)))
 
 	byName := make(map[string][]models.Container)
 	for _, c := range containers {
