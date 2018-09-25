@@ -336,7 +336,7 @@ func prepareConfigFile() string {
 	}
 
 	configFile := filepath.Join(tmpDir, "testConfig")
-	err = ioutil.WriteFile(configFile, []byte(config_string), 0644)
+	err = ioutil.WriteFile(configFile, []byte(config_string), 0600)
 	if err != nil {
 		panic(err)
 	}
