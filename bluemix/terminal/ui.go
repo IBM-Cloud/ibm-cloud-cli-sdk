@@ -55,20 +55,22 @@ type UI interface {
 }
 
 type terminalUI struct {
-	In  io.Reader
-	Out io.Writer
+	In     io.Reader
+	Out    io.Writer
+	ErrOut io.Writer
 }
 
 // NewStdUI initialize a terminal UI with os.Stdin and os.Stdout
 func NewStdUI() UI {
-	return NewUI(os.Stdin, Output)
+	return NewUI(os.Stdin, Output, ErrOutput)
 }
 
 // NewUI initialize a terminal UI with io.Reader and io.Writer
-func NewUI(in io.Reader, out io.Writer) UI {
+func NewUI(in io.Reader, out io.Writer, errOut io.Writer) UI {
 	return &terminalUI{
-		In:  in,
-		Out: out,
+		In:     in,
+		Out:    out,
+		ErrOut: errOut,
 	}
 }
 
@@ -89,10 +91,18 @@ func (ui *terminalUI) Ok() {
 	ui.Say(SuccessColor(T("OK")))
 }
 
+func (ui *terminalUI) Error(format string, args ...interface{}) {
+	if args != nil {
+		fmt.Fprintf(ui.ErrOut, format+"\n", args...)
+	} else {
+		fmt.Fprint(ui.ErrOut, format+"\n")
+	}
+}
+
 func (ui *terminalUI) Failed(format string, args ...interface{}) {
-	ui.Say(FailureColor(T("FAILED")))
-	ui.Say(format, args...)
-	ui.Say("")
+	ui.Error(FailureColor(T("FAILED")))
+	ui.Error(format, args...)
+	ui.Error("")
 }
 
 func (ui *terminalUI) Prompt(message string, options *PromptOptions) *Prompt {
