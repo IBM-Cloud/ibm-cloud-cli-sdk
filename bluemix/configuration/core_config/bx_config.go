@@ -25,6 +25,8 @@ func (r raw) Unmarshal(bytes []byte) error {
 type BXConfigData struct {
 	APIEndpoint                string
 	ConsoleEndpoint            string
+	CloudType                  string
+	CloudName                  string
 	Region                     string
 	RegionID                   string
 	RegionType                 string
@@ -179,35 +181,18 @@ func (c *bxConfig) CurrentRegion() (region models.Region) {
 	return
 }
 
-func (c *bxConfig) CloudName() string {
-	regionID := c.CurrentRegion().ID
-	if regionID == "" {
-		return ""
-	}
-
-	splits := strings.Split(regionID, ":")
-	if len(splits) != 3 {
-		return ""
-	}
-
-	customer := splits[0]
-	if customer != "ibm" {
-		return customer
-	}
-
-	deployment := splits[1]
-	switch {
-	case deployment == "yp":
-		return "bluemix"
-	case strings.HasPrefix(deployment, "ys"):
-		return "staging"
-	default:
-		return ""
-	}
+func (c *bxConfig) CloudName() (cname string) {
+	c.read(func() {
+		cname = c.data.CloudName
+	})
+	return
 }
 
-func (c *bxConfig) CloudType() string {
-	return c.CurrentRegion().Type
+func (c *bxConfig) CloudType() (ctype string) {
+	c.read(func() {
+		ctype = c.data.CloudType
+	})
+	return
 }
 
 func (c *bxConfig) IAMEndpoint() (endpoint string) {
@@ -536,6 +521,18 @@ func (c *bxConfig) SetCFEETargeted(targeted bool) {
 func (c *bxConfig) SetCFEEEnvID(envID string) {
 	c.write(func() {
 		c.data.CFEEEnvID = envID
+	})
+}
+
+func (c *bxConfig) SetCloudType(ctype string) {
+	c.write(func() {
+		c.data.CloudType = ctype
+	})
+}
+
+func (c *bxConfig) SetCloudName(cname string) {
+	c.write(func() {
+		c.data.CloudName = cname
 	})
 }
 

@@ -47,6 +47,8 @@ type Repository interface {
 	SetAPIEndpoint(string)
 	SetConsoleEndpoint(string)
 	SetIAMEndpoint(string)
+	SetCloudType(string)
+	SetCloudName(string)
 	SetRegion(models.Region)
 	SetIAMToken(string)
 	SetIAMRefreshToken(string)
