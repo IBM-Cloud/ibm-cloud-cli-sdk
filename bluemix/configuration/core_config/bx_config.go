@@ -181,6 +181,11 @@ func (c *bxConfig) CurrentRegion() (region models.Region) {
 	return
 }
 
+func (c *bxConfig) HasTargetedRegion() bool {
+	r := c.CurrentRegion()
+	return r.ID != "" && r.Name != "" && r.Type != ""
+}
+
 func (c *bxConfig) CloudName() (cname string) {
 	c.read(func() {
 		cname = c.data.CloudName

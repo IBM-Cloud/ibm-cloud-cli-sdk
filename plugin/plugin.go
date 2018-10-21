@@ -128,6 +128,9 @@ type PluginContext interface {
 	// Region returns the targeted region
 	CurrentRegion() models.Region
 
+	// HasTargetedRegion() return whether a region is targeted
+	HasTargetedRegion() bool
+
 	// IAMToken returns the IAM access token
 	IAMToken() string
 

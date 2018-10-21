@@ -18,6 +18,7 @@ type Repository interface {
 	CloudName() string
 	CloudType() string
 	CurrentRegion() models.Region
+	HasTargetedRegion() bool
 	IAMToken() string
 	IAMRefreshToken() string
 	IsLoggedIn() bool
