@@ -76,7 +76,7 @@ func (cmd *List) printApps(apps []models.App, orgUsage models.OrgUsage) {
 		T("CloudFoundy Applications  {{.Used}}/{{.Limit}} used",
 			map[string]interface{}{
 				"Used":  formattedGB(orgUsage.TotalMemoryUsed()),
-				"Limit": formattedGB(cmd.cf.CurrentOrganization().QuotaDefinition.InstanceMemoryLimitInMB)}), color.New(33, color.Bold)))
+				"Limit": formattedGB(cmd.cf.CurrentOrganization().QuotaDefinition.InstanceMemoryLimitInMB)}), color.New(color.FgYellow, color.Bold)))
 
 	table := cmd.ui.Table([]string{T("Name"), T("Routes"), T("Memory (MB)"), T("Instances"), T("State")})
 	for _, a := range apps {
@@ -96,7 +96,7 @@ func (cmd *List) printServices(services []models.ServiceInstance, orgUsage model
 	cmd.ui.Say(terminal.Colorize(
 		T("Services {{.Count}}/{{.Limit}} used", map[string]interface{}{
 			"Count": orgUsage.ServicesCount(),
-			"Limit": cmd.cf.CurrentOrganization().QuotaDefinition.ServicesLimit}), color.New(33, color.Bold)))
+			"Limit": cmd.cf.CurrentOrganization().QuotaDefinition.ServicesLimit}), color.New(color.FgYellow, color.Bold)))
 
 	table := cmd.ui.Table([]string{T("Name"), T("Service Offering"), T("Plan")})
 	for _, s := range services {
@@ -118,7 +118,7 @@ func (cmd *List) printContainers(containers []models.Container, quotaAndUsage mo
 				"MemoryLimit":  formattedGB(quotaAndUsage.Limits.MemoryLimitInMB),
 				"IPCount":      quotaAndUsage.Usage.FloatingIpsCount,
 				"IPLimit":      quotaAndUsage.Limits.FloatingIpCountLimit,
-				"BoundIPCount": quotaAndUsage.Usage.BoundFloatingIpsCount}), color.New(33, color.Bold)))
+				"BoundIPCount": quotaAndUsage.Usage.BoundFloatingIpsCount}), color.New(color.FgYellow, color.Bold)))
 
 	byName := make(map[string][]models.Container)
 	for _, c := range containers {
