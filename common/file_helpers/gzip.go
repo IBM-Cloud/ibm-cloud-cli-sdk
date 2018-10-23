@@ -53,7 +53,7 @@ func extractFileInArchive(r io.Reader, hdr *tar.Header, dest string) error {
 	if fi.IsDir() {
 		return os.MkdirAll(path, fi.Mode())
 	} else {
-		err := os.MkdirAll(filepath.Dir(path), 0755)
+		err := os.MkdirAll(filepath.Dir(path), 0700)
 		if err != nil {
 			return err
 		}
