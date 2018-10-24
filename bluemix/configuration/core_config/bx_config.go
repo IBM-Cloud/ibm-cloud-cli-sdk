@@ -29,7 +29,6 @@ type BXConfigData struct {
 	CloudName                  string
 	Region                     string
 	RegionID                   string
-	RegionType                 string
 	IAMEndpoint                string
 	IAMToken                   string
 	IAMRefreshToken            string
@@ -173,9 +172,8 @@ func (c *bxConfig) ConsoleEndpoint() (endpoint string) {
 func (c *bxConfig) CurrentRegion() (region models.Region) {
 	c.read(func() {
 		region = models.Region{
-			ID:   c.data.RegionID,
-			Name: c.data.Region,
-			Type: c.data.RegionType,
+			MCCPID: c.data.RegionID,
+			Name:   c.data.Region,
 		}
 	})
 	return
@@ -183,7 +181,7 @@ func (c *bxConfig) CurrentRegion() (region models.Region) {
 
 func (c *bxConfig) HasTargetedRegion() bool {
 	r := c.CurrentRegion()
-	return r.ID != "" && r.Name != "" && r.Type != ""
+	return r.Name != ""
 }
 
 func (c *bxConfig) CloudName() (cname string) {
@@ -394,8 +392,7 @@ func (c *bxConfig) SetConsoleEndpoint(endpoint string) {
 func (c *bxConfig) SetRegion(region models.Region) {
 	c.write(func() {
 		c.data.Region = region.Name
-		c.data.RegionID = region.ID
-		c.data.RegionType = region.Type
+		c.data.RegionID = region.MCCPID
 	})
 }
 
@@ -555,8 +552,9 @@ func (c *bxConfig) UnsetAPI() {
 		c.data.APIEndpoint = ""
 		c.data.Region = ""
 		c.data.RegionID = ""
-		c.data.RegionType = ""
 		c.data.ConsoleEndpoint = ""
 		c.data.IAMEndpoint = ""
+		c.data.CloudName = ""
+		c.data.CloudType = ""
 	})
 }
