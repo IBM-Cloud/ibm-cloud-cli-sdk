@@ -159,6 +159,26 @@ type FakePluginContext struct {
 	hasTargetedCFReturnsOnCall map[int]struct {
 		result1 bool
 	}
+	HasTargetedCFEEStub        func() bool
+	hasTargetedCFEEMutex       sync.RWMutex
+	hasTargetedCFEEArgsForCall []struct {
+	}
+	hasTargetedCFEEReturns struct {
+		result1 bool
+	}
+	hasTargetedCFEEReturnsOnCall map[int]struct {
+		result1 bool
+	}
+	HasTargetedPublicCFStub        func() bool
+	hasTargetedPublicCFMutex       sync.RWMutex
+	hasTargetedPublicCFArgsForCall []struct {
+	}
+	hasTargetedPublicCFReturns struct {
+		result1 bool
+	}
+	hasTargetedPublicCFReturnsOnCall map[int]struct {
+		result1 bool
+	}
 	HasTargetedRegionStub        func() bool
 	hasTargetedRegionMutex       sync.RWMutex
 	hasTargetedRegionArgsForCall []struct {
@@ -1095,6 +1115,110 @@ func (fake *FakePluginContext) HasTargetedCFReturnsOnCall(i int, result1 bool) {
 	}{result1}
 }
 
+func (fake *FakePluginContext) HasTargetedCFEE() bool {
+	fake.hasTargetedCFEEMutex.Lock()
+	ret, specificReturn := fake.hasTargetedCFEEReturnsOnCall[len(fake.hasTargetedCFEEArgsForCall)]
+	fake.hasTargetedCFEEArgsForCall = append(fake.hasTargetedCFEEArgsForCall, struct {
+	}{})
+	fake.recordInvocation("HasTargetedCFEE", []interface{}{})
+	fake.hasTargetedCFEEMutex.Unlock()
+	if fake.HasTargetedCFEEStub != nil {
+		return fake.HasTargetedCFEEStub()
+	}
+	if specificReturn {
+		return ret.result1
+	}
+	fakeReturns := fake.hasTargetedCFEEReturns
+	return fakeReturns.result1
+}
+
+func (fake *FakePluginContext) HasTargetedCFEECallCount() int {
+	fake.hasTargetedCFEEMutex.RLock()
+	defer fake.hasTargetedCFEEMutex.RUnlock()
+	return len(fake.hasTargetedCFEEArgsForCall)
+}
+
+func (fake *FakePluginContext) HasTargetedCFEECalls(stub func() bool) {
+	fake.hasTargetedCFEEMutex.Lock()
+	defer fake.hasTargetedCFEEMutex.Unlock()
+	fake.HasTargetedCFEEStub = stub
+}
+
+func (fake *FakePluginContext) HasTargetedCFEEReturns(result1 bool) {
+	fake.hasTargetedCFEEMutex.Lock()
+	defer fake.hasTargetedCFEEMutex.Unlock()
+	fake.HasTargetedCFEEStub = nil
+	fake.hasTargetedCFEEReturns = struct {
+		result1 bool
+	}{result1}
+}
+
+func (fake *FakePluginContext) HasTargetedCFEEReturnsOnCall(i int, result1 bool) {
+	fake.hasTargetedCFEEMutex.Lock()
+	defer fake.hasTargetedCFEEMutex.Unlock()
+	fake.HasTargetedCFEEStub = nil
+	if fake.hasTargetedCFEEReturnsOnCall == nil {
+		fake.hasTargetedCFEEReturnsOnCall = make(map[int]struct {
+			result1 bool
+		})
+	}
+	fake.hasTargetedCFEEReturnsOnCall[i] = struct {
+		result1 bool
+	}{result1}
+}
+
+func (fake *FakePluginContext) HasTargetedPublicCF() bool {
+	fake.hasTargetedPublicCFMutex.Lock()
+	ret, specificReturn := fake.hasTargetedPublicCFReturnsOnCall[len(fake.hasTargetedPublicCFArgsForCall)]
+	fake.hasTargetedPublicCFArgsForCall = append(fake.hasTargetedPublicCFArgsForCall, struct {
+	}{})
+	fake.recordInvocation("HasTargetedPublicCF", []interface{}{})
+	fake.hasTargetedPublicCFMutex.Unlock()
+	if fake.HasTargetedPublicCFStub != nil {
+		return fake.HasTargetedPublicCFStub()
+	}
+	if specificReturn {
+		return ret.result1
+	}
+	fakeReturns := fake.hasTargetedPublicCFReturns
+	return fakeReturns.result1
+}
+
+func (fake *FakePluginContext) HasTargetedPublicCFCallCount() int {
+	fake.hasTargetedPublicCFMutex.RLock()
+	defer fake.hasTargetedPublicCFMutex.RUnlock()
+	return len(fake.hasTargetedPublicCFArgsForCall)
+}
+
+func (fake *FakePluginContext) HasTargetedPublicCFCalls(stub func() bool) {
+	fake.hasTargetedPublicCFMutex.Lock()
+	defer fake.hasTargetedPublicCFMutex.Unlock()
+	fake.HasTargetedPublicCFStub = stub
+}
+
+func (fake *FakePluginContext) HasTargetedPublicCFReturns(result1 bool) {
+	fake.hasTargetedPublicCFMutex.Lock()
+	defer fake.hasTargetedPublicCFMutex.Unlock()
+	fake.HasTargetedPublicCFStub = nil
+	fake.hasTargetedPublicCFReturns = struct {
+		result1 bool
+	}{result1}
+}
+
+func (fake *FakePluginContext) HasTargetedPublicCFReturnsOnCall(i int, result1 bool) {
+	fake.hasTargetedPublicCFMutex.Lock()
+	defer fake.hasTargetedPublicCFMutex.Unlock()
+	fake.HasTargetedPublicCFStub = nil
+	if fake.hasTargetedPublicCFReturnsOnCall == nil {
+		fake.hasTargetedPublicCFReturnsOnCall = make(map[int]struct {
+			result1 bool
+		})
+	}
+	fake.hasTargetedPublicCFReturnsOnCall[i] = struct {
+		result1 bool
+	}{result1}
+}
+
 func (fake *FakePluginContext) HasTargetedRegion() bool {
 	fake.hasTargetedRegionMutex.Lock()
 	ret, specificReturn := fake.hasTargetedRegionReturnsOnCall[len(fake.hasTargetedRegionArgsForCall)]
@@ -1911,6 +2035,10 @@ func (fake *FakePluginContext) Invocations() map[string][][]interface{} {
 	defer fake.hasTargetedAccountMutex.RUnlock()
 	fake.hasTargetedCFMutex.RLock()
 	defer fake.hasTargetedCFMutex.RUnlock()
+	fake.hasTargetedCFEEMutex.RLock()
+	defer fake.hasTargetedCFEEMutex.RUnlock()
+	fake.hasTargetedPublicCFMutex.RLock()
+	defer fake.hasTargetedPublicCFMutex.RUnlock()
 	fake.hasTargetedRegionMutex.RLock()
 	defer fake.hasTargetedRegionMutex.RUnlock()
 	fake.hasTargetedResourceGroupMutex.RLock()

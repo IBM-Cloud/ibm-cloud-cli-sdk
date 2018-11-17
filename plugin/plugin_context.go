@@ -134,10 +134,6 @@ func (c *pluginContext) CF() CFContext {
 	return c.cfConfig
 }
 
-func (c *pluginContext) HasTargetedCF() bool {
-	return c.cfConfig.HasAPIEndpoint()
-}
-
 func envOrConfig(env bluemix.Env, config string) string {
 	if v := env.Get(); v != "" {
 		return v
