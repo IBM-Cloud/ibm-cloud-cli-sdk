@@ -25,9 +25,10 @@ func (r raw) Unmarshal(bytes []byte) error {
 type BXConfigData struct {
 	APIEndpoint                string
 	ConsoleEndpoint            string
+	CloudType                  string
+	CloudName                  string
 	Region                     string
 	RegionID                   string
-	RegionType                 string
 	IAMEndpoint                string
 	IAMToken                   string
 	IAMRefreshToken            string
@@ -171,43 +172,30 @@ func (c *bxConfig) ConsoleEndpoint() (endpoint string) {
 func (c *bxConfig) CurrentRegion() (region models.Region) {
 	c.read(func() {
 		region = models.Region{
-			ID:   c.data.RegionID,
-			Name: c.data.Region,
-			Type: c.data.RegionType,
+			MCCPID: c.data.RegionID,
+			Name:   c.data.Region,
 		}
 	})
 	return
 }
 
-func (c *bxConfig) CloudName() string {
-	regionID := c.CurrentRegion().ID
-	if regionID == "" {
-		return ""
-	}
-
-	splits := strings.Split(regionID, ":")
-	if len(splits) != 3 {
-		return ""
-	}
-
-	customer := splits[0]
-	if customer != "ibm" {
-		return customer
-	}
-
-	deployment := splits[1]
-	switch {
-	case deployment == "yp":
-		return "bluemix"
-	case strings.HasPrefix(deployment, "ys"):
-		return "staging"
-	default:
-		return ""
-	}
+func (c *bxConfig) HasTargetedRegion() bool {
+	r := c.CurrentRegion()
+	return r.Name != ""
 }
 
-func (c *bxConfig) CloudType() string {
-	return c.CurrentRegion().Type
+func (c *bxConfig) CloudName() (cname string) {
+	c.read(func() {
+		cname = c.data.CloudName
+	})
+	return
+}
+
+func (c *bxConfig) CloudType() (ctype string) {
+	c.read(func() {
+		ctype = c.data.CloudType
+	})
+	return
 }
 
 func (c *bxConfig) IAMEndpoint() (endpoint string) {
@@ -404,8 +392,7 @@ func (c *bxConfig) SetConsoleEndpoint(endpoint string) {
 func (c *bxConfig) SetRegion(region models.Region) {
 	c.write(func() {
 		c.data.Region = region.Name
-		c.data.RegionID = region.ID
-		c.data.RegionType = region.Type
+		c.data.RegionID = region.MCCPID
 	})
 }
 
@@ -539,6 +526,18 @@ func (c *bxConfig) SetCFEEEnvID(envID string) {
 	})
 }
 
+func (c *bxConfig) SetCloudType(ctype string) {
+	c.write(func() {
+		c.data.CloudType = ctype
+	})
+}
+
+func (c *bxConfig) SetCloudName(cname string) {
+	c.write(func() {
+		c.data.CloudName = cname
+	})
+}
+
 func (c *bxConfig) ClearSession() {
 	c.write(func() {
 		c.data.IAMToken = ""
@@ -553,8 +552,9 @@ func (c *bxConfig) UnsetAPI() {
 		c.data.APIEndpoint = ""
 		c.data.Region = ""
 		c.data.RegionID = ""
-		c.data.RegionType = ""
 		c.data.ConsoleEndpoint = ""
 		c.data.IAMEndpoint = ""
+		c.data.CloudName = ""
+		c.data.CloudType = ""
 	})
 }

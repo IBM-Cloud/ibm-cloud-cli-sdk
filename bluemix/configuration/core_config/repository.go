@@ -18,6 +18,7 @@ type Repository interface {
 	CloudName() string
 	CloudType() string
 	CurrentRegion() models.Region
+	HasTargetedRegion() bool
 	IAMToken() string
 	IAMRefreshToken() string
 	IsLoggedIn() bool
@@ -47,6 +48,8 @@ type Repository interface {
 	SetAPIEndpoint(string)
 	SetConsoleEndpoint(string)
 	SetIAMEndpoint(string)
+	SetCloudType(string)
+	SetCloudName(string)
 	SetRegion(models.Region)
 	SetIAMToken(string)
 	SetIAMRefreshToken(string)
@@ -70,6 +73,7 @@ type Repository interface {
 	CFConfig() CFConfig
 	HasTargetedCF() bool
 	HasTargetedCFEE() bool
+	HasTargetedPublicCF() bool
 	SetCFEETargeted(bool)
 	CFEEEnvID() string
 	SetCFEEEnvID(string)
@@ -162,6 +166,14 @@ func (c repository) CFConfig() CFConfig {
 
 func (c repository) HasTargetedCF() bool {
 	return c.cfConfig.HasAPIEndpoint()
+}
+
+func (c repository) HasTargetedCFEE() bool {
+	return c.HasTargetedCF() && c.bxConfig.HasTargetedCFEE()
+}
+
+func (c repository) HasTargetedPublicCF() bool {
+	return c.HasTargetedCF() && !c.bxConfig.HasTargetedCFEE()
 }
 
 func (c repository) SetSSLDisabled(disabled bool) {

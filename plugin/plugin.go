@@ -103,6 +103,7 @@ type Plugin interface {
 // PluginContext is a Bluemix CLI context passed to plugin's Run method. It
 // carries service endpoints info, login session, user configuration, plugin
 // configuration and provides utility methods.
+//go:generate counterfeiter . PluginContext
 type PluginContext interface {
 	// APIEndpoint returns the targeted API endpoint of IBM Cloud
 	APIEndpoint() string
@@ -127,6 +128,9 @@ type PluginContext interface {
 
 	// Region returns the targeted region
 	CurrentRegion() models.Region
+
+	// HasTargetedRegion() return whether a region is targeted
+	HasTargetedRegion() bool
 
 	// IAMToken returns the IAM access token
 	IAMToken() string
@@ -166,6 +170,12 @@ type PluginContext interface {
 
 	// HasTargetedCF returns whether a CloudFoundry environment has been targeted
 	HasTargetedCF() bool
+
+	// HasTargetedCF returns whether a enterprise CloudFoundry instance has been targeted
+	HasTargetedCFEE() bool
+
+	// HasTargetedCF returns whether a public CloudFoundry instance has been targeted
+	HasTargetedPublicCF() bool
 
 	// Locale returns user specified locale
 	Locale() string
