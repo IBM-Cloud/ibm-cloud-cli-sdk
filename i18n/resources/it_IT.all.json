@@ -24,8 +24,16 @@
     "translation": "Trascorso:"
   },
   {
+    "id": "External authentication failed. Error code: {{.ErrorCode}}, message: {{.Message}}",
+    "translation": "External authentication failed. Error code: {{.ErrorCode}}, message: {{.Message}}"
+  },
+  {
     "id": "FAILED",
     "translation": "NON RIUSCITO"
+  },
+  {
+    "id": "Invalid grant type: ",
+    "translation": "Invalid grant type: "
   },
   {
     "id": "Invalid token: ",
