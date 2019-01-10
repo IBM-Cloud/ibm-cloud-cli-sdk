@@ -7,6 +7,12 @@ import (
 	"time"
 )
 
+const (
+	// IAM Token Subject Types
+	// ServiceIDSubjectType is the subject type for service ID
+	ServiceIDSubjectType = "ServiceId"
+)
+
 type IAMTokenInfo struct {
 	IAMID       string       `json:"iam_id"`
 	ID          string       `json:"id"`

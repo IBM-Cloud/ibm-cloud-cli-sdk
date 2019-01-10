@@ -221,7 +221,7 @@ func (c *bxConfig) IAMRefreshToken() (token string) {
 
 func (c *bxConfig) UserEmail() (email string) {
 	c.read(func() {
-		email = NewIAMTokenInfo(c.data.IAMToken).UserEmail
+		email = NewIAMTokenInfo(c.data.IAMToken).Subject
 	})
 	return
 }
