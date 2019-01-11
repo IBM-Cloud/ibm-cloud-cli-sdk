@@ -8,6 +8,7 @@ import (
 	"regexp"
 	"strings"
 
+	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/terminal"
 	. "github.com/IBM-Cloud/ibm-cloud-cli-sdk/i18n"
 )
 
@@ -46,7 +47,7 @@ func (loggerImpl *loggerImpl) Close() error {
 
 func newLoggerImpl(out io.Writer, prefix string, flag int) *loggerImpl {
 	l := log.New(out, prefix, flag)
-	c := out.(io.WriteCloser)
+	c, _ := out.(io.WriteCloser)
 	return &loggerImpl{
 		Logger: l,
 		c:      c,
@@ -69,12 +70,12 @@ func NewLogger(bluemix_trace string) Printer {
 
 // NewStdLogger creates a a printer that writes to StdOut.
 func NewStdLogger() PrinterCloser {
-	return newLoggerImpl(os.Stderr, "", 0)
+	return newLoggerImpl(terminal.ErrOutput, "", 0)
 }
 
 // NewFileLogger creates a printer that writes to the given file path.
 func NewFileLogger(path string) PrinterCloser {
-	file, err := os.OpenFile(path, os.O_CREATE|os.O_RDWR|os.O_APPEND, 0666)
+	file, err := os.OpenFile(path, os.O_CREATE|os.O_RDWR|os.O_APPEND, 0600)
 	if err != nil {
 		logger := NewStdLogger()
 		logger.Printf(T("An error occurred when creating log file '{{.Path}}':\n{{.Error}}\n\n", map[string]interface{}{"Path": path, "Error": err.Error()}))

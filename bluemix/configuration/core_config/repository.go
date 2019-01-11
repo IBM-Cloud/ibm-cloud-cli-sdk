@@ -18,6 +18,7 @@ type Repository interface {
 	CloudName() string
 	CloudType() string
 	CurrentRegion() models.Region
+	HasTargetedRegion() bool
 	IAMToken() string
 	IAMRefreshToken() string
 	IsLoggedIn() bool
@@ -47,6 +48,8 @@ type Repository interface {
 	SetAPIEndpoint(string)
 	SetConsoleEndpoint(string)
 	SetIAMEndpoint(string)
+	SetCloudType(string)
+	SetCloudName(string)
 	SetRegion(models.Region)
 	SetIAMToken(string)
 	SetIAMRefreshToken(string)
@@ -70,6 +73,7 @@ type Repository interface {
 	CFConfig() CFConfig
 	HasTargetedCF() bool
 	HasTargetedCFEE() bool
+	HasTargetedPublicCF() bool
 	SetCFEETargeted(bool)
 	CFEEEnvID() string
 	SetCFEEEnvID(string)
@@ -123,7 +127,25 @@ type CFConfig interface {
 
 type repository struct {
 	*bxConfig
-	cfConfig *cfConfig
+	cfConfig cfConfigWrapper
+}
+
+type cfConfigWrapper struct {
+	*cfConfig
+	bx *bxConfig
+}
+
+func (wrapper cfConfigWrapper) UnsetAPI() {
+	wrapper.cfConfig.UnsetAPI()
+	wrapper.bx.SetCFEEEnvID("")
+	wrapper.bx.SetCFEETargeted(false)
+}
+
+func newRepository(bx *bxConfig, cf *cfConfig) repository {
+	return repository{
+		bxConfig: bx,
+		cfConfig: cfConfigWrapper{cfConfig: cf, bx: bx},
+	}
 }
 
 func (c repository) IsLoggedIn() bool {
@@ -147,7 +169,11 @@ func (c repository) HasTargetedCF() bool {
 }
 
 func (c repository) HasTargetedCFEE() bool {
-	return c.HasTargetedCF() && c.CFEETargeted()
+	return c.HasTargetedCF() && c.bxConfig.HasTargetedCFEE()
+}
+
+func (c repository) HasTargetedPublicCF() bool {
+	return c.HasTargetedCF() && !c.bxConfig.HasTargetedCFEE()
 }
 
 func (c repository) SetSSLDisabled(disabled bool) {
@@ -192,8 +218,5 @@ func NewCoreConfigFromPath(cfConfigPath string, bxConfigPath string, errHandler 
 }
 
 func NewCoreConfigFromPersistor(cfPersistor configuration.Persistor, bxPersistor configuration.Persistor, errHandler func(error)) ReadWriter {
-	return repository{
-		cfConfig: createCFConfigFromPersistor(cfPersistor, errHandler),
-		bxConfig: createBluemixConfigFromPersistor(bxPersistor, errHandler),
-	}
+	return newRepository(createBluemixConfigFromPersistor(bxPersistor, errHandler), createCFConfigFromPersistor(cfPersistor, errHandler))
 }

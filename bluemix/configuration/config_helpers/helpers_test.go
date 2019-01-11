@@ -66,7 +66,7 @@ func TestConfigDir_NothingSet_IBMCloudExists(t *testing.T) {
 
 	// create a .ibmcloud directory and it should be returned
 	ibmcloudDir := filepath.Join(userHome, ".ibmcloud")
-	assert.NoError(os.MkdirAll(ibmcloudDir, 0755))
+	assert.NoError(os.MkdirAll(ibmcloudDir, 0700))
 	assert.Equal(ibmcloudDir, ConfigDir())
 }
 
