@@ -226,6 +226,18 @@ func (c *bxConfig) UserEmail() (email string) {
 	return
 }
 
+func (c *bxConfig) UserDisplayText() (text string) {
+	c.read(func() {
+		token := NewIAMTokenInfo(c.data.IAMToken)
+		if token.UserEmail != "" {
+			text = token.UserEmail
+		} else {
+			text = token.Subject
+		}
+	})
+	return
+}
+
 func (c *bxConfig) IAMID() (guid string) {
 	c.read(func() {
 		guid = NewIAMTokenInfo(c.data.IAMToken).IAMID
