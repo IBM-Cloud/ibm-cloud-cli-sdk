@@ -23,6 +23,8 @@ type Repository interface {
 	IAMRefreshToken() string
 	IsLoggedIn() bool
 	UserEmail() string
+	// UserDisplayText is the human readable ID for logged-in users which include non-human IDs
+	UserDisplayText() string
 	IAMID() string
 	CurrentAccount() models.Account
 	HasTargetedAccount() bool
