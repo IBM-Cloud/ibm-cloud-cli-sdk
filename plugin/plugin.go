@@ -11,12 +11,13 @@ import (
 
 // PluginMetadata describes metadata of a plugin.
 type PluginMetadata struct {
-	Name          string      // name of the plugin
-	Aliases       []string    // aliases of the plugin
-	Version       VersionType // version of the plugin
-	MinCliVersion VersionType // minimal version of CLI required by the plugin
-	Namespaces    []Namespace // list of namespaces provided by the plugin
-	Commands      []Command   // list of commands provided by the plugin
+	Name                   string      // name of the plugin
+	Aliases                []string    // aliases of the plugin
+	Version                VersionType // version of the plugin
+	MinCliVersion          VersionType // minimal version of CLI required by the plugin
+	Namespaces             []Namespace // list of namespaces provided by the plugin
+	Commands               []Command   // list of commands provided by the plugin
+	SupportsBashCompletion bool        // true if `--generate-bash-completion` flag is supported
 
 	// SDKVersion is SDK version used by the plugin.
 	// It is set by the plugin framework to check SDK compatibility with the CLI.
