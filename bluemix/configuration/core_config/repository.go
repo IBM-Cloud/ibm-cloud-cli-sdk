@@ -22,6 +22,7 @@ type Repository interface {
 	IAMToken() string
 	IAMRefreshToken() string
 	IsLoggedIn() bool
+	IsLoggedInWithServiceID() bool
 	UserEmail() string
 	// UserDisplayText is the human readable ID for logged-in users which include non-human IDs
 	UserDisplayText() string
@@ -152,6 +153,10 @@ func newRepository(bx *bxConfig, cf *cfConfig) repository {
 
 func (c repository) IsLoggedIn() bool {
 	return c.bxConfig.IsLoggedIn() || c.cfConfig.IsLoggedIn()
+}
+
+func (c repository) IsLoggedInWithServiceID() bool {
+	return c.bxConfig.IsLoggedIn() && NewIAMTokenInfo(c.IAMToken()).SubjectType == SubjectTypeServiceID
 }
 
 func (c repository) UserEmail() string {

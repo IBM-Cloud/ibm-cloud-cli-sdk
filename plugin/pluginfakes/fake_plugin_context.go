@@ -259,6 +259,16 @@ type FakePluginContext struct {
 	isLoggedInReturnsOnCall map[int]struct {
 		result1 bool
 	}
+	IsLoggedInWithServiceIDStub        func() bool
+	isLoggedInWithServiceIDMutex       sync.RWMutex
+	isLoggedInWithServiceIDArgsForCall []struct {
+	}
+	isLoggedInWithServiceIDReturns struct {
+		result1 bool
+	}
+	isLoggedInWithServiceIDReturnsOnCall map[int]struct {
+		result1 bool
+	}
 	IsSSLDisabledStub        func() bool
 	isSSLDisabledMutex       sync.RWMutex
 	isSSLDisabledArgsForCall []struct {
@@ -1645,6 +1655,58 @@ func (fake *FakePluginContext) IsLoggedInReturnsOnCall(i int, result1 bool) {
 	}{result1}
 }
 
+func (fake *FakePluginContext) IsLoggedInWithServiceID() bool {
+	fake.isLoggedInWithServiceIDMutex.Lock()
+	ret, specificReturn := fake.isLoggedInWithServiceIDReturnsOnCall[len(fake.isLoggedInWithServiceIDArgsForCall)]
+	fake.isLoggedInWithServiceIDArgsForCall = append(fake.isLoggedInWithServiceIDArgsForCall, struct {
+	}{})
+	fake.recordInvocation("IsLoggedInWithServiceID", []interface{}{})
+	fake.isLoggedInWithServiceIDMutex.Unlock()
+	if fake.IsLoggedInWithServiceIDStub != nil {
+		return fake.IsLoggedInWithServiceIDStub()
+	}
+	if specificReturn {
+		return ret.result1
+	}
+	fakeReturns := fake.isLoggedInWithServiceIDReturns
+	return fakeReturns.result1
+}
+
+func (fake *FakePluginContext) IsLoggedInWithServiceIDCallCount() int {
+	fake.isLoggedInWithServiceIDMutex.RLock()
+	defer fake.isLoggedInWithServiceIDMutex.RUnlock()
+	return len(fake.isLoggedInWithServiceIDArgsForCall)
+}
+
+func (fake *FakePluginContext) IsLoggedInWithServiceIDCalls(stub func() bool) {
+	fake.isLoggedInWithServiceIDMutex.Lock()
+	defer fake.isLoggedInWithServiceIDMutex.Unlock()
+	fake.IsLoggedInWithServiceIDStub = stub
+}
+
+func (fake *FakePluginContext) IsLoggedInWithServiceIDReturns(result1 bool) {
+	fake.isLoggedInWithServiceIDMutex.Lock()
+	defer fake.isLoggedInWithServiceIDMutex.Unlock()
+	fake.IsLoggedInWithServiceIDStub = nil
+	fake.isLoggedInWithServiceIDReturns = struct {
+		result1 bool
+	}{result1}
+}
+
+func (fake *FakePluginContext) IsLoggedInWithServiceIDReturnsOnCall(i int, result1 bool) {
+	fake.isLoggedInWithServiceIDMutex.Lock()
+	defer fake.isLoggedInWithServiceIDMutex.Unlock()
+	fake.IsLoggedInWithServiceIDStub = nil
+	if fake.isLoggedInWithServiceIDReturnsOnCall == nil {
+		fake.isLoggedInWithServiceIDReturnsOnCall = make(map[int]struct {
+			result1 bool
+		})
+	}
+	fake.isLoggedInWithServiceIDReturnsOnCall[i] = struct {
+		result1 bool
+	}{result1}
+}
+
 func (fake *FakePluginContext) IsSSLDisabled() bool {
 	fake.isSSLDisabledMutex.Lock()
 	ret, specificReturn := fake.isSSLDisabledReturnsOnCall[len(fake.isSSLDisabledArgsForCall)]
@@ -2117,6 +2179,8 @@ func (fake *FakePluginContext) Invocations() map[string][][]interface{} {
 	defer fake.iMSAccountIDMutex.RUnlock()
 	fake.isLoggedInMutex.RLock()
 	defer fake.isLoggedInMutex.RUnlock()
+	fake.isLoggedInWithServiceIDMutex.RLock()
+	defer fake.isLoggedInWithServiceIDMutex.RUnlock()
 	fake.isSSLDisabledMutex.RLock()
 	defer fake.isSSLDisabledMutex.RUnlock()
 	fake.localeMutex.RLock()

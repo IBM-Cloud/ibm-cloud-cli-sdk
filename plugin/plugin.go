@@ -149,6 +149,9 @@ type PluginContext interface {
 	// Call CF().IsLoggedIn() to return whether user has been logged into the CF environment.
 	IsLoggedIn() bool
 
+	// IsLoggedInWithServiceID returns if a user has logged into IBM cloud using service ID.
+	IsLoggedInWithServiceID() bool
+
 	// IMSAccountID returns ID of the IMS account linked to the targeted BSS
 	// account
 	IMSAccountID() string
