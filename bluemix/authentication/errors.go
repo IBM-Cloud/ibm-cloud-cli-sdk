@@ -39,10 +39,20 @@ type InvalidGrantTypeError struct {
 	Description string
 }
 
-func NewInvalidGrantTypeError(descrption string) *InvalidGrantTypeError {
-	return &InvalidGrantTypeError{Description: descrption}
+func NewInvalidGrantTypeError(description string) *InvalidGrantTypeError {
+	return &InvalidGrantTypeError{Description: description}
 }
 
 func (e *InvalidGrantTypeError) Error() string {
 	return T("Invalid grant type: ") + e.Description
+}
+
+type ExternalAuthenticationError struct {
+	ErrorCode    string
+	ErrorMessage string
+}
+
+func (e ExternalAuthenticationError) Error() string {
+	return T("External authentication failed. Error code: {{.ErrorCode}}, message: {{.Message}}",
+		map[string]interface{}{"ErrorCode": e.ErrorCode, "Message": e.ErrorMessage})
 }

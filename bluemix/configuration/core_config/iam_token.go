@@ -5,6 +5,8 @@ import (
 	"encoding/json"
 	"strings"
 	"time"
+
+	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/common/types"
 )
 
 type IAMTokenInfo struct {
@@ -19,32 +21,16 @@ type IAMTokenInfo struct {
 	Accounts    AccountsInfo `json:"account"`
 	Subject     string       `json:"sub"`
 	SubjectType string       `json:"sub_type"`
-	Expiray     jsonTime     `json:"exp"`
 	Issuer      string       `json:"iss"`
 	GrantType   string       `json:"grant_type"`
 	Scope       string       `json:"scope"`
+	Expiry      time.Time
 }
 
 type AccountsInfo struct {
 	AccountID    string `json:"bss"`
 	IMSAccountID string `json:"ims"`
-}
-
-type jsonTime struct {
-	time.Time
-}
-
-func (t jsonTime) MarshalJSON() ([]byte, error) {
-	return json.Marshal(t.Unix())
-}
-
-func (t *jsonTime) UnmarshalJSON(bytes []byte) error {
-	var sec int64
-	if err := json.Unmarshal(bytes, &sec); err != nil {
-		return err
-	}
-	t.Time = time.Unix(sec, 0)
-	return nil
+	Valid        bool   `json:"valid"`
 }
 
 func NewIAMTokenInfo(token string) IAMTokenInfo {
@@ -53,13 +39,18 @@ func NewIAMTokenInfo(token string) IAMTokenInfo {
 		return IAMTokenInfo{}
 	}
 
-	var info IAMTokenInfo
-	err = json.Unmarshal(tokenJSON, &info)
+	var t struct {
+		IAMTokenInfo
+		Expiry types.UnixTime `json:"exp"`
+	}
+	err = json.Unmarshal(tokenJSON, &t)
 	if err != nil {
 		return IAMTokenInfo{}
 	}
 
-	return info
+	ret := t.IAMTokenInfo
+	ret.Expiry = t.Expiry.Time()
+	return ret
 }
 
 func decodeAccessToken(token string) (tokenJSON []byte, err error) {

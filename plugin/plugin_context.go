@@ -8,7 +8,8 @@ import (
 	"strings"
 
 	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix"
-	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/authentication"
+	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/authentication/iam"
+	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/authentication/uaa"
 	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/configuration/core_config"
 	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/common/rest"
 )
@@ -29,16 +30,16 @@ func (c cfConfigWrapper) RefreshUAAToken() (string, error) {
 		return "", fmt.Errorf("CloudFoundry API endpoint is not set")
 	}
 
-	config := &authentication.UAAConfig{UAAEndpoint: c.AuthenticationEndpoint()}
-	auth := authentication.NewUAARepository(config, rest.NewClient())
-	token, err := auth.RefreshToken(c.UAARefreshToken())
+	auth := uaa.NewClient(uaa.DefaultConfig(c.AuthenticationEndpoint()), rest.NewClient())
+	token, err := auth.GetToken(uaa.RefreshTokenRequest(c.UAARefreshToken()))
 	if err != nil {
 		return "", err
 	}
 
-	c.SetUAAToken(token.Token())
+	ret := fmt.Sprintf("%s %s", token.TokenType, token.AccessToken)
+	c.SetUAAToken(ret)
 	c.SetUAARefreshToken(token.RefreshToken)
-	return token.Token(), nil
+	return ret, nil
 }
 
 func createPluginContext(pluginPath string, coreConfig core_config.ReadWriter) *pluginContext {
@@ -97,25 +98,24 @@ func (c *pluginContext) PluginConfig() PluginConfig {
 }
 
 func (c *pluginContext) RefreshIAMToken() (string, error) {
-	endpoint := os.Getenv("IAM_ENDPOINT")
-	if endpoint == "" {
-		endpoint = c.IAMEndpoint()
+	iamEndpoint := os.Getenv("IAM_ENDPOINT")
+	if iamEndpoint == "" {
+		iamEndpoint = c.IAMEndpoint()
 	}
-	if endpoint == "" {
+	if iamEndpoint == "" {
 		return "", fmt.Errorf("IAM endpoint is not set")
 	}
 
-	config := &authentication.IAMConfig{TokenEndpoint: endpoint + "/identity/token"}
-	auth := authentication.NewIAMAuthRepository(config, rest.NewClient())
-	iamToken, err := auth.RefreshToken(c.IAMRefreshToken())
+	auth := iam.NewClient(iam.DefaultConfig(iamEndpoint), rest.NewClient())
+	token, err := auth.GetToken(iam.RefreshTokenRequest(c.IAMRefreshToken()))
 	if err != nil {
 		return "", err
 	}
 
-	c.SetIAMToken(iamToken.Token())
-	c.SetIAMRefreshToken(iamToken.RefreshToken)
-
-	return iamToken.Token(), nil
+	ret := fmt.Sprintf("%s %s", token.TokenType, token.AccessToken)
+	c.SetIAMToken(ret)
+	c.SetIAMRefreshToken(token.RefreshToken)
+	return ret, nil
 }
 
 func (c *pluginContext) Trace() string {
