@@ -9,6 +9,10 @@ import (
 	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/common/types"
 )
 
+const (
+	SubjectTypeServiceID = "ServiceId"
+)
+
 type IAMTokenInfo struct {
 	IAMID       string       `json:"iam_id"`
 	ID          string       `json:"id"`
