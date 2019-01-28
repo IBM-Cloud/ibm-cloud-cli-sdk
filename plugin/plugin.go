@@ -174,6 +174,9 @@ type PluginContext interface {
 	// HasTargetedCF returns whether a enterprise CloudFoundry instance has been targeted
 	HasTargetedCFEE() bool
 
+	// CFEEEnvID returns ID of targeted CFEE environment
+	CFEEEnvID() string
+
 	// HasTargetedCF returns whether a public CloudFoundry instance has been targeted
 	HasTargetedPublicCF() bool
 

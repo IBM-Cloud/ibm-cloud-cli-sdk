@@ -29,6 +29,16 @@ type FakePluginContext struct {
 	cFReturnsOnCall map[int]struct {
 		result1 plugin.CFContext
 	}
+	CFEEEnvIDStub        func() string
+	cFEEEnvIDMutex       sync.RWMutex
+	cFEEEnvIDArgsForCall []struct {
+	}
+	cFEEEnvIDReturns struct {
+		result1 string
+	}
+	cFEEEnvIDReturnsOnCall map[int]struct {
+		result1 string
+	}
 	CLINameStub        func() string
 	cLINameMutex       sync.RWMutex
 	cLINameArgsForCall []struct {
@@ -436,6 +446,58 @@ func (fake *FakePluginContext) CFReturnsOnCall(i int, result1 plugin.CFContext) 
 	}
 	fake.cFReturnsOnCall[i] = struct {
 		result1 plugin.CFContext
+	}{result1}
+}
+
+func (fake *FakePluginContext) CFEEEnvID() string {
+	fake.cFEEEnvIDMutex.Lock()
+	ret, specificReturn := fake.cFEEEnvIDReturnsOnCall[len(fake.cFEEEnvIDArgsForCall)]
+	fake.cFEEEnvIDArgsForCall = append(fake.cFEEEnvIDArgsForCall, struct {
+	}{})
+	fake.recordInvocation("CFEEEnvID", []interface{}{})
+	fake.cFEEEnvIDMutex.Unlock()
+	if fake.CFEEEnvIDStub != nil {
+		return fake.CFEEEnvIDStub()
+	}
+	if specificReturn {
+		return ret.result1
+	}
+	fakeReturns := fake.cFEEEnvIDReturns
+	return fakeReturns.result1
+}
+
+func (fake *FakePluginContext) CFEEEnvIDCallCount() int {
+	fake.cFEEEnvIDMutex.RLock()
+	defer fake.cFEEEnvIDMutex.RUnlock()
+	return len(fake.cFEEEnvIDArgsForCall)
+}
+
+func (fake *FakePluginContext) CFEEEnvIDCalls(stub func() string) {
+	fake.cFEEEnvIDMutex.Lock()
+	defer fake.cFEEEnvIDMutex.Unlock()
+	fake.CFEEEnvIDStub = stub
+}
+
+func (fake *FakePluginContext) CFEEEnvIDReturns(result1 string) {
+	fake.cFEEEnvIDMutex.Lock()
+	defer fake.cFEEEnvIDMutex.Unlock()
+	fake.CFEEEnvIDStub = nil
+	fake.cFEEEnvIDReturns = struct {
+		result1 string
+	}{result1}
+}
+
+func (fake *FakePluginContext) CFEEEnvIDReturnsOnCall(i int, result1 string) {
+	fake.cFEEEnvIDMutex.Lock()
+	defer fake.cFEEEnvIDMutex.Unlock()
+	fake.CFEEEnvIDStub = nil
+	if fake.cFEEEnvIDReturnsOnCall == nil {
+		fake.cFEEEnvIDReturnsOnCall = make(map[int]struct {
+			result1 string
+		})
+	}
+	fake.cFEEEnvIDReturnsOnCall[i] = struct {
+		result1 string
 	}{result1}
 }
 
@@ -2009,6 +2071,8 @@ func (fake *FakePluginContext) Invocations() map[string][][]interface{} {
 	defer fake.aPIEndpointMutex.RUnlock()
 	fake.cFMutex.RLock()
 	defer fake.cFMutex.RUnlock()
+	fake.cFEEEnvIDMutex.RLock()
+	defer fake.cFEEEnvIDMutex.RUnlock()
 	fake.cLINameMutex.RLock()
 	defer fake.cLINameMutex.RUnlock()
 	fake.cloudNameMutex.RLock()
