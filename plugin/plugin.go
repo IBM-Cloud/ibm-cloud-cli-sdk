@@ -38,6 +38,16 @@ func (v VersionType) String() string {
 	return fmt.Sprintf("%d.%d.%d", v.Major, v.Minor, v.Build)
 }
 
+// Status decribes the status of the namespace or command and will be shown in the help text
+type Status string
+
+// Valid status
+const (
+	StatusExperimental Status = "experimental"
+	StatusBeta         Status = "beta"
+	StatusDeprecated   Status = "deprecated"
+)
+
 // Namespace represents a category of commands that have similar
 // functionalities. A command under a namespace is run using 'bx [namespace]
 // [command]'.
@@ -53,6 +63,7 @@ type Namespace struct {
 	Name        string   // base name
 	Aliases     []string // aliases
 	Description string   // description of the namespace
+	Status      Status   // status of the commands in the namespace
 }
 
 func (n Namespace) NameAndAliases() []string {
@@ -69,6 +80,7 @@ type Command struct {
 	Usage       string   // usage detail to be displayed in command help
 	Flags       []Flag   // command options
 	Hidden      bool     // true to hide the command in help text
+	Status      Status   // status of the command
 }
 
 func (c Command) NameAndAliases() []string {
