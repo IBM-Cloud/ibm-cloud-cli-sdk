@@ -38,14 +38,14 @@ func (v VersionType) String() string {
 	return fmt.Sprintf("%d.%d.%d", v.Major, v.Minor, v.Build)
 }
 
-// Status decribes the status of the namespace or command and will be shown in the help text
-type Status string
+// Stage decribes the stage of the namespace or command and will be shown in the help text
+type Stage string
 
-// Valid status
+// Valid stages
 const (
-	StatusExperimental Status = "experimental"
-	StatusBeta         Status = "beta"
-	StatusDeprecated   Status = "deprecated"
+	StageExperimental Stage = "experimental"
+	StageBeta         Stage = "beta"
+	StageDeprecated   Stage = "deprecated"
 )
 
 // Namespace represents a category of commands that have similar
@@ -63,7 +63,7 @@ type Namespace struct {
 	Name        string   // base name
 	Aliases     []string // aliases
 	Description string   // description of the namespace
-	Status      Status   // status of the commands in the namespace
+	Stage       Stage    // stage of the commands in the namespace
 }
 
 func (n Namespace) NameAndAliases() []string {
@@ -80,7 +80,7 @@ type Command struct {
 	Usage       string   // usage detail to be displayed in command help
 	Flags       []Flag   // command options
 	Hidden      bool     // true to hide the command in help text
-	Status      Status   // status of the command
+	Stage       Stage    // stage of the command
 }
 
 func (c Command) NameAndAliases() []string {
