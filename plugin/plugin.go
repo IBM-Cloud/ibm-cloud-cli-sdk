@@ -21,6 +21,10 @@ type PluginMetadata struct {
 	// SDKVersion is SDK version used by the plugin.
 	// It is set by the plugin framework to check SDK compatibility with the CLI.
 	SDKVersion VersionType
+
+	// If DelegateBashCompletion is true, plugin command's completion is handled by plugin.
+	// The CLI will invoke '<plugin_binary> SendCompletion <args>'
+	DelegateBashCompletion bool
 }
 
 func (p PluginMetadata) NameAndAliases() []string {
