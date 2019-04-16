@@ -44,7 +44,7 @@ func (p *PrintContext) Run(context plugin.PluginContext, args []string) {
 
 func (p *PrintContext) GetMetadata() plugin.PluginMetadata {
 	return plugin.PluginMetadata{
-		Name: "PrintContext",
+		Name: "context-sample",
 		Version: plugin.VersionType{
 			Major: 0,
 			Minor: 1,
@@ -58,8 +58,8 @@ func (p *PrintContext) GetMetadata() plugin.PluginMetadata {
 		Commands: []plugin.Command{
 			{
 				Name:        "context",
-				Description: "Print Bluemix plugin context",
-				Usage:       "bx context",
+				Description: "Print IBM Cloud plugin context",
+				Usage:       "ibmcloud context",
 			},
 		},
 	}

@@ -14,18 +14,18 @@ func main() {
 
 func (n *NamespaceDemo) Run(context plugin.PluginContext, args []string) {
 	switch args[0] {
-	case "cmd-1":
-		fmt.Println("Running command 'cmd-1'.")
-	case "cmd-2":
-		fmt.Println("Running command 'cmd-2'.")
-	case "cmd-3":
-		fmt.Println("Running command 'cmd-3'.")
+	case "list":
+		fmt.Println("Running command 'list'.")
+	case "show":
+		fmt.Println("Running command 'show'.")
+	case "delete":
+		fmt.Println("Running command 'delete'.")
 	}
 }
 
 func (n *NamespaceDemo) GetMetadata() plugin.PluginMetadata {
 	return plugin.PluginMetadata{
-		Name: "NamespaceDemo",
+		Name: "namespace-sample",
 		Version: plugin.VersionType{
 			Major: 0,
 			Minor: 0,
@@ -38,28 +38,28 @@ func (n *NamespaceDemo) GetMetadata() plugin.PluginMetadata {
 		},
 		Namespaces: []plugin.Namespace{
 			plugin.Namespace{
-				Name:        "demo",
-				Description: "Plugin demonstration",
+				Name:        "ns",
+				Description: "Demonstrate namespace.",
 			},
 		},
 		Commands: []plugin.Command{
 			{
-				Namespace:   "demo",
-				Name:        "cmd-1",
-				Description: "Help text of cmd-1",
-				Usage:       "bx demo cmd-1",
+				Namespace:   "ns",
+				Name:        "list",
+				Description: "List resources.",
+				Usage:       "ibmcloud ns list",
 			},
 			{
-				Namespace:   "demo",
-				Name:        "cmd-2",
-				Description: "Help text of cmd-2",
-				Usage:       "bx demo cmd-2",
+				Namespace:   "ns",
+				Name:        "show",
+				Description: "Show details of a resource.",
+				Usage:       "ibmcloud ns show",
 			},
 			{
-				Namespace:   "demo",
-				Name:        "cmd-3",
-				Description: "Help text of cmd-3",
-				Usage:       "bx demo cmd-3",
+				Namespace:   "ns",
+				Name:        "delete",
+				Description: "Delete a resource.",
+				Usage:       "ibmcloud ns delete",
 			},
 		},
 	}
