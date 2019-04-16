@@ -300,7 +300,7 @@ import (
 
 	goi18n "github.com/nicksnyder/go-i18n/i18n"
 
-	"github.ibm.com/Bluemix/ibm-cloud-cli-sdk/bluemix/configuration/core_config"
+	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/configuration/core_config"
 	"${project_path}/plugin/i18n/detection"
 	"${project_path}/plugin/resources"
 )
@@ -334,7 +334,7 @@ func SetResourcePath(path string) {
 
 var T goi18n.TranslateFunc = Init(core_config.NewCoreConfig(func(error) {}), new(detection.JibberJabberDetector))
 
-func Init(coreConfig core_config.Reader, detector detection.Detector) goi18n.TranslateFunc {
+func Init(coreConfig core_config.Repository, detector detection.Detector) goi18n.TranslateFunc {
 	userLocale := coreConfig.Locale()
 	if userLocale != "" {
 		return initWithLocale(userLocale)
@@ -553,7 +553,6 @@ func (p *${plugin_struct_name}Plugin) Run(context plugin.PluginContext, args []s
 
 func getCommands() []metadata.Command {
 	return []metadata.Command{
-		new(commands.Hello),
 	}
 }
 
