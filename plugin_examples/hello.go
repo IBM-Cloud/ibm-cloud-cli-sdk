@@ -13,12 +13,12 @@ func main() {
 }
 
 func (pluginDemo *HelloWorldPlugin) Run(context plugin.PluginContext, args []string) {
-	fmt.Println("Hi, this is my first plugin for Bluemix")
+	fmt.Println("Hi, this is my first plugin for IBM Cloud CLI.")
 }
 
 func (pluginDemo *HelloWorldPlugin) GetMetadata() plugin.PluginMetadata {
 	return plugin.PluginMetadata{
-		Name: "SayHello",
+		Name: "hello-sample",
 		Version: plugin.VersionType{
 			Major: 0,
 			Minor: 0,
@@ -28,8 +28,8 @@ func (pluginDemo *HelloWorldPlugin) GetMetadata() plugin.PluginMetadata {
 			{
 				Name:        "hello",
 				Alias:       "hi",
-				Description: "say hello to Bluemix.",
-				Usage:       "bluemix hello",
+				Description: "Say hello to IBM Cloud.",
+				Usage:       "ibmcloud hello",
 			},
 		},
 	}
