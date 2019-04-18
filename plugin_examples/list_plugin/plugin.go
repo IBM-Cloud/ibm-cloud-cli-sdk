@@ -21,7 +21,7 @@ type ListPlugin struct{}
 
 func (p *ListPlugin) GetMetadata() plugin.PluginMetadata {
 	return plugin.PluginMetadata{
-		Name: "bx-list",
+		Name: "ibmcloud-list",
 		Version: plugin.VersionType{
 			Major: 0,
 			Minor: 0,
@@ -30,8 +30,8 @@ func (p *ListPlugin) GetMetadata() plugin.PluginMetadata {
 		Commands: []plugin.Command{
 			{
 				Name:        "list",
-				Description: "List your apps, containers and services in the target space",
-				Usage:       "bx list",
+				Description: "List your apps, containers and services in the target space.",
+				Usage:       "ibmcloud list",
 			},
 		},
 	}

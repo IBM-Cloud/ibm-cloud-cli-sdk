@@ -21,6 +21,10 @@ type PluginMetadata struct {
 	// SDKVersion is SDK version used by the plugin.
 	// It is set by the plugin framework to check SDK compatibility with the CLI.
 	SDKVersion VersionType
+
+	// If DelegateBashCompletion is true, plugin command's completion is handled by plugin.
+	// The CLI will invoke '<plugin_binary> SendCompletion <args>'
+	DelegateBashCompletion bool
 }
 
 func (p PluginMetadata) NameAndAliases() []string {
@@ -38,6 +42,16 @@ func (v VersionType) String() string {
 	return fmt.Sprintf("%d.%d.%d", v.Major, v.Minor, v.Build)
 }
 
+// Stage decribes the stage of the namespace or command and will be shown in the help text
+type Stage string
+
+// Valid stages
+const (
+	StageExperimental Stage = "experimental"
+	StageBeta         Stage = "beta"
+	StageDeprecated   Stage = "deprecated"
+)
+
 // Namespace represents a category of commands that have similar
 // functionalities. A command under a namespace is run using 'bx [namespace]
 // [command]'.
@@ -53,6 +67,7 @@ type Namespace struct {
 	Name        string   // base name
 	Aliases     []string // aliases
 	Description string   // description of the namespace
+	Stage       Stage    // stage of the commands in the namespace
 }
 
 func (n Namespace) NameAndAliases() []string {
@@ -69,6 +84,7 @@ type Command struct {
 	Usage       string   // usage detail to be displayed in command help
 	Flags       []Flag   // command options
 	Hidden      bool     // true to hide the command in help text
+	Stage       Stage    // stage of the command
 }
 
 func (c Command) NameAndAliases() []string {

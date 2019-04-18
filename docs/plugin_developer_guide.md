@@ -150,7 +150,7 @@ func (p *DemoPlugin) GetMetadata() plugin.PluginMetadata {
     // define plugin namespace
     demo := plugin.Namespace{
         Name: "demo",
-        Description: "For demonstration purpose",
+        Description: "Demonstrate non-shared namespace.",
     }
 
     return plugin.PluginMetadata{
@@ -203,16 +203,16 @@ func (p *DemoPlugin) GetMetadata() plugin.PluginMetadata {
             // parent namespace
             {
                 Name:        "demo",
-                Description: "For demonstration purpose",
+                Description: "Show parent namespace.",
             },
             // sub namespaces
             {
                 Name:        "demo app",
-                Description: "For app demonstration",
+                Description: "Show app sub namespace.",
             },
             {
                 Name:        "demo service",
-                Description: "For service demonstration",
+                Description: "Show service sub namespace.",
             },
         },
 
@@ -220,22 +220,22 @@ func (p *DemoPlugin) GetMetadata() plugin.PluginMetadata {
             {
                 Namespace:   "demo app",
                 Name:        "create",
-                Description: "Create an application",
+                Description: "Create an application.",
             },
             {
                 Namespace:   "demo app",
                 Name:        "delete",
-                Description: "Delete an application",
+                Description: "Delete an application.",
             },
             {
                 Namespace:   "demo service",
                 Name:        "create",
-                Description: "Create an service instance",
+                Description: "Create an service instance.",
             },
             {
                 Namespace:   "demo service",
                 Name:        "delete",
-                Description: "Delete an service instance",
+                Description: "Delete an service instance.",
             },
         },
     }
@@ -267,6 +267,7 @@ func (p *DemoPlugin) Run(context plugin.PluginContext, args []string) {
 ```
 
 #### Notes on namespaces
+
 The following items should be noticed here:
 
 - If a command is not associated with any namespace, it will be registered as a root command. For example, if a command is associated with the app namespace, it must be executed by typing "ibmcloud app xxx", but if no namespace is associated with a command, the command will be invoked by "ibmcloud xxx" directly.
@@ -323,20 +324,20 @@ To keep user experience consistent, developers of IBM Cloud CLI plug-in should a
 
 1. Do NOT use "Please" in any message.
    Correct:
-   <pre class="bx-console-block">First log in by running '<span class="yellow">ibmcloud login</span>'.</pre>
+   <pre>First log in by running '<span class="yellow">ibmcloud login</span>'.</pre>
    Invalid:
-   <pre class="bx-console-block">Please use '<span class="yellow">ibmcloud login</span>' to login first.</pre>
+   <pre>Please use '<span class="yellow">ibmcloud login</span>' to login first.</pre>
 
 2. Capitalize the first letter for all sentences and short descriptions. For example:
-  <pre class="bx-console-block">Change the instance count for an app or container group.</pre>
-  <pre class="bx-console-block">-i   Number of instances</pre>
+  <pre>Change the instance count for an app or container group.</pre>
+  <pre>-i   Number of instances</pre>
 
 3. Add "..." at the end of "in-progress" messages. For example:
-  <pre class="bx-console-block">Scaling container group '<span class="cyan">xxx</span>'...</pre>
+  <pre>Scaling container group '<span class="cyan">xxx</span>'...</pre>
 
 4. Use "plug-in" instead of "plugin" in all places.
 
-### 2.2. Plug-in and Command Name
+### 2.2. Name and Decription of Plug-in, Namespace and Command 
 
 **To name the plug-in for a service**:
 
@@ -384,6 +385,7 @@ The following command names are invalid:
 
 
 **Command formatting in output messages**:
+
 Use single quotation marks (') around the command name and options in output message. The command itself should be yellow with **bold**.  Where possible, place command names at the end of the sentence, not in the middle. For example:
 
 ```
@@ -401,20 +403,34 @@ ui.Say(`You are not logged in. Log in by running "%s".`,
     terminal.CommandColor("ibmcloud login"))
 
 ```
+**Command and plug-in description**
+
+Use a sentence without subject to describe your plug-in or command. Limit the number of words to be less than 10 so that it can be properly displayed. The sentence should end with `.`
+
+Correct description:
+
+- `List all the virtual server instances.`
+- `Manage cloud database service.`
+
+Incorrect description: 
+- `Plugin to manage cloud database service.`
+- `Commands to manage cloud database service.`
+- `This command shows details of a sever instance.`
+
 
 ### 2.3. Entity Name
 
 Add single quotation marks (') around entity names and keep the entity names in cyan with **bold**. For example:
 
 ```
-Mapping route 'my-app.ng.bluemix.net' to CF application 'my-app'...
+Mapping route 'my-app.us-south.cf.cloud.ibm.com' to CF application 'my-app'...
 ```
 
 The IBM Cloud CLI SDK also provides API to help you print the previous example message:
 
 ```go
 ui.Say("Mapping route '%s' to CF application '%s'...",
-    terminal.EntityNameColor("my-app.ng.bluemix.net"),
+    terminal.EntityNameColor("my-app.cloud.ibm.com"),
     terminal.EntityNameColor("my-app"),
 )
 ```
@@ -423,8 +439,8 @@ ui.Say("Mapping route '%s' to CF application '%s'...",
 
 Use the guidelines below to compose command help.
 - Use "-" for single letter flags, and "--" for multiple letter flags, e.g. `-c ACCOUNT_ID` and `--guid`.
-- All user input values should be capital letters, e.g. `bx scale RESOURCE_NAME`
-- For optional parameters and flags, surround them with "[...]", e.g. `bx iam orgs [--guid]`.
+- All user input values should be capital letters, e.g. `ibmcloud scale RESOURCE_NAME`
+- For optional parameters and flags, surround them with "[...]", e.g. `ibmcloud account orgs [--guid]`.
 - For exclusive parameters and flags, group them together by "(...)" and separate by "|".
   - Example: `ibmcloud test create (NAME | --uuid ID)`
 - "[...]" and "(...)" can be nested.
@@ -433,8 +449,8 @@ Use the guidelines below to compose command help.
   e.g.
   ```bash
   USAGE:
-    bx test command foo.....
-    bx test command bar.....
+    ibmcloud test command foo.....
+    ibmcloud test command bar.....
   ```
 
 The following gives an example of the output of the `help` command:
@@ -443,7 +459,7 @@ The following gives an example of the output of the `help` command:
 NAME:
    scale - Change the instance count for an app or container group.
 USAGE:
-   bx scale RESOURCE_NAME [-i INSTANCES] [-k DISK] [-m MEMORY] [-f]
+   ibmcloud scale RESOURCE_NAME [-i INSTANCES] [-k DISK] [-m MEMORY] [-f]
    RESOURCE_NAME is the name of the app or container group to be scaled.
 OPTIONS:
    -i value  Number of instances.
@@ -462,7 +478,7 @@ Incorrect usage.
 NAME:
    scale - Change the instance count for an app or container group.
 USAGE:
-   bx scale RESOURCE_NAME [-i INSTANCES] [-k DISK] [-m MEMORY] [-f]
+   ibmcloud scale RESOURCE_NAME [-i INSTANCES] [-k DISK] [-m MEMORY] [-f]
    RESOURCE_NAME is the name of the app or container group to be scaled.
 OPTIONS:
    -i value  Number of instances.
@@ -573,7 +589,7 @@ Following are examples and code snippets:
 #### Text prompt
 
 ```
-Logging in to https://api.ng.bluemix.net...
+Logging in to https://cloud.ibm.com...
 Email>xxx@example.com
 Password>
 OK
@@ -582,7 +598,7 @@ OK
 Code:
 
 ```go
-ui.Say("Logging in to https://api.ng.bluemix.net")
+ui.Say("Logging in to https://cloud.ibm.com")
 
 var email string
 err := ui.Prompt("Email", nil).Resolve(&email)
@@ -678,10 +694,28 @@ func (demo *DemoPlugin) PrintTable() {
     table.Print()
 }
 ```
+### 2.11. Json Output
+
+Use flag `--output json` to show the json representation of resource(s) if the command is to list resources, or retrieve details of a resource. If this flag is used, don't show any informational messages or prompts but just the JSON string so that it can be easily parsed with other tools like jq. For example:
+
+```
+$ibmcloud account orgs --output json
+[
+    {
+        "OrgGuid": "ef6e9345-2155-41bb-bd3d-ff7c10e5f071",
+        "OrgName": "example-org",
+        "Region": "us-south",
+        "AccountOwner": "user@example.com",
+        "AccountGuid": "8d63fb1cc5e99e86dd7229dddf9e5b7b",
+        "Status": "active"
+    }
+]
+```
+
 
 ## 3. Tracing
 
-IBM Cloud CLI provides utility for tracing based on "BLUEMIX\_TRACE" environment variable. The trace will be disabled if environment variable "BLUEMIX\_TRACE" was not set or it was set to "false" (case ignored), which means, in that case, the invocation of trace API has no effect. If "BLUEMIX\_TRACE" was set to "true" (case ignored), the trace will be printed on the terminal. Otherwise, the value of "BLUEMIX\_TRACE" will be treated as the path of trace file.
+IBM Cloud CLI provides utility for tracing based on "IBMCLOUD\_TRACE" environment variable. The trace will be disabled if environment variable "IBMCLOUD\_TRACE" was not set or it was set to "false" (case ignored), which means, in that case, the invocation of trace API has no effect. If "IBMCLOUD\_TRACE" was set to "true" (case ignored), the trace will be printed on the terminal. Otherwise, the value of "IBMCLOUD\_TRACE" will be treated as the path of trace file.
 
 An example to use IBM Cloud CLI trace API:
 
