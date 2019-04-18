@@ -1,6 +1,6 @@
-# Bluemix CLI SDK
+# IBM Cloud CLI SDK
 
-Bluemix CLI plugin SDK provides predefined plugin interface, utilities and libraries to develop plugins for [Bluemix cli](https://clis.ng.bluemix.net).
+IBM Cloud CLI plugin SDK provides predefined plugin interface, utilities and libraries to develop plugins for [IBM Cloud cli](https://clis.cloud.ibm.com).
 
 # Get started
 
@@ -20,7 +20,7 @@ $ go test ./...
 
 # Build and run plugin
 
-Download and install the Bluemix CLI. See instructions [here](https://clis.ng.bluemix.net).
+Download and install the IBM Cloud CLI. See instructions [here](https://clis.cloud.ibm.com).
 
 Compile the plugin source code with `go build` command, for example
 
@@ -31,25 +31,26 @@ $ go build plugin_examples/hello.go
 Install the plugin:
 
 ```bash
-$ bluemix plugin install ./hello
+$ ibmcloud plugin install ./hello
 ```
 
 List installed plugins:
 
 ```bash
-$ bluemix plugin list
+$ ibmcloud plugin list
 
 # list plugin commands with '-c' flag
-$ bluemix plugin list -c
+$ ibmcloud plugin list -c
 ```
 
 Uninstall the plugin:
 
 ```bash
-$ bluemix plugin uninstall SayHello # SayHello is the plugin name
+$ ibmcloud plugin uninstall SayHello # SayHello is the plugin name
 ```
 
-For more usage of Bluemix plugin management, run `bluemix help plugin`
+For more usage of 
+plugin management, run `ibmcloud help plugin`
 
 # Develop plugins
 
@@ -59,9 +60,9 @@ See plugin examples [here](https://github.com/IBM-Cloud/ibm-cloud-cli-sdk/tree/m
 
 # Publish plugins
 
-Bluemix has a public plugin repository by default installed in Bluemix CLI. Run `bluemix plugin`, you can see a repository named `Bluemix` (`https://plugins.ng.bluemix.net`). The repository support multiple version of plugin. You can list all plugins in the repository by using `bluemix plugin repo-plugins -r Bluemix`.
+IBM Cloud has a public plugin repository by default installed in IBM Cloud CLI. Run `ibmcloud plugin`, you can see a repository named `IBM Cloud` (`https://plugins.cloud.ibm.com`). The repository support multiple version of plugin. You can list all plugins in the repository by using `ibmcloud plugin repo-plugins -r 'IBM Cloud'`.
 
-To publish, update or remove your plugin in Bluemix plugin repository, you can simply [create an issue on GitHub](https://github.com/IBM-Cloud/ibm-cloud-cli-sdk/issues/new) following below samples:
+To publish, update or remove your plugin in IBM Cloud plugin repository, you can simply [create an issue on GitHub](https://github.com/IBM-Cloud/ibm-cloud-cli-sdk/issues/new) following below samples:
 
 **Example to publish a new plugin**:
 
