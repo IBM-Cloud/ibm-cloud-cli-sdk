@@ -42,7 +42,7 @@ func userDidNotDisableColor() bool {
 }
 
 func Colorize(message string, color *color.Color) string {
-	return color.Sprintf(message)
+	return color.Sprint(message)
 }
 
 var decolorizerRegex = regexp.MustCompile(`\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[m|K]`)
