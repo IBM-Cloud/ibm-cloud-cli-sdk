@@ -27,6 +27,11 @@ func TestNewIAMTokenInfo(t *testing.T) {
 		assert.Equal(t, tokenInfo.Accounts.AccountID, "8d63fb1cc5e99e86dd7229dddffc05a5")
 	}
 }
+func TestIATandEXP(t *testing.T) {
+	tokenInfo := NewIAMTokenInfo(TestIAMTokenData[1])
+	assert.Equal(t, tokenInfo.IssueAt.Unix(), int64(1516174603))
+	assert.Equal(t, tokenInfo.Expiry.Unix(), int64(1516178203))
+}
 
 func TestUAATokenInfo(t *testing.T) {
 	for _, token := range TestUAATokenData {
