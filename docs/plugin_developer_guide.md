@@ -403,7 +403,7 @@ ui.Say(`You are not logged in. Log in by running "%s".`,
     terminal.CommandColor("ibmcloud login"))
 
 ```
-**Command and plug-in description**
+**Command, namespace and plug-in description**
 
 Use a sentence without subject to describe your plug-in or command. Limit the number of words to be less than 10 so that it can be properly displayed. 
 
