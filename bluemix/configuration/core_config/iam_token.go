@@ -65,19 +65,5 @@ func decodeAccessToken(token string) (tokenJSON []byte, err error) {
 	}
 
 	encodedTokenJSON := encodedParts[1]
-	return base64Decode(encodedTokenJSON)
-}
-
-func base64Decode(encodedData string) ([]byte, error) {
-	return base64.StdEncoding.DecodeString(restorePadding(encodedData))
-}
-
-func restorePadding(seg string) string {
-	switch len(seg) % 4 {
-	case 2:
-		seg = seg + "=="
-	case 3:
-		seg = seg + "="
-	}
-	return seg
+	return base64.RawURLEncoding.DecodeString(encodedTokenJSON)
 }
