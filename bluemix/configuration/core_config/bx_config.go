@@ -34,6 +34,7 @@ type BXConfigData struct {
 	IAMRefreshToken            string
 	Account                    models.Account
 	ResourceGroup              models.ResourceGroup
+	LoginAt                    time.Time
 	CFEETargeted               bool
 	CFEEEnvID                  string
 	PluginRepos                []models.PluginRepo
@@ -201,6 +202,13 @@ func (c *bxConfig) CloudType() (ctype string) {
 func (c *bxConfig) IAMEndpoint() (endpoint string) {
 	c.read(func() {
 		endpoint = c.data.IAMEndpoint
+	})
+	return
+}
+
+func (c *bxConfig) LoginAt() (loginAt time.Time) {
+	c.read(func() {
+		loginAt = c.data.LoginAt
 	})
 	return
 }
@@ -440,6 +448,12 @@ func (c *bxConfig) SetResourceGroup(group models.ResourceGroup) {
 	})
 }
 
+func (c *bxConfig) SetLoginAt(loginAt time.Time) {
+	c.write(func() {
+		c.data.LoginAt = loginAt
+	})
+}
+
 func (c *bxConfig) SetPluginRepo(pluginRepo models.PluginRepo) {
 	c.write(func() {
 		c.data.PluginRepos = append(c.data.PluginRepos, pluginRepo)
@@ -556,6 +570,7 @@ func (c *bxConfig) ClearSession() {
 		c.data.IAMRefreshToken = ""
 		c.data.Account = models.Account{}
 		c.data.ResourceGroup = models.ResourceGroup{}
+		c.data.LoginAt = time.Time{}
 	})
 }
 
