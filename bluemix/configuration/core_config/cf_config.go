@@ -3,6 +3,7 @@ package core_config
 import (
 	"encoding/json"
 	"sync"
+	"time"
 
 	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/configuration"
 	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/models"
@@ -18,6 +19,7 @@ type CFConfigData struct {
 	DopplerEndpoint          string
 	UaaEndpoint              string
 	RoutingAPIEndpoint       string
+	LoginAt                  time.Time
 	AccessToken              string
 	RefreshToken             string
 	UAAOAuthClient           string
@@ -458,11 +460,25 @@ func (c *cfConfig) UnsetAPI() {
 	})
 }
 
+func (c *cfConfig) LoginAt() (loginAt time.Time) {
+	c.read(func() {
+		loginAt = c.data.LoginAt
+	})
+	return
+}
+
+func (c *cfConfig) SetLoginAt(loginAt time.Time) {
+	c.write(func() {
+		c.data.LoginAt = loginAt
+	})
+}
+
 func (c *cfConfig) ClearSession() {
 	c.write(func() {
 		c.data.AccessToken = ""
 		c.data.RefreshToken = ""
 		c.data.OrganizationFields = models.OrganizationFields{}
 		c.data.SpaceFields = models.SpaceFields{}
+		c.data.LoginAt = time.Time{}
 	})
 }

@@ -43,6 +43,7 @@ type Repository interface {
 	UpdateNotificationInterval() time.Duration
 	UsageStatsDisabled() bool
 	Locale() string
+	LoginAt() time.Time
 	Trace() string
 	ColorEnabled() string
 	SDKVersion() string
@@ -59,6 +60,7 @@ type Repository interface {
 	ClearSession()
 	SetAccount(models.Account)
 	SetResourceGroup(models.ResourceGroup)
+	SetLoginAt(loginAt time.Time)
 	SetCheckCLIVersionDisabled(bool)
 	SetCLIInfoEndpoint(string)
 	SetPluginRepo(models.PluginRepo)
@@ -102,7 +104,9 @@ type CFConfig interface {
 	Username() string
 	UserGUID() string
 	UserEmail() string
+	LoginAt() time.Time
 	IsLoggedIn() bool
+	SetLoginAt(loginAt time.Time)
 	UAAToken() string
 	UAARefreshToken() string
 	CurrentOrganization() models.OrganizationFields

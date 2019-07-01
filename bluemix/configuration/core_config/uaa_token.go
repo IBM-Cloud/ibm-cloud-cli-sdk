@@ -12,6 +12,7 @@ type UAATokenInfo struct {
 	Email    string `json:"email"`
 	UserGUID string `json:"user_id"`
 	Expiry   time.Time
+	IssueAt  time.Time
 }
 
 func NewUAATokenInfo(token string) UAATokenInfo {
@@ -22,7 +23,8 @@ func NewUAATokenInfo(token string) UAATokenInfo {
 
 	var t struct {
 		UAATokenInfo
-		Expiry types.UnixTime `json:"exp"`
+		Expiry  types.UnixTime `json:"exp"`
+		IssueAt types.UnixTime `json:"iat"`
 	}
 	err = json.Unmarshal(tokenJSON, &t)
 	if err != nil {
@@ -31,5 +33,6 @@ func NewUAATokenInfo(token string) UAATokenInfo {
 
 	ret := t.UAATokenInfo
 	ret.Expiry = t.Expiry.Time()
+	ret.IssueAt = t.IssueAt.Time()
 	return ret
 }
