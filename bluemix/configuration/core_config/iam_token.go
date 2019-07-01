@@ -29,6 +29,7 @@ type IAMTokenInfo struct {
 	GrantType   string       `json:"grant_type"`
 	Scope       string       `json:"scope"`
 	Expiry      time.Time
+	IssueAt     time.Time
 }
 
 type AccountsInfo struct {
@@ -45,7 +46,8 @@ func NewIAMTokenInfo(token string) IAMTokenInfo {
 
 	var t struct {
 		IAMTokenInfo
-		Expiry types.UnixTime `json:"exp"`
+		Expiry  types.UnixTime `json:"exp"`
+		IssueAt types.UnixTime `json:"iat"`
 	}
 	err = json.Unmarshal(tokenJSON, &t)
 	if err != nil {
@@ -54,6 +56,7 @@ func NewIAMTokenInfo(token string) IAMTokenInfo {
 
 	ret := t.IAMTokenInfo
 	ret.Expiry = t.Expiry.Time()
+	ret.IssueAt = t.IssueAt.Time()
 	return ret
 }
 
