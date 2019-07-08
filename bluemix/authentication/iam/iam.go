@@ -306,6 +306,8 @@ func (c *client) doRequest(r *rest.Request, respV interface{}) error {
 			case "":
 			case "BXNIM0407E":
 				return authentication.NewInvalidTokenError(apiErr.errorMessage())
+			case "BXNIM0408E":
+				return authentication.NewRefreshTokenExpiryError(api.errorMessage())
 			case "BXNIM0400E":
 				return &authentication.ExternalAuthenticationError{ErrorCode: apiErr.Requirements.ErrorCode, ErrorMessage: apiErr.Requirements.ErrorMessage}
 			default:
