@@ -16,6 +16,21 @@ func (e *InvalidTokenError) Error() string {
 	return T("Invalid token: ") + e.Description
 }
 
+// RefreshTokenExpiryError is an error when provided refresh token expires. This error normally requires
+// the client to re-login.
+type RefreshTokenExpiryError struct {
+	Description string
+}
+
+func (e *RefreshTokenExpiryError) Error() string {
+	return e.Description
+}
+
+// NewRefreshTokenExpiryError creates a RefreshTokenExpiryError
+func NewRefreshTokenExpiryError(description string) *RefreshTokenExpiryError {
+	return &RefreshTokenExpiryError{Description: description}
+}
+
 type ServerError struct {
 	StatusCode  int
 	ErrorCode   string
