@@ -664,6 +664,12 @@ if err != nil {
 ui.Say("upgrading '%s'...", terminal.EntityNameColor(selected))
 ```
 
+#### Prompt override
+There must be a way to override the prompt from a command line switch to allow the execution of non interactive scripts.
+
+For the configrmation [y/N] prompt use the -f force option.
+
+
 ### 2.11. Table Output
 
 For consistent user experience, developers of IBM Cloud CLI plug-ins should comply with the following table output specifications:
@@ -712,6 +718,22 @@ $ibmcloud account orgs --output json
 ]
 ```
 
+### 2.12. IDs
+
+Use the IDs or guids for parameters instead of crns.
+
+### 2.13. Common options
+
+Customers will be writing scripts that use multiple services.  Consistency with option names will help them be successful.
+
+```
+OPTIONS:
+   --force, -f                  Force the operation without confirmation
+   --instance-id                ID of the service instance.
+   --output json                Format output in JSON
+   --resource-group-id value    ID of the resource group. This option is mutually exclusive with --resource-group-name
+   --resource-group-name value  Name of the resource group. This option is mutually exclusive with --resource-group-id
+```
 
 ## 3. Tracing
 
