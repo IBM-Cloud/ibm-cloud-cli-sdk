@@ -718,6 +718,12 @@ $ibmcloud account orgs --output json
 ]
 ```
 
+When the output is an empty list the plugin should produce an empty json list (not null).  For example if there were not account orgs:
+```
+$ibmcloud account orgs --output json
+[]
+```
+
 ### 2.12. IDs
 
 Use the IDs or guids for parameters instead of crns.
