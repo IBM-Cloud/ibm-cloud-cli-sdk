@@ -141,3 +141,61 @@ func (suite *TransportTestSuite) TestTraceRedirect() {
 		suite.Contains(string(suite.logger.Dump()), e)
 	}
 }
+
+func (suite *TransportTestSuite) TestTraceApplicationOctetStream() {
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/octet-stream")
+		fmt.Fprintln(w, "Hello, Client")
+	}))
+	defer ts.Close()
+
+	expect := []string{
+		"REQUEST: ",
+		"GET / HTTP/1.1",
+		"Host: " + strings.TrimLeft(ts.URL, "http://"),
+
+		"RESPONSE: ",
+		"Elapsed: ",
+		"HTTP/1.1 200 OK",
+		"Content-Length: 14",
+		"Content-Type: application/octet-stream",
+
+		"[SKIP BINARY OCTET-STREAM CONTENT]",
+	}
+
+	resp, err := suite.client.Get(ts.URL)
+	suite.NoError(err)
+	suite.Equal(http.StatusOK, resp.StatusCode)
+	for _, e := range expect {
+		suite.Contains(string(suite.logger.Dump()), e)
+	}
+}
+
+func (suite *TransportTestSuite) TestTraceCustomOctetStream() {
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "binary/octet-stream")
+		fmt.Fprintln(w, "Hello, Client")
+	}))
+	defer ts.Close()
+
+	expect := []string{
+		"REQUEST: ",
+		"GET / HTTP/1.1",
+		"Host: " + strings.TrimLeft(ts.URL, "http://"),
+
+		"RESPONSE: ",
+		"Elapsed: ",
+		"HTTP/1.1 200 OK",
+		"Content-Length: 14",
+		"Content-Type: binary/octet-stream",
+
+		"[SKIP BINARY OCTET-STREAM CONTENT]",
+	}
+
+	resp, err := suite.client.Get(ts.URL)
+	suite.NoError(err)
+	suite.Equal(http.StatusOK, resp.StatusCode)
+	for _, e := range expect {
+		suite.Contains(string(suite.logger.Dump()), e)
+	}
+}
