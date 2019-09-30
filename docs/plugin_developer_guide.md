@@ -724,11 +724,7 @@ $ibmcloud account orgs --output json
 []
 ```
 
-### 2.12. IDs
-
-Use the IDs or guids for parameters instead of crns.
-
-### 2.13. Common options
+### 2.12. Common options
 
 Customers will be writing scripts that use multiple services.  Consistency with option names will help them be successful.
 
