@@ -72,7 +72,9 @@ func (r *TraceLoggingTransport) dumpRequest(req *http.Request, start time.Time) 
 func (r *TraceLoggingTransport) dumpResponse(res *http.Response, start time.Time) {
 	end := time.Now()
 
-	dumpedResponse, err := httputil.DumpResponse(res, true)
+	shouldDisplayBody := !strings.Contains(res.Header.Get("Content-Type"), "octet-stream")
+
+	dumpedResponse, err := httputil.DumpResponse(res, shouldDisplayBody)
 	if err != nil {
 		trace.Logger.Printf(T("An error occurred while dumping response:\n{{.Error}}\n", map[string]interface{}{"Error": err.Error()}))
 		return
@@ -84,4 +86,8 @@ func (r *TraceLoggingTransport) dumpResponse(res *http.Response, start time.Time
 		terminal.HeaderColor(T("Elapsed:")),
 		end.Sub(start).Seconds()*1000,
 		trace.Sanitize(string(dumpedResponse)))
+
+	if !shouldDisplayBody {
+		trace.Logger.Println("[SKIP BINARY OCTET-STREAM CONTENT]")
+	}
 }
