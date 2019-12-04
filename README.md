@@ -73,7 +73,7 @@ Content:
 ```yaml
 
 - name: SayHello
-  description: A sample plugin to say hello
+  description: Say hello
   company: YYY
   authors:
   - name: xxx
@@ -103,7 +103,7 @@ The following descibes each field's usage.
 Field | Description
 ------ | ---------
 name | Name of your plugin, must not conflict with other existing plugins in the repo.
-description | Describe your plugin in a line or two. This description will show up when your plugin is listed on the command line.
+description | Describe your plugin in a line or two. This description will show up when your plugin is listed on the command line. Avoid saying "A plugin to ..." as it's redundant. Just briefly describe what the plugin provides.
 company | *Optional*
 authors | authors of the plugin: `name`: name of author; `homepage`: *Optional* link to the homepage of the author; `contact`: *Optional* ways to contact author, email, twitter, phone etc ...
 homepage | Link to the homepage
