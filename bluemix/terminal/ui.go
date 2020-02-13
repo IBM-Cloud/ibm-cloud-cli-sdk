@@ -8,17 +8,27 @@ import (
 	. "github.com/IBM-Cloud/ibm-cloud-cli-sdk/i18n"
 )
 
+// UI provides utilities to handle input and output streams
 type UI interface {
-	// Say prints the formated message
+	// Deprecated: this method could be removed in the future,
+	// Use Info() if the message can be suppressed in quiet mode
+	// Or use Print() if the message will be printed anyway
+	// Say prints the formated message, the message will be suppressed in quiet mode
 	Say(format string, args ...interface{})
 
-	// Warn prints the formated warning message
+	// Info prints the formated failure message, the message will be suppressed in quiet mode
+	Info(format string, args ...interface{})
+
+	// Warn prints the formated warning message, the message will be suppressed in quiet mode
 	Warn(format string, args ...interface{})
 
-	// Failed prints the formated failure message
+	// Failed prints the formated failure message, the message will be suppressed in quiet mode
 	Failed(format string, args ...interface{})
 
-	// OK prints 'OK'
+	// Print will send the message to StdOut, the message will not be suppressed in quiet mode
+	Print(format string, args ...interface{})
+
+	// OK prints 'OK', the message will be suppressed in quiet mode
 	Ok()
 
 	// Prompt creates a single Prompt
@@ -52,12 +62,19 @@ type UI interface {
 
 	// Writer returns writer of the terminal UI
 	Writer() io.Writer
+
+	// Enable or disable quiet mode. Contents passed to Say(), Warn(), Failed(), OK() will be ignored if under quiet mode.
+	SetQuiet(bool)
+
+	// Return whether quiet mode is enabled or not
+	Quiet() bool
 }
 
 type terminalUI struct {
 	In     io.Reader
 	Out    io.Writer
 	ErrOut io.Writer
+	quiet  bool
 }
 
 // NewStdUI initialize a terminal UI with os.Stdin and os.Stdout
@@ -75,6 +92,35 @@ func NewUI(in io.Reader, out io.Writer, errOut io.Writer) UI {
 }
 
 func (ui *terminalUI) Say(format string, args ...interface{}) {
+	ui.Info(format, args...)
+}
+
+func (ui *terminalUI) Info(format string, args ...interface{}) {
+	if ui.quiet {
+		return
+	}
+
+	ui.Print(format, args...)
+}
+
+func (ui *terminalUI) Warn(format string, args ...interface{}) {
+	if ui.quiet {
+		return
+	}
+
+	message := fmt.Sprintf(format, args...)
+	ui.Say(WarningColor(message))
+}
+
+func (ui *terminalUI) Ok() {
+	if ui.quiet {
+		return
+	}
+
+	ui.Say(SuccessColor(T("OK")))
+}
+
+func (ui *terminalUI) Print(format string, args ...interface{}) {
 	if args != nil {
 		fmt.Fprintf(ui.Out, format+"\n", args...)
 	} else {
@@ -82,16 +128,11 @@ func (ui *terminalUI) Say(format string, args ...interface{}) {
 	}
 }
 
-func (ui *terminalUI) Warn(format string, args ...interface{}) {
-	message := fmt.Sprintf(format, args...)
-	ui.Say(WarningColor(message))
-}
-
-func (ui *terminalUI) Ok() {
-	ui.Say(SuccessColor(T("OK")))
-}
-
 func (ui *terminalUI) Error(format string, args ...interface{}) {
+	if ui.quiet {
+		return
+	}
+
 	if args != nil {
 		fmt.Fprintf(ui.ErrOut, format+"\n", args...)
 	} else {
@@ -100,6 +141,10 @@ func (ui *terminalUI) Error(format string, args ...interface{}) {
 }
 
 func (ui *terminalUI) Failed(format string, args ...interface{}) {
+	if ui.quiet {
+		return
+	}
+
 	ui.Error(FailureColor(T("FAILED")))
 	ui.Error(format, args...)
 	ui.Error("")
@@ -168,4 +213,12 @@ func (ui *terminalUI) Table(headers []string) Table {
 
 func (ui *terminalUI) Writer() io.Writer {
 	return ui.Out
+}
+
+func (ui *terminalUI) SetQuiet(quiet bool) {
+	ui.quiet = quiet
+}
+
+func (ui *terminalUI) Quiet() bool {
+	return ui.quiet
 }
