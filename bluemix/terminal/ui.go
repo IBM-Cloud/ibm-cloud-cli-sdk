@@ -129,6 +129,10 @@ func (ui *terminalUI) Print(format string, args ...interface{}) {
 }
 
 func (ui *terminalUI) Error(format string, args ...interface{}) {
+	if ui.quiet {
+		return
+	}
+
 	if args != nil {
 		fmt.Fprintf(ui.ErrOut, format+"\n", args...)
 	} else {
