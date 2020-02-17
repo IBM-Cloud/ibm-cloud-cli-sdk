@@ -11,18 +11,19 @@ import (
 // UI provides utilities to handle input and output streams
 type UI interface {
 	// Deprecated: this method could be removed in the future,
-	// Use Info() if the message can be suppressed in quiet mode
-	// Or use Print() if the message will be printed anyway
+	// Use Verbose() if it's interactive message only
+	// Or use Print() if it's command output
 	// Say prints the formated message, the message will be suppressed in quiet mode
 	Say(format string, args ...interface{})
 
-	// Info prints the formated failure message, the message will be suppressed in quiet mode
-	Info(format string, args ...interface{})
+	// Verbose prints message to StdErr, the message will be suppressed in quiet mode
+	Verbose(format string, args ...interface{})
 
 	// Warn prints the formated warning message, the message will be suppressed in quiet mode
 	Warn(format string, args ...interface{})
 
-	// Failed prints the formated failure message, the message will be suppressed in quiet mode
+	// Failed prints the formated failure message to StdErr, word `FAILED` will be suppressed in quiet mode.
+	// But the message itself will not be.
 	Failed(format string, args ...interface{})
 
 	// Print will send the message to StdOut, the message will not be suppressed in quiet mode
@@ -92,15 +93,18 @@ func NewUI(in io.Reader, out io.Writer, errOut io.Writer) UI {
 }
 
 func (ui *terminalUI) Say(format string, args ...interface{}) {
-	ui.Info(format, args...)
-}
-
-func (ui *terminalUI) Info(format string, args ...interface{}) {
 	if ui.quiet {
 		return
 	}
 
 	ui.Print(format, args...)
+}
+
+func (ui *terminalUI) Verbose(format string, args ...interface{}) {
+	if ui.quiet {
+		return
+	}
+	ui.Error(format, args...)
 }
 
 func (ui *terminalUI) Warn(format string, args ...interface{}) {
@@ -129,10 +133,6 @@ func (ui *terminalUI) Print(format string, args ...interface{}) {
 }
 
 func (ui *terminalUI) Error(format string, args ...interface{}) {
-	if ui.quiet {
-		return
-	}
-
 	if args != nil {
 		fmt.Fprintf(ui.ErrOut, format+"\n", args...)
 	} else {
@@ -141,13 +141,9 @@ func (ui *terminalUI) Error(format string, args ...interface{}) {
 }
 
 func (ui *terminalUI) Failed(format string, args ...interface{}) {
-	if ui.quiet {
-		return
-	}
-
-	ui.Error(FailureColor(T("FAILED")))
+	ui.Verbose(FailureColor(T("FAILED")))
 	ui.Error(format, args...)
-	ui.Error("")
+	ui.Verbose("")
 }
 
 func (ui *terminalUI) Prompt(message string, options *PromptOptions) *Prompt {
