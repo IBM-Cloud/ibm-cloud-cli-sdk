@@ -113,7 +113,7 @@ func (ui *terminalUI) Warn(format string, args ...interface{}) {
 	}
 
 	message := fmt.Sprintf(format, args...)
-	ui.Say(WarningColor(message))
+	ui.Error(WarningColor(message))
 }
 
 func (ui *terminalUI) Ok() {
