@@ -13,23 +13,23 @@ type UI interface {
 	// Deprecated: this method could be removed in the future,
 	// Use Verbose() if it's interactive message only
 	// Or use Print() if it's command output
-	// Say prints the formated message, the message will be suppressed in quiet mode
+	// Say prints the formated message to StdOut
 	Say(format string, args ...interface{})
 
 	// Verbose prints message to StdErr, the message will be suppressed in quiet mode
 	Verbose(format string, args ...interface{})
 
-	// Warn prints the formated warning message, the message will be suppressed in quiet mode
+	// Warn prints the formated warning message to StdErr, the message will be suppressed in quiet mode
 	Warn(format string, args ...interface{})
 
 	// Failed prints the formated failure message to StdErr, word `FAILED` will be suppressed in quiet mode.
-	// But the message itself will not be.
+	// But the message itself will not be suppressed.
 	Failed(format string, args ...interface{})
 
 	// Print will send the message to StdOut, the message will not be suppressed in quiet mode
 	Print(format string, args ...interface{})
 
-	// OK prints 'OK', the message will be suppressed in quiet mode
+	// OK prints 'OK' to StdOut, the message will be suppressed in quiet mode
 	Ok()
 
 	// Prompt creates a single Prompt
@@ -64,7 +64,7 @@ type UI interface {
 	// Writer returns writer of the terminal UI
 	Writer() io.Writer
 
-	// Enable or disable quiet mode. Contents passed to Say(), Warn(), Failed(), OK() will be ignored if under quiet mode.
+	// Enable or disable quiet mode. Contents passed to Verbose(), Warn(), OK() will be ignored if under quiet mode.
 	SetQuiet(bool)
 
 	// Return whether quiet mode is enabled or not
@@ -93,10 +93,6 @@ func NewUI(in io.Reader, out io.Writer, errOut io.Writer) UI {
 }
 
 func (ui *terminalUI) Say(format string, args ...interface{}) {
-	if ui.quiet {
-		return
-	}
-
 	ui.Print(format, args...)
 }
 
