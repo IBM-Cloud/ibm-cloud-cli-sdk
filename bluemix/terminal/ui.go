@@ -11,9 +11,9 @@ import (
 // UI provides utilities to handle input and output streams
 type UI interface {
 	// Deprecated: this method could be removed in the future,
-	// Use Verbose() if it's interactive message only
-	// Or use Print() if it's command output
-	// Say prints the formated message to StdOut
+	// Use Verbose() if the message is printed to StdErr and it will be suppressed in quiet mode
+	// Or use Print() if the message is printed to StdOut and it will be suppressed in quiet mode
+	// Say prints the formated message to StdOut, the message will not be suppressed in quiet mode
 	Say(format string, args ...interface{})
 
 	// Verbose prints message to StdErr, the message will be suppressed in quiet mode
