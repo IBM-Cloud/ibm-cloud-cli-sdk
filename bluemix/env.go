@@ -13,6 +13,7 @@ var (
 	EnvAPIKey       = newEnv("IBMCLOUD_API_KEY", "BLUEMIX_API_KEY")
 	EnvConfigHome   = newEnv("IBMCLOUD_HOME", "BLUEMIX_HOME")
 	EnvConfigDir    = newEnv("IBMCLOUD_CONFIG_HOME")
+	EnvQuiet        = newEnv("IBMCLOUD_QUIET")
 
 	// for internal use
 	EnvCLIName         = newEnv("IBMCLOUD_CLI", "BLUEMIX_CLI")

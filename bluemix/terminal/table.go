@@ -1,10 +1,12 @@
 package terminal
 
 import (
+	"bytes"
 	"fmt"
-	"github.com/mattn/go-runewidth"
 	"io"
 	"strings"
+
+	"github.com/mattn/go-runewidth"
 )
 
 type Table interface {
@@ -105,4 +107,31 @@ func (t *PrintableTable) cellValue(col int, value string) string {
 		padding = strings.Repeat(" ", t.maxSizes[col]-runewidth.StringWidth(Decolorize(value)))
 	}
 	return fmt.Sprintf("%s%s   ", value, padding)
+}
+
+// StringTable provides a Table implementation which will print to string
+type StringTable struct {
+	PrintableTable
+	buf *bytes.Buffer
+}
+
+// NewStringTable will create an instance of StringTable
+func NewStringTable(headers []string) *StringTable {
+	b := new(bytes.Buffer)
+	return &StringTable{
+		buf: b,
+		PrintableTable: PrintableTable{
+			writer:   b,
+			headers:  headers,
+			maxSizes: make([]int, len(headers)),
+		},
+	}
+}
+
+func (t StringTable) String() string {
+	if !t.headerPrinted {
+		t.Print()
+	}
+
+	return t.buf.String()
 }
