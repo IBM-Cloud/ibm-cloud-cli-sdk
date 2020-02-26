@@ -81,7 +81,7 @@ func NewHTTPClient(context plugin.PluginContext) *http.Client {
 			// as to allow testing in environments that are not setup with TLS properly
 			// #nosec
 			TLSClientConfig: &tls.Config{
-				InsecureSkipVerify: context.IsSSLDisabled(),
+				InsecureSkipVerify: context.IsSSLDisabled(), // #nosec G402
 			},
 		})
 
