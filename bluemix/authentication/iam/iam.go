@@ -24,10 +24,10 @@ const (
 const (
 	GrantTypePassword              authentication.GrantType = "password"
 	GrantTypeAPIKey                authentication.GrantType = "urn:ibm:params:oauth:grant-type:apikey"
-	GrantTypeOnetimePasscode       authentication.GrantType = "urn:ibm:params:oauth:grant-type:passcode"
+	GrantTypeOnetimePasscode       authentication.GrantType = "urn:ibm:params:oauth:grant-type:passcode" // #nosec G101
 	GrantTypeAuthorizationCode     authentication.GrantType = "authorization_code"
 	GrantTypeRefreshToken          authentication.GrantType = "refresh_token"
-	GrantTypeDelegatedRefreshToken authentication.GrantType = "urn:ibm:params:oauth:grant-type:delegated-refresh-token"
+	GrantTypeDelegatedRefreshToken authentication.GrantType = "urn:ibm:params:oauth:grant-type:delegated-refresh-token" // #nosec G101
 	GrantTypeIdentityCookie        authentication.GrantType = "urn:ibm:params:oauth:grant-type:identity-cookie"
 	GrantTypeDerive                authentication.GrantType = "urn:ibm:params:oauth:grant-type:derive"
 )
@@ -37,7 +37,7 @@ const (
 	ResponseTypeIAM                   authentication.ResponseType = "cloud_iam"
 	ResponseTypeUAA                   authentication.ResponseType = "uaa"
 	ResponseTypeIMS                   authentication.ResponseType = "ims_portal"
-	ResponseTypeDelegatedRefreshToken authentication.ResponseType = "delegated_refresh_token"
+	ResponseTypeDelegatedRefreshToken authentication.ResponseType = "delegated_refresh_token" // #nosec G101
 )
 
 type MFAVendor string

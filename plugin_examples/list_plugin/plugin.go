@@ -78,7 +78,7 @@ func NewHTTPClient(context plugin.PluginContext) *http.Client {
 		&http.Transport{
 			Proxy: http.ProxyFromEnvironment,
 			TLSClientConfig: &tls.Config{
-				InsecureSkipVerify: context.IsSSLDisabled(),
+				InsecureSkipVerify: context.IsSSLDisabled(), // #nosec G402
 			},
 		})
 

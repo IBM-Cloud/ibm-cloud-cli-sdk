@@ -32,7 +32,7 @@ func RemoveFile(path string) error {
 
 // CopyFile copies file contents of src to dest. Both of stc and dest must be a path name.
 func CopyFile(src string, dest string) (err error) {
-	srcFile, err := os.Open(src)
+	srcFile, err := os.Open(filepath.Clean(src))
 	if err != nil {
 		return
 	}
