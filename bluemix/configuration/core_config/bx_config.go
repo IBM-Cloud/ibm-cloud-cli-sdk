@@ -45,7 +45,8 @@ type BXConfigData struct {
 	HTTPTimeout                int
 	CLIInfoEndpoint            string
 	CheckCLIVersionDisabled    bool
-	UsageStatsDisabled         bool
+	UsageStatsDisabled         bool // deprecated: use UsageStatsEnabled
+	UsageStatsEnabled          bool
 	SDKVersion                 string
 	UpdateCheckInterval        time.Duration
 	UpdateRetryCheckInterval   time.Duration
@@ -376,6 +377,13 @@ func (c *bxConfig) UsageStatsDisabled() (disabled bool) {
 	return
 }
 
+func (c *bxConfig) UsageStatsEnabled() (enabled bool) {
+	c.read(func() {
+		enabled = c.data.UsageStatsEnabled
+	})
+	return
+}
+
 func (c *bxConfig) SDKVersion() (version string) {
 	c.read(func() {
 		version = c.data.SDKVersion
@@ -519,6 +527,12 @@ func (c *bxConfig) SetCLIInfoEndpoint(endpoint string) {
 func (c *bxConfig) SetUsageStatsDisabled(disabled bool) {
 	c.write(func() {
 		c.data.UsageStatsDisabled = disabled
+	})
+}
+
+func (c *bxConfig) SetUsageStatsEnabled(enabled bool) {
+	c.write(func() {
+		c.data.UsageStatsEnabled = enabled
 	})
 }
 

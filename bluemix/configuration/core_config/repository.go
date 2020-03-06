@@ -41,7 +41,12 @@ type Repository interface {
 	UpdateCheckInterval() time.Duration
 	UpdateRetryCheckInterval() time.Duration
 	UpdateNotificationInterval() time.Duration
+	// UsageSatsDisabled returns whether the usage statistics data collection is disabled or not
+	// Deprecated: use UsageSatsEnabled instead. We change to disable usage statistics by default,
+	// So this property will not be used anymore
 	UsageStatsDisabled() bool
+	// UsageSatsEnabled returns whether the usage statistics data collection is enabled or not
+	UsageStatsEnabled() bool
 	Locale() string
 	LoginAt() time.Time
 	Trace() string
@@ -67,7 +72,11 @@ type Repository interface {
 	UnsetPluginRepo(string)
 	SetSSLDisabled(bool)
 	SetHTTPTimeout(int)
+	// SetUsageSatsDisabled disable or enable usage statistics data collection
+	// Deprecated: use SetUsageSatsEnabled instead
 	SetUsageStatsDisabled(bool)
+	// SetUsageSatsEnabled enable or disable usage statistics data collection
+	SetUsageStatsEnabled(bool)
 	SetUpdateCheckInterval(time.Duration)
 	SetUpdateRetryCheckInterval(time.Duration)
 	SetUpdateNotificationInterval(time.Duration)
