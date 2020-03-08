@@ -11,22 +11,25 @@ import (
 // UI provides utilities to handle input and output streams
 type UI interface {
 	// Deprecated: this method could be removed in the future,
-	// Use Verbose() if the message is printed to StdErr and it will be suppressed in quiet mode
-	// Or use Print() if the message is printed to StdOut and it will be suppressed in quiet mode
-	// Say prints the formated message to StdOut, the message will not be suppressed in quiet mode
+	// Use Info() if the message is printed to StdErr and it will be suppressed in quiet mode
+	// Or use Verbose() if the message is printed to StdOut and it will be suppressed in quiet mode
+	// Say prints the formated message to StdOut, the message will NOT be suppressed in quiet mode
 	Say(format string, args ...interface{})
 
-	// Verbose prints message to StdErr, the message will be suppressed in quiet mode
+	// Verbose prints message to StdOut, the message will be suppressed in quiet mode
 	Verbose(format string, args ...interface{})
+
+	// Info prints message to StdErr, the message will be suppressed in quiet mode
+	Info(format string, args ...interface{})
 
 	// Warn prints the formated warning message to StdErr, the message will be suppressed in quiet mode
 	Warn(format string, args ...interface{})
 
 	// Failed prints the formated failure message to StdErr, word `FAILED` will be suppressed in quiet mode.
-	// But the message itself will not be suppressed.
+	// But the message itself will NOT be suppressed.
 	Failed(format string, args ...interface{})
 
-	// Print will send the message to StdOut, the message will not be suppressed in quiet mode
+	// Print will send the message to StdOut, the message will NOT be suppressed in quiet mode
 	Print(format string, args ...interface{})
 
 	// OK prints 'OK' to StdOut, the message will be suppressed in quiet mode
@@ -97,6 +100,13 @@ func (ui *terminalUI) Say(format string, args ...interface{}) {
 }
 
 func (ui *terminalUI) Verbose(format string, args ...interface{}) {
+	if ui.quiet {
+		return
+	}
+	ui.Print(format, args...)
+}
+
+func (ui *terminalUI) Info(format string, args ...interface{}) {
 	if ui.quiet {
 		return
 	}
