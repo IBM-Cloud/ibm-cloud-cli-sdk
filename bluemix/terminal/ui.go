@@ -147,9 +147,9 @@ func (ui *terminalUI) Error(format string, args ...interface{}) {
 }
 
 func (ui *terminalUI) Failed(format string, args ...interface{}) {
-	ui.Verbose(FailureColor(T("FAILED")))
+	ui.Info(FailureColor(T("FAILED")))
 	ui.Error(format, args...)
-	ui.Verbose("")
+	ui.Info("")
 }
 
 func (ui *terminalUI) Prompt(message string, options *PromptOptions) *Prompt {
