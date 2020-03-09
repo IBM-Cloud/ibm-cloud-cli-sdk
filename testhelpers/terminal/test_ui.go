@@ -46,7 +46,7 @@ func (ui *FakeUI) Verbose(template string, args ...interface{}) {
 	if ui.quiet {
 		return
 	}
-	ui.error(template, args...)
+	ui.Print(template, args...)
 }
 
 func (ui *FakeUI) Print(template string, args ...interface{}) {
@@ -60,13 +60,24 @@ func (ui *FakeUI) error(template string, args ...interface{}) {
 }
 
 func (ui *FakeUI) Ok() {
+	if ui.quiet {
+		return
+	}
 	ui.Say("OK")
+}
+
+func (ui *FakeUI) Info(template string, args ...interface{}) {
+	if ui.quiet {
+		return
+	}
+	ui.error(template, args...)
 }
 
 func (ui *FakeUI) Failed(template string, args ...interface{}) {
 	message := fmt.Sprintf(template, args...)
-	ui.Verbose("FAILED")
+	ui.Info("FAILED")
 	ui.error(message)
+	ui.Info("")
 }
 
 func (ui *FakeUI) Warn(template string, args ...interface{}) {
