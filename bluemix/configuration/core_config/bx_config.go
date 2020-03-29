@@ -23,36 +23,36 @@ func (r raw) Unmarshal(bytes []byte) error {
 }
 
 type BXConfigData struct {
-	APIEndpoint                string
-	ConsoleEndpoint            string
-	CloudType                  string
-	CloudName                  string
-	Region                     string
-	RegionID                   string
-	IAMEndpoint                string
-	IAMToken                   string
-	IAMRefreshToken            string
-	Account                    models.Account
-	ResourceGroup              models.ResourceGroup
-	LoginAt                    time.Time
-	CFEETargeted               bool
-	CFEEEnvID                  string
-	PluginRepos                []models.PluginRepo
-	SSLDisabled                bool
-	Locale                     string
-	Trace                      string
-	ColorEnabled               string
-	HTTPTimeout                int
-	CLIInfoEndpoint            string
-	CheckCLIVersionDisabled    bool
-	UsageStatsDisabled         bool // deprecated: use UsageStatsEnabled
-	UsageStatsEnabled          bool
-	UsageStatsLastUpdate       time.Time
-	SDKVersion                 string
-	UpdateCheckInterval        time.Duration
-	UpdateRetryCheckInterval   time.Duration
-	UpdateNotificationInterval time.Duration
-	raw                        raw
+	APIEndpoint                 string
+	ConsoleEndpoint             string
+	CloudType                   string
+	CloudName                   string
+	Region                      string
+	RegionID                    string
+	IAMEndpoint                 string
+	IAMToken                    string
+	IAMRefreshToken             string
+	Account                     models.Account
+	ResourceGroup               models.ResourceGroup
+	LoginAt                     time.Time
+	CFEETargeted                bool
+	CFEEEnvID                   string
+	PluginRepos                 []models.PluginRepo
+	SSLDisabled                 bool
+	Locale                      string
+	Trace                       string
+	ColorEnabled                string
+	HTTPTimeout                 int
+	CLIInfoEndpoint             string
+	CheckCLIVersionDisabled     bool
+	UsageStatsDisabled          bool // deprecated: use UsageStatsEnabled
+	UsageStatsEnabled           bool
+	UsageStatsEnabledLastUpdate time.Time
+	SDKVersion                  string
+	UpdateCheckInterval         time.Duration
+	UpdateRetryCheckInterval    time.Duration
+	UpdateNotificationInterval  time.Duration
+	raw                         raw
 }
 
 func NewBXConfigData() *BXConfigData {
@@ -380,21 +380,14 @@ func (c *bxConfig) UsageStatsDisabled() (disabled bool) {
 
 func (c *bxConfig) UsageStatsEnabled() (enabled bool) {
 	c.read(func() {
-		enabled = c.data.UsageStatsEnabled
+		enabled = !c.data.UsageStatsEnabledLastUpdate.IsZero() && c.data.UsageStatsEnabled
 	})
 	return
 }
 
-func (c *bxConfig) UsageStatsLastUpdate() (lastUpdate time.Time) {
+func (c *bxConfig) UsageStatsEnabledLastUpdate() (lastUpdate time.Time) {
 	c.read(func() {
-		lastUpdate = c.data.UsageStatsLastUpdate
-	})
-	return
-}
-
-func (c *bxConfig) UsageStatsAllowed() (allowed bool) {
-	c.read(func() {
-		allowed = !c.data.UsageStatsLastUpdate.IsZero() && c.data.UsageStatsEnabled
+		lastUpdate = c.data.UsageStatsEnabledLastUpdate
 	})
 	return
 }
@@ -548,7 +541,7 @@ func (c *bxConfig) SetUsageStatsDisabled(disabled bool) {
 func (c *bxConfig) SetUsageStatsEnabled(enabled bool) {
 	c.write(func() {
 		c.data.UsageStatsEnabled = enabled
-		c.data.UsageStatsLastUpdate = time.Now()
+		c.data.UsageStatsEnabledLastUpdate = time.Now()
 	})
 }
 

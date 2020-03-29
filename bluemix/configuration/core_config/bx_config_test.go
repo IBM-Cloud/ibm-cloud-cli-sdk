@@ -14,15 +14,15 @@ func TestNoLastUpdateAndNoEnabled(t *testing.T) {
 	config := prepareConfigForCLI("", t)
 
 	// check
-	checkUsageStats(false, false, false, config, t)
+	checkUsageStats(false, false, config, t)
 
 	// enabled
 	config.SetUsageStatsEnabled(true)
-	checkUsageStats(true, true, true, config, t)
+	checkUsageStats(true, true, config, t)
 
 	// disabled
 	config.SetUsageStatsEnabled(false)
-	checkUsageStats(false, true, false, config, t)
+	checkUsageStats(false, true, config, t)
 
 	t.Cleanup(cleanupConfigFiles)
 }
@@ -32,15 +32,15 @@ func TestNoLastUpdateAndDisabled(t *testing.T) {
 	config := prepareConfigForCLI(`{"UsageStatsEnabled": false}`, t)
 
 	// check
-	checkUsageStats(false, false, false, config, t)
+	checkUsageStats(false, false, config, t)
 
 	// enabled
 	config.SetUsageStatsEnabled(true)
-	checkUsageStats(true, true, true, config, t)
+	checkUsageStats(true, true, config, t)
 
 	// disabled
 	config.SetUsageStatsEnabled(false)
-	checkUsageStats(false, true, false, config, t)
+	checkUsageStats(false, true, config, t)
 
 	t.Cleanup(cleanupConfigFiles)
 }
@@ -50,131 +50,130 @@ func TestNoLastUpdateAndEnabled(t *testing.T) {
 	config := prepareConfigForCLI(`{"UsageStatsEnabled": true}`, t)
 
 	// check
-	checkUsageStats(true, false, false, config, t)
+	checkUsageStats(false, false, config, t)
 
 	// write enabled
 	config.SetUsageStatsEnabled(true)
-	checkUsageStats(true, true, true, config, t)
+	checkUsageStats(true, true, config, t)
 
 	// disabled
 	config.SetUsageStatsEnabled(false)
-	checkUsageStats(false, true, false, config, t)
+	checkUsageStats(false, true, config, t)
 
 	t.Cleanup(cleanupConfigFiles)
 }
 
 // test case 4: zero update, no enabled
 func TestZeroLastUpdateAndNoEnabled(t *testing.T) {
-	config := prepareConfigForCLI(`{"UsageStatsLastUpdate": "0001-01-01T00:00:00Z"}`, t)
+	config := prepareConfigForCLI(`{"UsageStatsEnabledLastUpdate": "0001-01-01T00:00:00Z"}`, t)
 
 	// check
-	checkUsageStats(false, false, false, config, t)
+	checkUsageStats(false, false, config, t)
 
 	// enabled
 	config.SetUsageStatsEnabled(true)
-	checkUsageStats(true, true, true, config, t)
+	checkUsageStats(true, true, config, t)
 
 	// disabled
 	config.SetUsageStatsEnabled(false)
-	checkUsageStats(false, true, false, config, t)
+	checkUsageStats(false, true, config, t)
 
 	t.Cleanup(cleanupConfigFiles)
 }
 
 // test case 5: zero updated, enabled false
 func TestZeroLastUpdateAndDisabled(t *testing.T) {
-	config := prepareConfigForCLI(`{"UsageStatsLastUpdate": "0001-01-01T00:00:00Z","UsageStatsEnabled": false}`, t)
+	config := prepareConfigForCLI(`{"UsageStatsEnabledLastUpdate": "0001-01-01T00:00:00Z","UsageStatsEnabled": false}`, t)
 
 	// check
-	checkUsageStats(false, false, false, config, t)
+	checkUsageStats(false, false, config, t)
 
 	// enabled
 	config.SetUsageStatsEnabled(true)
-	checkUsageStats(true, true, true, config, t)
+	checkUsageStats(true, true, config, t)
 
 	// disabled
 	config.SetUsageStatsEnabled(false)
-	checkUsageStats(false, true, false, config, t)
+	checkUsageStats(false, true, config, t)
 
 	t.Cleanup(cleanupConfigFiles)
 }
 
 // test case 6: zero updated, enabled true
 func TestZeroLastUpdateAndEnabled(t *testing.T) {
-	config := prepareConfigForCLI(`{"UsageStatsLastUpdate": "0001-01-01T00:00:00Z","UsageStatsEnabled": true}`, t)
+	config := prepareConfigForCLI(`{"UsageStatsEnabledLastUpdate": "0001-01-01T00:00:00Z","UsageStatsEnabled": true}`, t)
 
 	// check
-	checkUsageStats(true, false, false, config, t)
+	checkUsageStats(false, false, config, t)
 
 	// enabled
 	config.SetUsageStatsEnabled(true)
-	checkUsageStats(true, true, true, config, t)
+	checkUsageStats(true, true, config, t)
 
 	// disabled
 	config.SetUsageStatsEnabled(false)
-	checkUsageStats(false, true, false, config, t)
+	checkUsageStats(false, true, config, t)
 
 	t.Cleanup(cleanupConfigFiles)
 }
 
 // test case 7: updated, no enabled
 func TestLastUpdateAndNoEnabled(t *testing.T) {
-	config := prepareConfigForCLI(`{"UsageStatsLastUpdate": "2020-03-29T12:23:43.519017+08:00"}`, t)
+	config := prepareConfigForCLI(`{"UsageStatsEnabledLastUpdate": "2020-03-29T12:23:43.519017+08:00"}`, t)
 
 	// check
-	checkUsageStats(false, true, false, config, t)
+	checkUsageStats(false, true, config, t)
 
 	// enabled
 	config.SetUsageStatsEnabled(true)
-	checkUsageStats(true, true, true, config, t)
+	checkUsageStats(true, true, config, t)
 
 	// disabled
 	config.SetUsageStatsEnabled(false)
-	checkUsageStats(false, true, false, config, t)
+	checkUsageStats(false, true, config, t)
 
 	t.Cleanup(cleanupConfigFiles)
 }
 
 // test case 8: updated, enabled false
 func TestLastUpdateAndDisabled(t *testing.T) {
-	config := prepareConfigForCLI(`{"UsageStatsLastUpdate": "2020-03-29T12:23:43.519017+08:00","UsageStatsEnabled": false}`, t)
+	config := prepareConfigForCLI(`{"UsageStatsEnabledLastUpdate": "2020-03-29T12:23:43.519017+08:00","UsageStatsEnabled": false}`, t)
 
 	// check
-	checkUsageStats(false, true, false, config, t)
+	checkUsageStats(false, true, config, t)
 
 	// enabled
 	config.SetUsageStatsEnabled(true)
-	checkUsageStats(true, true, true, config, t)
+	checkUsageStats(true, true, config, t)
 
 	// disabled
 	config.SetUsageStatsEnabled(false)
-	checkUsageStats(false, true, false, config, t)
+	checkUsageStats(false, true, config, t)
 
 	t.Cleanup(cleanupConfigFiles)
 }
 
 // test case 9: updated, enabled true
 func TestLastUpdateAndEnabled(t *testing.T) {
-	config := prepareConfigForCLI(`{"UsageStatsLastUpdate": "2020-03-29T12:23:43.519017+08:00","UsageStatsEnabled": true}`, t)
+	config := prepareConfigForCLI(`{"UsageStatsEnabledLastUpdate": "2020-03-29T12:23:43.519017+08:00","UsageStatsEnabled": true}`, t)
 
 	// check
-	checkUsageStats(true, true, true, config, t)
+	checkUsageStats(true, true, config, t)
 
 	// disable
 	config.SetUsageStatsEnabled(false)
-	checkUsageStats(false, true, false, config, t)
+	checkUsageStats(false, true, config, t)
 
 	// enable
 	config.SetUsageStatsEnabled(true)
-	checkUsageStats(true, true, true, config, t)
+	checkUsageStats(true, true, config, t)
 
 	t.Cleanup(cleanupConfigFiles)
 }
 
-func checkUsageStats(enabled bool, timeStampExist bool, allowed bool, config core_config.Repository, t *testing.T) {
+func checkUsageStats(enabled bool, timeStampExist bool, config core_config.Repository, t *testing.T) {
 	assert.Equal(t, config.UsageStatsEnabled(), enabled)
-	assert.Equal(t, config.UsageStatsLastUpdate().IsZero(), !timeStampExist)
-	assert.Equal(t, config.UsageStatsAllowed(), allowed)
+	assert.Equal(t, config.UsageStatsEnabledLastUpdate().IsZero(), !timeStampExist)
 }
 
 func prepareConfigForCLI(cliConfigContent string, t *testing.T) core_config.Repository {
