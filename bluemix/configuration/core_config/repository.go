@@ -47,6 +47,10 @@ type Repository interface {
 	UsageStatsDisabled() bool
 	// UsageSatsEnabled returns whether the usage statistics data collection is enabled or not
 	UsageStatsEnabled() bool
+	// UsageStatsLastUpdate returns last time when `UsageStatsEnabled` was updated
+	UsageStatsLastUpdate() time.Time
+	// UsageStatsAllowed will return whether the user agree to collect usage statistic
+	UsageStatsAllowed() bool
 	Locale() string
 	LoginAt() time.Time
 	Trace() string
