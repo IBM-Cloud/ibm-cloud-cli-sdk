@@ -41,12 +41,12 @@ func (ui *FakeUI) Say(template string, args ...interface{}) {
 }
 
 func (ui *FakeUI) Ok() {
-	ui.Say("OK")
+	ui.Say(term.SuccessColor("OK"))
 }
 
 func (ui *FakeUI) Failed(template string, args ...interface{}) {
 	message := fmt.Sprintf(template, args...)
-	ui.Say("FAILED")
+	ui.Say(term.CrashedColor("FAILED"))
 	ui.Say(message)
 }
 
