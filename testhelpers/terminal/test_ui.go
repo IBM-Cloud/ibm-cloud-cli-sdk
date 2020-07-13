@@ -46,7 +46,7 @@ func (ui *FakeUI) Ok() {
 
 func (ui *FakeUI) Failed(template string, args ...interface{}) {
 	message := fmt.Sprintf(template, args...)
-	ui.Say(term.CrashedColor("FAILED"))
+	ui.Say(term.FailureColor("FAILED"))
 	ui.Say(message)
 }
 
