@@ -50,7 +50,7 @@ func NewCFConfigData() *CFConfigData {
 }
 
 func (data *CFConfigData) Marshal() ([]byte, error) {
-	if data.ConfigVersion == 0 {
+	if data.ConfigVersion != 3 {
 		data.ConfigVersion = 4
 	}
 	return json.MarshalIndent(data, "", "  ")
