@@ -106,7 +106,6 @@ type CFConfig interface {
 	HasAPIEndpoint() bool
 	AuthenticationEndpoint() string
 	UAAEndpoint() string
-	LoggregatorEndpoint() string
 	DopplerEndpoint() string
 	RoutingAPIEndpoint() string
 	SSHOAuthClient() string
@@ -129,7 +128,6 @@ type CFConfig interface {
 	SetAPIVersion(string)
 	SetAPIEndpoint(string)
 	SetAuthenticationEndpoint(string)
-	SetLoggregatorEndpoint(string)
 	SetDopplerEndpoint(string)
 	SetUAAEndpoint(string)
 	SetRoutingAPIEndpoint(string)
