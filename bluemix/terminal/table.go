@@ -2,9 +2,10 @@ package terminal
 
 import (
 	"fmt"
-	"github.com/mattn/go-runewidth"
 	"io"
 	"strings"
+
+	"github.com/mattn/go-runewidth"
 )
 
 type Table interface {
