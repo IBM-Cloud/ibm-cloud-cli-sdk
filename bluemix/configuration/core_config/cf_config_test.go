@@ -70,7 +70,7 @@ func TestMarshal(t *testing.T) {
 	assert.Equal(t, string(bytes), v4JSON)
 }
 
-func TestUnmarshalV3(t *testing.T) {
+func TestUnmarshalV4(t *testing.T) {
 	c := core_config.NewCFConfigData()
 	assert.NoError(t, c.Unmarshal([]byte(v4JSON)))
 
@@ -80,7 +80,7 @@ func TestUnmarshalV3(t *testing.T) {
 	assert.Equal(t, "iam.test.cloud.ibm.com", c.AuthorizationEndpoint)
 }
 
-func TestUnmarshalV4(t *testing.T) {
+func TestUnmarshalV3(t *testing.T) {
 	var v3JSON = `{
   "AccessToken": "bar",
   "APIVersion": "4",
@@ -132,6 +132,36 @@ func TestUnmarshalV4(t *testing.T) {
 	assert.Equal(t, "4", c.APIVersion)
 	assert.Equal(t, "bar", c.AccessToken)
 	assert.Equal(t, "iam.test.cloud.ibm.com", c.AuthorizationEndpoint)
+}
+
+func TestUnmarshalV2(t *testing.T) {
+	var v2JSON = `{
+  "AccessToken": "bar",
+  "APIVersion": "4",
+  "AsyncTimeout": 0,
+  "AuthorizationEndpoint": "iam.test.cloud.ibm.com",
+  "ColorEnabled": "",
+  "ConfigVersion": 2
+}`
+	c := core_config.NewCFConfigData()
+	assert.NoError(t, c.Unmarshal([]byte(v2JSON)))
+
+	assert.Empty(t, 0, c)
+}
+
+func TestUnmarshalV5(t *testing.T) {
+	var v2JSON = `{
+  "AccessToken": "bar",
+  "APIVersion": "4",
+  "AsyncTimeout": 0,
+  "AuthorizationEndpoint": "iam.test.cloud.ibm.com",
+  "ColorEnabled": "",
+  "ConfigVersion": 5
+}`
+	c := core_config.NewCFConfigData()
+	assert.NoError(t, c.Unmarshal([]byte(v2JSON)))
+
+	assert.Empty(t, 0, c)
 }
 
 func TestUnmarshalError(t *testing.T) {

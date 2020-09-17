@@ -62,6 +62,12 @@ func (data *CFConfigData) Unmarshal(bytes []byte) error {
 		return err
 	}
 
+	// clear out config if version is not 3 or 4
+	if data.ConfigVersion < 3 || data.ConfigVersion > 4 {
+		*data = CFConfigData{raw: make(map[string]interface{})}
+		return nil
+	}
+
 	var raw raw
 	err = json.Unmarshal(bytes, &raw)
 	if err != nil {
