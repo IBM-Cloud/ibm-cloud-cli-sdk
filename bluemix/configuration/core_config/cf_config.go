@@ -167,6 +167,13 @@ func (c *cfConfig) APIEndpoint() (endpoint string) {
 	return
 }
 
+func (c *cfConfig) AsyncTimeout() (timeout uint) {
+	c.read(func() {
+		timeout = c.data.AsyncTimeout
+	})
+	return
+}
+
 func (c *cfConfig) HasAPIEndpoint() (hasEndpoint bool) {
 	c.read(func() {
 		hasEndpoint = c.data.APIVersion != "" && c.data.Target != ""

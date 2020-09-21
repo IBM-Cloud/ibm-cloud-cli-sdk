@@ -103,6 +103,8 @@ type ReadWriter interface {
 type CFConfig interface {
 	APIVersion() string
 	APIEndpoint() string
+	AsyncTimeout() uint
+	ColorEnabled() string
 	HasAPIEndpoint() bool
 	AuthenticationEndpoint() string
 	UAAEndpoint() string
@@ -114,9 +116,11 @@ type CFConfig interface {
 	Username() string
 	UserGUID() string
 	UserEmail() string
+	Locale() string
 	LoginAt() time.Time
 	IsLoggedIn() bool
 	SetLoginAt(loginAt time.Time)
+	Trace() string
 	UAAToken() string
 	UAARefreshToken() string
 	CurrentOrganization() models.OrganizationFields
