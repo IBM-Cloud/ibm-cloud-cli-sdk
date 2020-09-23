@@ -60,7 +60,7 @@ func (ui *FakeUI) error(template string, args ...interface{}) {
 }
 
 func (ui *FakeUI) Ok() {
-  if ui.quiet {
+	if ui.quiet {
 		return
 	}
 	ui.Say(term.SuccessColor("OK"))
