@@ -11,30 +11,31 @@ import (
 )
 
 type CFConfigData struct {
-	ConfigVersion            int
-	Target                   string
-	APIVersion               string
-	AuthorizationEndpoint    string
-	LoggregatorEndpoint      string
-	DopplerEndpoint          string
-	UaaEndpoint              string
-	RoutingAPIEndpoint       string
-	LoginAt                  time.Time
 	AccessToken              string
-	RefreshToken             string
-	UAAOAuthClient           string
-	UAAOAuthClientSecret     string
-	SSHOAuthClient           string
-	OrganizationFields       models.OrganizationFields
-	SpaceFields              models.SpaceFields
-	SSLDisabled              bool
+	APIVersion               string
 	AsyncTimeout             uint
-	Trace                    string
+	AuthorizationEndpoint    string
 	ColorEnabled             string
+	ConfigVersion            int
+	DopplerEndpoint          string
 	Locale                   string
-	PluginRepos              []models.PluginRepo
+	LogCacheEndPoint         string
 	MinCLIVersion            string
 	MinRecommendedCLIVersion string
+	OrganizationFields       models.OrganizationFields
+	PluginRepos              []models.PluginRepo
+	RefreshToken             string
+	RoutingAPIEndpoint       string
+	SpaceFields              models.SpaceFields
+	SSHOAuthClient           string
+	SSLDisabled              bool
+	Target                   string
+	Trace                    string
+	UaaEndpoint              string
+	LoginAt                  time.Time
+	UAAGrantType             string
+	UAAOAuthClient           string
+	UAAOAuthClientSecret     string
 	raw                      raw
 }
 
@@ -49,7 +50,9 @@ func NewCFConfigData() *CFConfigData {
 }
 
 func (data *CFConfigData) Marshal() ([]byte, error) {
-	data.ConfigVersion = 3
+	if data.ConfigVersion != 3 {
+		data.ConfigVersion = 4
+	}
 	return json.MarshalIndent(data, "", "  ")
 }
 
@@ -59,7 +62,8 @@ func (data *CFConfigData) Unmarshal(bytes []byte) error {
 		return err
 	}
 
-	if data.ConfigVersion != 3 {
+	// clear out config if version is not 3 or 4
+	if data.ConfigVersion < 3 || data.ConfigVersion > 4 {
 		*data = CFConfigData{raw: make(map[string]interface{})}
 		return nil
 	}
@@ -180,13 +184,6 @@ func (c *cfConfig) AuthenticationEndpoint() (endpoint string) {
 func (c *cfConfig) DopplerEndpoint() (endpoint string) {
 	c.read(func() {
 		endpoint = c.data.DopplerEndpoint
-	})
-	return
-}
-
-func (c *cfConfig) LoggregatorEndpoint() (endpoint string) {
-	c.read(func() {
-		endpoint = c.data.LoggregatorEndpoint
 	})
 	return
 }
@@ -356,12 +353,6 @@ func (c *cfConfig) SetAuthenticationEndpoint(endpoint string) {
 	})
 }
 
-func (c *cfConfig) SetLoggregatorEndpoint(endpoint string) {
-	c.write(func() {
-		c.data.LoggregatorEndpoint = endpoint
-	})
-}
-
 func (c *cfConfig) SetDopplerEndpoint(endpoint string) {
 	c.write(func() {
 		c.data.DopplerEndpoint = endpoint
@@ -455,7 +446,6 @@ func (c *cfConfig) UnsetAPI() {
 		c.data.AuthorizationEndpoint = ""
 		c.data.UaaEndpoint = ""
 		c.data.RoutingAPIEndpoint = ""
-		c.data.LoggregatorEndpoint = ""
 		c.data.DopplerEndpoint = ""
 	})
 }

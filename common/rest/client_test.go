@@ -1,6 +1,7 @@
 package rest
 
 import (
+	"context"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -19,6 +20,43 @@ func serveHandler(statusCode int, message string) http.HandlerFunc {
 		w.WriteHeader(statusCode)
 		fmt.Fprint(w, message)
 	}
+}
+
+func TestDoWithContext_WithSuccessV(t *testing.T) {
+	assert := assert.New(t)
+
+	ts := httptest.NewServer(serveHandler(200, "{\"foo\": \"bar\"}"))
+	defer ts.Close()
+
+	var res map[string]string
+	resp, err := NewClient().DoWithContext(context.TODO(), GetRequest(ts.URL), &res, nil)
+	assert.NoError(err)
+	assert.Equal(http.StatusOK, resp.StatusCode)
+	assert.Equal("bar", res["foo"])
+}
+
+func TestDoWithContext_NilContext_WithSuccessV(t *testing.T) {
+	assert := assert.New(t)
+
+	ts := httptest.NewServer(serveHandler(200, "{\"foo\": \"bar\"}"))
+	defer ts.Close()
+
+	var res map[string]string
+	resp, err := NewClient().DoWithContext(nil, GetRequest(ts.URL), &res, nil)
+	assert.NoError(err)
+	assert.Equal(http.StatusOK, resp.StatusCode)
+	assert.Equal("bar", res["foo"])
+}
+
+func TestDoWithContext_WithoutSuccessV(t *testing.T) {
+	assert := assert.New(t)
+
+	ts := httptest.NewServer(serveHandler(200, "abcedefg"))
+	defer ts.Close()
+
+	resp, err := NewClient().Do(GetRequest(ts.URL), nil, nil)
+	assert.NoError(err)
+	assert.Equal(http.StatusOK, resp.StatusCode)
 }
 
 func TestDo_WithSuccessV(t *testing.T) {
