@@ -884,7 +884,43 @@ if errorV != nil || err != nil {
 }
 ```
 
-## 5. Utility for Unit Testing
+## 5. Authentication
+
+To access back-end API, normally an access token is required. CLI can expose the tokens generated during logging. You can get the IAM token and UAA token as follows:
+
+```go
+func (demo *DemoPlugin) Run(context plugin.PluginContext, args []string){
+    config := context.PluginConfig()
+
+    // get IAM token
+    iamToken := config.IAMToken()
+    if iamToken == "" {
+        ui.Say("IAM token is not available. Have you logged in?")
+        return
+    }
+    
+    // get UAA token
+    uaaToken := config.CFConfig().UAAToken()
+    if iamToken == "" {
+        ui.Say("UAA token is not available. Have you logged into Cloud Foundry?")
+        return
+    }
+    ...
+}
+```
+
+And you can set the `Authorization` header of the HTTP request to the token value.
+
+```go
+h := http.Header{}
+h.Set("Authorization", token)
+```
+
+For more details of the API, refer to docs of [bluemix/configuration/core_config](https://godoc.org/github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/configuration/core_config).
+
+If you want to fetch the token by yourselve, refer to [bluemix/authentication/iam](https://godoc.org/github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/authentication/iam) and [bluemix/authentication/uaa](https://godoc.org/github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/authentication/uaa).
+
+## 6. Utility for Unit Testing
 
 We highly recommended that terminal.StdUI was used in your code for output, because it can be replaced by FakeUI which is a utility provided by IBM Cloud CLI for easy unit testing.
 
@@ -927,7 +963,7 @@ func TestStart() {
 }
 ```
 
-## 6. Globalization
+## 7. Globalization
 
 IBM Cloud CLI tends to be used globally. Both IBM Cloud CLI and its plug-ins should support globalization. We have enabled internationalization (i18n) for CLI's base commands with the help of the third-party tool "[go-i18n](https://github.com/nicksnyder/go-i18n)". To keep user experience consistent, we recommend plug-in developers follow the CLI's way of i18n enablement.
 
