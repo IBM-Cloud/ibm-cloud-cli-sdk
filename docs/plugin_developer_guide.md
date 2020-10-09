@@ -886,20 +886,20 @@ if errorV != nil || err != nil {
 
 ## 5. Authentication
 
-To access back-end API, normally an access token is required. CLI can expose the tokens generated during logging. You can get the IAM token and UAA token as follows:
+To access IBM Cloud back-end API, normally a token is required. You can get the IAM access token and UAA access token from  IBM CLoud SDK as follows:
 
 ```go
 func (demo *DemoPlugin) Run(context plugin.PluginContext, args []string){
     config := context.PluginConfig()
 
-    // get IAM token
+    // get IAM access token
     iamToken := config.IAMToken()
     if iamToken == "" {
         ui.Say("IAM token is not available. Have you logged in?")
         return
     }
     
-    // get UAA token
+    // get UAA access token
     uaaToken := config.CFConfig().UAAToken()
     if iamToken == "" {
         ui.Say("UAA token is not available. Have you logged into Cloud Foundry?")
@@ -916,9 +916,9 @@ h := http.Header{}
 h.Set("Authorization", token)
 ```
 
-For more details of the API, refer to docs of [bluemix/configuration/core_config](https://godoc.org/github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/configuration/core_config).
+For more details of the API, refer to docs of [core_config](https://godoc.org/github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/configuration/core_config).
 
-If you want to fetch the token by yourselve, refer to [bluemix/authentication/iam](https://godoc.org/github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/authentication/iam) and [bluemix/authentication/uaa](https://godoc.org/github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/authentication/uaa).
+If you want to fetch the token by yourselve, refer to API docs for [iam](https://godoc.org/github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/authentication/iam) and [uaa](https://godoc.org/github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/authentication/uaa).
 
 ## 6. Utility for Unit Testing
 
