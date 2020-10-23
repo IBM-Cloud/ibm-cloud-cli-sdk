@@ -347,6 +347,7 @@ To keep user experience consistent, developers of IBM Cloud CLI plug-in should a
 **To name the commands**:
 
 - Use lower case words and hyphen
+- Names should be at least 2 characters in length
 - Follow a “noun-verb” sequence
 - For commands that list objects, use the plural of the object name, e.g. `ibmcloud iam api-keys`. If a plural will not work, or it is already described in namespace, use `list`, such as `ibmcloud app list`.
 - For commands that retrieve the details of an object, use the object name, e.g. `ibmcloud iam api-key`. If it does not work, use `show`, e.g. `ibmcloud app show`
@@ -664,6 +665,12 @@ if err != nil {
 ui.Say("upgrading '%s'...", terminal.EntityNameColor(selected))
 ```
 
+#### Prompt override
+There must be a way to override the prompt from a command line switch to allow the execution of non interactive scripts.
+
+For the configrmation [y/N] prompt use the -f force option.
+
+
 ### 2.11. Table Output
 
 For consistent user experience, developers of IBM Cloud CLI plug-ins should comply with the following table output specifications:
@@ -712,6 +719,24 @@ $ibmcloud account orgs --output json
 ]
 ```
 
+When the output is an empty list the plugin should produce an empty json list (not null).  For example if there were not account orgs:
+```
+$ibmcloud account orgs --output json
+[]
+```
+
+### 2.12. Common options
+
+Customers will be writing scripts that use multiple services.  Consistency with option names will help them be successful.
+
+```
+OPTIONS:
+   --force, -f                  Force the operation without confirmation
+   --instance-id                ID of the service instance.
+   --output json                Format output in JSON
+   --resource-group-id value    ID of the resource group. This option is mutually exclusive with --resource-group-name
+   --resource-group-name value  Name of the resource group. This option is mutually exclusive with --resource-group-id
+```
 
 ## 3. Tracing
 
@@ -859,7 +884,78 @@ if errorV != nil || err != nil {
 }
 ```
 
-## 5. Utility for Unit Testing
+## 5. Authentication
+
+## 5.1 Get Access Token
+
+To access IBM Cloud back-end API, normally a token is required. You can get the IAM access token and UAA access token from  IBM CLoud SDK as follows:
+
+```go
+func (demo *DemoPlugin) Run(context plugin.PluginContext, args []string){
+    config := context.PluginConfig()
+
+    // get IAM access token
+    iamToken := config.IAMToken()
+    if iamToken == "" {
+        ui.Say("IAM token is not available. Have you logged in?")
+        return
+    }
+    
+    // get UAA access token
+    uaaToken := config.CFConfig().UAAToken()
+    if iamToken == "" {
+        ui.Say("UAA token is not available. Have you logged into Cloud Foundry?")
+        return
+    }
+    ...
+}
+```
+
+And you can set the `Authorization` header of the HTTP request to the token value.
+
+```go
+h := http.Header{}
+h.Set("Authorization", token)
+```
+
+For more details of the API, refer to docs of [core_config](https://godoc.org/github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/configuration/core_config).
+
+If you want to fetch the token by yourselve, refer to API docs for [iam](https://godoc.org/github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/authentication/iam) and [uaa](https://godoc.org/github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/authentication/uaa).
+
+### 5.2 Refresh Access Token on Expiry
+
+When an HTTP 401 or 403 is returned from back-end service, it could mean the access token is expired. You can try to refresh existing access token following the [Oauth2 spec regarding how to refresh access token](https://www.oauth.com/oauth2-servers/access-tokens/refreshing-access-tokens/).
+
+Let's take refresh IAM token as an example.
+
+```go
+// get existing refresh token
+refreshToken := config.IAMRefreshToken()
+
+// prepare token refresh request. See https://godoc.org/github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/authentication/iam#RefreshTokenRequest for API details
+request := iam.RefreshTokenRequest(refreshToken)
+
+// send request to IAM endpoint to generate new tokens
+c := &rest.Client{
+	HTTPClient:    http.NewHTTPClient(config),
+	DefaultHeader: http.DefaultHeader(config),
+}
+client := iam.NewClient(iam.DefaultConfig(config.IAMEndpoint()), c)
+
+token, err := client.GetToken(request)
+
+// get the new access token and refresh token
+accessToken := token.AccessToken
+newRefreshToken := token.RefreshToken
+
+// optional, set access token and refresh token back to config
+
+config.SetAccessToken(accessToken)
+config.SetRefreshToken(newRefreshToken)
+```
+
+
+## 6. Utility for Unit Testing
 
 We highly recommended that terminal.StdUI was used in your code for output, because it can be replaced by FakeUI which is a utility provided by IBM Cloud CLI for easy unit testing.
 
@@ -902,7 +998,7 @@ func TestStart() {
 }
 ```
 
-## 6. Globalization
+## 7. Globalization
 
 IBM Cloud CLI tends to be used globally. Both IBM Cloud CLI and its plug-ins should support globalization. We have enabled internationalization (i18n) for CLI's base commands with the help of the third-party tool "[go-i18n](https://github.com/nicksnyder/go-i18n)". To keep user experience consistent, we recommend plug-in developers follow the CLI's way of i18n enablement.
 

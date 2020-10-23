@@ -2,6 +2,7 @@
 package rest
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -37,8 +38,8 @@ func NewClient() *Client {
 	}
 }
 
-// Do sends a request and returns a HTTP response whose body is consumed and
-// closed.
+// DoWithContext sends a request and returns a HTTP response whose body is consumed and
+// closed. The context controls the lifetime of the outgoing request and its response.
 //
 // If respV is not nil, the value it points to is JSON decoded when server
 // returns a successful response.
@@ -46,8 +47,8 @@ func NewClient() *Client {
 // If errV is not nil, the value it points to is JSON decoded when server
 // returns an unsuccessfully response. If the response text is not a JSON
 // string, a more generic ErrorResponse error is returned.
-func (c *Client) Do(r *Request, respV interface{}, errV interface{}) (*http.Response, error) {
-	req, err := c.makeRequest(r)
+func (c *Client) DoWithContext(ctx context.Context, r *Request, respV interface{}, errV interface{}) (*http.Response, error) {
+	req, err := c.makeRequest(ctx, r)
 	if err != nil {
 		return nil, err
 	}
@@ -93,10 +94,19 @@ func (c *Client) Do(r *Request, respV interface{}, errV interface{}) (*http.Resp
 	return resp, err
 }
 
-func (c *Client) makeRequest(r *Request) (*http.Request, error) {
+// Do wraps DoWithContext using the background context.
+func (c *Client) Do(r *Request, respV interface{}, errV interface{}) (*http.Response, error) {
+	return c.DoWithContext(context.Background(), r, respV, errV)
+}
+
+func (c *Client) makeRequest(ctx context.Context, r *Request) (*http.Request, error) {
 	req, err := r.Build()
 	if err != nil {
 		return nil, err
+	}
+
+	if ctx != nil {
+		req = req.WithContext(ctx)
 	}
 
 	c.applyDefaultHeader(req)
