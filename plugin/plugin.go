@@ -25,6 +25,9 @@ type PluginMetadata struct {
 	// If DelegateBashCompletion is true, plugin command's completion is handled by plugin.
 	// The CLI will invoke '<plugin_binary> SendCompletion <args>'
 	DelegateBashCompletion bool
+
+	// Whether the plugin supports virtual private endpoint
+	VPESupported bool
 }
 
 func (p PluginMetadata) NameAndAliases() []string {
