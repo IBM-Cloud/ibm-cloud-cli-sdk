@@ -13,6 +13,7 @@ import (
 type Repository interface {
 	APIEndpoint() string
 	HasAPIEndpoint() bool
+	IsPrivateEndpointEnabled() bool
 	ConsoleEndpoint() string
 	IAMEndpoint() string
 	CloudName() string
@@ -57,6 +58,7 @@ type Repository interface {
 
 	UnsetAPI()
 	SetAPIEndpoint(string)
+	SetPrivateEndpointEnabled(bool)
 	SetConsoleEndpoint(string)
 	SetIAMEndpoint(string)
 	SetCloudType(string)

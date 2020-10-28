@@ -2,10 +2,10 @@
 package pluginfakes
 
 import (
-	sync "sync"
+	"sync"
 
-	models "github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/models"
-	plugin "github.com/IBM-Cloud/ibm-cloud-cli-sdk/plugin"
+	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/models"
+	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/plugin"
 )
 
 type FakePluginContext struct {
@@ -267,6 +267,16 @@ type FakePluginContext struct {
 		result1 bool
 	}
 	isLoggedInWithServiceIDReturnsOnCall map[int]struct {
+		result1 bool
+	}
+	IsPrivateEndpointEnabledStub        func() bool
+	isPrivateEndpointEnabledMutex       sync.RWMutex
+	isPrivateEndpointEnabledArgsForCall []struct {
+	}
+	isPrivateEndpointEnabledReturns struct {
+		result1 bool
+	}
+	isPrivateEndpointEnabledReturnsOnCall map[int]struct {
 		result1 bool
 	}
 	IsSSLDisabledStub        func() bool
@@ -1707,6 +1717,58 @@ func (fake *FakePluginContext) IsLoggedInWithServiceIDReturnsOnCall(i int, resul
 	}{result1}
 }
 
+func (fake *FakePluginContext) IsPrivateEndpointEnabled() bool {
+	fake.isPrivateEndpointEnabledMutex.Lock()
+	ret, specificReturn := fake.isPrivateEndpointEnabledReturnsOnCall[len(fake.isPrivateEndpointEnabledArgsForCall)]
+	fake.isPrivateEndpointEnabledArgsForCall = append(fake.isPrivateEndpointEnabledArgsForCall, struct {
+	}{})
+	fake.recordInvocation("IsPrivateEndpointEnabled", []interface{}{})
+	fake.isPrivateEndpointEnabledMutex.Unlock()
+	if fake.IsPrivateEndpointEnabledStub != nil {
+		return fake.IsPrivateEndpointEnabledStub()
+	}
+	if specificReturn {
+		return ret.result1
+	}
+	fakeReturns := fake.isPrivateEndpointEnabledReturns
+	return fakeReturns.result1
+}
+
+func (fake *FakePluginContext) IsPrivateEndpointEnabledCallCount() int {
+	fake.isPrivateEndpointEnabledMutex.RLock()
+	defer fake.isPrivateEndpointEnabledMutex.RUnlock()
+	return len(fake.isPrivateEndpointEnabledArgsForCall)
+}
+
+func (fake *FakePluginContext) IsPrivateEndpointEnabledCalls(stub func() bool) {
+	fake.isPrivateEndpointEnabledMutex.Lock()
+	defer fake.isPrivateEndpointEnabledMutex.Unlock()
+	fake.IsPrivateEndpointEnabledStub = stub
+}
+
+func (fake *FakePluginContext) IsPrivateEndpointEnabledReturns(result1 bool) {
+	fake.isPrivateEndpointEnabledMutex.Lock()
+	defer fake.isPrivateEndpointEnabledMutex.Unlock()
+	fake.IsPrivateEndpointEnabledStub = nil
+	fake.isPrivateEndpointEnabledReturns = struct {
+		result1 bool
+	}{result1}
+}
+
+func (fake *FakePluginContext) IsPrivateEndpointEnabledReturnsOnCall(i int, result1 bool) {
+	fake.isPrivateEndpointEnabledMutex.Lock()
+	defer fake.isPrivateEndpointEnabledMutex.Unlock()
+	fake.IsPrivateEndpointEnabledStub = nil
+	if fake.isPrivateEndpointEnabledReturnsOnCall == nil {
+		fake.isPrivateEndpointEnabledReturnsOnCall = make(map[int]struct {
+			result1 bool
+		})
+	}
+	fake.isPrivateEndpointEnabledReturnsOnCall[i] = struct {
+		result1 bool
+	}{result1}
+}
+
 func (fake *FakePluginContext) IsSSLDisabled() bool {
 	fake.isSSLDisabledMutex.Lock()
 	ret, specificReturn := fake.isSSLDisabledReturnsOnCall[len(fake.isSSLDisabledArgsForCall)]
@@ -2181,6 +2243,8 @@ func (fake *FakePluginContext) Invocations() map[string][][]interface{} {
 	defer fake.isLoggedInMutex.RUnlock()
 	fake.isLoggedInWithServiceIDMutex.RLock()
 	defer fake.isLoggedInWithServiceIDMutex.RUnlock()
+	fake.isPrivateEndpointEnabledMutex.RLock()
+	defer fake.isPrivateEndpointEnabledMutex.RUnlock()
 	fake.isSSLDisabledMutex.RLock()
 	defer fake.isSSLDisabledMutex.RUnlock()
 	fake.localeMutex.RLock()
