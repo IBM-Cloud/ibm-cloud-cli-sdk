@@ -24,6 +24,7 @@ func (r raw) Unmarshal(bytes []byte) error {
 
 type BXConfigData struct {
 	APIEndpoint                 string
+	IsPrivate                   bool
 	ConsoleEndpoint             string
 	CloudType                   string
 	CloudName                   string
@@ -150,6 +151,13 @@ func (c *bxConfig) writeRaw(cb func()) {
 func (c *bxConfig) APIEndpoint() (endpoint string) {
 	c.read(func() {
 		endpoint = c.data.APIEndpoint
+	})
+	return
+}
+
+func (c *bxConfig) IsPrivateEndpointEnabled() (isPrivate bool) {
+	c.read(func() {
+		isPrivate = c.data.IsPrivate
 	})
 	return
 }
@@ -419,6 +427,12 @@ func (c *bxConfig) SetAPIEndpoint(endpoint string) {
 	})
 }
 
+func (c *bxConfig) SetPrivateEndpointEnabled(isPrivate bool) {
+	c.write(func() {
+		c.data.IsPrivate = isPrivate
+	})
+}
+
 func (c *bxConfig) SetConsoleEndpoint(endpoint string) {
 	c.write(func() {
 		c.data.ConsoleEndpoint = endpoint
@@ -600,6 +614,7 @@ func (c *bxConfig) ClearSession() {
 func (c *bxConfig) UnsetAPI() {
 	c.write(func() {
 		c.data.APIEndpoint = ""
+		c.data.IsPrivate = false
 		c.data.Region = ""
 		c.data.RegionID = ""
 		c.data.ConsoleEndpoint = ""
