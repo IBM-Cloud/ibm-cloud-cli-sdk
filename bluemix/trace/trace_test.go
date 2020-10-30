@@ -1,8 +1,13 @@
 package trace_test
 
 import (
+	"bytes"
+	"io"
+	"io/ioutil"
+	"os"
 	"testing"
 
+	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/terminal"
 	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/trace"
 	"github.com/stretchr/testify/assert"
 )
@@ -54,4 +59,80 @@ func TestSanitize(t *testing.T) {
 	for _, test := range tests {
 		assert.Equal(t, test.expected, trace.Sanitize(test.input))
 	}
+}
+
+func TestNullLogger(t *testing.T) {
+	logger := trace.NewLogger("")
+	logger.Print("test")
+	logger.Printf("test %d", 100)
+	logger.Println("test")
+}
+
+func TestStdLogger(t *testing.T) {
+	originalStderr := terminal.ErrOutput
+
+	r, w, err := os.Pipe()
+	assert.NoError(t, err)
+
+	terminal.ErrOutput = w
+
+	defer func() {
+		terminal.ErrOutput = originalStderr
+	}()
+
+	logger := trace.NewLogger("true")
+	logger.Print("test")
+	logger.Printf("test %d", 100)
+	logger.Println("testln")
+
+	errChan := make(chan string)
+	go func() {
+		var buf bytes.Buffer
+		io.Copy(&buf, r)
+		errChan <- buf.String()
+	}()
+
+	w.Close()
+
+	output := <-errChan
+
+	assert.Equal(t, "test\ntest 100\ntestln\n", output)
+}
+
+func TestFileLogger(t *testing.T) {
+	f, err := ioutil.TempFile("", "")
+	assert.NoError(t, err)
+
+	defer f.Close()
+	defer os.RemoveAll(f.Name())
+
+	logger := trace.NewLogger(f.Name())
+	logger.Print("test")
+	logger.Printf("test %d", 100)
+	logger.Println("testln")
+
+	buf, err := ioutil.ReadAll(f)
+	assert.NoError(t, err)
+
+	assert.Equal(t, "test\ntest 100\ntestln\n", string(buf))
+}
+
+func TestPrinterCloser(t *testing.T) {
+	f, err := ioutil.TempFile("", "")
+	assert.NoError(t, err)
+
+	defer os.RemoveAll(f.Name())
+
+	logger := trace.NewFileLogger(f.Name())
+	logger.Print("test")
+	logger.Printf("test %d", 100)
+	logger.Println("testln")
+
+	buf, err := ioutil.ReadAll(f)
+	assert.NoError(t, err)
+
+	assert.Equal(t, "test\ntest 100\ntestln\n", string(buf))
+
+	assert.NoError(t, logger.Close())
+	assert.Error(t, logger.Close())
 }
