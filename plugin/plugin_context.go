@@ -58,6 +58,20 @@ func (c *pluginContext) APIEndpoint() string {
 	return c.ReadWriter.APIEndpoint()
 }
 
+func (c *pluginContext) IAMEndpoint() string {
+	if c.IsPrivateEndpointEnabled() {
+		return c.IAMEndpoints().PrivateEndpoint
+	}
+	return c.IAMEndpoints().PublicEndpoint
+}
+
+func (c *pluginContext) ConsoleEndpoint() string {
+	if c.IsPrivateEndpointEnabled() {
+		return c.ConsoleEndpoints().PrivateEndpoint
+	}
+	return c.ConsoleEndpoints().PublicEndpoint
+}
+
 func compareVersion(v1, v2 string) int {
 	s1 := strings.Split(v1, ".")
 	s2 := strings.Split(v2, ".")

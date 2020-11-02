@@ -99,6 +99,16 @@ type FakePluginContext struct {
 	consoleEndpointReturnsOnCall map[int]struct {
 		result1 string
 	}
+	ConsoleEndpointsStub        func() models.Endpoints
+	consoleEndpointsMutex       sync.RWMutex
+	consoleEndpointsArgsForCall []struct {
+	}
+	consoleEndpointsReturns struct {
+		result1 models.Endpoints
+	}
+	consoleEndpointsReturnsOnCall map[int]struct {
+		result1 models.Endpoints
+	}
 	CurrentAccountStub        func() models.Account
 	currentAccountMutex       sync.RWMutex
 	currentAccountArgsForCall []struct {
@@ -218,6 +228,16 @@ type FakePluginContext struct {
 	}
 	iAMEndpointReturnsOnCall map[int]struct {
 		result1 string
+	}
+	IAMEndpointsStub        func() models.Endpoints
+	iAMEndpointsMutex       sync.RWMutex
+	iAMEndpointsArgsForCall []struct {
+	}
+	iAMEndpointsReturns struct {
+		result1 models.Endpoints
+	}
+	iAMEndpointsReturnsOnCall map[int]struct {
+		result1 models.Endpoints
 	}
 	IAMRefreshTokenStub        func() string
 	iAMRefreshTokenMutex       sync.RWMutex
@@ -830,6 +850,58 @@ func (fake *FakePluginContext) ConsoleEndpointReturnsOnCall(i int, result1 strin
 	}
 	fake.consoleEndpointReturnsOnCall[i] = struct {
 		result1 string
+	}{result1}
+}
+
+func (fake *FakePluginContext) ConsoleEndpoints() models.Endpoints {
+	fake.consoleEndpointsMutex.Lock()
+	ret, specificReturn := fake.consoleEndpointsReturnsOnCall[len(fake.consoleEndpointsArgsForCall)]
+	fake.consoleEndpointsArgsForCall = append(fake.consoleEndpointsArgsForCall, struct {
+	}{})
+	fake.recordInvocation("ConsoleEndpoints", []interface{}{})
+	fake.consoleEndpointsMutex.Unlock()
+	if fake.ConsoleEndpointsStub != nil {
+		return fake.ConsoleEndpointsStub()
+	}
+	if specificReturn {
+		return ret.result1
+	}
+	fakeReturns := fake.consoleEndpointsReturns
+	return fakeReturns.result1
+}
+
+func (fake *FakePluginContext) ConsoleEndpointsCallCount() int {
+	fake.consoleEndpointsMutex.RLock()
+	defer fake.consoleEndpointsMutex.RUnlock()
+	return len(fake.consoleEndpointsArgsForCall)
+}
+
+func (fake *FakePluginContext) ConsoleEndpointsCalls(stub func() models.Endpoints) {
+	fake.consoleEndpointsMutex.Lock()
+	defer fake.consoleEndpointsMutex.Unlock()
+	fake.ConsoleEndpointsStub = stub
+}
+
+func (fake *FakePluginContext) ConsoleEndpointsReturns(result1 models.Endpoints) {
+	fake.consoleEndpointsMutex.Lock()
+	defer fake.consoleEndpointsMutex.Unlock()
+	fake.ConsoleEndpointsStub = nil
+	fake.consoleEndpointsReturns = struct {
+		result1 models.Endpoints
+	}{result1}
+}
+
+func (fake *FakePluginContext) ConsoleEndpointsReturnsOnCall(i int, result1 models.Endpoints) {
+	fake.consoleEndpointsMutex.Lock()
+	defer fake.consoleEndpointsMutex.Unlock()
+	fake.ConsoleEndpointsStub = nil
+	if fake.consoleEndpointsReturnsOnCall == nil {
+		fake.consoleEndpointsReturnsOnCall = make(map[int]struct {
+			result1 models.Endpoints
+		})
+	}
+	fake.consoleEndpointsReturnsOnCall[i] = struct {
+		result1 models.Endpoints
 	}{result1}
 }
 
@@ -1454,6 +1526,58 @@ func (fake *FakePluginContext) IAMEndpointReturnsOnCall(i int, result1 string) {
 	}
 	fake.iAMEndpointReturnsOnCall[i] = struct {
 		result1 string
+	}{result1}
+}
+
+func (fake *FakePluginContext) IAMEndpoints() models.Endpoints {
+	fake.iAMEndpointsMutex.Lock()
+	ret, specificReturn := fake.iAMEndpointsReturnsOnCall[len(fake.iAMEndpointsArgsForCall)]
+	fake.iAMEndpointsArgsForCall = append(fake.iAMEndpointsArgsForCall, struct {
+	}{})
+	fake.recordInvocation("IAMEndpoints", []interface{}{})
+	fake.iAMEndpointsMutex.Unlock()
+	if fake.IAMEndpointsStub != nil {
+		return fake.IAMEndpointsStub()
+	}
+	if specificReturn {
+		return ret.result1
+	}
+	fakeReturns := fake.iAMEndpointsReturns
+	return fakeReturns.result1
+}
+
+func (fake *FakePluginContext) IAMEndpointsCallCount() int {
+	fake.iAMEndpointsMutex.RLock()
+	defer fake.iAMEndpointsMutex.RUnlock()
+	return len(fake.iAMEndpointsArgsForCall)
+}
+
+func (fake *FakePluginContext) IAMEndpointsCalls(stub func() models.Endpoints) {
+	fake.iAMEndpointsMutex.Lock()
+	defer fake.iAMEndpointsMutex.Unlock()
+	fake.IAMEndpointsStub = stub
+}
+
+func (fake *FakePluginContext) IAMEndpointsReturns(result1 models.Endpoints) {
+	fake.iAMEndpointsMutex.Lock()
+	defer fake.iAMEndpointsMutex.Unlock()
+	fake.IAMEndpointsStub = nil
+	fake.iAMEndpointsReturns = struct {
+		result1 models.Endpoints
+	}{result1}
+}
+
+func (fake *FakePluginContext) IAMEndpointsReturnsOnCall(i int, result1 models.Endpoints) {
+	fake.iAMEndpointsMutex.Lock()
+	defer fake.iAMEndpointsMutex.Unlock()
+	fake.IAMEndpointsStub = nil
+	if fake.iAMEndpointsReturnsOnCall == nil {
+		fake.iAMEndpointsReturnsOnCall = make(map[int]struct {
+			result1 models.Endpoints
+		})
+	}
+	fake.iAMEndpointsReturnsOnCall[i] = struct {
+		result1 models.Endpoints
 	}{result1}
 }
 
@@ -2209,6 +2333,8 @@ func (fake *FakePluginContext) Invocations() map[string][][]interface{} {
 	defer fake.commandNamespaceMutex.RUnlock()
 	fake.consoleEndpointMutex.RLock()
 	defer fake.consoleEndpointMutex.RUnlock()
+	fake.consoleEndpointsMutex.RLock()
+	defer fake.consoleEndpointsMutex.RUnlock()
 	fake.currentAccountMutex.RLock()
 	defer fake.currentAccountMutex.RUnlock()
 	fake.currentRegionMutex.RLock()
@@ -2233,6 +2359,8 @@ func (fake *FakePluginContext) Invocations() map[string][][]interface{} {
 	defer fake.hasTargetedResourceGroupMutex.RUnlock()
 	fake.iAMEndpointMutex.RLock()
 	defer fake.iAMEndpointMutex.RUnlock()
+	fake.iAMEndpointsMutex.RLock()
+	defer fake.iAMEndpointsMutex.RUnlock()
 	fake.iAMRefreshTokenMutex.RLock()
 	defer fake.iAMRefreshTokenMutex.RUnlock()
 	fake.iAMTokenMutex.RLock()
