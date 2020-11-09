@@ -620,11 +620,14 @@ func (c *bxConfig) ClearSession() {
 func (c *bxConfig) UnsetAPI() {
 	c.write(func() {
 		c.data.APIEndpoint = ""
+		c.data.SSLDisabled = false
 		c.data.IsPrivate = false
 		c.data.Region = ""
 		c.data.RegionID = ""
 		c.data.ConsoleEndpoint = ""
+		c.data.ConsolePrivateEndpoint = ""
 		c.data.IAMEndpoint = ""
+		c.data.IAMPrivateEndpoint = ""
 		c.data.CloudName = ""
 		c.data.CloudType = ""
 	})
