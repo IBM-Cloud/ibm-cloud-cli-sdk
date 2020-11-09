@@ -135,11 +135,19 @@ type PluginContext interface {
 	// IsPrivateEndpointEnabled returns whether use of the private endpoint has been chosen
 	IsPrivateEndpointEnabled() bool
 
-	// ConsoleEndpoint returns the Bluemix Console endpoint
+	// ConsoleEndpoint returns console's public endpoint if api endpoint is public, or returns
+	// private endpoint if api endpoint is private.
 	ConsoleEndpoint() string
 
-	// IAMTEndpoint return the endpoint of IAM token service
+	// ConsoleEndpoints returns both the public and private endpoint of console.
+	ConsoleEndpoints() models.Endpoints
+
+	// IAMEndpoint returns IAM's public endpoint if api endpoint is public, or returns private
+	// endpoint if api endpoint is private.
 	IAMEndpoint() string
+
+	// IAMEndpoints returns both the public and private endpoint of IAM.
+	IAMEndpoints() models.Endpoints
 
 	// CloudName returns the name of the target cloud
 	CloudName() string
