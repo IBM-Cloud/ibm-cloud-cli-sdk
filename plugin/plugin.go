@@ -6,6 +6,7 @@ package plugin
 import (
 	"fmt"
 
+	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/endpoints"
 	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/models"
 )
 
@@ -148,6 +149,10 @@ type PluginContext interface {
 
 	// IAMEndpoints returns both the public and private endpoint of IAM.
 	IAMEndpoints() models.Endpoints
+
+	// GetEndpoint is a utility method to return private or public endpoint for a requested service.
+	// It supports public cloud only. For non public clouds, plugin needs its own way to determine endpoint.
+	GetEndpoint(endpoints.Service) (string, error)
 
 	// CloudName returns the name of the target cloud
 	CloudName() string

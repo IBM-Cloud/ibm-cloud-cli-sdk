@@ -11,6 +11,7 @@ import (
 	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/authentication/iam"
 	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/authentication/uaa"
 	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/configuration/core_config"
+	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/endpoints"
 	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/common/rest"
 )
 
@@ -70,6 +71,28 @@ func (c *pluginContext) ConsoleEndpoint() string {
 		return c.ConsoleEndpoints().PrivateEndpoint
 	}
 	return c.ConsoleEndpoints().PublicEndpoint
+}
+
+func (c *pluginContext) GetEndpoint(svc endpoints.Service) (string, error) {
+	if c.CloudType() != "public" {
+		return "", fmt.Errorf("only public cloud is supported")
+	}
+
+	if !c.HasAPIEndpoint() {
+		return "", nil
+	}
+
+	var cloudDomain string
+	switch cname := c.CloudName(); cname {
+	case "bluemix":
+		cloudDomain = "cloud.ibm.com"
+	case "staging":
+		cloudDomain = "test.cloud.ibm.com"
+	default:
+		return "", fmt.Errorf("unknown cloud name '%s'", cname)
+	}
+
+	return endpoints.Endpoint(svc, cloudDomain, c.CurrentRegion().Name, c.IsPrivateEndpointEnabled())
 }
 
 func compareVersion(v1, v2 string) int {
