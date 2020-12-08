@@ -2,10 +2,11 @@
 package pluginfakes
 
 import (
-	sync "sync"
+	"sync"
 
-	models "github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/models"
-	plugin "github.com/IBM-Cloud/ibm-cloud-cli-sdk/plugin"
+	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/endpoints"
+	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/models"
+	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/plugin"
 )
 
 type FakePluginContext struct {
@@ -99,6 +100,16 @@ type FakePluginContext struct {
 	consoleEndpointReturnsOnCall map[int]struct {
 		result1 string
 	}
+	ConsoleEndpointsStub        func() models.Endpoints
+	consoleEndpointsMutex       sync.RWMutex
+	consoleEndpointsArgsForCall []struct {
+	}
+	consoleEndpointsReturns struct {
+		result1 models.Endpoints
+	}
+	consoleEndpointsReturnsOnCall map[int]struct {
+		result1 models.Endpoints
+	}
 	CurrentAccountStub        func() models.Account
 	currentAccountMutex       sync.RWMutex
 	currentAccountArgsForCall []struct {
@@ -128,6 +139,19 @@ type FakePluginContext struct {
 	}
 	currentResourceGroupReturnsOnCall map[int]struct {
 		result1 models.ResourceGroup
+	}
+	GetEndpointStub        func(endpoints.Service) (string, error)
+	getEndpointMutex       sync.RWMutex
+	getEndpointArgsForCall []struct {
+		arg1 endpoints.Service
+	}
+	getEndpointReturns struct {
+		result1 string
+		result2 error
+	}
+	getEndpointReturnsOnCall map[int]struct {
+		result1 string
+		result2 error
 	}
 	HTTPTimeoutStub        func() int
 	hTTPTimeoutMutex       sync.RWMutex
@@ -219,6 +243,16 @@ type FakePluginContext struct {
 	iAMEndpointReturnsOnCall map[int]struct {
 		result1 string
 	}
+	IAMEndpointsStub        func() models.Endpoints
+	iAMEndpointsMutex       sync.RWMutex
+	iAMEndpointsArgsForCall []struct {
+	}
+	iAMEndpointsReturns struct {
+		result1 models.Endpoints
+	}
+	iAMEndpointsReturnsOnCall map[int]struct {
+		result1 models.Endpoints
+	}
 	IAMRefreshTokenStub        func() string
 	iAMRefreshTokenMutex       sync.RWMutex
 	iAMRefreshTokenArgsForCall []struct {
@@ -267,6 +301,16 @@ type FakePluginContext struct {
 		result1 bool
 	}
 	isLoggedInWithServiceIDReturnsOnCall map[int]struct {
+		result1 bool
+	}
+	IsPrivateEndpointEnabledStub        func() bool
+	isPrivateEndpointEnabledMutex       sync.RWMutex
+	isPrivateEndpointEnabledArgsForCall []struct {
+	}
+	isPrivateEndpointEnabledReturns struct {
+		result1 bool
+	}
+	isPrivateEndpointEnabledReturnsOnCall map[int]struct {
 		result1 bool
 	}
 	IsSSLDisabledStub        func() bool
@@ -823,6 +867,58 @@ func (fake *FakePluginContext) ConsoleEndpointReturnsOnCall(i int, result1 strin
 	}{result1}
 }
 
+func (fake *FakePluginContext) ConsoleEndpoints() models.Endpoints {
+	fake.consoleEndpointsMutex.Lock()
+	ret, specificReturn := fake.consoleEndpointsReturnsOnCall[len(fake.consoleEndpointsArgsForCall)]
+	fake.consoleEndpointsArgsForCall = append(fake.consoleEndpointsArgsForCall, struct {
+	}{})
+	fake.recordInvocation("ConsoleEndpoints", []interface{}{})
+	fake.consoleEndpointsMutex.Unlock()
+	if fake.ConsoleEndpointsStub != nil {
+		return fake.ConsoleEndpointsStub()
+	}
+	if specificReturn {
+		return ret.result1
+	}
+	fakeReturns := fake.consoleEndpointsReturns
+	return fakeReturns.result1
+}
+
+func (fake *FakePluginContext) ConsoleEndpointsCallCount() int {
+	fake.consoleEndpointsMutex.RLock()
+	defer fake.consoleEndpointsMutex.RUnlock()
+	return len(fake.consoleEndpointsArgsForCall)
+}
+
+func (fake *FakePluginContext) ConsoleEndpointsCalls(stub func() models.Endpoints) {
+	fake.consoleEndpointsMutex.Lock()
+	defer fake.consoleEndpointsMutex.Unlock()
+	fake.ConsoleEndpointsStub = stub
+}
+
+func (fake *FakePluginContext) ConsoleEndpointsReturns(result1 models.Endpoints) {
+	fake.consoleEndpointsMutex.Lock()
+	defer fake.consoleEndpointsMutex.Unlock()
+	fake.ConsoleEndpointsStub = nil
+	fake.consoleEndpointsReturns = struct {
+		result1 models.Endpoints
+	}{result1}
+}
+
+func (fake *FakePluginContext) ConsoleEndpointsReturnsOnCall(i int, result1 models.Endpoints) {
+	fake.consoleEndpointsMutex.Lock()
+	defer fake.consoleEndpointsMutex.Unlock()
+	fake.ConsoleEndpointsStub = nil
+	if fake.consoleEndpointsReturnsOnCall == nil {
+		fake.consoleEndpointsReturnsOnCall = make(map[int]struct {
+			result1 models.Endpoints
+		})
+	}
+	fake.consoleEndpointsReturnsOnCall[i] = struct {
+		result1 models.Endpoints
+	}{result1}
+}
+
 func (fake *FakePluginContext) CurrentAccount() models.Account {
 	fake.currentAccountMutex.Lock()
 	ret, specificReturn := fake.currentAccountReturnsOnCall[len(fake.currentAccountArgsForCall)]
@@ -977,6 +1073,69 @@ func (fake *FakePluginContext) CurrentResourceGroupReturnsOnCall(i int, result1 
 	fake.currentResourceGroupReturnsOnCall[i] = struct {
 		result1 models.ResourceGroup
 	}{result1}
+}
+
+func (fake *FakePluginContext) GetEndpoint(arg1 endpoints.Service) (string, error) {
+	fake.getEndpointMutex.Lock()
+	ret, specificReturn := fake.getEndpointReturnsOnCall[len(fake.getEndpointArgsForCall)]
+	fake.getEndpointArgsForCall = append(fake.getEndpointArgsForCall, struct {
+		arg1 endpoints.Service
+	}{arg1})
+	fake.recordInvocation("GetEndpoint", []interface{}{arg1})
+	fake.getEndpointMutex.Unlock()
+	if fake.GetEndpointStub != nil {
+		return fake.GetEndpointStub(arg1)
+	}
+	if specificReturn {
+		return ret.result1, ret.result2
+	}
+	fakeReturns := fake.getEndpointReturns
+	return fakeReturns.result1, fakeReturns.result2
+}
+
+func (fake *FakePluginContext) GetEndpointCallCount() int {
+	fake.getEndpointMutex.RLock()
+	defer fake.getEndpointMutex.RUnlock()
+	return len(fake.getEndpointArgsForCall)
+}
+
+func (fake *FakePluginContext) GetEndpointCalls(stub func(endpoints.Service) (string, error)) {
+	fake.getEndpointMutex.Lock()
+	defer fake.getEndpointMutex.Unlock()
+	fake.GetEndpointStub = stub
+}
+
+func (fake *FakePluginContext) GetEndpointArgsForCall(i int) endpoints.Service {
+	fake.getEndpointMutex.RLock()
+	defer fake.getEndpointMutex.RUnlock()
+	argsForCall := fake.getEndpointArgsForCall[i]
+	return argsForCall.arg1
+}
+
+func (fake *FakePluginContext) GetEndpointReturns(result1 string, result2 error) {
+	fake.getEndpointMutex.Lock()
+	defer fake.getEndpointMutex.Unlock()
+	fake.GetEndpointStub = nil
+	fake.getEndpointReturns = struct {
+		result1 string
+		result2 error
+	}{result1, result2}
+}
+
+func (fake *FakePluginContext) GetEndpointReturnsOnCall(i int, result1 string, result2 error) {
+	fake.getEndpointMutex.Lock()
+	defer fake.getEndpointMutex.Unlock()
+	fake.GetEndpointStub = nil
+	if fake.getEndpointReturnsOnCall == nil {
+		fake.getEndpointReturnsOnCall = make(map[int]struct {
+			result1 string
+			result2 error
+		})
+	}
+	fake.getEndpointReturnsOnCall[i] = struct {
+		result1 string
+		result2 error
+	}{result1, result2}
 }
 
 func (fake *FakePluginContext) HTTPTimeout() int {
@@ -1447,6 +1606,58 @@ func (fake *FakePluginContext) IAMEndpointReturnsOnCall(i int, result1 string) {
 	}{result1}
 }
 
+func (fake *FakePluginContext) IAMEndpoints() models.Endpoints {
+	fake.iAMEndpointsMutex.Lock()
+	ret, specificReturn := fake.iAMEndpointsReturnsOnCall[len(fake.iAMEndpointsArgsForCall)]
+	fake.iAMEndpointsArgsForCall = append(fake.iAMEndpointsArgsForCall, struct {
+	}{})
+	fake.recordInvocation("IAMEndpoints", []interface{}{})
+	fake.iAMEndpointsMutex.Unlock()
+	if fake.IAMEndpointsStub != nil {
+		return fake.IAMEndpointsStub()
+	}
+	if specificReturn {
+		return ret.result1
+	}
+	fakeReturns := fake.iAMEndpointsReturns
+	return fakeReturns.result1
+}
+
+func (fake *FakePluginContext) IAMEndpointsCallCount() int {
+	fake.iAMEndpointsMutex.RLock()
+	defer fake.iAMEndpointsMutex.RUnlock()
+	return len(fake.iAMEndpointsArgsForCall)
+}
+
+func (fake *FakePluginContext) IAMEndpointsCalls(stub func() models.Endpoints) {
+	fake.iAMEndpointsMutex.Lock()
+	defer fake.iAMEndpointsMutex.Unlock()
+	fake.IAMEndpointsStub = stub
+}
+
+func (fake *FakePluginContext) IAMEndpointsReturns(result1 models.Endpoints) {
+	fake.iAMEndpointsMutex.Lock()
+	defer fake.iAMEndpointsMutex.Unlock()
+	fake.IAMEndpointsStub = nil
+	fake.iAMEndpointsReturns = struct {
+		result1 models.Endpoints
+	}{result1}
+}
+
+func (fake *FakePluginContext) IAMEndpointsReturnsOnCall(i int, result1 models.Endpoints) {
+	fake.iAMEndpointsMutex.Lock()
+	defer fake.iAMEndpointsMutex.Unlock()
+	fake.IAMEndpointsStub = nil
+	if fake.iAMEndpointsReturnsOnCall == nil {
+		fake.iAMEndpointsReturnsOnCall = make(map[int]struct {
+			result1 models.Endpoints
+		})
+	}
+	fake.iAMEndpointsReturnsOnCall[i] = struct {
+		result1 models.Endpoints
+	}{result1}
+}
+
 func (fake *FakePluginContext) IAMRefreshToken() string {
 	fake.iAMRefreshTokenMutex.Lock()
 	ret, specificReturn := fake.iAMRefreshTokenReturnsOnCall[len(fake.iAMRefreshTokenArgsForCall)]
@@ -1703,6 +1914,58 @@ func (fake *FakePluginContext) IsLoggedInWithServiceIDReturnsOnCall(i int, resul
 		})
 	}
 	fake.isLoggedInWithServiceIDReturnsOnCall[i] = struct {
+		result1 bool
+	}{result1}
+}
+
+func (fake *FakePluginContext) IsPrivateEndpointEnabled() bool {
+	fake.isPrivateEndpointEnabledMutex.Lock()
+	ret, specificReturn := fake.isPrivateEndpointEnabledReturnsOnCall[len(fake.isPrivateEndpointEnabledArgsForCall)]
+	fake.isPrivateEndpointEnabledArgsForCall = append(fake.isPrivateEndpointEnabledArgsForCall, struct {
+	}{})
+	fake.recordInvocation("IsPrivateEndpointEnabled", []interface{}{})
+	fake.isPrivateEndpointEnabledMutex.Unlock()
+	if fake.IsPrivateEndpointEnabledStub != nil {
+		return fake.IsPrivateEndpointEnabledStub()
+	}
+	if specificReturn {
+		return ret.result1
+	}
+	fakeReturns := fake.isPrivateEndpointEnabledReturns
+	return fakeReturns.result1
+}
+
+func (fake *FakePluginContext) IsPrivateEndpointEnabledCallCount() int {
+	fake.isPrivateEndpointEnabledMutex.RLock()
+	defer fake.isPrivateEndpointEnabledMutex.RUnlock()
+	return len(fake.isPrivateEndpointEnabledArgsForCall)
+}
+
+func (fake *FakePluginContext) IsPrivateEndpointEnabledCalls(stub func() bool) {
+	fake.isPrivateEndpointEnabledMutex.Lock()
+	defer fake.isPrivateEndpointEnabledMutex.Unlock()
+	fake.IsPrivateEndpointEnabledStub = stub
+}
+
+func (fake *FakePluginContext) IsPrivateEndpointEnabledReturns(result1 bool) {
+	fake.isPrivateEndpointEnabledMutex.Lock()
+	defer fake.isPrivateEndpointEnabledMutex.Unlock()
+	fake.IsPrivateEndpointEnabledStub = nil
+	fake.isPrivateEndpointEnabledReturns = struct {
+		result1 bool
+	}{result1}
+}
+
+func (fake *FakePluginContext) IsPrivateEndpointEnabledReturnsOnCall(i int, result1 bool) {
+	fake.isPrivateEndpointEnabledMutex.Lock()
+	defer fake.isPrivateEndpointEnabledMutex.Unlock()
+	fake.IsPrivateEndpointEnabledStub = nil
+	if fake.isPrivateEndpointEnabledReturnsOnCall == nil {
+		fake.isPrivateEndpointEnabledReturnsOnCall = make(map[int]struct {
+			result1 bool
+		})
+	}
+	fake.isPrivateEndpointEnabledReturnsOnCall[i] = struct {
 		result1 bool
 	}{result1}
 }
@@ -2147,12 +2410,16 @@ func (fake *FakePluginContext) Invocations() map[string][][]interface{} {
 	defer fake.commandNamespaceMutex.RUnlock()
 	fake.consoleEndpointMutex.RLock()
 	defer fake.consoleEndpointMutex.RUnlock()
+	fake.consoleEndpointsMutex.RLock()
+	defer fake.consoleEndpointsMutex.RUnlock()
 	fake.currentAccountMutex.RLock()
 	defer fake.currentAccountMutex.RUnlock()
 	fake.currentRegionMutex.RLock()
 	defer fake.currentRegionMutex.RUnlock()
 	fake.currentResourceGroupMutex.RLock()
 	defer fake.currentResourceGroupMutex.RUnlock()
+	fake.getEndpointMutex.RLock()
+	defer fake.getEndpointMutex.RUnlock()
 	fake.hTTPTimeoutMutex.RLock()
 	defer fake.hTTPTimeoutMutex.RUnlock()
 	fake.hasAPIEndpointMutex.RLock()
@@ -2171,6 +2438,8 @@ func (fake *FakePluginContext) Invocations() map[string][][]interface{} {
 	defer fake.hasTargetedResourceGroupMutex.RUnlock()
 	fake.iAMEndpointMutex.RLock()
 	defer fake.iAMEndpointMutex.RUnlock()
+	fake.iAMEndpointsMutex.RLock()
+	defer fake.iAMEndpointsMutex.RUnlock()
 	fake.iAMRefreshTokenMutex.RLock()
 	defer fake.iAMRefreshTokenMutex.RUnlock()
 	fake.iAMTokenMutex.RLock()
@@ -2181,6 +2450,8 @@ func (fake *FakePluginContext) Invocations() map[string][][]interface{} {
 	defer fake.isLoggedInMutex.RUnlock()
 	fake.isLoggedInWithServiceIDMutex.RLock()
 	defer fake.isLoggedInWithServiceIDMutex.RUnlock()
+	fake.isPrivateEndpointEnabledMutex.RLock()
+	defer fake.isPrivateEndpointEnabledMutex.RUnlock()
 	fake.isSSLDisabledMutex.RLock()
 	defer fake.isSSLDisabledMutex.RUnlock()
 	fake.localeMutex.RLock()

@@ -13,8 +13,9 @@ import (
 type Repository interface {
 	APIEndpoint() string
 	HasAPIEndpoint() bool
-	ConsoleEndpoint() string
-	IAMEndpoint() string
+	IsPrivateEndpointEnabled() bool
+	ConsoleEndpoints() models.Endpoints
+	IAMEndpoints() models.Endpoints
 	CloudName() string
 	CloudType() string
 	CurrentRegion() models.Region
@@ -57,8 +58,9 @@ type Repository interface {
 
 	UnsetAPI()
 	SetAPIEndpoint(string)
-	SetConsoleEndpoint(string)
-	SetIAMEndpoint(string)
+	SetPrivateEndpointEnabled(bool)
+	SetConsoleEndpoints(models.Endpoints)
+	SetIAMEndpoints(models.Endpoints)
 	SetCloudType(string)
 	SetCloudName(string)
 	SetRegion(models.Region)
@@ -103,6 +105,8 @@ type ReadWriter interface {
 type CFConfig interface {
 	APIVersion() string
 	APIEndpoint() string
+	AsyncTimeout() uint
+	ColorEnabled() string
 	HasAPIEndpoint() bool
 	AuthenticationEndpoint() string
 	UAAEndpoint() string
@@ -114,9 +118,11 @@ type CFConfig interface {
 	Username() string
 	UserGUID() string
 	UserEmail() string
+	Locale() string
 	LoginAt() time.Time
 	IsLoggedIn() bool
 	SetLoginAt(loginAt time.Time)
+	Trace() string
 	UAAToken() string
 	UAARefreshToken() string
 	CurrentOrganization() models.OrganizationFields

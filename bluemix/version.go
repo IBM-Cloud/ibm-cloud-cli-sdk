@@ -12,6 +12,7 @@ type VersionType struct {
 	Build int // build number
 }
 
+// String will return the version in semver format string "Major.Minor.Build"
 func (v VersionType) String() string {
 	if v == (VersionType{}) {
 		return ""
