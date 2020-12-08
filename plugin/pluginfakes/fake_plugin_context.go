@@ -4,6 +4,7 @@ package pluginfakes
 import (
 	"sync"
 
+	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/endpoints"
 	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/models"
 	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/plugin"
 )
@@ -138,6 +139,19 @@ type FakePluginContext struct {
 	}
 	currentResourceGroupReturnsOnCall map[int]struct {
 		result1 models.ResourceGroup
+	}
+	GetEndpointStub        func(endpoints.Service) (string, error)
+	getEndpointMutex       sync.RWMutex
+	getEndpointArgsForCall []struct {
+		arg1 endpoints.Service
+	}
+	getEndpointReturns struct {
+		result1 string
+		result2 error
+	}
+	getEndpointReturnsOnCall map[int]struct {
+		result1 string
+		result2 error
 	}
 	HTTPTimeoutStub        func() int
 	hTTPTimeoutMutex       sync.RWMutex
@@ -1059,6 +1073,69 @@ func (fake *FakePluginContext) CurrentResourceGroupReturnsOnCall(i int, result1 
 	fake.currentResourceGroupReturnsOnCall[i] = struct {
 		result1 models.ResourceGroup
 	}{result1}
+}
+
+func (fake *FakePluginContext) GetEndpoint(arg1 endpoints.Service) (string, error) {
+	fake.getEndpointMutex.Lock()
+	ret, specificReturn := fake.getEndpointReturnsOnCall[len(fake.getEndpointArgsForCall)]
+	fake.getEndpointArgsForCall = append(fake.getEndpointArgsForCall, struct {
+		arg1 endpoints.Service
+	}{arg1})
+	fake.recordInvocation("GetEndpoint", []interface{}{arg1})
+	fake.getEndpointMutex.Unlock()
+	if fake.GetEndpointStub != nil {
+		return fake.GetEndpointStub(arg1)
+	}
+	if specificReturn {
+		return ret.result1, ret.result2
+	}
+	fakeReturns := fake.getEndpointReturns
+	return fakeReturns.result1, fakeReturns.result2
+}
+
+func (fake *FakePluginContext) GetEndpointCallCount() int {
+	fake.getEndpointMutex.RLock()
+	defer fake.getEndpointMutex.RUnlock()
+	return len(fake.getEndpointArgsForCall)
+}
+
+func (fake *FakePluginContext) GetEndpointCalls(stub func(endpoints.Service) (string, error)) {
+	fake.getEndpointMutex.Lock()
+	defer fake.getEndpointMutex.Unlock()
+	fake.GetEndpointStub = stub
+}
+
+func (fake *FakePluginContext) GetEndpointArgsForCall(i int) endpoints.Service {
+	fake.getEndpointMutex.RLock()
+	defer fake.getEndpointMutex.RUnlock()
+	argsForCall := fake.getEndpointArgsForCall[i]
+	return argsForCall.arg1
+}
+
+func (fake *FakePluginContext) GetEndpointReturns(result1 string, result2 error) {
+	fake.getEndpointMutex.Lock()
+	defer fake.getEndpointMutex.Unlock()
+	fake.GetEndpointStub = nil
+	fake.getEndpointReturns = struct {
+		result1 string
+		result2 error
+	}{result1, result2}
+}
+
+func (fake *FakePluginContext) GetEndpointReturnsOnCall(i int, result1 string, result2 error) {
+	fake.getEndpointMutex.Lock()
+	defer fake.getEndpointMutex.Unlock()
+	fake.GetEndpointStub = nil
+	if fake.getEndpointReturnsOnCall == nil {
+		fake.getEndpointReturnsOnCall = make(map[int]struct {
+			result1 string
+			result2 error
+		})
+	}
+	fake.getEndpointReturnsOnCall[i] = struct {
+		result1 string
+		result2 error
+	}{result1, result2}
 }
 
 func (fake *FakePluginContext) HTTPTimeout() int {
@@ -2341,6 +2418,8 @@ func (fake *FakePluginContext) Invocations() map[string][][]interface{} {
 	defer fake.currentRegionMutex.RUnlock()
 	fake.currentResourceGroupMutex.RLock()
 	defer fake.currentResourceGroupMutex.RUnlock()
+	fake.getEndpointMutex.RLock()
+	defer fake.getEndpointMutex.RUnlock()
 	fake.hTTPTimeoutMutex.RLock()
 	defer fake.hTTPTimeoutMutex.RUnlock()
 	fake.hasAPIEndpointMutex.RLock()
