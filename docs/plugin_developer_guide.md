@@ -1082,3 +1082,36 @@ Here's the workflow:
         return
     }
     ```
+
+## 9. Command Design
+
+### 9.1. Honour Region/Resource Group Setting of CLI
+
+When users are using CLI, they probably have already targeted region or resource group during login. It's cumbersome to ask users to re-target region or resource group in specific command again.
+
+- By default, plugin should honour the region/resource group setting of CLI. Check `CurrentRegion`, `HasTargetedRegion`, `CurrentResourceGroup`, and `HasTargetedResourceGroup` in the [`core_config.Repository`](https://godoc.org/github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/configuration/core_config#Repository).
+
+    ```go
+    func (demo *DemoPlugin) Run(context plugin.PluginContext, args []string){
+        config := context.PluginConfig()
+
+        // get currently targeted region
+        region := ""
+        if config.HasTargetedRegion() {
+            region = config.CurrentRegion().Name
+            ui.Say("Currently targeted region: " + region)
+        }
+    
+        // get currently targeted resource group
+        group := ""
+        if config.HasTargetedResourceGroup() {
+            group = config.CurrentResourceGroup().Name
+            ui.Say("Currently targeted resource group: " + group)
+        }
+
+        ...
+    }
+    ```
+
+- If no region or resource group is targeted, it means target to **all regions and resource groups**.
+- [Optional]: plugin can provide options like `-r, --region` or `-g` to let users to overwrite the corresponding setting of CLI.
