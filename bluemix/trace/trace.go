@@ -12,21 +12,28 @@ import (
 	. "github.com/IBM-Cloud/ibm-cloud-cli-sdk/i18n"
 )
 
+// Printer will write logs to specific output.
 type Printer interface {
+	// Print formats using the default formats for its operands and writes to specific output.
 	Print(v ...interface{})
+	// Printf formats according to a format specifier and writes to specific output.
 	Printf(format string, v ...interface{})
+	// Println formats using the default formats for its operands and writes to specific output.
 	Println(v ...interface{})
 }
 
+// Closer will close the specific output
 type Closer interface {
 	Close() error
 }
 
+// PrinterCloser is the Printer which can be closed
 type PrinterCloser interface {
 	Printer
 	Closer
 }
 
+// NullLogger will drop all inputs
 type NullLogger struct{}
 
 func (l *NullLogger) Print(v ...interface{})                 {}
@@ -54,17 +61,18 @@ func newLoggerImpl(out io.Writer, prefix string, flag int) *loggerImpl {
 	}
 }
 
+// Logger is the default logger
 var Logger Printer = NewLogger("")
 
 // NewLogger returns a printer for the given trace setting.
-func NewLogger(bluemix_trace string) Printer {
-	switch strings.ToLower(bluemix_trace) {
+func NewLogger(bluemixTrace string) Printer {
+	switch strings.ToLower(bluemixTrace) {
 	case "", "false":
 		return new(NullLogger)
 	case "true":
 		return NewStdLogger()
 	default:
-		return NewFileLogger(bluemix_trace)
+		return NewFileLogger(bluemixTrace)
 	}
 }
 
