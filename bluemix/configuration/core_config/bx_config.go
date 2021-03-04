@@ -23,34 +23,39 @@ func (r raw) Unmarshal(bytes []byte) error {
 }
 
 type BXConfigData struct {
-	APIEndpoint                string
-	ConsoleEndpoint            string
-	CloudType                  string
-	CloudName                  string
-	Region                     string
-	RegionID                   string
-	IAMEndpoint                string
-	IAMToken                   string
-	IAMRefreshToken            string
-	Account                    models.Account
-	ResourceGroup              models.ResourceGroup
-	LoginAt                    time.Time
-	CFEETargeted               bool
-	CFEEEnvID                  string
-	PluginRepos                []models.PluginRepo
-	SSLDisabled                bool
-	Locale                     string
-	Trace                      string
-	ColorEnabled               string
-	HTTPTimeout                int
-	CLIInfoEndpoint            string
-	CheckCLIVersionDisabled    bool
-	UsageStatsDisabled         bool
-	SDKVersion                 string
-	UpdateCheckInterval        time.Duration
-	UpdateRetryCheckInterval   time.Duration
-	UpdateNotificationInterval time.Duration
-	raw                        raw
+	APIEndpoint                 string
+	IsPrivate                   bool
+	ConsoleEndpoint             string
+	ConsolePrivateEndpoint      string
+	CloudType                   string
+	CloudName                   string
+	Region                      string
+	RegionID                    string
+	IAMEndpoint                 string
+	IAMPrivateEndpoint          string
+	IAMToken                    string
+	IAMRefreshToken             string
+	Account                     models.Account
+	ResourceGroup               models.ResourceGroup
+	LoginAt                     time.Time
+	CFEETargeted                bool
+	CFEEEnvID                   string
+	PluginRepos                 []models.PluginRepo
+	SSLDisabled                 bool
+	Locale                      string
+	Trace                       string
+	ColorEnabled                string
+	HTTPTimeout                 int
+	CLIInfoEndpoint             string // overwrite the cli info endpoint
+	CheckCLIVersionDisabled     bool
+	UsageStatsDisabled          bool // deprecated: use UsageStatsEnabled
+	UsageStatsEnabled           bool
+	UsageStatsEnabledLastUpdate time.Time
+	SDKVersion                  string
+	UpdateCheckInterval         time.Duration
+	UpdateRetryCheckInterval    time.Duration
+	UpdateNotificationInterval  time.Duration
+	raw                         raw
 }
 
 func NewBXConfigData() *BXConfigData {
@@ -152,6 +157,13 @@ func (c *bxConfig) APIEndpoint() (endpoint string) {
 	return
 }
 
+func (c *bxConfig) IsPrivateEndpointEnabled() (isPrivate bool) {
+	c.read(func() {
+		isPrivate = c.data.IsPrivate
+	})
+	return
+}
+
 func (c *bxConfig) HasAPIEndpoint() bool {
 	return c.APIEndpoint() != ""
 }
@@ -163,9 +175,10 @@ func (c *bxConfig) IsSSLDisabled() (disabled bool) {
 	return
 }
 
-func (c *bxConfig) ConsoleEndpoint() (endpoint string) {
+func (c *bxConfig) ConsoleEndpoints() (endpoints models.Endpoints) {
 	c.read(func() {
-		endpoint = c.data.ConsoleEndpoint
+		endpoints.PublicEndpoint = c.data.ConsoleEndpoint
+		endpoints.PrivateEndpoint = c.data.ConsolePrivateEndpoint
 	})
 	return
 }
@@ -199,9 +212,10 @@ func (c *bxConfig) CloudType() (ctype string) {
 	return
 }
 
-func (c *bxConfig) IAMEndpoint() (endpoint string) {
+func (c *bxConfig) IAMEndpoints() (endpoints models.Endpoints) {
 	c.read(func() {
-		endpoint = c.data.IAMEndpoint
+		endpoints.PublicEndpoint = c.data.IAMEndpoint
+		endpoints.PrivateEndpoint = c.data.IAMPrivateEndpoint
 	})
 	return
 }
@@ -376,6 +390,20 @@ func (c *bxConfig) UsageStatsDisabled() (disabled bool) {
 	return
 }
 
+func (c *bxConfig) UsageStatsEnabled() (enabled bool) {
+	c.read(func() {
+		enabled = !c.data.UsageStatsEnabledLastUpdate.IsZero() && c.data.UsageStatsEnabled
+	})
+	return
+}
+
+func (c *bxConfig) UsageStatsEnabledLastUpdate() (lastUpdate time.Time) {
+	c.read(func() {
+		lastUpdate = c.data.UsageStatsEnabledLastUpdate
+	})
+	return
+}
+
 func (c *bxConfig) SDKVersion() (version string) {
 	c.read(func() {
 		version = c.data.SDKVersion
@@ -403,9 +431,16 @@ func (c *bxConfig) SetAPIEndpoint(endpoint string) {
 	})
 }
 
-func (c *bxConfig) SetConsoleEndpoint(endpoint string) {
+func (c *bxConfig) SetPrivateEndpointEnabled(isPrivate bool) {
 	c.write(func() {
-		c.data.ConsoleEndpoint = endpoint
+		c.data.IsPrivate = isPrivate
+	})
+}
+
+func (c *bxConfig) SetConsoleEndpoints(endpoint models.Endpoints) {
+	c.write(func() {
+		c.data.ConsoleEndpoint = endpoint.PublicEndpoint
+		c.data.ConsolePrivateEndpoint = endpoint.PrivateEndpoint
 	})
 }
 
@@ -416,9 +451,10 @@ func (c *bxConfig) SetRegion(region models.Region) {
 	})
 }
 
-func (c *bxConfig) SetIAMEndpoint(endpoint string) {
+func (c *bxConfig) SetIAMEndpoints(endpoints models.Endpoints) {
 	c.write(func() {
-		c.data.IAMEndpoint = endpoint
+		c.data.IAMEndpoint = endpoints.PublicEndpoint
+		c.data.IAMPrivateEndpoint = endpoints.PrivateEndpoint
 	})
 }
 
@@ -522,6 +558,13 @@ func (c *bxConfig) SetUsageStatsDisabled(disabled bool) {
 	})
 }
 
+func (c *bxConfig) SetUsageStatsEnabled(enabled bool) {
+	c.write(func() {
+		c.data.UsageStatsEnabled = enabled
+		c.data.UsageStatsEnabledLastUpdate = time.Now()
+	})
+}
+
 func (c *bxConfig) SetColorEnabled(enabled string) {
 	c.write(func() {
 		c.data.ColorEnabled = enabled
@@ -577,10 +620,14 @@ func (c *bxConfig) ClearSession() {
 func (c *bxConfig) UnsetAPI() {
 	c.write(func() {
 		c.data.APIEndpoint = ""
+		c.data.SSLDisabled = false
+		c.data.IsPrivate = false
 		c.data.Region = ""
 		c.data.RegionID = ""
 		c.data.ConsoleEndpoint = ""
+		c.data.ConsolePrivateEndpoint = ""
 		c.data.IAMEndpoint = ""
+		c.data.IAMPrivateEndpoint = ""
 		c.data.CloudName = ""
 		c.data.CloudType = ""
 	})

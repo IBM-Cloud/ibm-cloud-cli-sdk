@@ -13,8 +13,9 @@ import (
 type Repository interface {
 	APIEndpoint() string
 	HasAPIEndpoint() bool
-	ConsoleEndpoint() string
-	IAMEndpoint() string
+	IsPrivateEndpointEnabled() bool
+	ConsoleEndpoints() models.Endpoints
+	IAMEndpoints() models.Endpoints
 	CloudName() string
 	CloudType() string
 	CurrentRegion() models.Region
@@ -41,7 +42,14 @@ type Repository interface {
 	UpdateCheckInterval() time.Duration
 	UpdateRetryCheckInterval() time.Duration
 	UpdateNotificationInterval() time.Duration
+	// UsageSatsDisabled returns whether the usage statistics data collection is disabled or not
+	// Deprecated: use UsageSatsEnabled instead. We change to disable usage statistics by default,
+	// So this property will not be used anymore
 	UsageStatsDisabled() bool
+	// UsageSatsEnabled returns whether the usage statistics data collection is enabled or not
+	UsageStatsEnabled() bool
+	// UsageStatsEnabledLastUpdate returns last time when `UsageStatsEnabled` was updated
+	UsageStatsEnabledLastUpdate() time.Time
 	Locale() string
 	LoginAt() time.Time
 	Trace() string
@@ -50,8 +58,9 @@ type Repository interface {
 
 	UnsetAPI()
 	SetAPIEndpoint(string)
-	SetConsoleEndpoint(string)
-	SetIAMEndpoint(string)
+	SetPrivateEndpointEnabled(bool)
+	SetConsoleEndpoints(models.Endpoints)
+	SetIAMEndpoints(models.Endpoints)
 	SetCloudType(string)
 	SetCloudName(string)
 	SetRegion(models.Region)
@@ -67,7 +76,11 @@ type Repository interface {
 	UnsetPluginRepo(string)
 	SetSSLDisabled(bool)
 	SetHTTPTimeout(int)
+	// SetUsageSatsDisabled disable or enable usage statistics data collection
+	// Deprecated: use SetUsageSatsEnabled instead
 	SetUsageStatsDisabled(bool)
+	// SetUsageSatsEnabled enable or disable usage statistics data collection
+	SetUsageStatsEnabled(bool)
 	SetUpdateCheckInterval(time.Duration)
 	SetUpdateRetryCheckInterval(time.Duration)
 	SetUpdateNotificationInterval(time.Duration)
@@ -92,10 +105,11 @@ type ReadWriter interface {
 type CFConfig interface {
 	APIVersion() string
 	APIEndpoint() string
+	AsyncTimeout() uint
+	ColorEnabled() string
 	HasAPIEndpoint() bool
 	AuthenticationEndpoint() string
 	UAAEndpoint() string
-	LoggregatorEndpoint() string
 	DopplerEndpoint() string
 	RoutingAPIEndpoint() string
 	SSHOAuthClient() string
@@ -104,9 +118,11 @@ type CFConfig interface {
 	Username() string
 	UserGUID() string
 	UserEmail() string
+	Locale() string
 	LoginAt() time.Time
 	IsLoggedIn() bool
 	SetLoginAt(loginAt time.Time)
+	Trace() string
 	UAAToken() string
 	UAARefreshToken() string
 	CurrentOrganization() models.OrganizationFields
@@ -118,7 +134,6 @@ type CFConfig interface {
 	SetAPIVersion(string)
 	SetAPIEndpoint(string)
 	SetAuthenticationEndpoint(string)
-	SetLoggregatorEndpoint(string)
 	SetDopplerEndpoint(string)
 	SetUAAEndpoint(string)
 	SetRoutingAPIEndpoint(string)

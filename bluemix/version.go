@@ -3,7 +3,7 @@ package bluemix
 import "fmt"
 
 // Version is the SDK version
-var Version = VersionType{Major: 0, Minor: 3, Build: 0}
+var Version = VersionType{Major: 0, Minor: 5, Build: 0}
 
 // VersionType describe version info
 type VersionType struct {
@@ -12,6 +12,7 @@ type VersionType struct {
 	Build int // build number
 }
 
+// String will return the version in semver format string "Major.Minor.Build"
 func (v VersionType) String() string {
 	if v == (VersionType{}) {
 		return ""

@@ -27,8 +27,11 @@ type FakeUI struct {
 	ChoicesPrompts  []choicesPrompt
 	WarnOutputs     []string
 
-	inputs  bytes.Buffer
-	outputs bytes.Buffer
+	inputs bytes.Buffer
+	stdOut bytes.Buffer
+	stdErr bytes.Buffer
+
+	quiet bool
 }
 
 func NewFakeUI() *FakeUI {
@@ -36,25 +39,56 @@ func NewFakeUI() *FakeUI {
 }
 
 func (ui *FakeUI) Say(template string, args ...interface{}) {
+	ui.Print(template, args...)
+}
+
+func (ui *FakeUI) Verbose(template string, args ...interface{}) {
+	if ui.quiet {
+		return
+	}
+	ui.Print(template, args...)
+}
+
+func (ui *FakeUI) Print(template string, args ...interface{}) {
 	message := fmt.Sprintf(template, args...)
-	fmt.Fprintln(&ui.outputs, message)
+	fmt.Fprintln(&ui.stdOut, message)
+}
+
+func (ui *FakeUI) error(template string, args ...interface{}) {
+	message := fmt.Sprintf(template, args...)
+	fmt.Fprintln(&ui.stdErr, message)
 }
 
 func (ui *FakeUI) Ok() {
-	ui.Say("OK")
+	if ui.quiet {
+		return
+	}
+	ui.Say(term.SuccessColor("OK"))
+}
+
+func (ui *FakeUI) Info(template string, args ...interface{}) {
+	if ui.quiet {
+		return
+	}
+	ui.error(template, args...)
 }
 
 func (ui *FakeUI) Failed(template string, args ...interface{}) {
 	message := fmt.Sprintf(template, args...)
-	ui.Say("FAILED")
-	ui.Say(message)
+	ui.Info(term.FailureColor("FAILED"))
+	ui.error(message)
+	ui.Info("")
 }
 
 func (ui *FakeUI) Warn(template string, args ...interface{}) {
+	if ui.quiet {
+		return
+	}
+
 	message := fmt.Sprintf(template, args...)
 	ui.WarnOutputs = append(ui.WarnOutputs, message)
 
-	ui.Say(template, args...)
+	ui.error(template, args...)
 }
 
 func (ui *FakeUI) Prompt(message string, options *term.PromptOptions) *term.Prompt {
@@ -70,7 +104,7 @@ func (ui *FakeUI) Prompt(message string, options *term.PromptOptions) *term.Prom
 
 	p := term.NewPrompt(message, options)
 	p.Reader = &ui.inputs
-	p.Writer = &ui.outputs
+	p.Writer = &ui.stdOut
 	return p
 }
 
@@ -84,7 +118,7 @@ func (ui *FakeUI) ChoicesPrompt(message string, choices []string, options *term.
 
 	p := term.NewChoicesPrompt(message, choices, options)
 	p.Reader = &ui.inputs
-	p.Writer = &ui.outputs
+	p.Writer = &ui.stdOut
 	return p
 }
 
@@ -162,7 +196,7 @@ func (ui *FakeUI) SelectOne(choices []string, template string, args ...interface
 }
 
 func (ui *FakeUI) Table(headers []string) term.Table {
-	return term.NewTable(&ui.outputs, headers)
+	return term.NewTable(&ui.stdOut, headers)
 }
 
 func (ui *FakeUI) Inputs(lines ...string) {
@@ -172,9 +206,21 @@ func (ui *FakeUI) Inputs(lines ...string) {
 }
 
 func (ui *FakeUI) Outputs() string {
-	return ui.outputs.String()
+	return ui.stdOut.String()
+}
+
+func (ui *FakeUI) Errors() string {
+	return ui.stdErr.String()
 }
 
 func (ui *FakeUI) Writer() io.Writer {
-	return &ui.outputs
+	return &ui.stdOut
+}
+
+func (ui *FakeUI) SetQuiet(quiet bool) {
+	ui.quiet = quiet
+}
+
+func (ui *FakeUI) Quiet() bool {
+	return ui.quiet
 }

@@ -6,6 +6,7 @@ package plugin
 import (
 	"fmt"
 
+	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/endpoints"
 	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/models"
 )
 
@@ -25,6 +26,9 @@ type PluginMetadata struct {
 	// If DelegateBashCompletion is true, plugin command's completion is handled by plugin.
 	// The CLI will invoke '<plugin_binary> SendCompletion <args>'
 	DelegateBashCompletion bool
+
+	// Whether the plugin supports private endpoint
+	PrivateEndpointSupported bool
 }
 
 func (p PluginMetadata) NameAndAliases() []string {
@@ -129,11 +133,26 @@ type PluginContext interface {
 	// Call HasTargetedCF() to return whether a CF environment has been targeted.
 	HasAPIEndpoint() bool
 
-	// ConsoleEndpoint returns the Bluemix Console endpoint
+	// IsPrivateEndpointEnabled returns whether use of the private endpoint has been chosen
+	IsPrivateEndpointEnabled() bool
+
+	// ConsoleEndpoint returns console's public endpoint if api endpoint is public, or returns
+	// private endpoint if api endpoint is private.
 	ConsoleEndpoint() string
 
-	// IAMTEndpoint return the endpoint of IAM token service
+	// ConsoleEndpoints returns both the public and private endpoint of console.
+	ConsoleEndpoints() models.Endpoints
+
+	// IAMEndpoint returns IAM's public endpoint if api endpoint is public, or returns private
+	// endpoint if api endpoint is private.
 	IAMEndpoint() string
+
+	// IAMEndpoints returns both the public and private endpoint of IAM.
+	IAMEndpoints() models.Endpoints
+
+	// GetEndpoint is a utility method to return private or public endpoint for a requested service.
+	// It supports public cloud only. For non public clouds, plugin needs its own way to determine endpoint.
+	GetEndpoint(endpoints.Service) (string, error)
 
 	// CloudName returns the name of the target cloud
 	CloudName() string
