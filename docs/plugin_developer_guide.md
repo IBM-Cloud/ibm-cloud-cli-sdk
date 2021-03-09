@@ -1082,3 +1082,42 @@ Here's the workflow:
         return
     }
     ```
+## 8. Private Endpoint Support
+
+Private endpoint enables customers to connect to IBM Cloud services over private network. Plug-ins should provide the private endpoint support whenever possible.  If the user chooses private endpoint, all the traffic between CLI client and IBM Cloud services must go through private network. If private endpoint is not supported, the CLI should fail instead of falling back to public network. 
+
+**Choosing private endpoint**
+
+IBM CLoud CLI users can select to go with private network by specifying `private.cloud.ibm.com` as the API endpoint of IBM Cloud CLI, either with command `ibmcloud api private.cloud.ibm.com` or `ibmcloud login -a private.cloud.ibm.com`. 
+
+Plug-ins can invoke `plugin.PluginContext.IsPrivateEndpointEnabled()` in CLI SDK to detect whether user has selected private endpoint or not. 
+
+**Publishing Plug-in with private endpoint support**
+
+There is a field `private_endpoint_supported` in plug-in metadata indicating whether a plug-in supports private endpoint or not. The default value is `false`.  When publishing a plug-in, it needs to be set `true` if the plug-in has private endpoint support. Otherwise core CLI will fail the plug-in commands if user chooses to use private endpoint. 
+
+If the plug-in for a IBM Cloud service only has partial private endpoint support in specific regions, this field should still be set to be `true`. It is plug-in's responsibility to get the region setting and decide whether to fail the command or not. Plug-in should not fall back to public endpoint if the region does not have private endpoint support. 
+
+**Private endpoints of platform services**
+
+The CLI SDK provides the API to retrieve both the public endpoint and private endpoint of the core platform services. 
+
+`plugin.PluginContext.ConsoleEndpoint()` returns public endpoint of IBM Cloud console API if user selects to go with public endpoint. It returns private endpoint of IBM Cloud console API if user chooses private endpoint when logging into IBM Cloud.
+
+`plugin.PluginContext.ConsoleEndpoints()` returns both the public and private endpoints of IBM Cloud console API.
+
+
+`plugin.PluginContext.IAMEndpoint()` returns public endpoint of IAM token service API if user selects to go with public endpoint. It returns private endpoint of of IAM token service API if user chooses private endpoint when logging into IBM Cloud.
+
+`plugin.PluginContext.IAMEndpoints()` returns both the public and private endpoints of IAM token service API.
+
+
+`plugin.PluginContext.GetEndpoint(endpoints.Service)` returns both the public and private endpoints for the following platform services
+
+- global-search
+- global-tagging
+- account-management
+- user-management
+- billing
+- enterprise
+- global-catalog
