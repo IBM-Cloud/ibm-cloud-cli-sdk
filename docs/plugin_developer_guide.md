@@ -6,7 +6,7 @@ You can see the API doc in [GoDoc](https://godoc.org/github.com/IBM-Cloud/ibm-cl
 
 ## 1. Plug-in Context Management
 
-IBM Cloud CLI SDK provides a set of APIs to register and manage plug-ins. It also provides a set of utilities and libaries to simplify the plug-in development. 
+IBM Cloud CLI SDK provides a set of APIs to register and manage plug-ins. It also provides a set of utilities and libaries to simplify the plug-in development.
 
 ### 1.1. Register a New Plug-in
 
@@ -315,7 +315,7 @@ func (demo *DemoPlugin) Run(context plugin.PluginContext, args []string){
 }
 ```
 
-# 2. Wording, Format and Color of Output
+## 2. Wording, Format and Color of Output
 
 To keep user experience consistent, developers of IBM Cloud CLI plug-in should apply specific wordings, formats and colors to the terminal output. IBM Cloud CLI SDK provides the utility to help plug-in developers easily format and colorize the message output. We strongly recommend developers to comply with the following specifications so that the plug-ins are consistent with each other in terms of user experience.
 
@@ -337,7 +337,7 @@ To keep user experience consistent, developers of IBM Cloud CLI plug-in should a
 
 4. Use "plug-in" instead of "plugin" in all places.
 
-### 2.2. Name and Decription of Plug-in, Namespace and Command 
+### 2.2. Name and Decription of Plug-in, Namespace and Command
 
 **To name the plug-in for a service**:
 
@@ -406,14 +406,14 @@ ui.Say(`You are not logged in. Log in by running "%s".`,
 ```
 **Command and namespace description**
 
-Use a sentence without subject to describe your plug-in or command. Limit the number of words to be less than 10 so that it can be properly displayed. 
+Use a sentence without subject to describe your plug-in or command. Limit the number of words to be less than 10 so that it can be properly displayed.
 
 Correct description:
 
 - `List all the virtual server instances.`
 - `Manage cloud database service.`
 
-Incorrect description: 
+Incorrect description:
 - `Plugin to manage cloud database service.`
 - `Commands to manage cloud database service.`
 - `This command shows details of a sever instance.`
@@ -886,7 +886,7 @@ if errorV != nil || err != nil {
 
 ## 5. Authentication
 
-## 5.1 Get Access Token
+### 5.1 Get Access Token
 
 To access IBM Cloud back-end API, normally a token is required. You can get the IAM access token and UAA access token from  IBM CLoud SDK as follows:
 
@@ -900,7 +900,7 @@ func (demo *DemoPlugin) Run(context plugin.PluginContext, args []string){
         ui.Say("IAM token is not available. Have you logged in?")
         return
     }
-    
+
     // get UAA access token
     uaaToken := config.CFConfig().UAAToken()
     if iamToken == "" {
@@ -1082,7 +1082,41 @@ Here's the workflow:
         return
     }
     ```
-## 8. Private Endpoint Support
+
+## 8. Command Design
+
+### 8.1. Honour Region/Resource Group Setting of CLI
+
+When users are using CLI, they probably have already targeted region or resource group during login. It's cumbersome to ask users to re-target region or resource group in specific command again.
+
+- By default, plugin should honour the region/resource group setting of CLI. Check `CurrentRegion`, `HasTargetedRegion`, `CurrentResourceGroup`, and `HasTargetedResourceGroup` in the [`core_config.Repository`](https://godoc.org/github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/configuration/core_config#Repository).
+
+    ```go
+    func (demo *DemoPlugin) Run(context plugin.PluginContext, args []string){
+        config := context.PluginConfig()
+
+        // get currently targeted region
+        region := ""
+        if config.HasTargetedRegion() {
+            region = config.CurrentRegion().Name
+            ui.Say("Currently targeted region: " + region)
+        }
+    
+        // get currently targeted resource group
+        group := ""
+        if config.HasTargetedResourceGroup() {
+            group = config.CurrentResourceGroup().Name
+            ui.Say("Currently targeted resource group: " + group)
+        }
+
+        ...
+    }
+    ```
+
+- If no region or resource group is targeted, it means target to **all regions and resource groups**.
+- [Optional]: plugin can provide options like `-r, --region` or `-g` to let users to overwrite the corresponding setting of CLI.
+
+## 9. Private Endpoint Support
 
 Private endpoint enables customers to connect to IBM Cloud services over IBM's private network. Plug-ins should provide the private endpoint support whenever possible. If the user chooses to use the private endpoint, all the traffic between the CLI client and IBM Cloud services must go through the private network. If private endpoint is not supported by the plug-in, the CLI should fail any requests instead of falling back to using the public network. 
 
@@ -1121,3 +1155,10 @@ The CLI SDK provides an API to retrieve both the public endpoint and private end
 - billing
 - enterprise
 - global-catalog
+
+
+## 10. Deprecation Policy
+
+A CLI plugin should maintain backward compatibility within a major version, but MAY introduce incompatible changes in command format, parameters, or behavior in a major release of the plugin.
+
+When a new major version of a plugin introduces incompatible changes, support for the prior major version of the plugin may only be withdrawn one year from an official deprecation notice for that version of the plugin.
