@@ -1,6 +1,6 @@
 # IBM Cloud CLI Plug-in Developer's Guide
 
-This guide introduces how to develop a IBM Cloud CLI plug-in by using utilities and libraries provided by the CLI SDK. It also covers specifications including wording, format and color of the terminal output that we highly recommend developers to follow.
+This guide introduces how to develop an IBM Cloud CLI plug-in by using utilities and libraries provided by the CLI SDK. It also covers specifications including wording, format and color of the terminal output that we highly recommend developers to follow.
 
 You can see the API doc in [GoDoc](https://godoc.org/github.com/IBM-Cloud/ibm-cloud-cli-sdk).
 
@@ -1083,7 +1083,6 @@ Here's the workflow:
     }
     ```
 
-
 ## 8. Command Design
 
 ### 8.1. Honour Region/Resource Group Setting of CLI
@@ -1117,7 +1116,48 @@ When users are using CLI, they probably have already targeted region or resource
 - If no region or resource group is targeted, it means target to **all regions and resource groups**.
 - [Optional]: plugin can provide options like `-r, --region` or `-g` to let users to overwrite the corresponding setting of CLI.
 
-## 9. Deprecation Policy
+## 9. Private Endpoint Support
+
+Private endpoint enables customers to connect to IBM Cloud services over IBM's private network. Plug-ins should provide the private endpoint support whenever possible. If the user chooses to use the private endpoint, all the traffic between the CLI client and IBM Cloud services must go through the private network. If private endpoint is not supported by the plug-in, the CLI should fail any requests instead of falling back to using the public network. 
+
+**Choosing private endpoint**
+
+IBM CLoud CLI users can select to go with private network by specifying `private.cloud.ibm.com` as the API endpoint of IBM Cloud CLI, either with command `ibmcloud api private.cloud.ibm.com` or `ibmcloud login -a private.cloud.ibm.com`. 
+
+Plug-ins can invoke `plugin.PluginContext.IsPrivateEndpointEnabled()` in the CLI SDK to detect whether the user has selected private endpoint or not. 
+
+**Publishing Plug-in with private endpoint support**
+
+There is a field `private_endpoint_supported` in the plug-in metadata indicating whether a plug-in supports private endpoint or not. The default value is `false`.  When publishing a plug-in, it needs to be set to `true` if the plug-in has private endpoint support. Otherwise the core CLI will fail the plug-in commands if the user chooses to use private endpoint. 
+
+If the plug-in for an IBM Cloud service only has partial private endpoint support in specific regions, this field should still be set to be `true`. It is the plug-in's responsibility to get the region setting and decide whether to fail the command or not. The plug-in should not fall back to the public endpoint if the region does not have private endpoint support. 
+
+**Private endpoints of platform services**
+
+The CLI SDK provides an API to retrieve both the public endpoint and private endpoint of core platform services. 
+
+`plugin.PluginContext.ConsoleEndpoint()` returns the public endpoint of IBM Cloud console API if the user selects to go with public endpoint. It returns private endpoint of IBM Cloud console API if the user chooses private endpoint when logging into IBM Cloud.
+
+`plugin.PluginContext.ConsoleEndpoints()` returns both the public and private endpoints of IBM Cloud console API.
+
+
+`plugin.PluginContext.IAMEndpoint()` returns the public endpoint of IAM token service API if user selects to go with public endpoint. It returns private endpoint of of IAM token service API if the user chooses private endpoint when logging into IBM Cloud.
+
+`plugin.PluginContext.IAMEndpoints()` returns both the public and private endpoints of the IAM token service API.
+
+
+`plugin.PluginContext.GetEndpoint(endpoints.Service)` returns both the public and private endpoints for the following platform services
+
+- global-search
+- global-tagging
+- account-management
+- user-management
+- billing
+- enterprise
+- global-catalog
+
+
+## 10. Deprecation Policy
 
 A CLI plugin should maintain backward compatibility within a major version, but MAY introduce incompatible changes in command format, parameters, or behavior in a major release of the plugin.
 
