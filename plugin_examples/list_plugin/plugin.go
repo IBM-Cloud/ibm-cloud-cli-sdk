@@ -6,6 +6,7 @@ import (
 	"os"
 	"regexp"
 	"time"
+	"fmt"
 
 	bhttp "github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/http"
 	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/terminal"
@@ -92,7 +93,10 @@ func NewHTTPClient(context plugin.PluginContext) *http.Client {
 }
 
 func DefaultHeader(cf plugin.CFContext) http.Header {
-	cf.RefreshUAAToken()
+	_, err := cf.RefreshUAAToken()
+	if err != nil {
+		fmt.Println(err.Error())
+	}
 
 	h := http.Header{}
 	h.Add("Authorization", cf.UAAToken())
