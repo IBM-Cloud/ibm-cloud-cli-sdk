@@ -36,7 +36,7 @@ func CopyFile(src string, dest string) (err error) {
 	if err != nil {
 		return
 	}
-	defer srcFile.Close()
+	defer func() { _ = srcFile.Close() }()
 
 	srcStat, err := srcFile.Stat()
 	if err != nil {
@@ -51,7 +51,7 @@ func CopyFile(src string, dest string) (err error) {
 	if err != nil {
 		return
 	}
-	defer destFile.Close()
+	defer func() { _ = destFile.Close() }()
 
 	err = destFile.Chmod(srcStat.Mode())
 	if err != nil {

@@ -69,11 +69,11 @@ func (d *FileDownloader) DownloadTo(url string, outputName string) (dest string,
 	}
 	dest = filepath.Join(d.SaveDir, outputName)
 
-	f, err := os.OpenFile(dest, os.O_RDWR|os.O_CREATE|os.O_EXCL, 0600)
+	f, err := os.OpenFile(filepath.Clean(dest), os.O_RDWR|os.O_CREATE|os.O_EXCL, 0600)
 	if err != nil {
 		return dest, 0, err
 	}
-	defer f.Close()
+	defer func() { _ = f.Close() }()
 
 	var r io.Reader = resp.Body
 	if d.ProxyReader != nil {
