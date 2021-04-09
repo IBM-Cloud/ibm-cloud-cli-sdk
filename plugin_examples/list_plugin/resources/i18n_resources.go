@@ -7,36 +7,13 @@
 package resources
 
 import (
-	"bytes"
-	"compress/gzip"
 	"fmt"
-	"io"
 	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
 	"time"
 )
-
-func bindataRead(data []byte, name string) ([]byte, error) {
-	gz, err := gzip.NewReader(bytes.NewBuffer(data))
-	if err != nil {
-		return nil, fmt.Errorf("Read %q: %v", name, err)
-	}
-
-	var buf bytes.Buffer
-	_, err = io.Copy(&buf, gz)
-	clErr := gz.Close()
-
-	if err != nil {
-		return nil, fmt.Errorf("Read %q: %v", name, err)
-	}
-	if clErr != nil {
-		return nil, err
-	}
-
-	return buf.Bytes(), nil
-}
 
 type asset struct {
 	bytes []byte
@@ -69,13 +46,91 @@ func (fi bindataFileInfo) Sys() interface{} {
 	return nil
 }
 
-var _i18nResourcesEn_usAllJson = []byte("\x1f\x8b\x08\x00\x00\x09\x6e\x88\x00\xff\xc4\x94\x4d\x6b\xdb\x40\x10\x86\xef\xfe\x15\x83\x2f\x6e\x21\xa8\xf7\xdc\x12\x43\x41\xd0\xb4\x22\xc5\xa7\xb6\x87\x89\x76\xac\x2e\x48\xbb\xf2\xee\x6c\xc0\x6c\xf5\xdf\x8b\xb4\xb6\x93\x92\x1d\xc7\x1f\x87\x1e\xcd\x3b\xef\xa3\x67\x3f\xbc\x3f\x66\x00\x71\x06\x00\x30\xd7\x6a\x7e\x0b\xf3\x65\x6b\x83\xfa\x6c\x83\x51\x5b\xb8\xeb\xfb\x56\xd7\xc8\xda\x1a\x0f\x10\x63\xb1\xf2\xa4\x86\xe1\x53\x8c\xc5\x17\xdd\x69\x1e\x06\x08\x9e\xd4\xfc\x26\x01\xd8\xa1\xf1\xed\x34\x7e\x29\x69\x06\x30\xdc\xbc\x51\xb2\x86\x51\x1b\x72\xa9\xfa\x40\x9d\x75\xdb\x17\x40\xfa\xbd\xc7\x8c\x13\x65\xb5\xb4\xc1\x70\x8a\xcb\x6a\x1f\x55\xe1\xa9\xd5\x35\x94\x95\x87\x47\xda\x04\xf2\x4c\xea\x4f\x8c\xc5\xfd\xe8\x78\xe8\xc0\xea\xc8\x92\xfe\x83\x49\x7e\x4b\x1c\x21\xcb\x9a\xbb\x34\x5b\x2d\x3b\x6c\x48\x28\xa6\x2c\x5f\x33\x9e\xd1\xd4\xe4\xa5\xea\x21\xcf\xd6\xd3\xd6\xc0\x87\x87\xfb\x8f\x02\xe0\xf5\x44\x16\xf1\x15\x3b\xc9\x7b\x8a\xf2\x25\x0b\x77\x55\x09\x64\x54\x6f\xb5\x61\xf0\xc4\xc5\xb8\xaf\xb0\x88\xb1\x58\xda\xae\x43\xa3\x86\x61\x01\x6c\xc7\x08\xd0\x1c\x46\x0b\xe9\x5b\x57\x10\x25\x45\xdf\x63\x4d\xc0\xe8\x1a\x62\x52\x12\x2e\xe5\x23\xd1\xba\x06\xd0\x28\xc0\xd4\x3c\xa2\x7a\x35\x59\x50\x66\x68\x6d\xd3\x90\x02\x6d\x24\x68\x6b\x9b\x31\x15\xdd\xce\x40\x64\x25\xaa\x16\x8d\x00\x9f\xa2\x6c\xe9\xd1\x06\x16\xef\xf0\x2e\xcc\x16\xbf\x93\x7b\xd6\x35\xc1\xb7\xf5\x9a\x9c\x36\x8d\x80\x78\x33\x76\x0c\xe6\x61\x5a\xf1\xe1\x81\x38\xe1\x51\x3d\xa5\x99\xff\x24\x23\x4b\x7f\x9f\x94\x89\xb5\x20\xed\xd7\x2e\xcc\x16\x57\x06\x9f\x5a\x1a\x0f\x71\x13\xc8\x6d\x01\xfb\xde\x4f\x37\xcb\xef\x57\x60\xd7\xc0\xbf\xf7\x77\x33\x5d\xb7\xdb\x9f\xd2\x89\x5e\x8c\x3b\x49\xae\x7e\x79\xd7\xaf\xb2\x7a\x9f\xf3\x8e\x8e\x23\x76\x9a\x9e\xe9\x15\x69\x01\xc1\x63\x43\xd3\x62\x37\xc1\x32\x5e\xaa\x78\x0d\xfb\x54\xed\x84\xfb\x17\x62\x5d\x73\x96\xde\x11\xc6\xa8\x31\xfb\xf5\x37\x00\x00\xff\xff\x46\xf4\x35\xb4\xb4\x08\x00\x00")
+var _i18nResourcesEn_usAllJson = []byte(`[
+  {
+    "id": "CloudFoundy Applications  {{.Used}}/{{.Limit}} used",
+    "translation": "CloudFoundy Applications  {{.Used}}/{{.Limit}} used"
+  },
+  {
+    "id": "Containers  {{.MemoryUsed}}/{{.MemoryLimit}}  {{.IPCount}}/{{.IPLimit}} Public IPs Requested|{{.BoundIPCount}} Used",
+    "translation": "Containers  {{.MemoryUsed}}/{{.MemoryLimit}}  {{.IPCount}}/{{.IPLimit}} Public IPs Requested|{{.BoundIPCount}} Used"
+  },
+  {
+    "id": "Created",
+    "translation": "Created"
+  },
+  {
+    "id": "Image",
+    "translation": "Image"
+  },
+  {
+    "id": "Instances",
+    "translation": "Instances"
+  },
+  {
+    "id": "Memory (MB)",
+    "translation": "Memory (MB)"
+  },
+  {
+    "id": "Name",
+    "translation": "Name"
+  },
+  {
+    "id": "No API endpoint set. Use '{{.Command}}' to set an endpoint.",
+    "translation": "No API endpoint set. Use '{{.Command}}' to set an endpoint."
+  },
+  {
+    "id": "No space targeted. Use '{{.Command}}' to target an org and a space.",
+    "translation": "No space targeted. Use '{{.Command}}' to target an org and a space."
+  },
+  {
+    "id": "Not logged in. Use '{{.Command}}' to log in.",
+    "translation": "Not logged in. Use '{{.Command}}' to log in."
+  },
+  {
+    "id": "Plan",
+    "translation": "Plan"
+  },
+  {
+    "id": "Routes",
+    "translation": "Routes"
+  },
+  {
+    "id": "Service Offering",
+    "translation": "Service Offering"
+  },
+  {
+    "id": "Services {{.Count}}/{{.Limit}} used",
+    "translation": "Services {{.Count}}/{{.Limit}} used"
+  },
+  {
+    "id": "State",
+    "translation": "State"
+  },
+  {
+    "id": "Status",
+    "translation": "Status"
+  },
+  {
+    "id": "Unable to query apps and services of the target space:\n",
+    "translation": "Unable to query apps and services of the target space:\n"
+  },
+  {
+    "id": "Unable to query containers of the target space:\n",
+    "translation": "Unable to query containers of the target space:\n"
+  },
+  {
+    "id": "Unable to retrieve containers' usage and quota of the target space:\n",
+    "translation": "Unable to retrieve containers' usage and quota of the target space:\n"
+  },
+  {
+    "id": "Unable to retrieve usage of the target org:\n",
+    "translation": "Unable to retrieve usage of the target org:\n"
+  }
+]`)
 
 func i18nResourcesEn_usAllJsonBytes() ([]byte, error) {
-	return bindataRead(
-		_i18nResourcesEn_usAllJson,
-		"i18n/resources/en_US.all.json",
-	)
+	return _i18nResourcesEn_usAllJson, nil
 }
 
 func i18nResourcesEn_usAllJson() (*asset, error) {
@@ -84,18 +139,96 @@ func i18nResourcesEn_usAllJson() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "i18n/resources/en_US.all.json", size: 2228, mode: os.FileMode(420), modTime: time.Unix(1484873699, 0)}
+	info := bindataFileInfo{name: "i18n/resources/en_US.all.json", size: 0, mode: os.FileMode(0), modTime: time.Unix(0, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
 
-var _i18nResourcesZh_hansAllJson = []byte("\x1f\x8b\x08\x00\x00\x09\x6e\x88\x00\xff\xac\x95\xcd\x4e\x1b\x49\x10\xc7\xef\x7e\x8a\x92\x2f\xec\x4a\xc8\x7b\xe7\x06\x48\x2b\x59\x5a\x76\x2d\x10\xa7\xdd\x3d\x34\x9e\x66\x76\xa4\x71\xb7\x99\xe9\x41\x42\xb3\x96\xcc\x87\xf9\x26\x20\x62\x87\x00\x76\x04\x51\x10\x26\x09\x36\xe4\xcb\xc1\xc6\xf0\x2e\xc4\x3d\x63\x9f\x78\x85\x68\xdc\xb1\x71\xc8\x34\x06\x85\xe3\xa8\xea\xff\x9f\x5f\x55\x57\x77\xfd\x1d\x00\xb0\x03\x00\x00\x41\x4d\x09\xf6\x41\x70\x50\xa7\x96\xf2\x3b\xb5\x88\x32\x05\xfd\xf1\xb8\xae\x45\x11\xd3\x28\x31\x01\x6c\x3b\x34\x6a\x62\x25\x91\xf8\xcd\xb6\x43\x7f\x68\x31\x8d\x25\x12\x60\x99\x58\x09\xf6\x0a\x03\x66\x20\x62\xea\xcd\xf4\xdb\x4e\xbc\x9c\x76\xd3\x79\x37\xbf\xc2\xcb\xeb\x12\x27\x5e\x7a\x57\xab\x5e\xba\xe9\x7c\x30\x00\x90\xe8\xfd\x81\x8b\x12\x86\x34\x82\x0d\x41\x32\x84\x63\xd4\x98\xba\x71\x11\xdf\x2d\x2f\x2f\x23\x1c\x19\xa4\x16\x61\x22\x1c\x8e\xb4\x42\x11\x6b\x4c\xd7\xa2\x10\x8e\x98\x30\x8c\x27\x2c\x6c\x32\xac\xfc\x6f\xdb\xa1\x01\x0f\xb4\xad\x81\x51\x79\x5d\xbc\x70\xc6\xb7\xf3\x3f\x47\xc1\x53\x6f\x79\xea\x34\x1c\xe1\xd9\x13\x9e\x4b\x7a\xb5\xd7\x8b\x25\xe7\x74\xc6\x87\xa4\x5b\x5f\x0c\x8c\x98\x9c\x75\x71\x97\x57\xca\xfe\xca\x70\x0c\xa9\x58\xa2\x6b\x64\xb2\x7c\x76\x5d\xa2\x23\x26\x43\x24\x8a\x4d\x69\x7f\x5e\xd4\x2e\x56\xfc\xb5\xa2\x41\xf0\xcb\xd0\xc0\xaf\x32\xf5\x7c\x8a\x1f\x3f\x87\xeb\xf3\xc5\xa1\x81\xeb\xf3\x25\x7f\x9b\x3f\x51\x4c\x46\xce\x37\xd6\xdc\xc3\x13\x89\x8c\x42\x7f\x24\x0c\x98\x28\x71\xaa\x11\x06\x26\x66\x21\xef\xa4\xa1\xc7\xb6\x43\x83\x34\x16\x43\x44\x49\x24\x7a\x80\x51\x2f\x04\x88\xb4\x53\x43\x92\xbf\x39\xd9\xd7\xf5\xc2\x85\x5b\x2d\xd4\x2a\x95\x5a\x35\xd3\xb4\x77\xdf\x14\xdd\x99\xb3\x2f\xc9\x99\x7a\xb1\x24\x4e\xee\x2a\x99\xed\xfc\xc1\x55\x32\xe7\xe4\x0e\x84\xae\x9d\x2c\x25\x36\xe3\x28\x8a\x81\x21\x43\xc5\x0c\x2b\x32\x5e\x11\xf7\x90\xa9\xa1\x02\x22\x0a\x20\xa1\xbc\x83\xbc\x91\x5c\x72\x56\x8e\xdc\xdd\x82\xb3\xb7\xe0\x1e\x95\x1b\x5b\x1f\xba\x42\xfb\x4a\x64\xe8\x0c\x74\xaa\xaa\x58\x01\x8d\xc8\xb0\x75\xaa\x7a\x51\x39\xa3\xbb\x5d\xe1\xd5\x4c\x27\xd7\x6d\x97\x76\x86\x3f\x46\x44\x47\x44\x36\x2a\x07\x5b\x8d\x57\x1b\xfe\xb2\x61\x6a\x31\xe9\x84\xd7\x4b\x45\x37\x7d\xea\x2f\x1c\xc1\xc6\xa4\x16\xc5\xf0\xd7\xf8\x38\x36\x34\xa2\x4a\x4b\x5b\xe3\xcb\xfb\xb5\xf2\x21\x7f\x3a\x7d\xa7\x91\x09\xcd\x72\xdb\x6f\xc8\x3d\x1e\x5e\xe1\x2d\xd1\x75\x79\x4e\x46\x18\x62\xb2\xab\xe5\x2e\x7f\x72\x92\x32\x5a\x86\x98\x25\xeb\xd7\x5d\xc2\x51\x82\xc6\x74\xec\xcd\xc2\x84\x85\x8d\x29\x40\xf1\xb8\xd9\x9c\x5f\xb3\x55\x3f\x1d\x07\xf6\x5f\xeb\x06\x88\xa1\xee\xfb\x47\x76\xa6\xce\xd6\x9e\xf3\x3e\x53\x7f\x52\xe2\xeb\xcf\x3a\xc7\xb4\xf6\xf9\xd8\xdd\x99\xeb\x5c\x43\x7c\x73\x55\x34\xca\x33\xbb\x17\x5a\xf4\x66\x05\x3d\x26\x53\x73\x9d\x74\x67\x30\x30\x33\x34\x3c\x89\x3b\x30\x7a\xc0\x32\x91\x8a\x9b\xed\x9a\xb0\x28\x43\x8f\xc6\x25\xa0\xdc\x9d\x39\x31\x2b\xce\x6c\x8a\xcf\x7f\xe4\x9b\xab\x8d\xd4\x5a\xe3\x65\xee\x01\xb0\x02\xf0\x7b\x2c\x6a\xa8\x0f\x82\xaa\xcc\xb9\x95\x05\xd1\xac\x4e\x9c\xda\xe5\xbe\x33\x5d\xfc\xc6\x12\xf8\xf7\x6b\x00\x00\x00\xff\xff\xb4\xb7\x64\x9e\xca\x08\x00\x00")
+var _i18nResourcesZh_hansAllJson = []byte(`[
+  {
+    "id": "CloudFoundy Applications  {{.Used}}/{{.Limit}} used",
+    "translation": "CloudFoundy 应用程序  {{.Used}}/{{.Limit}} 已使用"
+  },
+  {
+    "id": "Containers  {{.MemoryUsed}}/{{.MemoryLimit}}  {{.IPCount}}/{{.IPLimit}} Public IPs Requested|{{.BoundIPCount}} Used",
+    "translation": "容器  {{.MemoryUsed}}/{{.MemoryLimit}}  {{.IPCount}}/{{.IPLimit}} 公共IP地址 已请求|{{.BoundIPCount}} 已使用"
+  },
+  {
+    "id": "Created",
+    "translation": "创建"
+  },
+  {
+    "id": "Image",
+    "translation": "镜像"
+  },
+  {
+    "id": "Instances",
+    "translation": "实例"
+  },
+  {
+    "id": "Memory (MB)",
+    "translation": "内存 （MB）"
+  },
+  {
+    "id": "Name",
+    "translation": "名称"
+  },
+  {
+    "id": "No API endpoint set. Use '{{.Command}}' to set an endpoint.",
+    "translation": "未设置任何 API 端点。请使用“{{.Command}}”来设置端点。"
+  },
+  {
+    "id": "No space targeted. Use '{{.Command}}' to target an org and a space.",
+    "translation": "未选择目标空间。请使用“{{.Command}}”来选择目标空间。"
+  },
+  {
+    "id": "Not logged in. Use '{{.Command}}' to log in.",
+    "translation": "未登录。请使用 '{{.Command}}' 登录。"
+  },
+  {
+    "id": "Plan",
+    "translation": "套餐"
+  },
+  {
+    "id": "Routes",
+    "translation": "路由"
+  },
+  {
+    "id": "Service Offering",
+    "translation": "服务产品"
+  },
+  {
+    "id": "Services {{.Count}}/{{.Limit}} used",
+    "translation": "服务 {{.Count}}/{{.Limit}} 已使用"
+  },
+  {
+    "id": "State",
+    "translation": "状态"
+  },
+  {
+    "id": "Status",
+    "translation": "状态"
+  },
+  {
+    "id": "Unable to query apps and services of the target space:\n",
+    "translation": "无法获取目标空间中的应用程序和服务:\n"
+  },
+  {
+    "id": "Unable to query containers of the target space:\n",
+    "translation": "无法获取目标空间中的容器\n"
+  },
+  {
+    "id": "Unable to retrieve containers' usage and quota of the target space:\n",
+    "translation": "无法获取目标空间中容器的使用情况和配额\n"
+  },
+  {
+    "id": "Unable to retrieve usage of the target org:\n",
+    "translation": "无法获取目标组织中的使用情况信息\n"
+  }
+]`)
 
 func i18nResourcesZh_hansAllJsonBytes() ([]byte, error) {
-	return bindataRead(
-		_i18nResourcesZh_hansAllJson,
-		"i18n/resources/zh_Hans.all.json",
-	)
+	return _i18nResourcesZh_hansAllJson, nil
 }
 
 func i18nResourcesZh_hansAllJson() (*asset, error) {
@@ -104,7 +237,7 @@ func i18nResourcesZh_hansAllJson() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "i18n/resources/zh_Hans.all.json", size: 2250, mode: os.FileMode(420), modTime: time.Unix(1484877786, 0)}
+	info := bindataFileInfo{name: "i18n/resources/zh_Hans.all.json", size: 0, mode: os.FileMode(0), modTime: time.Unix(0, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -161,7 +294,7 @@ func AssetNames() []string {
 
 // _bindata is a table, holding each asset generator, mapped to its name.
 var _bindata = map[string]func() (*asset, error){
-	"i18n/resources/en_US.all.json": i18nResourcesEn_usAllJson,
+	"i18n/resources/en_US.all.json":   i18nResourcesEn_usAllJson,
 	"i18n/resources/zh_Hans.all.json": i18nResourcesZh_hansAllJson,
 }
 
@@ -204,10 +337,11 @@ type bintree struct {
 	Func     func() (*asset, error)
 	Children map[string]*bintree
 }
+
 var _bintree = &bintree{nil, map[string]*bintree{
 	"i18n": &bintree{nil, map[string]*bintree{
 		"resources": &bintree{nil, map[string]*bintree{
-			"en_US.all.json": &bintree{i18nResourcesEn_usAllJson, map[string]*bintree{}},
+			"en_US.all.json":   &bintree{i18nResourcesEn_usAllJson, map[string]*bintree{}},
 			"zh_Hans.all.json": &bintree{i18nResourcesZh_hansAllJson, map[string]*bintree{}},
 		}},
 	}},
@@ -259,4 +393,3 @@ func _filePath(dir, name string) string {
 	cannonicalName := strings.Replace(name, "\\", "/", -1)
 	return filepath.Join(append([]string{dir}, strings.Split(cannonicalName, "/")...)...)
 }
-

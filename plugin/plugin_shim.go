@@ -23,7 +23,10 @@ func StartWithArgs(plugin Plugin, args []string) {
 		if err != nil {
 			panic(err)
 		}
-		os.Stdout.Write(json)
+		_, err = os.Stdout.Write(json)
+		if err != nil {
+			panic(err)
+		}
 		return
 	}
 

@@ -3,7 +3,7 @@
 set -e
 
 go get github.com/jteeuwen/go-bindata/...
-go-bindata -nometadata  -pkg resources -o resources/i18n_resources.go i18n/resources/*.all.json
+go-bindata -nometadata -nocompress -pkg resources -o resources/i18n_resources.go i18n/resources/*.all.json
 
 pushd resources
   go fmt ./...
