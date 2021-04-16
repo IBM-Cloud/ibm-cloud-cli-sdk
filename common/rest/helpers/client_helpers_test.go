@@ -64,6 +64,29 @@ func TestIsJSONStreamWithJSONArray(t *testing.T) {
 	assert.Equal(jsonBytesAsString, string(raw))
 }
 
+func TestIsJSONStreamWithSpaceJSON(t *testing.T) {
+	assert := assert.New(t)
+
+	chunkSize = 1024
+	jsonBytes := []byte("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n" +
+		"\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n" +
+		"\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\t\t\t\t\t\t\t\t\t" +
+		"\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t" +
+		"\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t" +
+		"\t\t\t\t\t\t\t\t\t\t{\"foo\": \"bar\"}")
+	jsonBytesAsString := string(jsonBytes)
+
+	r, isJSON := IsJSONStream(bytes.NewReader(jsonBytes), chunkSize)
+
+	assert.NotNil(r)
+
+	raw, _ := ioutil.ReadAll(r)
+
+	assert.NotNil(raw)
+	assert.True(isJSON)
+	assert.Equal(jsonBytesAsString, string(raw))
+}
+
 func TestIsJSONStreamWithInvalidJSON(t *testing.T) {
 	assert := assert.New(t)
 

@@ -17,6 +17,7 @@ import (
 
 // ErrEmptyResponseBody means the client receives an unexpected empty response from server
 var ErrEmptyResponseBody = errors.New("empty response body")
+var bufferSize = 1024
 
 // ErrorResponse is the status code and response received from the server when an error occurs.
 type ErrorResponse struct {
@@ -91,7 +92,7 @@ func (c *Client) DoWithContext(ctx context.Context, r *Request, respV interface{
 			// Determine the response type and the decoder that should be used.
 			// If buffer is identified as json, use JSON decoder, otherwise
 			// assume the buffer contains yaml bytes
-			body, isJSON := IsJSONStream(resp.Body, 1024)
+			body, isJSON := IsJSONStream(resp.Body, bufferSize)
 			if isJSON {
 				err = json.NewDecoder(body).Decode(respV)
 			} else {
