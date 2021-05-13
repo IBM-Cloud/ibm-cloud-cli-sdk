@@ -48,6 +48,9 @@ IBM Cloud CLI SDK provides a set of APIs to register and manage plug-ins. It als
                 Minor: 0,
                 Build: 1,
             },
+	    
+            PrivateEndpointSupported: true,
+
             Commands: []plugin.Command{
                 {
                     Name:        "echo",
@@ -71,6 +74,7 @@ IBM Cloud CLI SDK provides a set of APIs to register and manage plug-ins. It als
     - _Name_: The name of plug-in. It will be displayed when using `ibmcloud plugin list` command or can be used to uninstall the plug-in through `ibmcloud plugin uninstall` command.
     - _Version_: The version of plug-in.
     - _MinCliVersion_: The minimal version of IBM Cloud CLI required by the plug-in.
+    - _PrivateEndpointSupported_: Indicates if the plug-in is designed to also be used over the private network.
     - _Commands_: The array of `plugin.Commands` to register the plug-in commands.
     - _Alias_: Alias of the Alias usually is a short name of the command.
     - _Command.Flags_: The command flags (options) which will be displayed as a part of help output of the command.
