@@ -9,10 +9,15 @@ import (
 	"io"
 	"io/ioutil"
 	"net/http"
+
+	"gopkg.in/yaml.v2"
+
+	. "github.com/IBM-Cloud/ibm-cloud-cli-sdk/common/rest/helpers"
 )
 
 // ErrEmptyResponseBody means the client receives an unexpected empty response from server
 var ErrEmptyResponseBody = errors.New("empty response body")
+var bufferSize = 1024
 
 // ErrorResponse is the status code and response received from the server when an error occurs.
 type ErrorResponse struct {
@@ -84,7 +89,15 @@ func (c *Client) DoWithContext(ctx context.Context, r *Request, respV interface{
 		case io.Writer:
 			_, err = io.Copy(respV.(io.Writer), resp.Body)
 		default:
-			err = json.NewDecoder(resp.Body).Decode(respV)
+			// Determine the response type and the decoder that should be used.
+			// If buffer is identified as json, use JSON decoder, otherwise
+			// assume the buffer contains yaml bytes
+			body, isJSON := IsJSONStream(resp.Body, bufferSize)
+			if isJSON {
+				err = json.NewDecoder(body).Decode(respV)
+			} else {
+				err = yaml.NewDecoder(body).Decode(respV)
+			}
 			if err == io.EOF {
 				err = ErrEmptyResponseBody
 			}
