@@ -1132,7 +1132,7 @@ Plug-ins can invoke `plugin.PluginContext.IsPrivateEndpointEnabled()` in the CLI
 
 **Publishing Plug-in with private endpoint support**
 
-There is a field `private_endpoint_supported` in the plug-in metadata indicating whether a plug-in supports private endpoint or not. The default value is `false`.  When publishing a plug-in, it needs to be set to `true` if the plug-in has private endpoint support. Otherwise the core CLI will fail the plug-in commands if the user chooses to use private endpoint. 
+There is a field `private_endpoint_supported` in the plug-in metadata file indicating whether a plug-in supports private endpoint or not. The default value is `false`.  When publishing a plug-in, it needs to be set to `true` if the plug-in has private endpoint support. Likewise, in the plug-in Golang code, the `plugin.PluginMetadata` struct needs to have the `PrivateEndpointSupported` field set the same as this field in the metadata file. Otherwise the core CLI will fail the plug-in commands if the user chooses to use private endpoint.
 
 If the plug-in for an IBM Cloud service only has partial private endpoint support in specific regions, this field should still be set to be `true`. It is the plug-in's responsibility to get the region setting and decide whether to fail the command or not. The plug-in should not fall back to the public endpoint if the region does not have private endpoint support. 
 
