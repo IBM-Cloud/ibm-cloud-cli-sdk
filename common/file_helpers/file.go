@@ -53,7 +53,7 @@ func CopyFile(src string, dest string) (err error) {
 	}
 	defer func() { _ = destFile.Close() }()
 
-	err = destFile.Chmod(srcStat.Mode())
+	err = os.Chmod(dest, srcStat.Mode())
 	if err != nil {
 		return
 	}
