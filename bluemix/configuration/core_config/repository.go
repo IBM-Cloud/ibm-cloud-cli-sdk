@@ -24,13 +24,17 @@ type Repository interface {
 	IAMRefreshToken() string
 	IsLoggedIn() bool
 	IsLoggedInWithServiceID() bool
+	IsLoggedInAsProfile() bool
 	UserEmail() string
 	// UserDisplayText is the human readable ID for logged-in users which include non-human IDs
 	UserDisplayText() string
 	IAMID() string
 	CurrentAccount() models.Account
 	HasTargetedAccount() bool
+	HasTargetedProfile() bool
+	HasTargetedComputeResource() bool
 	IMSAccountID() string
+	CurrentProfile() models.Profile
 	CurrentResourceGroup() models.ResourceGroup
 	HasTargetedResourceGroup() bool
 	PluginRepos() []models.PluginRepo
@@ -68,6 +72,7 @@ type Repository interface {
 	SetIAMRefreshToken(string)
 	ClearSession()
 	SetAccount(models.Account)
+	SetProfile(models.Profile)
 	SetResourceGroup(models.ResourceGroup)
 	SetLoginAt(loginAt time.Time)
 	SetCheckCLIVersionDisabled(bool)
@@ -176,6 +181,10 @@ func (c repository) IsLoggedIn() bool {
 
 func (c repository) IsLoggedInWithServiceID() bool {
 	return c.bxConfig.IsLoggedIn() && NewIAMTokenInfo(c.IAMToken()).SubjectType == SubjectTypeServiceID
+}
+
+func (c repository) IsLoggedInAsProfile() bool {
+	return c.bxConfig.IsLoggedIn() && NewIAMTokenInfo(c.IAMToken()).SubjectType == SubjectTypeTrustedProfile
 }
 
 func (c repository) UserEmail() string {

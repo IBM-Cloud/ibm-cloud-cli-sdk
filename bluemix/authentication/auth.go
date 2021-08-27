@@ -37,6 +37,10 @@ func (r *TokenRequest) ResponseTypes() []ResponseType {
 	return r.responseTypes
 }
 
+func (r *TokenRequest) GetTokenParam(key string) string {
+	return r.params.Get(key)
+}
+
 func (r *TokenRequest) SetResponseType(responseTypes ...ResponseType) {
 	r.responseTypes = responseTypes
 }

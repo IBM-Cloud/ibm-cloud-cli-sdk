@@ -36,6 +36,7 @@ type BXConfigData struct {
 	IAMToken                    string
 	IAMRefreshToken             string
 	Account                     models.Account
+	Profile                     models.Profile
 	ResourceGroup               models.ResourceGroup
 	LoginAt                     time.Time
 	CFEETargeted                bool
@@ -285,8 +286,24 @@ func (c *bxConfig) HasTargetedAccount() bool {
 	return c.CurrentAccount().GUID != ""
 }
 
+func (c *bxConfig) HasTargetedProfile() bool {
+	return c.CurrentProfile().ID != ""
+}
+
+func (c *bxConfig) HasTargetedComputeResource() bool {
+	authn := c.CurrentProfile().ComputeResource
+	return authn.ID != ""
+}
+
 func (c *bxConfig) IMSAccountID() string {
 	return NewIAMTokenInfo(c.IAMToken()).Accounts.IMSAccountID
+}
+
+func (c *bxConfig) CurrentProfile() (profile models.Profile) {
+	c.read(func() {
+		profile = c.data.Profile
+	})
+	return
 }
 
 func (c *bxConfig) CurrentResourceGroup() (group models.ResourceGroup) {
@@ -478,6 +495,12 @@ func (c *bxConfig) SetAccount(account models.Account) {
 	})
 }
 
+func (c *bxConfig) SetProfile(profile models.Profile) {
+	c.write(func() {
+		c.data.Profile = profile
+	})
+}
+
 func (c *bxConfig) SetResourceGroup(group models.ResourceGroup) {
 	c.write(func() {
 		c.data.ResourceGroup = group
@@ -612,6 +635,7 @@ func (c *bxConfig) ClearSession() {
 		c.data.IAMToken = ""
 		c.data.IAMRefreshToken = ""
 		c.data.Account = models.Account{}
+		c.data.Profile = models.Profile{}
 		c.data.ResourceGroup = models.ResourceGroup{}
 		c.data.LoginAt = time.Time{}
 	})

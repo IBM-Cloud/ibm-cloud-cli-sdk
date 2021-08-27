@@ -10,7 +10,8 @@ import (
 )
 
 const (
-	SubjectTypeServiceID = "ServiceId"
+	SubjectTypeServiceID      = "ServiceId"
+	SubjectTypeTrustedProfile = "Profile"
 )
 
 type IAMTokenInfo struct {
@@ -28,6 +29,7 @@ type IAMTokenInfo struct {
 	Issuer      string       `json:"iss"`
 	GrantType   string       `json:"grant_type"`
 	Scope       string       `json:"scope"`
+	Authn       Authn        `json:"authn"`
 	Expiry      time.Time
 	IssueAt     time.Time
 }
@@ -36,6 +38,15 @@ type AccountsInfo struct {
 	AccountID    string `json:"bss"`
 	IMSAccountID string `json:"ims"`
 	Valid        bool   `json:"valid"`
+}
+
+type Authn struct {
+	Subject   string `json:"sub"`
+	IAMID     string `json:"iam_id"`
+	Name      string `json:"name"`
+	Firstname string `json:"given_name"`
+	Lastname  string `json:"family_name"`
+	Email     string `json:"email"`
 }
 
 func NewIAMTokenInfo(token string) IAMTokenInfo {

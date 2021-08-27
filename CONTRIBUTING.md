@@ -1,4 +1,4 @@
-# Contributing to Atom
+# Contributing to IBM Cloud CLI SDK
 
 :+1:First of all, thanks for your time to contribute!:tada:
 
@@ -15,6 +15,9 @@ We follow the offical [CodeReviewComments](https://github.com/golang/go/wiki/Cod
 #### Unit Test
 
 Make sure you have good unit test. Run `go test -cover $(go list ./...)`, and ensure coverage is above 80% for major packages (aka packages other than i18n, fakes, docs...).
+
+#### Secret Detection
+This project uses the IBM Detect Secrets Module. Install the module, by following these [instructions](https://github.com/ibm/detect-secrets#installupgrade-module). Once installed, enable the pre-commit secret detection hook by following these [instructions](https://github.com/ibm/detect-secrets#installupgrade-module) to ensure no secrets are committed to this repo.
 
 
 #### Commit Message

@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/configuration/core_config"
+	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/models"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -167,6 +168,142 @@ func TestLastUpdateAndEnabled(t *testing.T) {
 	// enable
 	config.SetUsageStatsEnabled(true)
 	checkUsageStats(true, true, config, t)
+
+	t.Cleanup(cleanupConfigFiles)
+}
+
+func TestHasTargetedProfile(t *testing.T) {
+	config := prepareConfigForCLI(`{"UsageStatsEnabledLastUpdate": "2020-03-29T12:23:43.519017+08:00","UsageStatsEnabled": true}`, t)
+
+	// check
+	checkUsageStats(true, true, config, t)
+
+	// verify profile is empty in config
+	assert.False(t, config.HasTargetedProfile())
+
+	// set profile without ID
+	mockProfile := models.Profile{
+		Name: "sample_name",
+	}
+
+	config.SetProfile(mockProfile)
+	assert.False(t, config.HasTargetedProfile())
+
+	mockProfile.ID = "mock_ID"
+
+	config.SetProfile(mockProfile)
+	assert.True(t, config.HasTargetedProfile())
+
+	// validate profile
+	parsedProfile := config.CurrentProfile()
+	assert.Equal(t, mockProfile, parsedProfile)
+
+	t.Cleanup(cleanupConfigFiles)
+}
+
+func TestHasTargetedComputeResource(t *testing.T) {
+	config := prepareConfigForCLI(`{"UsageStatsEnabledLastUpdate": "2020-03-29T12:23:43.519017+08:00","UsageStatsEnabled": true}`, t)
+
+	// check
+	checkUsageStats(true, true, config, t)
+
+	// verify profile is empty in config
+	assert.False(t, config.HasTargetedProfile())
+
+	// set profile without compute resource
+	mockProfile := models.Profile{
+		ID:   "mock_ID",
+		Name: "sample_name",
+	}
+
+	config.SetProfile(mockProfile)
+	assert.False(t, config.HasTargetedComputeResource())
+
+	mockCR := models.Authn{
+		Name: "mock_name",
+		ID:   "my_cr",
+	}
+	mockProfile.ComputeResource = mockCR
+
+	config.SetProfile(mockProfile)
+	assert.True(t, config.HasTargetedComputeResource())
+
+	// validate profile
+	parsedProfile := config.CurrentProfile()
+	assert.Equal(t, mockProfile, parsedProfile)
+
+	t.Cleanup(cleanupConfigFiles)
+}
+
+func TestHasProfileWithUser(t *testing.T) {
+	config := prepareConfigForCLI(`{"UsageStatsEnabledLastUpdate": "2020-03-29T12:23:43.519017+08:00","UsageStatsEnabled": true}`, t)
+
+	// check
+	checkUsageStats(true, true, config, t)
+
+	// verify profile is empty in config
+	assert.False(t, config.HasTargetedProfile())
+
+	// set profile without compute resource
+	mockProfile := models.Profile{
+		ID:   "mock_ID",
+		Name: "sample_name",
+	}
+
+	config.SetProfile(mockProfile)
+	assert.False(t, config.HasTargetedComputeResource())
+
+	mockCR := models.Authn{
+		Name: "mock_name",
+		ID:   "my_id",
+	}
+	mockProfile.User = mockCR
+
+	config.SetProfile(mockProfile)
+	assert.False(t, config.HasTargetedComputeResource())
+
+	// validate profile
+	parsedProfile := config.CurrentProfile()
+	assert.Equal(t, mockProfile, parsedProfile)
+
+	t.Cleanup(cleanupConfigFiles)
+}
+
+func TestIsLoggedInAsProfile(t *testing.T) {
+	config := prepareConfigForCLI(`{"UsageStatsEnabledLastUpdate": "2020-03-29T12:23:43.519017+08:00","UsageStatsEnabled": true}`, t)
+	testIAMCRTokenData := "Bearer eyJraWQiOiIyMDE3MTAzMC0wMDowMDowMCIsImFsZyI6IlJTMjU2In0.ewoJImlhbV9pZCI6ICJpYW0tUHJvZmlsZS05NDQ5N2QwZC0yYWMzLTQxYmYtYTk5My1hNDlkMWIxNDYyN2MiLAoJImlkIjogIklCTWlkLXRlc3QiLAoJInJlYWxtaWQiOiAiaWFtIiwKCSJqdGkiOiAiMDRkMjBiMjUtZWUyZC00MDBmLTg2MjMtOGNkODA3MGI1NDY4IiwKCSJpZGVudGlmaWVyIjogIlByb2ZpbGUtOTQ0OTdkMGQtMmFjMy00MWJmLWE5OTMtYTQ5ZDFiMTQ2MjdjIiwKCSJuYW1lIjogIk15IFByb2ZpbGUiLAoJInN1YiI6ICJQcm9maWxlLTk0NDk3ZDBkLTJhYzMtNDFiZi1hOTkzLWE0OWQxYjE0NjI3YyIsCgkic3ViX3R5cGUiOiAiUHJvZmlsZSIsCgkiYXV0aG4iOiB7CgkgICJzdWIiOiAiY3JuOnYxOnN0YWdpbmc6cHVibGljOmlhbS1pZGVudGl0eTo6YS8xOGUzMDIwNzQ5Y2U0NzQ0YjBiNDcyNDY2ZDYxZmRiNDo6Y29tcHV0ZXJlc291cmNlOkZha2UtQ29tcHV0ZS1SZXNvdXJjZSIsCgkgICJpYW1faWQiOiAiY3JuLWNybjp2MTpzdGFnaW5nOnB1YmxpYzppYW0taWRlbnRpdHk6OmEvMThlMzAyMDc0OWNlNDc0NGIwYjQ3MjQ2NmQ2MWZkYjQ6OmNvbXB1dGVyZXNvdXJjZTpGYWtlLUNvbXB1dGUtUmVzb3VyY2UiLAoJICAibmFtZSI6ICJteV9jb21wdXRlX3Jlc291cmNlIgoJfSwKCSJhY2NvdW50IjogewoJICAiYm91bmRhcnkiOiAiZ2xvYmFsIiwKCSAgInZhbGlkIjogdHJ1ZSwKCSAgImJzcyI6ICJmYWtlX2JzcyIKCX0sCgkiaWF0IjogMTYyOTkyOTQ2MywKCSJleHAiOiAxNjI5OTMzMDYzLAoJImlzcyI6ICJodHRwczovL2lhbS5jbG91ZC5pYm0uY29tL2lkZW50aXR5IiwKCSJncmFudF90eXBlIjogInVybjppYm06cGFyYW1zOm9hdXRoOmdyYW50LXR5cGU6Y3ItdG9rZW4iLAoJInNjb3BlIjogImlibSBvcGVuaWQiLAoJImNsaWVudF9pZCI6ICJieCIKICB9.CuSOKifh4DvE__bjwDsn5BKmAHF2NaXznoiA1KG-2s2njbJs9nQdOJ3lkOnM77BqvLEpu2cwsmhi4Gsdy-MiJ6ACub0A5zyB-D95IXsGYa5tbFQBLbPpmFDAgAhLG5gXlVnU7nyIJN17Slm3pcWSNXEdWcsA1tgDkC9gQc_rpDhUfhnFeGA2LpvVMtRDolcOrbRuWN4NEbBOwdTbG5-6ijZ5Ag2z3lVmlQZ_6BLBCSVM8WlI8eIGICqCx0HYsmCiMlSqZ-4fkpg2DBYYYX_XsMQlamGynuPeoiBckJIyGEgsJD2egYN2bOUNLcn5htSCGxoJ4HJfXJ70_iCzmovb0w"
+
+	// check
+	checkUsageStats(true, true, config, t)
+
+	assert.Empty(t, config.IAMToken())
+	config.SetIAMToken(testIAMCRTokenData)
+	assert.True(t, config.IsLoggedInAsProfile())
+
+	t.Cleanup(cleanupConfigFiles)
+}
+
+func TestClearSession(t *testing.T) {
+	config := prepareConfigForCLI(`{"UsageStatsEnabledLastUpdate": "2020-03-29T12:23:43.519017+08:00","UsageStatsEnabled": true}`, t)
+
+	// check
+	checkUsageStats(true, true, config, t)
+
+	// verify profile is empty in config
+	assert.False(t, config.HasTargetedProfile())
+
+	// set profile
+	mockProfile := models.Profile{
+		ID:   "mock_ID",
+		Name: "sample_name",
+	}
+
+	config.SetProfile(mockProfile)
+	assert.True(t, config.HasTargetedProfile())
+
+	// clear session
+	config.ClearSession()
+	assert.False(t, config.HasTargetedProfile())
 
 	t.Cleanup(cleanupConfigFiles)
 }
