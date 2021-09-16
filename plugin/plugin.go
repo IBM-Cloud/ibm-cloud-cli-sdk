@@ -187,6 +187,9 @@ type PluginContext interface {
 	// IsLoggedInWithServiceID returns if a user has logged into IBM cloud using service ID.
 	IsLoggedInWithServiceID() bool
 
+	// IsLoggedInAsProfile returns true if a user logged into IBM Cloud using an IAM token pertaining to a trusted profile
+	IsLoggedInAsProfile() bool
+
 	// IMSAccountID returns ID of the IMS account linked to the targeted BSS
 	// account
 	IMSAccountID() string
@@ -196,6 +199,15 @@ type PluginContext interface {
 
 	// HasTargetedAccount returns whether an account has been targeted
 	HasTargetedAccount() bool
+
+	// HasTargetedProfile returns whether a profile has been targeted
+	HasTargetedProfile() bool
+
+	// CurrentProfile returns the targeted trusted profile
+	CurrentProfile() models.Profile
+
+	// HasTargetedComputeResource returns whether a compute resource has been targeted
+	HasTargetedComputeResource() bool
 
 	// ResourceGroup returns the targeted resource group
 	CurrentResourceGroup() models.ResourceGroup

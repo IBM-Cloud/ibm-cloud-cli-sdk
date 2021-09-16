@@ -17,6 +17,10 @@ var (
 	EnvHTTPTimeout = newEnv("IBMCLOUD_HTTP_TIMEOUT", "BLUEMIX_HTTP_TIMEOUT")
 	// EnvAPIKey is the environment variable `IBMCLOUD_API_KEY` and `BLUEMIX_API_KEY` (deprecated)
 	EnvAPIKey = newEnv("IBMCLOUD_API_KEY", "BLUEMIX_API_KEY")
+	// EnvCRToken is the environment variable `IBMCLOUD_CR_TOKEN`
+	EnvCRTokenKey = newEnv("IBMCLOUD_CR_TOKEN")
+	// EnvCRProfile is the environment variable `IBMCLOUD_CR_PROFILE`
+	EnvCRProfile = newEnv("IBMCLOUD_CR_PROFILE")
 	// EnvConfigHome is the environment variable `IBMCLOUD_HOME` and `BLUEMIX_HOME` (deprecated)
 	EnvConfigHome = newEnv("IBMCLOUD_HOME", "BLUEMIX_HOME")
 	// EnvConfigDir is the environment variable `IBMCLOUD_CONFIG_HOME`

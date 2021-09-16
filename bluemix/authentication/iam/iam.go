@@ -18,6 +18,9 @@ const (
 	defaultClientSecret    = "bx"
 	defaultUAAClientID     = "cf"
 	defaultUAAClientSecret = ""
+	crTokenParam           = "cr_token"
+	profileIDParam         = "profile_id"
+	profileNameParam       = "profile_name"
 )
 
 // Grant types
@@ -30,6 +33,7 @@ const (
 	GrantTypeDelegatedRefreshToken authentication.GrantType = "urn:ibm:params:oauth:grant-type:delegated-refresh-token" // #nosec G101
 	GrantTypeIdentityCookie        authentication.GrantType = "urn:ibm:params:oauth:grant-type:identity-cookie"
 	GrantTypeDerive                authentication.GrantType = "urn:ibm:params:oauth:grant-type:derive"
+	GrantTypeCRToken               authentication.GrantType = "urn:ibm:params:oauth:grant-type:cr-token"
 )
 
 // Response types
@@ -75,6 +79,23 @@ func OnetimePasscodeTokenRequest(passcode string, opts ...authentication.TokenOp
 func APIKeyTokenRequest(apikey string, opts ...authentication.TokenOption) *authentication.TokenRequest {
 	r := authentication.NewTokenRequest(GrantTypeAPIKey)
 	r.SetTokenParam("apikey", apikey)
+	for _, o := range opts {
+		r.WithOption(o)
+	}
+	return r
+}
+
+func CRTokenRequest(crToken string, profileID string, profileName string, opts ...authentication.TokenOption) *authentication.TokenRequest {
+	r := authentication.NewTokenRequest(GrantTypeCRToken)
+	r.SetTokenParam(crTokenParam, crToken)
+
+	if profileID != "" {
+		r.SetTokenParam(profileIDParam, profileID)
+	}
+	if profileName != "" {
+		r.SetTokenParam(profileNameParam, profileName)
+	}
+
 	for _, o := range opts {
 		r.WithOption(o)
 	}
