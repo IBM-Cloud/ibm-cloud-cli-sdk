@@ -18,6 +18,7 @@ type IAMTokenInfo struct {
 	IAMID       string       `json:"iam_id"`
 	ID          string       `json:"id"`
 	RealmID     string       `json:"realmid"`
+	SessionID   string       `json:"session_id"`
 	Identifier  string       `json:"identifier"`
 	Firstname   string       `json:"given_name"`
 	Lastname    string       `json:"family_name"`
