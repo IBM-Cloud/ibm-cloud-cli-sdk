@@ -33,7 +33,7 @@ const (
 	GrantTypeDelegatedRefreshToken authentication.GrantType = "urn:ibm:params:oauth:grant-type:delegated-refresh-token" // #nosec G101
 	GrantTypeIdentityCookie        authentication.GrantType = "urn:ibm:params:oauth:grant-type:identity-cookie"
 	GrantTypeDerive                authentication.GrantType = "urn:ibm:params:oauth:grant-type:derive"
-	GrantTypeCRToken               authentication.GrantType = "urn:ibm:params:oauth:grant-type:cr-token"
+	GrantTypeCRToken               authentication.GrantType = "urn:ibm:params:oauth:grant-type:cr-token" // #nosec G101
 )
 
 // Response types
