@@ -29,6 +29,7 @@ func TestSet(t *testing.T) {
 	assert.Empty(t, os.Getenv("BLUEMIX_COLOR"))
 	assert.Empty(t, os.Getenv("IBMCLOUD_CR_TOKEN"))
 	assert.Empty(t, os.Getenv("IBMCLOUD_CR_PROFILE"))
+	assert.Empty(t, os.Getenv("IBMCLOUD_CR_VPC_URL"))
 	assert.Empty(t, EnvColor.Get())
 
 	EnvColor.Set("true")
@@ -38,13 +39,17 @@ func TestSet(t *testing.T) {
 
 	EnvCRTokenKey.Set("my_token")
 	EnvCRProfile.Set("my_profile")
+	EnvCRVpcUrl.Set("https://someurl.com")
 
 	assert.Equal(t, "my_token", os.Getenv("IBMCLOUD_CR_TOKEN"))
 	assert.Equal(t, "my_profile", os.Getenv("IBMCLOUD_CR_PROFILE"))
+	assert.Equal(t, "https://someurl.com", os.Getenv("IBMCLOUD_CR_VPC_URL"))
 
 	os.Unsetenv("IBMCLOUD_CR_TOKEN")
 	os.Unsetenv("IBMCLOUD_CR_PROFILE")
+	os.Unsetenv("IBMCLOUD_CR_VPC_URL")
 
 	assert.Empty(t, os.Getenv("IBMCLOUD_CR_TOKEN"))
 	assert.Empty(t, os.Getenv("IBMCLOUD_CR_PROFILE"))
+	assert.Empty(t, os.Getenv("IBMCLOUD_CR_VPC_URL"))
 }

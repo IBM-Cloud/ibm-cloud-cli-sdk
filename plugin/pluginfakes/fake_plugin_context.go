@@ -50,6 +50,16 @@ type FakePluginContext struct {
 	cLINameReturnsOnCall map[int]struct {
 		result1 string
 	}
+	CRITypeStub        func() string
+	cRITypeMutex       sync.RWMutex
+	cRITypeArgsForCall []struct {
+	}
+	cRITypeReturns struct {
+		result1 string
+	}
+	cRITypeReturnsOnCall map[int]struct {
+		result1 string
+	}
 	CloudNameStub        func() string
 	cloudNameMutex       sync.RWMutex
 	cloudNameArgsForCall []struct {
@@ -323,6 +333,16 @@ type FakePluginContext struct {
 	isLoggedInReturnsOnCall map[int]struct {
 		result1 bool
 	}
+	IsLoggedInAsCRIStub        func() bool
+	isLoggedInAsCRIMutex       sync.RWMutex
+	isLoggedInAsCRIArgsForCall []struct {
+	}
+	isLoggedInAsCRIReturns struct {
+		result1 bool
+	}
+	isLoggedInAsCRIReturnsOnCall map[int]struct {
+		result1 bool
+	}
 	IsLoggedInAsProfileStub        func() bool
 	isLoggedInAsProfileMutex       sync.RWMutex
 	isLoggedInAsProfileArgsForCall []struct {
@@ -423,6 +443,16 @@ type FakePluginContext struct {
 		result1 string
 	}
 	userEmailReturnsOnCall map[int]struct {
+		result1 string
+	}
+	VPCCRITokenURLStub        func() string
+	vPCCRITokenURLMutex       sync.RWMutex
+	vPCCRITokenURLArgsForCall []struct {
+	}
+	vPCCRITokenURLReturns struct {
+		result1 string
+	}
+	vPCCRITokenURLReturnsOnCall map[int]struct {
 		result1 string
 	}
 	VersionCheckEnabledStub        func() bool
@@ -647,6 +677,59 @@ func (fake *FakePluginContext) CLINameReturnsOnCall(i int, result1 string) {
 		})
 	}
 	fake.cLINameReturnsOnCall[i] = struct {
+		result1 string
+	}{result1}
+}
+
+func (fake *FakePluginContext) CRIType() string {
+	fake.cRITypeMutex.Lock()
+	ret, specificReturn := fake.cRITypeReturnsOnCall[len(fake.cRITypeArgsForCall)]
+	fake.cRITypeArgsForCall = append(fake.cRITypeArgsForCall, struct {
+	}{})
+	stub := fake.CRITypeStub
+	fakeReturns := fake.cRITypeReturns
+	fake.recordInvocation("CRIType", []interface{}{})
+	fake.cRITypeMutex.Unlock()
+	if stub != nil {
+		return stub()
+	}
+	if specificReturn {
+		return ret.result1
+	}
+	return fakeReturns.result1
+}
+
+func (fake *FakePluginContext) CRITypeCallCount() int {
+	fake.cRITypeMutex.RLock()
+	defer fake.cRITypeMutex.RUnlock()
+	return len(fake.cRITypeArgsForCall)
+}
+
+func (fake *FakePluginContext) CRITypeCalls(stub func() string) {
+	fake.cRITypeMutex.Lock()
+	defer fake.cRITypeMutex.Unlock()
+	fake.CRITypeStub = stub
+}
+
+func (fake *FakePluginContext) CRITypeReturns(result1 string) {
+	fake.cRITypeMutex.Lock()
+	defer fake.cRITypeMutex.Unlock()
+	fake.CRITypeStub = nil
+	fake.cRITypeReturns = struct {
+		result1 string
+	}{result1}
+}
+
+func (fake *FakePluginContext) CRITypeReturnsOnCall(i int, result1 string) {
+	fake.cRITypeMutex.Lock()
+	defer fake.cRITypeMutex.Unlock()
+	fake.CRITypeStub = nil
+	if fake.cRITypeReturnsOnCall == nil {
+		fake.cRITypeReturnsOnCall = make(map[int]struct {
+			result1 string
+		})
+	}
+	fake.cRITypeReturnsOnCall[i] = struct {
 		result1 string
 	}{result1}
 }
@@ -2093,6 +2176,59 @@ func (fake *FakePluginContext) IsLoggedInReturnsOnCall(i int, result1 bool) {
 	}{result1}
 }
 
+func (fake *FakePluginContext) IsLoggedInAsCRI() bool {
+	fake.isLoggedInAsCRIMutex.Lock()
+	ret, specificReturn := fake.isLoggedInAsCRIReturnsOnCall[len(fake.isLoggedInAsCRIArgsForCall)]
+	fake.isLoggedInAsCRIArgsForCall = append(fake.isLoggedInAsCRIArgsForCall, struct {
+	}{})
+	stub := fake.IsLoggedInAsCRIStub
+	fakeReturns := fake.isLoggedInAsCRIReturns
+	fake.recordInvocation("IsLoggedInAsCRI", []interface{}{})
+	fake.isLoggedInAsCRIMutex.Unlock()
+	if stub != nil {
+		return stub()
+	}
+	if specificReturn {
+		return ret.result1
+	}
+	return fakeReturns.result1
+}
+
+func (fake *FakePluginContext) IsLoggedInAsCRICallCount() int {
+	fake.isLoggedInAsCRIMutex.RLock()
+	defer fake.isLoggedInAsCRIMutex.RUnlock()
+	return len(fake.isLoggedInAsCRIArgsForCall)
+}
+
+func (fake *FakePluginContext) IsLoggedInAsCRICalls(stub func() bool) {
+	fake.isLoggedInAsCRIMutex.Lock()
+	defer fake.isLoggedInAsCRIMutex.Unlock()
+	fake.IsLoggedInAsCRIStub = stub
+}
+
+func (fake *FakePluginContext) IsLoggedInAsCRIReturns(result1 bool) {
+	fake.isLoggedInAsCRIMutex.Lock()
+	defer fake.isLoggedInAsCRIMutex.Unlock()
+	fake.IsLoggedInAsCRIStub = nil
+	fake.isLoggedInAsCRIReturns = struct {
+		result1 bool
+	}{result1}
+}
+
+func (fake *FakePluginContext) IsLoggedInAsCRIReturnsOnCall(i int, result1 bool) {
+	fake.isLoggedInAsCRIMutex.Lock()
+	defer fake.isLoggedInAsCRIMutex.Unlock()
+	fake.IsLoggedInAsCRIStub = nil
+	if fake.isLoggedInAsCRIReturnsOnCall == nil {
+		fake.isLoggedInAsCRIReturnsOnCall = make(map[int]struct {
+			result1 bool
+		})
+	}
+	fake.isLoggedInAsCRIReturnsOnCall[i] = struct {
+		result1 bool
+	}{result1}
+}
+
 func (fake *FakePluginContext) IsLoggedInAsProfile() bool {
 	fake.isLoggedInAsProfileMutex.Lock()
 	ret, specificReturn := fake.isLoggedInAsProfileReturnsOnCall[len(fake.isLoggedInAsProfileArgsForCall)]
@@ -2626,6 +2762,59 @@ func (fake *FakePluginContext) UserEmailReturnsOnCall(i int, result1 string) {
 	}{result1}
 }
 
+func (fake *FakePluginContext) VPCCRITokenURL() string {
+	fake.vPCCRITokenURLMutex.Lock()
+	ret, specificReturn := fake.vPCCRITokenURLReturnsOnCall[len(fake.vPCCRITokenURLArgsForCall)]
+	fake.vPCCRITokenURLArgsForCall = append(fake.vPCCRITokenURLArgsForCall, struct {
+	}{})
+	stub := fake.VPCCRITokenURLStub
+	fakeReturns := fake.vPCCRITokenURLReturns
+	fake.recordInvocation("VPCCRITokenURL", []interface{}{})
+	fake.vPCCRITokenURLMutex.Unlock()
+	if stub != nil {
+		return stub()
+	}
+	if specificReturn {
+		return ret.result1
+	}
+	return fakeReturns.result1
+}
+
+func (fake *FakePluginContext) VPCCRITokenURLCallCount() int {
+	fake.vPCCRITokenURLMutex.RLock()
+	defer fake.vPCCRITokenURLMutex.RUnlock()
+	return len(fake.vPCCRITokenURLArgsForCall)
+}
+
+func (fake *FakePluginContext) VPCCRITokenURLCalls(stub func() string) {
+	fake.vPCCRITokenURLMutex.Lock()
+	defer fake.vPCCRITokenURLMutex.Unlock()
+	fake.VPCCRITokenURLStub = stub
+}
+
+func (fake *FakePluginContext) VPCCRITokenURLReturns(result1 string) {
+	fake.vPCCRITokenURLMutex.Lock()
+	defer fake.vPCCRITokenURLMutex.Unlock()
+	fake.VPCCRITokenURLStub = nil
+	fake.vPCCRITokenURLReturns = struct {
+		result1 string
+	}{result1}
+}
+
+func (fake *FakePluginContext) VPCCRITokenURLReturnsOnCall(i int, result1 string) {
+	fake.vPCCRITokenURLMutex.Lock()
+	defer fake.vPCCRITokenURLMutex.Unlock()
+	fake.VPCCRITokenURLStub = nil
+	if fake.vPCCRITokenURLReturnsOnCall == nil {
+		fake.vPCCRITokenURLReturnsOnCall = make(map[int]struct {
+			result1 string
+		})
+	}
+	fake.vPCCRITokenURLReturnsOnCall[i] = struct {
+		result1 string
+	}{result1}
+}
+
 func (fake *FakePluginContext) VersionCheckEnabled() bool {
 	fake.versionCheckEnabledMutex.Lock()
 	ret, specificReturn := fake.versionCheckEnabledReturnsOnCall[len(fake.versionCheckEnabledArgsForCall)]
@@ -2690,6 +2879,8 @@ func (fake *FakePluginContext) Invocations() map[string][][]interface{} {
 	defer fake.cFEEEnvIDMutex.RUnlock()
 	fake.cLINameMutex.RLock()
 	defer fake.cLINameMutex.RUnlock()
+	fake.cRITypeMutex.RLock()
+	defer fake.cRITypeMutex.RUnlock()
 	fake.cloudNameMutex.RLock()
 	defer fake.cloudNameMutex.RUnlock()
 	fake.cloudTypeMutex.RLock()
@@ -2744,6 +2935,8 @@ func (fake *FakePluginContext) Invocations() map[string][][]interface{} {
 	defer fake.iMSAccountIDMutex.RUnlock()
 	fake.isLoggedInMutex.RLock()
 	defer fake.isLoggedInMutex.RUnlock()
+	fake.isLoggedInAsCRIMutex.RLock()
+	defer fake.isLoggedInAsCRIMutex.RUnlock()
 	fake.isLoggedInAsProfileMutex.RLock()
 	defer fake.isLoggedInAsProfileMutex.RUnlock()
 	fake.isLoggedInWithServiceIDMutex.RLock()
@@ -2764,6 +2957,8 @@ func (fake *FakePluginContext) Invocations() map[string][][]interface{} {
 	defer fake.traceMutex.RUnlock()
 	fake.userEmailMutex.RLock()
 	defer fake.userEmailMutex.RUnlock()
+	fake.vPCCRITokenURLMutex.RLock()
+	defer fake.vPCCRITokenURLMutex.RUnlock()
 	fake.versionCheckEnabledMutex.RLock()
 	defer fake.versionCheckEnabledMutex.RUnlock()
 	copiedInvocations := map[string][][]interface{}{}
