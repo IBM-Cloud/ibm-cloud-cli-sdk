@@ -29,6 +29,9 @@ type PluginMetadata struct {
 
 	// Whether the plugin supports private endpoint
 	PrivateEndpointSupported bool
+
+	// Whether the plugin supports private endpoint access via VPC
+	IsAccessFromVPC bool
 }
 
 func (p PluginMetadata) NameAndAliases() []string {
@@ -135,6 +138,9 @@ type PluginContext interface {
 
 	// IsPrivateEndpointEnabled returns whether use of the private endpoint has been chosen
 	IsPrivateEndpointEnabled() bool
+
+	// IsAccessFromVPC returns true if the access from VPC private endpoint is enabled.
+	IsAccessFromVPC() bool
 
 	// ConsoleEndpoint returns console's public endpoint if api endpoint is public, or returns
 	// private endpoint if api endpoint is private.
