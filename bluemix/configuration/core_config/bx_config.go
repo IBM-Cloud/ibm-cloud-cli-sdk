@@ -177,6 +177,13 @@ func (c *bxConfig) IsLoggedInAsCRI() (isCRI bool) {
 	return
 }
 
+func (c *bxConfig) IsAccessFromVPC() (isVPC bool) {
+	c.read(func() {
+		isVPC = c.data.IsAccessFromVPC
+	})
+	return
+}
+
 func (c *bxConfig) HasAPIEndpoint() bool {
 	return c.APIEndpoint() != ""
 }
