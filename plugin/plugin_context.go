@@ -61,18 +61,31 @@ func (c *pluginContext) APIEndpoint() string {
 
 func (c *pluginContext) IAMEndpoint() string {
 	if c.IsPrivateEndpointEnabled() {
-		return c.IAMEndpoints().PrivateEndpoint
+		if c.IsAccessFromVPC() {
+			// return VPC endpoint
+			return c.IAMEndpoints().PrivateVPCEndpoint
+		} else {
+			// return CSE endpoint
+			return c.IAMEndpoints().PrivateEndpoint
+		}
 	}
 	return c.IAMEndpoints().PublicEndpoint
 }
 
 func (c *pluginContext) ConsoleEndpoint() string {
 	if c.IsPrivateEndpointEnabled() {
-		return c.ConsoleEndpoints().PrivateEndpoint
+		if c.IsAccessFromVPC() {
+			// return VPC endpoint
+			return c.ConsoleEndpoints().PrivateVPCEndpoint
+		} else {
+			// return CSE endpoint
+		    return c.ConsoleEndpoints().PrivateEndpoint
+		}
 	}
 	return c.ConsoleEndpoints().PublicEndpoint
 }
 
+// GetEndpoint returns the private or public endpoint for a requested service
 func (c *pluginContext) GetEndpoint(svc endpoints.Service) (string, error) {
 	if c.CloudType() != "public" {
 		return "", fmt.Errorf("only public cloud is supported")
@@ -92,7 +105,7 @@ func (c *pluginContext) GetEndpoint(svc endpoints.Service) (string, error) {
 		return "", fmt.Errorf("unknown cloud name '%s'", cname)
 	}
 
-	return endpoints.Endpoint(svc, cloudDomain, c.CurrentRegion().Name, c.IsPrivateEndpointEnabled())
+	return endpoints.Endpoint(svc, cloudDomain, c.CurrentRegion().Name, c.IsPrivateEndpointEnabled(), c.IsAccessFromVPC())
 }
 
 func compareVersion(v1, v2 string) int {
