@@ -21,6 +21,7 @@ const (
 	crTokenParam           = "cr_token"
 	profileIDParam         = "profile_id"
 	profileNameParam       = "profile_name"
+	profileCRNParam        = "profile_crn"
 )
 
 // Grant types
@@ -85,7 +86,17 @@ func APIKeyTokenRequest(apikey string, opts ...authentication.TokenOption) *auth
 	return r
 }
 
+// CRTokenRequest builds a 'TokenRequest' struct from the user input. The value of 'crToken' is set as the value of the 'cr_token' form
+// parameter of the request. 'profileID' and 'profileName' are optional parameters used to set the 'profile_id' and 'profile_name' form parameters
+// in the request, respectively.
 func CRTokenRequest(crToken string, profileID string, profileName string, opts ...authentication.TokenOption) *authentication.TokenRequest {
+	return CRTokenRequestWithCRN(crToken, profileID, profileName, "", opts...)
+}
+
+// CRTokenRequestWithCRN builds a 'TokenRequest' struct from the user input. The value of 'crToken' is set as the value of the 'cr_token' form
+// parameter of the request. 'profileID', 'profileName', and 'profileCRN' are optional parameters used to set the 'profile_id', 'profile_name',
+// and 'profile_crn' form parameters in the request, respectively.
+func CRTokenRequestWithCRN(crToken string, profileID string, profileName string, profileCRN string, opts ...authentication.TokenOption) *authentication.TokenRequest {
 	r := authentication.NewTokenRequest(GrantTypeCRToken)
 	r.SetTokenParam(crTokenParam, crToken)
 
@@ -94,6 +105,9 @@ func CRTokenRequest(crToken string, profileID string, profileName string, opts .
 	}
 	if profileName != "" {
 		r.SetTokenParam(profileNameParam, profileName)
+	}
+	if profileCRN != "" {
+		r.SetTokenParam(profileCRNParam, profileCRN)
 	}
 
 	for _, o := range opts {

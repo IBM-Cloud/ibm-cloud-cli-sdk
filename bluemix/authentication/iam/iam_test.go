@@ -15,6 +15,7 @@ import (
 const (
 	crAuthMockIAMProfileName string = "iam-user-123"
 	crAuthMockIAMProfileID   string = "iam-id-123"
+	crAuthMockIAMProfileCRN  string = "crn:v1:bluemix:public:iam-identity::a/123456::profile:Profile-9fd84246-7df4-4667-94e4-8ecde51d5ac5"
 	crAuthTestCRToken1       string = "cr-token-1"
 	crAuthTestAccessToken1   string = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImhlbGxvIiwicm9sZSI6InVzZXIiLCJwZXJtaXNzaW9ucyI6WyJhZG1pbmlzdHJhdG9yIiwiZGVwbG95bWVudF9hZG1pbiJdLCJzdWIiOiJoZWxsbyIsImlzcyI6IkpvaG4iLCJhdWQiOiJEU1giLCJ1aWQiOiI5OTkiLCJpYXQiOjE1NjAyNzcwNTEsImV4cCI6MTU2MDI4MTgxOSwianRpIjoiMDRkMjBiMjUtZWUyZC00MDBmLTg2MjMtOGNkODA3MGI1NDY4In0.cIodB4I6CCcX8vfIImz7Cytux3GpWyObt9Gkur5g1QI"
 	crAuthTestAccessToken2   string = "3yJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImhlbGxvIiwicm9sZSI6InVzZXIiLCJwZXJtaXNzaW9ucyI6WyJhZG1pbmlzdHJhdG9yIiwiZGVwbG95bWVudF9hZG1pbiJdLCJzdWIiOiJoZWxsbyIsImlzcyI6IkpvaG4iLCJhdWQiOiJEU1giLCJ1aWQiOiI5OTkiLCJpYXQiOjE1NjAyNzcwNTEsImV4cCI6MTU2MDI4MTgxOSwianRpIjoiMDRkMjBiMjUtZWUyZC00MDBmLTg2MjMtOGNkODA3MGI1NDY4In0.cIodB4I6CCcX8vfIImz7Cytux3GpWyObt9Gkur5g1QI"
@@ -31,6 +32,7 @@ func TestCRTokenRequestWithProfileID(t *testing.T) {
 	assert.Equal(t, tokenReq.GrantType(), GrantTypeCRToken)
 	assert.Equal(t, tokenReq.GetTokenParam(profileIDParam), crAuthMockIAMProfileID)
 	assert.Equal(t, tokenReq.GetTokenParam(profileNameParam), "")
+	assert.Equal(t, tokenReq.GetTokenParam(profileCRNParam), "")
 }
 
 func TestCRTokenRequestWithProfileName(t *testing.T) {
@@ -41,6 +43,18 @@ func TestCRTokenRequestWithProfileName(t *testing.T) {
 	assert.Equal(t, tokenReq.GrantType(), GrantTypeCRToken)
 	assert.Equal(t, tokenReq.GetTokenParam(profileNameParam), crAuthMockIAMProfileName)
 	assert.Equal(t, tokenReq.GetTokenParam(profileIDParam), "")
+	assert.Equal(t, tokenReq.GetTokenParam(profileCRNParam), "")
+}
+
+func TestCRTokenRequestWithProfileCRN(t *testing.T) {
+	// build a mock token request with ProfileCRN
+	tokenReq := CRTokenRequestWithCRN(crAuthTestCRToken1, "", "", crAuthMockIAMProfileCRN)
+
+	// validate the request
+	assert.Equal(t, tokenReq.GrantType(), GrantTypeCRToken)
+	assert.Equal(t, tokenReq.GetTokenParam(profileCRNParam), crAuthMockIAMProfileCRN)
+	assert.Equal(t, tokenReq.GetTokenParam(profileIDParam), "")
+	assert.Equal(t, tokenReq.GetTokenParam(profileNameParam), "")
 }
 
 func TestCRTokenRequestWithProfileNameAndID(t *testing.T) {
@@ -51,10 +65,22 @@ func TestCRTokenRequestWithProfileNameAndID(t *testing.T) {
 	assert.Equal(t, tokenReq.GrantType(), GrantTypeCRToken)
 	assert.Equal(t, tokenReq.GetTokenParam(profileNameParam), crAuthMockIAMProfileName)
 	assert.Equal(t, tokenReq.GetTokenParam(profileIDParam), crAuthMockIAMProfileID)
+	assert.Equal(t, tokenReq.GetTokenParam(profileCRNParam), "")
+}
+
+func TestCRTokenRequestWithProfileNameAndIDandCRN(t *testing.T) {
+	// build a mock token request with both ProfileID and ProfileName
+	tokenReq := CRTokenRequestWithCRN(crAuthTestCRToken1, crAuthMockIAMProfileID, crAuthMockIAMProfileName, crAuthMockIAMProfileCRN)
+
+	// validate the request
+	assert.Equal(t, tokenReq.GrantType(), GrantTypeCRToken)
+	assert.Equal(t, tokenReq.GetTokenParam(profileNameParam), crAuthMockIAMProfileName)
+	assert.Equal(t, tokenReq.GetTokenParam(profileIDParam), crAuthMockIAMProfileID)
+	assert.Equal(t, tokenReq.GetTokenParam(profileCRNParam), crAuthMockIAMProfileCRN)
 }
 
 func TestGetTokenOneFromServerSuccessWithProfileID(t *testing.T) {
-	server := startMockIAMServerForCRExchange(t, 1)
+	server := startMockIAMServerForCRExchange(t, 1, http.StatusOK)
 	defer server.Close()
 
 	mockIAMEndpoint := server.URL
@@ -70,7 +96,7 @@ func TestGetTokenOneFromServerSuccessWithProfileID(t *testing.T) {
 }
 
 func TestGetTokenTwoFromServerSuccessWithProfileID(t *testing.T) {
-	server := startMockIAMServerForCRExchange(t, 2)
+	server := startMockIAMServerForCRExchange(t, 2, http.StatusOK)
 	defer server.Close()
 
 	mockIAMEndpoint := server.URL
@@ -86,7 +112,7 @@ func TestGetTokenTwoFromServerSuccessWithProfileID(t *testing.T) {
 }
 
 func TestGetTokenOneFromServerSuccessWithProfileName(t *testing.T) {
-	server := startMockIAMServerForCRExchange(t, 1)
+	server := startMockIAMServerForCRExchange(t, 1, http.StatusOK)
 	defer server.Close()
 
 	mockIAMEndpoint := server.URL
@@ -102,7 +128,7 @@ func TestGetTokenOneFromServerSuccessWithProfileName(t *testing.T) {
 }
 
 func TestGetTokenTwoFromServerSuccessWithProfileName(t *testing.T) {
-	server := startMockIAMServerForCRExchange(t, 2)
+	server := startMockIAMServerForCRExchange(t, 2, http.StatusOK)
 	defer server.Close()
 
 	mockIAMEndpoint := server.URL
@@ -117,8 +143,40 @@ func TestGetTokenTwoFromServerSuccessWithProfileName(t *testing.T) {
 	assert.Equal(t, crAuthTestAccessToken2, IAMToken.AccessToken)
 }
 
+func TestGetTokenOneFromServerSuccessWithProfileCRN(t *testing.T) {
+	server := startMockIAMServerForCRExchange(t, 1, http.StatusOK)
+	defer server.Close()
+
+	mockIAMEndpoint := server.URL
+	mockConfig := DefaultConfig(mockIAMEndpoint)
+	mockClient := NewClient(mockConfig, rest.NewClient())
+
+	// build the request, call fetch token, and verify response
+	tokenReq := CRTokenRequestWithCRN(crAuthTestCRToken1, "", "", crAuthMockIAMProfileCRN)
+	// Force the first fetch and verify we got the first access token.
+	IAMToken, err := mockClient.GetToken(tokenReq)
+	assert.Nil(t, err)
+	assert.Equal(t, crAuthTestAccessToken1, IAMToken.AccessToken)
+}
+
+func TestGetTokenTwoFromServerSuccessWithProfileCRN(t *testing.T) {
+	server := startMockIAMServerForCRExchange(t, 2, http.StatusOK)
+	defer server.Close()
+
+	mockIAMEndpoint := server.URL
+	mockConfig := DefaultConfig(mockIAMEndpoint)
+	mockClient := NewClient(mockConfig, rest.NewClient())
+
+	// build the request, call fetch token, and verify response
+	tokenReq := CRTokenRequestWithCRN(crAuthTestCRToken1, "", "", crAuthMockIAMProfileCRN)
+	// Force the first fetch and verify we got the first access token.
+	IAMToken, err := mockClient.GetToken(tokenReq)
+	assert.Nil(t, err)
+	assert.Equal(t, crAuthTestAccessToken2, IAMToken.AccessToken)
+}
+
 func TestGetTokenOneFromServerSuccessWithProfileNameAndID(t *testing.T) {
-	server := startMockIAMServerForCRExchange(t, 1)
+	server := startMockIAMServerForCRExchange(t, 1, http.StatusOK)
 	defer server.Close()
 
 	mockIAMEndpoint := server.URL
@@ -134,7 +192,7 @@ func TestGetTokenOneFromServerSuccessWithProfileNameAndID(t *testing.T) {
 }
 
 func TestGetTokenTwoFromServerSuccessWithProfileNameAndID(t *testing.T) {
-	server := startMockIAMServerForCRExchange(t, 2)
+	server := startMockIAMServerForCRExchange(t, 2, http.StatusOK)
 	defer server.Close()
 
 	mockIAMEndpoint := server.URL
@@ -149,9 +207,58 @@ func TestGetTokenTwoFromServerSuccessWithProfileNameAndID(t *testing.T) {
 	assert.Equal(t, crAuthTestAccessToken2, IAMToken.AccessToken)
 }
 
+func TestGetTokenOneFromServerSuccessWithProfileNameAndIDAndCRN(t *testing.T) {
+	server := startMockIAMServerForCRExchange(t, 1, http.StatusOK)
+	defer server.Close()
+
+	mockIAMEndpoint := server.URL
+	mockConfig := DefaultConfig(mockIAMEndpoint)
+	mockClient := NewClient(mockConfig, rest.NewClient())
+
+	// build the request, call fetch token, and verify response
+	tokenReq := CRTokenRequestWithCRN(crAuthTestCRToken1, crAuthMockIAMProfileID, crAuthMockIAMProfileName, crAuthMockIAMProfileCRN)
+	// Force the first fetch and verify we got the first access token.
+	IAMToken, err := mockClient.GetToken(tokenReq)
+	assert.Nil(t, err)
+	assert.Equal(t, crAuthTestAccessToken1, IAMToken.AccessToken)
+}
+
+func TestGetTokenTwoFromServerSuccessWithProfileNameAndIDAndCRN(t *testing.T) {
+	server := startMockIAMServerForCRExchange(t, 2, http.StatusOK)
+	defer server.Close()
+
+	mockIAMEndpoint := server.URL
+	mockConfig := DefaultConfig(mockIAMEndpoint)
+	mockClient := NewClient(mockConfig, rest.NewClient())
+
+	// build the request, call fetch token, and verify response
+	tokenReq := CRTokenRequestWithCRN(crAuthTestCRToken1, crAuthMockIAMProfileID, crAuthMockIAMProfileName, crAuthMockIAMProfileCRN)
+	// Force the first fetch and verify we got the first access token.
+	IAMToken, err := mockClient.GetToken(tokenReq)
+	assert.Nil(t, err)
+	assert.Equal(t, crAuthTestAccessToken2, IAMToken.AccessToken)
+}
+
+func TestGetTokenOneFromServerFailureWithProfileNameAndIDAndCRN(t *testing.T) {
+	server := startMockIAMServerForCRExchange(t, 1, http.StatusUnauthorized)
+	defer server.Close()
+
+	mockIAMEndpoint := server.URL
+	mockConfig := DefaultConfig(mockIAMEndpoint)
+	mockClient := NewClient(mockConfig, rest.NewClient())
+
+	// build the request, call fetch token, and verify response
+	tokenReq := CRTokenRequestWithCRN(crAuthTestCRToken1, crAuthMockIAMProfileID, crAuthMockIAMProfileName, crAuthMockIAMProfileCRN)
+	// Force the first fetch and verify we got the first access token.
+	IAMToken, err := mockClient.GetToken(tokenReq)
+	assert.NotNil(t, err)
+	assert.Nil(t, IAMToken)
+	assert.Contains(t, err.Error(), "Sorry, you are not authorized!")
+}
+
 // startMockIAMServerForCRExchange will start a mock server endpoint that supports both the
 // IAM operations that we'll need to call.
-func startMockIAMServerForCRExchange(t *testing.T, call int) *httptest.Server {
+func startMockIAMServerForCRExchange(t *testing.T, call int, statusCode int) *httptest.Server {
 	// Create the mock server.
 	server := httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
 		operationPath := req.URL.EscapedPath()
@@ -170,10 +277,8 @@ func startMockIAMServerForCRExchange(t *testing.T, call int) *httptest.Server {
 
 			iamProfileID := req.FormValue("profile_id")
 			iamProfileName := req.FormValue("profile_name")
-			assert.True(t, iamProfileName != "" || iamProfileID != "")
-
-			// Assume that we'll return a 200 OK status code.
-			statusCode := http.StatusOK
+			iamProfileCRN := req.FormValue("profile_crn")
+			assert.True(t, iamProfileName != "" || iamProfileID != "" || iamProfileCRN != "")
 
 			// This is the access token we'll send back in the mock response.
 			// We'll default to token 2, then see if the caller asked for token 1
