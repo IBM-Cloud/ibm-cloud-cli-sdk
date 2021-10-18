@@ -11,8 +11,8 @@ import (
 
 // FileExists checks if the file exist or not
 func FileExists(path string) bool {
-	_, err := os.Stat(path)
-	if err == nil {
+	file, err := os.Stat(path)
+	if err == nil && !file.IsDir() {
 		return true
 	}
 	if os.IsNotExist(err) {
