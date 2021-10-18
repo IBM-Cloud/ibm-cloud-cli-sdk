@@ -5,6 +5,8 @@ package core_config
 import (
 	"time"
 
+	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix"
+	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/authentication/vpc"
 	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/configuration"
 	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/configuration/config_helpers"
 	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/models"
@@ -25,6 +27,7 @@ type Repository interface {
 	IsLoggedIn() bool
 	IsLoggedInWithServiceID() bool
 	IsLoggedInAsProfile() bool
+	IsLoggedInAsCRI() bool
 	UserEmail() string
 	// UserDisplayText is the human readable ID for logged-in users which include non-human IDs
 	UserDisplayText() string
@@ -36,6 +39,8 @@ type Repository interface {
 	IMSAccountID() string
 	CurrentProfile() models.Profile
 	CurrentResourceGroup() models.ResourceGroup
+	// CRIType returns the type of compute resource the user logged in as, if applicable. Valid values are `IKS`, `VPC`, or `OTHER`
+	CRIType() string
 	HasTargetedResourceGroup() bool
 	PluginRepos() []models.PluginRepo
 	PluginRepo(string) (models.PluginRepo, bool)
@@ -46,6 +51,10 @@ type Repository interface {
 	UpdateCheckInterval() time.Duration
 	UpdateRetryCheckInterval() time.Duration
 	UpdateNotificationInterval() time.Duration
+	// VPCCRITokenURL() returns the value specified by the environment variable 'IBMCLOUD_CR_VPC_URL', if set.
+	// Otherwise, the default VPC auth url specified by the constant `DefaultServerEndpoint` is returned
+	VPCCRITokenURL() string
+
 	// UsageSatsDisabled returns whether the usage statistics data collection is disabled or not
 	// Deprecated: use UsageSatsEnabled instead. We change to disable usage statistics by default,
 	// So this property will not be used anymore
@@ -67,6 +76,8 @@ type Repository interface {
 	SetIAMEndpoints(models.Endpoints)
 	SetCloudType(string)
 	SetCloudName(string)
+	SetCRIType(string)
+	SetIsLoggedInAsCRI(bool)
 	SetRegion(models.Region)
 	SetIAMToken(string)
 	SetIAMRefreshToken(string)
@@ -185,6 +196,15 @@ func (c repository) IsLoggedInWithServiceID() bool {
 
 func (c repository) IsLoggedInAsProfile() bool {
 	return c.bxConfig.IsLoggedIn() && NewIAMTokenInfo(c.IAMToken()).SubjectType == SubjectTypeTrustedProfile
+}
+
+func (c repository) VPCCRITokenURL() string {
+	if env := bluemix.EnvCRVpcUrl.Get(); env != "" {
+		return env
+	}
+
+	// default server endpoint is a constant value in vpc authenticator
+	return vpc.DefaultServerEndpoint
 }
 
 func (c repository) UserEmail() string {

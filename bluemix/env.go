@@ -21,6 +21,8 @@ var (
 	EnvCRTokenKey = newEnv("IBMCLOUD_CR_TOKEN")
 	// EnvCRProfile is the environment variable `IBMCLOUD_CR_PROFILE`
 	EnvCRProfile = newEnv("IBMCLOUD_CR_PROFILE")
+	// EnvCRVpcUrl is the environment variable `IBMCLOUD_CR_VPC_URL`
+	EnvCRVpcUrl = newEnv("IBMCLOUD_CR_VPC_URL")
 	// EnvConfigHome is the environment variable `IBMCLOUD_HOME` and `BLUEMIX_HOME` (deprecated)
 	EnvConfigHome = newEnv("IBMCLOUD_HOME", "BLUEMIX_HOME")
 	// EnvConfigDir is the environment variable `IBMCLOUD_CONFIG_HOME`
