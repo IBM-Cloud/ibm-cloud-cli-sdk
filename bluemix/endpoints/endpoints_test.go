@@ -9,12 +9,12 @@ import (
 )
 
 func TestEndpointUnknownService(t *testing.T) {
-	_, err := Endpoint(Service("unknown"), "cloud.ibm.com", "us-south", false)
+	_, err := Endpoint(Service("unknown"), "cloud.ibm.com", "us-south", false, false)
 	assert.Error(t, err, "an error is expected")
 }
 
 func TestEndpointEmptyCloudDomain(t *testing.T) {
-	_, err := Endpoint(AccountManagement, "", "", false)
+	_, err := Endpoint(AccountManagement, "", "", false, false)
 	assert.Error(t, err, "an error is expected")
 }
 
@@ -22,6 +22,7 @@ func TestEndpointPublic(t *testing.T) {
 	cloudDomain := "cloud.ibm.com"
 	region := ""
 	private := false
+	isVPC := false
 
 	endpoints := map[Service]string{
 		GlobalSearch:       fmt.Sprintf("https://api.global-search-tagging.%s", cloudDomain),
@@ -34,7 +35,7 @@ func TestEndpointPublic(t *testing.T) {
 		ResourceCatalog:    fmt.Sprintf("https://globalcatalog.%s", cloudDomain),
 	}
 	for svc, expected := range endpoints {
-		actual, err := Endpoint(svc, cloudDomain, region, private)
+		actual, err := Endpoint(svc, cloudDomain, region, private, isVPC)
 		assert.NoError(t, err, "public endpoint of service '%s'", svc)
 		assert.Equal(t, expected, actual, "public endpoint of service '%s'", svc)
 	}
@@ -44,6 +45,7 @@ func TestEndpointPrivate(t *testing.T) {
 	cloudDomain := "cloud.ibm.com"
 	region := "us-south"
 	private := true
+	isVPC := false
 
 	endpoints := map[Service]string{
 		GlobalSearch:       fmt.Sprintf("https://api.private.%s.global-search-tagging.%s", region, cloudDomain),
@@ -56,13 +58,13 @@ func TestEndpointPrivate(t *testing.T) {
 		ResourceCatalog:    fmt.Sprintf("https://private.%s.globalcatalog.%s", region, cloudDomain),
 	}
 	for svc, expected := range endpoints {
-		actual, err := Endpoint(svc, cloudDomain, region, private)
+		actual, err := Endpoint(svc, cloudDomain, region, private, isVPC)
 		assert.NoError(t, err, "private endpoint of service '%s'", svc)
 		assert.Equal(t, expected, actual, "private endpoint of service '%s'", svc)
 	}
 }
 
 func TestEndpointPrivateNoRegion(t *testing.T) {
-	_, err := Endpoint(AccountManagement, "cloud.ibm.com", "", true)
+	_, err := Endpoint(AccountManagement, "cloud.ibm.com", "", true, false)
 	assert.Error(t, err, "an error is expected")
 }
