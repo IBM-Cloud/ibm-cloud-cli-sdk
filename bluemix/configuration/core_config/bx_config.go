@@ -25,8 +25,10 @@ func (r raw) Unmarshal(bytes []byte) error {
 type BXConfigData struct {
 	APIEndpoint                 string
 	IsPrivate                   bool
+	IsAccessFromVPC             bool
 	ConsoleEndpoint             string
 	ConsolePrivateEndpoint      string
+	ConsolePrivateVPCEndpoint   string
 	CloudType                   string
 	CloudName                   string
 	CRIType                     string
@@ -34,6 +36,7 @@ type BXConfigData struct {
 	RegionID                    string
 	IAMEndpoint                 string
 	IAMPrivateEndpoint          string
+	IAMPrivateVPCEndpoint       string
 	IAMToken                    string
 	IAMRefreshToken             string
 	IsLoggedInAsCRI             bool
@@ -174,6 +177,13 @@ func (c *bxConfig) IsLoggedInAsCRI() (isCRI bool) {
 	return
 }
 
+func (c *bxConfig) IsAccessFromVPC() (isVPC bool) {
+	c.read(func() {
+		isVPC = c.data.IsAccessFromVPC
+	})
+	return
+}
+
 func (c *bxConfig) HasAPIEndpoint() bool {
 	return c.APIEndpoint() != ""
 }
@@ -189,6 +199,7 @@ func (c *bxConfig) ConsoleEndpoints() (endpoints models.Endpoints) {
 	c.read(func() {
 		endpoints.PublicEndpoint = c.data.ConsoleEndpoint
 		endpoints.PrivateEndpoint = c.data.ConsolePrivateEndpoint
+		endpoints.PrivateVPCEndpoint = c.data.ConsolePrivateVPCEndpoint
 	})
 	return
 }
@@ -233,6 +244,7 @@ func (c *bxConfig) IAMEndpoints() (endpoints models.Endpoints) {
 	c.read(func() {
 		endpoints.PublicEndpoint = c.data.IAMEndpoint
 		endpoints.PrivateEndpoint = c.data.IAMPrivateEndpoint
+		endpoints.PrivateVPCEndpoint = c.data.IAMPrivateVPCEndpoint
 	})
 	return
 }
@@ -470,10 +482,17 @@ func (c *bxConfig) SetPrivateEndpointEnabled(isPrivate bool) {
 	})
 }
 
+func (c *bxConfig) SetAccessFromVPC(isVPC bool) {
+	c.write(func() {
+		c.data.IsAccessFromVPC = isVPC
+	})
+}
+
 func (c *bxConfig) SetConsoleEndpoints(endpoint models.Endpoints) {
 	c.write(func() {
 		c.data.ConsoleEndpoint = endpoint.PublicEndpoint
 		c.data.ConsolePrivateEndpoint = endpoint.PrivateEndpoint
+		c.data.ConsolePrivateVPCEndpoint = endpoint.PrivateVPCEndpoint
 	})
 }
 
@@ -488,6 +507,7 @@ func (c *bxConfig) SetIAMEndpoints(endpoints models.Endpoints) {
 	c.write(func() {
 		c.data.IAMEndpoint = endpoints.PublicEndpoint
 		c.data.IAMPrivateEndpoint = endpoints.PrivateEndpoint
+		c.data.IAMPrivateVPCEndpoint = endpoints.PrivateVPCEndpoint
 	})
 }
 
@@ -676,12 +696,15 @@ func (c *bxConfig) UnsetAPI() {
 		c.data.APIEndpoint = ""
 		c.data.SSLDisabled = false
 		c.data.IsPrivate = false
+		c.data.IsAccessFromVPC = false
 		c.data.Region = ""
 		c.data.RegionID = ""
 		c.data.ConsoleEndpoint = ""
 		c.data.ConsolePrivateEndpoint = ""
+		c.data.ConsolePrivateVPCEndpoint = ""
 		c.data.IAMEndpoint = ""
 		c.data.IAMPrivateEndpoint = ""
+		c.data.IAMPrivateVPCEndpoint = ""
 		c.data.CloudName = ""
 		c.data.CloudType = ""
 	})

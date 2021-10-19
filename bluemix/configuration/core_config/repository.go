@@ -16,6 +16,7 @@ type Repository interface {
 	APIEndpoint() string
 	HasAPIEndpoint() bool
 	IsPrivateEndpointEnabled() bool
+	IsAccessFromVPC() bool
 	ConsoleEndpoints() models.Endpoints
 	IAMEndpoints() models.Endpoints
 	CloudName() string
@@ -72,6 +73,7 @@ type Repository interface {
 	UnsetAPI()
 	SetAPIEndpoint(string)
 	SetPrivateEndpointEnabled(bool)
+	SetAccessFromVPC(bool)
 	SetConsoleEndpoints(models.Endpoints)
 	SetIAMEndpoints(models.Endpoints)
 	SetCloudType(string)
