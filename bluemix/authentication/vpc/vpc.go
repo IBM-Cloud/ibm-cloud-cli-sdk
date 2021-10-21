@@ -147,7 +147,7 @@ func (c *client) GetInstanceIdentityToken() (*InstanceIdentityToken, error) {
 	req.Query("version", c.config.Version)
 
 	// create body
-	body := fmt.Sprintf("{\"expires_in\": \"%d\"}", defaultInstanceIdentityTokenLifetime)
+	body := fmt.Sprintf("{\"expires_in\": %d}", defaultInstanceIdentityTokenLifetime)
 	req.Body(body)
 
 	var tokenResponse struct {
