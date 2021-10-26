@@ -26,7 +26,7 @@ const (
 
 // Grant types
 const (
-	GrantTypePassword              authentication.GrantType = "password"
+	GrantTypePassword              authentication.GrantType = "password" // #nosec G101
 	GrantTypeAPIKey                authentication.GrantType = "urn:ibm:params:oauth:grant-type:apikey"
 	GrantTypeOnetimePasscode       authentication.GrantType = "urn:ibm:params:oauth:grant-type:passcode" // #nosec G101
 	GrantTypeAuthorizationCode     authentication.GrantType = "authorization_code"
