@@ -80,7 +80,7 @@ func TestCRTokenRequestWithProfileNameAndIDandCRN(t *testing.T) {
 }
 
 func TestGetTokenOneFromServerSuccessWithProfileID(t *testing.T) {
-	server := startMockIAMServerForCRExchange(t, 1, http.StatusOK)
+	server := startMockIAMServerForCRExchange(t, 1, http.StatusOK, "")
 	defer server.Close()
 
 	mockIAMEndpoint := server.URL
@@ -96,7 +96,7 @@ func TestGetTokenOneFromServerSuccessWithProfileID(t *testing.T) {
 }
 
 func TestGetTokenTwoFromServerSuccessWithProfileID(t *testing.T) {
-	server := startMockIAMServerForCRExchange(t, 2, http.StatusOK)
+	server := startMockIAMServerForCRExchange(t, 2, http.StatusOK, "")
 	defer server.Close()
 
 	mockIAMEndpoint := server.URL
@@ -112,7 +112,7 @@ func TestGetTokenTwoFromServerSuccessWithProfileID(t *testing.T) {
 }
 
 func TestGetTokenOneFromServerSuccessWithProfileName(t *testing.T) {
-	server := startMockIAMServerForCRExchange(t, 1, http.StatusOK)
+	server := startMockIAMServerForCRExchange(t, 1, http.StatusOK, "")
 	defer server.Close()
 
 	mockIAMEndpoint := server.URL
@@ -128,7 +128,7 @@ func TestGetTokenOneFromServerSuccessWithProfileName(t *testing.T) {
 }
 
 func TestGetTokenTwoFromServerSuccessWithProfileName(t *testing.T) {
-	server := startMockIAMServerForCRExchange(t, 2, http.StatusOK)
+	server := startMockIAMServerForCRExchange(t, 2, http.StatusOK, "")
 	defer server.Close()
 
 	mockIAMEndpoint := server.URL
@@ -144,7 +144,7 @@ func TestGetTokenTwoFromServerSuccessWithProfileName(t *testing.T) {
 }
 
 func TestGetTokenOneFromServerSuccessWithProfileCRN(t *testing.T) {
-	server := startMockIAMServerForCRExchange(t, 1, http.StatusOK)
+	server := startMockIAMServerForCRExchange(t, 1, http.StatusOK, "")
 	defer server.Close()
 
 	mockIAMEndpoint := server.URL
@@ -160,7 +160,7 @@ func TestGetTokenOneFromServerSuccessWithProfileCRN(t *testing.T) {
 }
 
 func TestGetTokenTwoFromServerSuccessWithProfileCRN(t *testing.T) {
-	server := startMockIAMServerForCRExchange(t, 2, http.StatusOK)
+	server := startMockIAMServerForCRExchange(t, 2, http.StatusOK, "")
 	defer server.Close()
 
 	mockIAMEndpoint := server.URL
@@ -176,7 +176,7 @@ func TestGetTokenTwoFromServerSuccessWithProfileCRN(t *testing.T) {
 }
 
 func TestGetTokenOneFromServerSuccessWithProfileNameAndID(t *testing.T) {
-	server := startMockIAMServerForCRExchange(t, 1, http.StatusOK)
+	server := startMockIAMServerForCRExchange(t, 1, http.StatusOK, "")
 	defer server.Close()
 
 	mockIAMEndpoint := server.URL
@@ -192,7 +192,7 @@ func TestGetTokenOneFromServerSuccessWithProfileNameAndID(t *testing.T) {
 }
 
 func TestGetTokenTwoFromServerSuccessWithProfileNameAndID(t *testing.T) {
-	server := startMockIAMServerForCRExchange(t, 2, http.StatusOK)
+	server := startMockIAMServerForCRExchange(t, 2, http.StatusOK, "")
 	defer server.Close()
 
 	mockIAMEndpoint := server.URL
@@ -208,7 +208,7 @@ func TestGetTokenTwoFromServerSuccessWithProfileNameAndID(t *testing.T) {
 }
 
 func TestGetTokenOneFromServerSuccessWithProfileNameAndIDAndCRN(t *testing.T) {
-	server := startMockIAMServerForCRExchange(t, 1, http.StatusOK)
+	server := startMockIAMServerForCRExchange(t, 1, http.StatusOK, "")
 	defer server.Close()
 
 	mockIAMEndpoint := server.URL
@@ -224,7 +224,7 @@ func TestGetTokenOneFromServerSuccessWithProfileNameAndIDAndCRN(t *testing.T) {
 }
 
 func TestGetTokenTwoFromServerSuccessWithProfileNameAndIDAndCRN(t *testing.T) {
-	server := startMockIAMServerForCRExchange(t, 2, http.StatusOK)
+	server := startMockIAMServerForCRExchange(t, 2, http.StatusOK, "")
 	defer server.Close()
 
 	mockIAMEndpoint := server.URL
@@ -240,7 +240,7 @@ func TestGetTokenTwoFromServerSuccessWithProfileNameAndIDAndCRN(t *testing.T) {
 }
 
 func TestGetTokenOneFromServerFailureWithProfileNameAndIDAndCRN(t *testing.T) {
-	server := startMockIAMServerForCRExchange(t, 1, http.StatusUnauthorized)
+	server := startMockIAMServerForCRExchange(t, 1, http.StatusUnauthorized, "")
 	defer server.Close()
 
 	mockIAMEndpoint := server.URL
@@ -256,9 +256,58 @@ func TestGetTokenOneFromServerFailureWithProfileNameAndIDAndCRN(t *testing.T) {
 	assert.Contains(t, err.Error(), "Sorry, you are not authorized!")
 }
 
+func TestGetTokenOneFromServerApiErrorWithProfileNameAndID(t *testing.T) {
+	errorCases := []struct {
+		errorCode string
+		errorMessage string
+
+	}{
+		{
+			errorCode: InvalidTokenErrorCode,
+			errorMessage: "invalid token",
+		},
+		{
+			errorCode: RefreshTokenExpiryErrorCode,
+			errorMessage: "refresh token expired",
+		},
+		{
+			errorCode: ExternalAuthenticationErrorCode,
+			errorMessage: "External authentication failed",
+		},
+		{
+			errorCode: SessionInactiveErrorCode,
+			errorMessage: "sdf",
+		},
+	}
+
+
+	for _, errorCase := range errorCases {
+		errorJson := fmt.Sprintf(`{"errorCode": "%s", "errorMessage": "%s", "errorDetails": "", "requirements": {"code": "", "error": ""}}`, errorCase.errorCode, errorCase.errorMessage)
+		server := startMockIAMServerForCRExchange(t, 1, http.StatusUnauthorized, errorJson)
+		defer server.Close()
+
+		mockIAMEndpoint := server.URL
+		mockConfig := DefaultConfig(mockIAMEndpoint)
+		mockClient := NewClient(mockConfig, rest.NewClient())
+
+		// build the request, call fetch token, and verify response
+		tokenReq := CRTokenRequestWithCRN(crAuthTestCRToken1, crAuthMockIAMProfileID, crAuthMockIAMProfileName, crAuthMockIAMProfileCRN)
+		// Force the first fetch and verify we got the first access token.
+		IAMToken, err := mockClient.GetToken(tokenReq)
+		assert.NotNil(t, err)
+		assert.Nil(t, IAMToken)
+		assert.Contains(t, err.Error(),errorCase.errorMessage)
+
+
+	}
+
+
+
+}
+
 // startMockIAMServerForCRExchange will start a mock server endpoint that supports both the
 // IAM operations that we'll need to call.
-func startMockIAMServerForCRExchange(t *testing.T, call int, statusCode int) *httptest.Server {
+func startMockIAMServerForCRExchange(t *testing.T, call int, statusCode int, errorJson string) *httptest.Server {
 	// Create the mock server.
 	server := httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
 		operationPath := req.URL.EscapedPath()
@@ -292,15 +341,22 @@ func startMockIAMServerForCRExchange(t *testing.T, call int, statusCode int) *ht
 
 			expiration := time.Now().Unix() + 3600
 			res.WriteHeader(statusCode)
+			mockErrorJson := errorJson
 			switch statusCode {
 			case http.StatusOK:
 				fmt.Fprintf(res, `{"access_token": "%s", "token_type": "Bearer", "expires_in": 3600, "expiration": %d, "refresh_token": ""}`,
 					accessToken, expiration)
 			case http.StatusBadRequest:
-				fmt.Fprintf(res, `Sorry, bad request!`)
+				if errorJson == "" {
+					mockErrorJson = "Sorry, bad request!"
+				}
+				fmt.Fprint(res,  mockErrorJson)
 
 			case http.StatusUnauthorized:
-				fmt.Fprintf(res, `Sorry, you are not authorized!`)
+				if errorJson == "" {
+					mockErrorJson = "Sorry, you are not authorized!"
+				}
+				fmt.Fprint(res, mockErrorJson)
 			}
 		} else {
 			assert.Fail(t, "unknown operation path: "+operationPath)

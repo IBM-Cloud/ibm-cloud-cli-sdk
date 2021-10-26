@@ -71,3 +71,15 @@ func (e ExternalAuthenticationError) Error() string {
 	return T("External authentication failed. Error code: {{.ErrorCode}}, message: {{.Message}}",
 		map[string]interface{}{"ErrorCode": e.ErrorCode, "Message": e.ErrorMessage})
 }
+
+type SessionInactiveError struct {
+	Description string
+}
+
+func NewSessionInactiveError(description string) *SessionInactiveError {
+	return &SessionInactiveError{Description: description}
+}
+
+func (e *SessionInactiveError) Error() string {
+	return T("Session inactive: ") + e.Description
+}
