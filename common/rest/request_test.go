@@ -95,7 +95,8 @@ func TestRequestFormMultipart(t *testing.T) {
 	assert.Equal(2, len(req.MultipartForm.File))
 
 	assert.Equal(1, len(req.MultipartForm.File["file1"]))
-	assert.Equal(f.Name(), req.MultipartForm.File["file1"][0].Filename)
+	// As of Golang 1.17, a temp file always has a directory, so compare the string suffix that is the filename
+	assert.True(strings.HasSuffix(f.Name(), req.MultipartForm.File["file1"][0].Filename))
 	assert.Equal("application/octet-stream", req.MultipartForm.File["file1"][0].Header.Get("Content-Type"))
 
 	assert.Equal(1, len(req.MultipartForm.File["file2"]))

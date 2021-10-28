@@ -26,44 +26,56 @@ func (s Service) String() string {
 
 var endpointsMapping = map[Service]models.Endpoints{
 	GlobalSearch: models.Endpoints{
-		PublicEndpoint:  "https://api.global-search-tagging.<cloud_domain>",
-		PrivateEndpoint: "https://api.private.<region>.global-search-tagging.<cloud_domain>",
+		PublicEndpoint:     "https://api.global-search-tagging.<cloud_domain>",
+		PrivateEndpoint:    "https://api.private.<region>.global-search-tagging.<cloud_domain>",
+		PrivateVPCEndpoint: "https://api.private.global-search-tagging.<cloud_domain>",
 	},
 	GlobalTagging: models.Endpoints{
-		PublicEndpoint:  "https://tags.global-search-tagging.<cloud_domain>",
-		PrivateEndpoint: "https://tags.private.<region>.global-search-tagging.<cloud_domain>",
+		PublicEndpoint:     "https://tags.global-search-tagging.<cloud_domain>",
+		PrivateEndpoint:    "https://tags.private.<region>.global-search-tagging.<cloud_domain>",
+		PrivateVPCEndpoint: "https://tags.private.global-search-tagging.<cloud_domain>",
 	},
 	AccountManagement: models.Endpoints{
-		PublicEndpoint:  "https://accounts.<cloud_domain>",
-		PrivateEndpoint: "https://private.<region>.accounts.<cloud_domain>",
+		PublicEndpoint:     "https://accounts.<cloud_domain>",
+		PrivateEndpoint:    "https://private.<region>.accounts.<cloud_domain>",
+		PrivateVPCEndpoint: "https://private.accounts.<cloud_domain>",
 	},
 	UserManagement: models.Endpoints{
-		PublicEndpoint:  "https://user-management.<cloud_domain>",
-		PrivateEndpoint: "https://private.<region>.user-management.<cloud_domain>",
+		PublicEndpoint:     "https://user-management.<cloud_domain>",
+		PrivateEndpoint:    "https://private.<region>.user-management.<cloud_domain>",
+		PrivateVPCEndpoint: "https://private.user-management.<cloud_domain>",
 	},
 	Billing: models.Endpoints{
-		PublicEndpoint:  "https://billing.<cloud_domain>",
-		PrivateEndpoint: "https://private.<region>.billing.<cloud_domain>",
+		PublicEndpoint:     "https://billing.<cloud_domain>",
+		PrivateEndpoint:    "https://private.<region>.billing.<cloud_domain>",
+		PrivateVPCEndpoint: "https://private.billing.<cloud_domain>",
 	},
 	Enterprise: models.Endpoints{
-		PublicEndpoint:  "https://enterprise.<cloud_domain>",
-		PrivateEndpoint: "https://private.<region>.enterprise.<cloud_domain>",
+		PublicEndpoint:     "https://enterprise.<cloud_domain>",
+		PrivateEndpoint:    "https://private.<region>.enterprise.<cloud_domain>",
+		PrivateVPCEndpoint: "https://private.enterprise.<cloud_domain>",
 	},
 	ResourceController: models.Endpoints{
-		PublicEndpoint:  "https://resource-controller.<cloud_domain>",
-		PrivateEndpoint: "https://private.<region>.resource-controller.<cloud_domain>",
+		PublicEndpoint:     "https://resource-controller.<cloud_domain>",
+		PrivateEndpoint:    "https://private.<region>.resource-controller.<cloud_domain>",
+		PrivateVPCEndpoint: "https://private.resource-controller.<cloud_domain>",
 	},
 	ResourceCatalog: models.Endpoints{
-		PublicEndpoint:  "https://globalcatalog.<cloud_domain>",
-		PrivateEndpoint: "https://private.<region>.globalcatalog.<cloud_domain>",
+		PublicEndpoint:     "https://globalcatalog.<cloud_domain>",
+		PrivateEndpoint:    "https://private.<region>.globalcatalog.<cloud_domain>",
+		PrivateVPCEndpoint: "https://private.globalcatalog.<cloud_domain>",
 	},
 }
 
-func Endpoint(svc Service, cloudDomain, region string, private bool) (string, error) {
+func Endpoint(svc Service, cloudDomain, region string, private, isVPC bool) (string, error) {
 	var endpoint string
 	if endpoints, found := endpointsMapping[svc]; found {
 		if private {
-			endpoint = endpoints.PrivateEndpoint
+			if isVPC {
+				endpoint = endpoints.PrivateVPCEndpoint
+			} else {
+			    endpoint = endpoints.PrivateEndpoint
+			}
 		} else {
 			endpoint = endpoints.PublicEndpoint
 		}
