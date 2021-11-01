@@ -297,10 +297,11 @@ func (c *bxConfig) IAMID() (guid string) {
 }
 
 func (c *bxConfig) IsLoggedIn() (loggedIn bool) {
-	c.read(func() {
-		loggedIn = c.data.IAMToken != ""
-	})
-	return
+	if token := c.IAMToken(); token != "" {
+		iamTokenInfo := NewIAMTokenInfo(token)
+		return iamTokenInfo.HasExpired()
+	}
+	return false
 }
 
 func (c *bxConfig) CurrentAccount() (account models.Account) {

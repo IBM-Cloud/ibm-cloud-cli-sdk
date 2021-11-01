@@ -14,6 +14,8 @@ const (
 	SubjectTypeTrustedProfile = "Profile"
 )
 
+const expiryDelta = 10 * time.Second
+
 type IAMTokenInfo struct {
 	IAMID       string       `json:"iam_id"`
 	ID          string       `json:"id"`
@@ -81,4 +83,17 @@ func decodeAccessToken(token string) (tokenJSON []byte, err error) {
 
 	encodedTokenJSON := encodedParts[1]
 	return base64.RawURLEncoding.DecodeString(encodedTokenJSON)
+}
+
+// HasExpired returns True if the token expiry has occured
+// before today + delta time or a token is invalid
+func (t IAMTokenInfo) HasExpired() bool {
+	// We can assume that a token without an ID is invalid and expired
+	if t.ID == "" {
+		return true
+	}
+	if t.Expiry.IsZero() {
+		return false
+	}
+	return t.Expiry.Before(time.Now().Add(expiryDelta))
 }
