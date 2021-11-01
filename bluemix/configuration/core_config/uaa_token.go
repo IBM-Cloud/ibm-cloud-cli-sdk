@@ -36,3 +36,16 @@ func NewUAATokenInfo(token string) UAATokenInfo {
 	ret.IssueAt = t.IssueAt.Time()
 	return ret
 }
+
+// HasExpired returns True if the token expiry has occured
+// before today + delta time or a token is invalid
+func (t UAATokenInfo) HasExpired() bool {
+	// We can assume that a UAA token without an UserGUID is invalid and expired
+	if t.UserGUID == "" {
+		return true
+	}
+	if t.Expiry.IsZero() {
+		return false
+	}
+	return t.Expiry.Before(time.Now().Add(expiryDelta))
+}
