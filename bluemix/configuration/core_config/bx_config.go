@@ -296,7 +296,7 @@ func (c *bxConfig) IAMID() (guid string) {
 	return
 }
 
-func (c *bxConfig) IsLoggedIn() (loggedIn bool) {
+func (c *bxConfig) IsLoggedIn() (bool) {
 	if token := c.IAMToken(); token != "" {
 		iamTokenInfo := NewIAMTokenInfo(token)
 		return iamTokenInfo.HasExpired()
