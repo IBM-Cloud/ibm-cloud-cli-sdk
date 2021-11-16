@@ -2,13 +2,11 @@ package plugin
 
 import (
 	"fmt"
-	"os"
 	"path/filepath"
 	"strconv"
 	"strings"
 
 	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix"
-	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/authentication/iam"
 	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/authentication/uaa"
 	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/configuration/core_config"
 	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/endpoints"
@@ -59,19 +57,6 @@ func (c *pluginContext) APIEndpoint() string {
 	return c.ReadWriter.APIEndpoint()
 }
 
-func (c *pluginContext) IAMEndpoint() string {
-	if c.IsPrivateEndpointEnabled() {
-		if c.IsAccessFromVPC() {
-			// return VPC endpoint
-			return c.IAMEndpoints().PrivateVPCEndpoint
-		} else {
-			// return CSE endpoint
-			return c.IAMEndpoints().PrivateEndpoint
-		}
-	}
-	return c.IAMEndpoints().PublicEndpoint
-}
-
 func (c *pluginContext) ConsoleEndpoint() string {
 	if c.IsPrivateEndpointEnabled() {
 		if c.IsAccessFromVPC() {
@@ -79,7 +64,7 @@ func (c *pluginContext) ConsoleEndpoint() string {
 			return c.ConsoleEndpoints().PrivateVPCEndpoint
 		} else {
 			// return CSE endpoint
-		    return c.ConsoleEndpoints().PrivateEndpoint
+			return c.ConsoleEndpoints().PrivateEndpoint
 		}
 	}
 	return c.ConsoleEndpoints().PublicEndpoint
@@ -145,27 +130,6 @@ func (c *pluginContext) PluginDirectory() string {
 
 func (c *pluginContext) PluginConfig() PluginConfig {
 	return c.pluginConfig
-}
-
-func (c *pluginContext) RefreshIAMToken() (string, error) {
-	iamEndpoint := os.Getenv("IAM_ENDPOINT")
-	if iamEndpoint == "" {
-		iamEndpoint = c.IAMEndpoint()
-	}
-	if iamEndpoint == "" {
-		return "", fmt.Errorf("IAM endpoint is not set")
-	}
-
-	auth := iam.NewClient(iam.DefaultConfig(iamEndpoint), rest.NewClient())
-	token, err := auth.GetToken(iam.RefreshTokenRequest(c.IAMRefreshToken()))
-	if err != nil {
-		return "", err
-	}
-
-	ret := fmt.Sprintf("%s %s", token.TokenType, token.AccessToken)
-	c.SetIAMToken(ret)
-	c.SetIAMRefreshToken(token.RefreshToken)
-	return ret, nil
 }
 
 func (c *pluginContext) Trace() string {
