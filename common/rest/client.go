@@ -98,7 +98,11 @@ func (c *Client) DoWithContext(ctx context.Context, r *Request, respV interface{
 			} else {
 				err = yaml.NewDecoder(body).Decode(respV)
 			}
-			if err == io.EOF {
+			// For 204 No Content we should not throw an error
+			// if there is an empty response body
+			if err == io.EOF && resp.StatusCode == http.StatusNoContent {
+				err = nil
+			} else if err == io.EOF {
 				err = ErrEmptyResponseBody
 			}
 		}

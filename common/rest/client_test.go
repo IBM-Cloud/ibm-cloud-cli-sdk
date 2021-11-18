@@ -196,10 +196,7 @@ func TestNoContent(t *testing.T) {
 
 	var successV interface{}
 	_, err := NewClient().Do(req, &successV, nil)
-	assert.Error(err) // empty response body error
-
-	_, err = NewClient().Do(req, nil, nil)
-	assert.NoError(err)
+	assert.NoError(err) // no empty response body error
 }
 
 func TestDownloadFile(t *testing.T) {
