@@ -78,5 +78,9 @@
   {
     "id": "Unable to save plugin config: ",
     "translation": "Impossible d'enregistrer la configuration du plug-in : "
+  },
+  {
+    "id": "Session inactive: ",
+    "translation": "Session inactive: "
   }
 ]
