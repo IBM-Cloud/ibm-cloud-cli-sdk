@@ -5,6 +5,8 @@ import (
 	"os"
 	"testing"
 
+	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix"
+	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/authentication/vpc"
 	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/configuration/core_config"
 	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/models"
 	"github.com/stretchr/testify/assert"
@@ -261,10 +263,37 @@ func TestHasProfileWithUser(t *testing.T) {
 
 	config.SetProfile(mockProfile)
 	assert.False(t, config.HasTargetedComputeResource())
+	assert.False(t, config.IsLoggedInAsCRI())
 
 	// validate profile
 	parsedProfile := config.CurrentProfile()
 	assert.Equal(t, mockProfile, parsedProfile)
+
+	t.Cleanup(cleanupConfigFiles)
+}
+
+func TestCRIType(t *testing.T) {
+	config := prepareConfigForCLI(`{"UsageStatsEnabledLastUpdate": "2020-03-29T12:23:43.519017+08:00","UsageStatsEnabled": true}`, t)
+
+	// check
+	assert.Empty(t, config.CRIType())
+	config.SetCRIType("VPC")
+	assert.Equal(t, "VPC", config.CRIType())
+
+	t.Cleanup(cleanupConfigFiles)
+}
+
+func TestVPCCRITokenURL(t *testing.T) {
+	config := prepareConfigForCLI(`{"UsageStatsEnabledLastUpdate": "2020-03-29T12:23:43.519017+08:00","UsageStatsEnabled": true}`, t)
+
+	// check default value
+	assert.Equal(t, vpc.DefaultServerEndpoint, config.VPCCRITokenURL())
+
+	// overwrite with custom value and validate
+	oldValue := bluemix.EnvCRVpcUrl.Get()
+	bluemix.EnvCRVpcUrl.Set("https://ibm.com")
+	assert.Equal(t, "https://ibm.com", config.VPCCRITokenURL())
+	bluemix.EnvCRVpcUrl.Set(oldValue)
 
 	t.Cleanup(cleanupConfigFiles)
 }
@@ -279,6 +308,17 @@ func TestIsLoggedInAsProfile(t *testing.T) {
 	assert.Empty(t, config.IAMToken())
 	config.SetIAMToken(testIAMCRTokenData)
 	assert.True(t, config.IsLoggedInAsProfile())
+	assert.False(t, config.IsLoggedInAsCRI())
+
+	t.Cleanup(cleanupConfigFiles)
+}
+
+func TestIsLoggedInAsCRI(t *testing.T) {
+	config := prepareConfigForCLI(`{"UsageStatsEnabledLastUpdate": "2020-03-29T12:23:43.519017+08:00","UsageStatsEnabled": true}`, t)
+
+	assert.False(t, config.IsLoggedInAsCRI())
+	config.SetIsLoggedInAsCRI(true)
+	assert.True(t, config.IsLoggedInAsCRI())
 
 	t.Cleanup(cleanupConfigFiles)
 }

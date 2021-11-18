@@ -21,6 +21,7 @@ const (
 	crTokenParam           = "cr_token"
 	profileIDParam         = "profile_id"
 	profileNameParam       = "profile_name"
+	profileCRNParam        = "profile_crn"
 )
 
 // Grant types
@@ -42,6 +43,13 @@ const (
 	ResponseTypeUAA                   authentication.ResponseType = "uaa"
 	ResponseTypeIMS                   authentication.ResponseType = "ims_portal"
 	ResponseTypeDelegatedRefreshToken authentication.ResponseType = "delegated_refresh_token" // #nosec G101
+)
+
+const  (
+	InvalidTokenErrorCode           = "BXNIM0407E"
+	RefreshTokenExpiryErrorCode     = "BXNIM0408E"
+	ExternalAuthenticationErrorCode = "BXNIM0400E"
+	SessionInactiveErrorCode        = "BXNIM0439E"
 )
 
 type MFAVendor string
@@ -85,7 +93,17 @@ func APIKeyTokenRequest(apikey string, opts ...authentication.TokenOption) *auth
 	return r
 }
 
+// CRTokenRequest builds a 'TokenRequest' struct from the user input. The value of 'crToken' is set as the value of the 'cr_token' form
+// parameter of the request. 'profileID' and 'profileName' are optional parameters used to set the 'profile_id' and 'profile_name' form parameters
+// in the request, respectively.
 func CRTokenRequest(crToken string, profileID string, profileName string, opts ...authentication.TokenOption) *authentication.TokenRequest {
+	return CRTokenRequestWithCRN(crToken, profileID, profileName, "", opts...)
+}
+
+// CRTokenRequestWithCRN builds a 'TokenRequest' struct from the user input. The value of 'crToken' is set as the value of the 'cr_token' form
+// parameter of the request. 'profileID', 'profileName', and 'profileCRN' are optional parameters used to set the 'profile_id', 'profile_name',
+// and 'profile_crn' form parameters in the request, respectively.
+func CRTokenRequestWithCRN(crToken string, profileID string, profileName string, profileCRN string, opts ...authentication.TokenOption) *authentication.TokenRequest {
 	r := authentication.NewTokenRequest(GrantTypeCRToken)
 	r.SetTokenParam(crTokenParam, crToken)
 
@@ -94,6 +112,9 @@ func CRTokenRequest(crToken string, profileID string, profileName string, opts .
 	}
 	if profileName != "" {
 		r.SetTokenParam(profileNameParam, profileName)
+	}
+	if profileCRN != "" {
+		r.SetTokenParam(profileCRNParam, profileCRN)
 	}
 
 	for _, o := range opts {
@@ -325,12 +346,14 @@ func (c *client) doRequest(r *rest.Request, respV interface{}) error {
 		if jsonErr := json.Unmarshal([]byte(err.Message), &apiErr); jsonErr == nil {
 			switch apiErr.ErrorCode {
 			case "":
-			case "BXNIM0407E":
+			case InvalidTokenErrorCode:
 				return authentication.NewInvalidTokenError(apiErr.errorMessage())
-			case "BXNIM0408E":
+			case RefreshTokenExpiryErrorCode:
 				return authentication.NewRefreshTokenExpiryError(apiErr.errorMessage())
-			case "BXNIM0400E":
+			case ExternalAuthenticationErrorCode:
 				return &authentication.ExternalAuthenticationError{ErrorCode: apiErr.Requirements.ErrorCode, ErrorMessage: apiErr.Requirements.ErrorMessage}
+			case SessionInactiveErrorCode:
+				return authentication.NewSessionInactiveError(apiErr.errorMessage())
 			default:
 				return authentication.NewServerError(err.StatusCode, apiErr.ErrorCode, apiErr.errorMessage())
 			}

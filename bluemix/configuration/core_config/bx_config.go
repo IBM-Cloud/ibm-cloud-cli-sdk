@@ -31,6 +31,7 @@ type BXConfigData struct {
 	ConsolePrivateVPCEndpoint   string
 	CloudType                   string
 	CloudName                   string
+	CRIType                     string
 	Region                      string
 	RegionID                    string
 	IAMEndpoint                 string
@@ -38,6 +39,7 @@ type BXConfigData struct {
 	IAMPrivateVPCEndpoint       string
 	IAMToken                    string
 	IAMRefreshToken             string
+	IsLoggedInAsCRI             bool
 	Account                     models.Account
 	Profile                     models.Profile
 	ResourceGroup               models.ResourceGroup
@@ -168,6 +170,13 @@ func (c *bxConfig) IsPrivateEndpointEnabled() (isPrivate bool) {
 	return
 }
 
+func (c *bxConfig) IsLoggedInAsCRI() (isCRI bool) {
+	c.read(func() {
+		isCRI = c.data.IsLoggedInAsCRI
+	})
+	return
+}
+
 func (c *bxConfig) IsAccessFromVPC() (isVPC bool) {
 	c.read(func() {
 		isVPC = c.data.IsAccessFromVPC
@@ -220,6 +229,13 @@ func (c *bxConfig) CloudName() (cname string) {
 func (c *bxConfig) CloudType() (ctype string) {
 	c.read(func() {
 		ctype = c.data.CloudType
+	})
+	return
+}
+
+func (c *bxConfig) CRIType() (criType string) {
+	c.read(func() {
+		criType = c.data.CRIType
 	})
 	return
 }
@@ -521,6 +537,18 @@ func (c *bxConfig) SetProfile(profile models.Profile) {
 	})
 }
 
+func (c *bxConfig) SetCRIType(criType string) {
+	c.write(func() {
+		c.data.CRIType = criType
+	})
+}
+
+func (c *bxConfig) SetIsLoggedInAsCRI(isCRI bool) {
+	c.write(func() {
+		c.data.IsLoggedInAsCRI = isCRI
+	})
+}
+
 func (c *bxConfig) SetResourceGroup(group models.ResourceGroup) {
 	c.write(func() {
 		c.data.ResourceGroup = group
@@ -656,6 +684,8 @@ func (c *bxConfig) ClearSession() {
 		c.data.IAMRefreshToken = ""
 		c.data.Account = models.Account{}
 		c.data.Profile = models.Profile{}
+		c.data.CRIType = ""
+		c.data.IsLoggedInAsCRI = false
 		c.data.ResourceGroup = models.ResourceGroup{}
 		c.data.LoginAt = time.Time{}
 	})

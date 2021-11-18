@@ -170,6 +170,13 @@ type PluginContext interface {
 	// Region returns the targeted region
 	CurrentRegion() models.Region
 
+	// CRIType returns the type of compute resource the user logged in as, if applicable. Valid values are `IKS`, `VPC`, or `OTHER`
+	CRIType() string
+
+	// VPCCRITokenURL() returns the value specified by the environment variable 'IBMCLOUD_CR_VPC_URL', if set.
+	// Otherwise, the default VPC auth url specified by the constant `DefaultServerEndpoint` is returned
+	VPCCRITokenURL() string
+
 	// HasTargetedRegion() return whether a region is targeted
 	HasTargetedRegion() bool
 
@@ -195,6 +202,9 @@ type PluginContext interface {
 
 	// IsLoggedInAsProfile returns true if a user logged into IBM Cloud using an IAM token pertaining to a trusted profile
 	IsLoggedInAsProfile() bool
+
+	// IsLoggedInAsCRI returns true if a user logged into IBM Cloud as a compute resource.
+	IsLoggedInAsCRI() bool
 
 	// IMSAccountID returns ID of the IMS account linked to the targeted BSS
 	// account
