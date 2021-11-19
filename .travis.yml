@@ -22,6 +22,7 @@ install:
   - sudo chmod o+rwx /usr/lib/python3/dist-packages/
   - python3 -m pip install -U pip
   - pip3 install --upgrade "git+https://github.com/ibm/detect-secrets.git@master#egg=detect-secrets"
+  - curl -sfL https://raw.githubusercontent.com/securego/gosec/master/install.sh | sh -s -- -b $GOPATH/bin
   - go get -u github.com/kardianos/govendor
 
 before_script:
@@ -30,3 +31,4 @@ before_script:
 
 script:
   - go test $(go list ./... | grep -v "plugin_examples" | grep -v "vendor")
+  - gosec -exclude-dir=plugin_examples -exclude-dir=vendor -quiet ./...
