@@ -3,13 +3,17 @@
 package core_config
 
 import (
+	"fmt"
+	"os"
 	"time"
 
 	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix"
+	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/authentication/iam"
 	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/authentication/vpc"
 	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/configuration"
 	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/configuration/config_helpers"
 	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/models"
+	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/common/rest"
 )
 
 type Repository interface {
@@ -18,6 +22,7 @@ type Repository interface {
 	IsPrivateEndpointEnabled() bool
 	IsAccessFromVPC() bool
 	ConsoleEndpoints() models.Endpoints
+	IAMEndpoint() string
 	IAMEndpoints() models.Endpoints
 	CloudName() string
 	CloudType() string
@@ -71,6 +76,7 @@ type Repository interface {
 	SDKVersion() string
 
 	UnsetAPI()
+	RefreshIAMToken() (string, error)
 	SetAPIEndpoint(string)
 	SetPrivateEndpointEnabled(bool)
 	SetAccessFromVPC(bool)
@@ -207,6 +213,87 @@ func (c repository) VPCCRITokenURL() string {
 
 	// default server endpoint is a constant value in vpc authenticator
 	return vpc.DefaultServerEndpoint
+}
+
+func (c repository) IAMEndpoint() string {
+	if c.IsPrivateEndpointEnabled() {
+		if c.IsAccessFromVPC() {
+			// return VPC endpoint
+			return c.IAMEndpoints().PrivateVPCEndpoint
+		} else {
+			// return CSE endpoint
+			return c.IAMEndpoints().PrivateEndpoint
+		}
+	}
+	return c.IAMEndpoints().PublicEndpoint
+}
+
+func (c repository) RefreshIAMToken() (string, error) {
+	var ret string
+	// confirm user is logged in as a VPC compute resource identity
+	isLoggedInAsCRI := c.IsLoggedInAsCRI()
+	criType := c.CRIType()
+	if isLoggedInAsCRI && criType == "VPC" {
+		token, err := c.fetchNewIAMTokenUsingVPCAuth()
+		if err != nil {
+			return "", err
+		}
+
+		ret = fmt.Sprintf("%s %s", token.TokenType, token.AccessToken)
+		c.SetIAMToken(ret)
+		// this should be empty for vpc vsi tokens
+		c.SetIAMRefreshToken(token.RefreshToken)
+	} else {
+		iamEndpoint := os.Getenv("IAM_ENDPOINT")
+		if iamEndpoint == "" {
+			iamEndpoint = c.IAMEndpoint()
+		}
+		if iamEndpoint == "" {
+			return "", fmt.Errorf("IAM endpoint is not set")
+		}
+
+		auth := iam.NewClient(iam.DefaultConfig(iamEndpoint), rest.NewClient())
+		token, err := auth.GetToken(iam.RefreshTokenRequest(c.IAMRefreshToken()))
+		if err != nil {
+			return "", err
+		}
+
+		ret = fmt.Sprintf("%s %s", token.TokenType, token.AccessToken)
+		c.SetIAMToken(ret)
+		c.SetIAMRefreshToken(token.RefreshToken)
+	}
+
+	return ret, nil
+}
+
+func (c repository) fetchNewIAMTokenUsingVPCAuth() (*iam.Token, error) {
+	// create a vpc client using default configuration
+	client := vpc.NewClient(vpc.DefaultConfig(c.VPCCRITokenURL(), vpc.DefaultMetadataServiceVersion), rest.NewClient())
+	// fetch an instance identity token from the metadata server
+	identityToken, err := client.GetInstanceIdentityToken()
+	if err != nil {
+		return nil, err
+	}
+
+	// get the existing targeted IAM trusted profile ID of the CLI session
+	targetProfile := c.CurrentProfile()
+	profileID := targetProfile.ID
+	if profileID == "" {
+		return nil, fmt.Errorf("Trusted profile not set in configuration")
+	}
+	// prepare IAM token request using the existing targeted profile.
+	req, err := vpc.NewIAMAccessTokenRequest(profileID, "", identityToken.AccessToken)
+	if err != nil {
+		return nil, err
+	}
+
+	// get the new access token
+	iamToken, err := client.GetIAMAccessToken(req)
+	if err != nil {
+		return nil, err
+	}
+
+	return iamToken, nil
 }
 
 func (c repository) UserEmail() string {

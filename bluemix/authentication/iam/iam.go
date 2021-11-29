@@ -26,8 +26,8 @@ const (
 
 // Grant types
 const (
-	GrantTypePassword              authentication.GrantType = "password" // #nosec G101
-	GrantTypeAPIKey                authentication.GrantType = "urn:ibm:params:oauth:grant-type:apikey" // #nosec G101
+	GrantTypePassword              authentication.GrantType = "password"                                 // #nosec G101
+	GrantTypeAPIKey                authentication.GrantType = "urn:ibm:params:oauth:grant-type:apikey"   // #nosec G101
 	GrantTypeOnetimePasscode       authentication.GrantType = "urn:ibm:params:oauth:grant-type:passcode" // #nosec G101
 	GrantTypeAuthorizationCode     authentication.GrantType = "authorization_code"
 	GrantTypeRefreshToken          authentication.GrantType = "refresh_token"
@@ -43,6 +43,13 @@ const (
 	ResponseTypeUAA                   authentication.ResponseType = "uaa"
 	ResponseTypeIMS                   authentication.ResponseType = "ims_portal"
 	ResponseTypeDelegatedRefreshToken authentication.ResponseType = "delegated_refresh_token" // #nosec G101
+)
+
+const (
+	InvalidTokenErrorCode           = "BXNIM0407E" // #nosec G101
+	RefreshTokenExpiryErrorCode     = "BXNIM0408E" // #nosec G101
+	ExternalAuthenticationErrorCode = "BXNIM0400E"
+	SessionInactiveErrorCode        = "BXNIM0439E"
 )
 
 type MFAVendor string
@@ -339,12 +346,14 @@ func (c *client) doRequest(r *rest.Request, respV interface{}) error {
 		if jsonErr := json.Unmarshal([]byte(err.Message), &apiErr); jsonErr == nil {
 			switch apiErr.ErrorCode {
 			case "":
-			case "BXNIM0407E":
+			case InvalidTokenErrorCode:
 				return authentication.NewInvalidTokenError(apiErr.errorMessage())
-			case "BXNIM0408E":
+			case RefreshTokenExpiryErrorCode:
 				return authentication.NewRefreshTokenExpiryError(apiErr.errorMessage())
-			case "BXNIM0400E":
+			case ExternalAuthenticationErrorCode:
 				return &authentication.ExternalAuthenticationError{ErrorCode: apiErr.Requirements.ErrorCode, ErrorMessage: apiErr.Requirements.ErrorMessage}
+			case SessionInactiveErrorCode:
+				return authentication.NewSessionInactiveError(apiErr.errorMessage())
 			default:
 				return authentication.NewServerError(err.StatusCode, apiErr.ErrorCode, apiErr.errorMessage())
 			}

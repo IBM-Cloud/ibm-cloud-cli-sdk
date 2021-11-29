@@ -232,8 +232,13 @@ var _i18nResourcesEn_usAllJson = []byte(`[
   {
     "id": "Unable to save plugin config: ",
     "translation": "Unable to save plugin config: "
+  },
+  {
+    "id": "Session inactive: ",
+    "translation": "Session inactive: "
   }
-]`)
+]
+`)
 
 func i18nResourcesEn_usAllJsonBytes() ([]byte, error) {
 	return _i18nResourcesEn_usAllJson, nil

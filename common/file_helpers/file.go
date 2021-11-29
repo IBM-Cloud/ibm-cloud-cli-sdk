@@ -36,7 +36,12 @@ func CopyFile(src string, dest string) (err error) {
 	if err != nil {
 		return
 	}
-	defer func() { _ = srcFile.Close() }()
+	/* #nosec G307 */
+	defer func() {
+		if err := srcFile.Close(); err != nil {
+			fmt.Printf("Error closing file: %s\n", err)
+		}
+	}()
 
 	srcStat, err := srcFile.Stat()
 	if err != nil {
@@ -51,7 +56,12 @@ func CopyFile(src string, dest string) (err error) {
 	if err != nil {
 		return
 	}
-	defer func() { _ = destFile.Close() }()
+	/* #nosec G307 */
+	defer func() {
+		if err := destFile.Close(); err != nil {
+			fmt.Printf("Error closing file: %s\n", err)
+		}
+	}()
 
 	err = os.Chmod(dest, srcStat.Mode())
 	if err != nil {
