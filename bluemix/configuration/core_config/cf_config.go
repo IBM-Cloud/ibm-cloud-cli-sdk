@@ -280,10 +280,11 @@ func (c *cfConfig) Username() (name string) {
 }
 
 func (c *cfConfig) IsLoggedIn() (loggedIn bool) {
-	c.read(func() {
-		loggedIn = c.data.AccessToken != ""
-	})
-	return
+	if token, refresh := c.UAAToken(), c.UAARefreshToken(); token != "" || refresh != "" {
+		uaaTokenInfo, refreshTokenInfo := NewUAATokenInfo(token), NewUAATokenInfo(refresh)
+		return !uaaTokenInfo.HasExpired() || !refreshTokenInfo.HasExpired()
+	}
+	return false
 }
 
 func (c *cfConfig) CurrentOrganization() (org models.OrganizationFields) {
