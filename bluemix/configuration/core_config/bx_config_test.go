@@ -1,7 +1,10 @@
 package core_config_test
 
 import (
+	"fmt"
 	"io/ioutil"
+	"net/http"
+	"net/http/httptest"
 	"os"
 	"testing"
 
@@ -300,33 +303,62 @@ func TestVPCCRITokenURL(t *testing.T) {
 
 func TestIsLoggedIn(t *testing.T) {
 	config := prepareConfigForCLI(`{"UsageStatsEnabledLastUpdate": "2021-11-29T12:23:43.519017+08:00","UsageStatsEnabled": true}`, t)
-	expiredToken := "Bearer eyJraWQiOiIyMDIxMTAxODA4MTkiLCJhbGciOiJSUzI1NiJ9.eyJpYW1faWQiOiJJQk1pZC02NjYwMDE1UktKIiwiaWQiOiJJQk1pZC02NjYwMDE1UktKIiwicmVhbG1pZCI6IklCTWlkIiwic2Vzc2lvbl9pZCI6IkMtMDBkNDIyYjAtYzcyZC00MzNmLWE0YmUtMzc2ZjkyZDEyNDliIiwianRpIjoiNzNmMzVmNGQtZmI2Ny00NTc3LThlNGMtNDE3YzA5MDYwNDU3IiwiaWRlbnRpZmllciI6IjY2NjAwMTVSS0oiLCJnaXZlbl9uYW1lIjoiTkFOQSIsImZhbWlseV9uYW1lIjoiQU1GTyIsIm5hbWUiOiJOQU5BIEFNRk8iLCJlbWFpbCI6Im5vYW1mb0BpYm0uY29tIiwic3ViIjoibm9hbWZvQGlibS5jb20iLCJhdXRobiI6eyJzdWIiOiJub2FtZm9AaWJtLmNvbSIsImlhbV9pZCI6IklCTWlkLTY2NjAwMTVSS0oiLCJuYW1lIjoiTkFOQSBBTUZPIiwiZ2l2ZW5fbmFtZSI6Ik5BTkEiLCJmYW1pbHlfbmFtZSI6IkFNRk8iLCJlbWFpbCI6Im5vYW1mb0BpYm0uY29tIn0sImFjY291bnQiOnsiYm91bmRhcnkiOiJnbG9iYWwiLCJ2YWxpZCI6dHJ1ZSwiYnNzIjoiMDY3OGUzOWY3ZWYxNDkyODk1OWM0YzFhOGY2YTdiYmYifSwiaWF0IjoxNjM1NDQyMDI3LCJleHAiOjE2MzU0NDI5MjcsImlzcyI6Imh0dHBzOi8vaWFtLmNsb3VkLmlibS5jb20vaWRlbnRpdHkiLCJncmFudF90eXBlIjoidXJuOmlibTpwYXJhbXM6b2F1dGg6Z3JhbnQtdHlwZTpwYXNzY29kZSIsInNjb3BlIjoiaWJtIG9wZW5pZCIsImNsaWVudF9pZCI6ImJ4IiwiYWNyIjozLCJhbXIiOlsidG90cCIsIm1mYSIsIm90cCIsInB3ZCJdfQ.RsBd371ACEKOlhkTJngqBVDCY90Z-MT-iYb1OiLA5OpLYPZunR0saHUzBLh2LxnV-Jo0oeitPBmIK38jDk8MCb-rZa3qYNB2qe0WgO50bCMLKgwhKqJwVM6jMMpg4vg6up8kH8Ftc61kivaa1GrJKmQkonnHrjgrLo5IB2yfkMEAbUAMPb_jcRfjEsSP44I-Vx3dYIVSZs8bIufkgmDbJjlMmdhRenh57iwtQ7uImFgK2d-qQ-7sWLvhfzj2VdBLRHPa-dWYlrVgOAMpk6SCMz8wh6LcDUx9LdNKHpxMGCXpGT_UUWvwYqBuLTI3nmkIWIb_Cqa6al7-gQKPTC00Fw"
-	token := "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYW1faWQiOiJJQk1pZC02NjYwMDE1UktKIiwiaWQiOiJJQk1pZC02NjYwMDE1UktKIiwicmVhbG1pZCI6IklCTWlkIiwic2Vzc2lvbl9pZCI6IkMtMDBkNDIyYjAtYzcyZC00MzNmLWE0YmUtMzc2ZjkyZDEyNDliIiwianRpIjoiNzNmMzVmNGQtZmI2Ny00NTc3LThlNGMtNDE3YzA5MDYwNDU3IiwiaWRlbnRpZmllciI6IjY2NjAwMTVSS0oiLCJnaXZlbl9uYW1lIjoiTkFOQSIsImZhbWlseV9uYW1lIjoiQU1GTyIsIm5hbWUiOiJOQU5BIEFNRk8iLCJlbWFpbCI6Im5vYW1mb0BpYm0uY29tIiwic3ViIjoibm9hbWZvQGlibS5jb20iLCJhdXRobiI6eyJzdWIiOiJub2FtZm9AaWJtLmNvbSIsImlhbV9pZCI6IklCTWlkLTY2NjAwMTVSS0oiLCJuYW1lIjoiTkFOQSBBTUZPIiwiZ2l2ZW5fbmFtZSI6Ik5BTkEiLCJmYW1pbHlfbmFtZSI6IkFNRk8iLCJlbWFpbCI6Im5vYW1mb0BpYm0uY29tIn0sImFjY291bnQiOnsiYm91bmRhcnkiOiJnbG9iYWwiLCJ2YWxpZCI6dHJ1ZSwiYnNzIjoiMDY3OGUzOWY3ZWYxNDkyODk1OWM0YzFhOGY2YTdiYmYifSwiaWF0IjoxNzM1NDQyMDI3LCJleHAiOjE3ODYxNzgyMDMsImlzcyI6Imh0dHBzOi8vaWFtLmNsb3VkLmlibS5jb20vaWRlbnRpdHkiLCJncmFudF90eXBlIjoidXJuOmlibTpwYXJhbXM6b2F1dGg6Z3JhbnQtdHlwZTpwYXNzY29kZSIsInNjb3BlIjoiaWJtIG9wZW5pZCIsImNsaWVudF9pZCI6ImJ4IiwiYWNyIjozLCJhbXIiOlsidG90cCIsIm1mYSIsIm90cCIsInB3ZCJdfQ.3ZOgRfe6JcQv303O3DYdCI9OCDkxdlMEBHp8f7iy1fI"
+	expiredToken := "eyJpYW1faWQiOiJJQk1pZC02NjYwMDE1UktKIiwiaWQiOiJJQk1pZC02NjYwMDE1UktKIiwicmVhbG1pZCI6IklCTWlkIiwic2Vzc2lvbl9pZCI6IkMtMDBkNDIyYjAtYzcyZC00MzNmLWE0YmUtMzc2ZjkyZDEyNDliIiwianRpIjoiNzNmMzVmNGQtZmI2Ny00NTc3LThlNGMtNDE3YzA5MDYwNDU3IiwiaWRlbnRpZmllciI6IjY2NjAwMTVSS0oiLCJnaXZlbl9uYW1lIjoiTkFOQSIsImZhbWlseV9uYW1lIjoiQU1GTyIsIm5hbWUiOiJOQU5BIEFNRk8iLCJlbWFpbCI6Im5vYW1mb0BpYm0uY29tIiwic3ViIjoibm9hbWZvQGlibS5jb20iLCJhdXRobiI6eyJzdWIiOiJub2FtZm9AaWJtLmNvbSIsImlhbV9pZCI6IklCTWlkLTY2NjAwMTVSS0oiLCJuYW1lIjoiTkFOQSBBTUZPIiwiZ2l2ZW5fbmFtZSI6Ik5BTkEiLCJmYW1pbHlfbmFtZSI6IkFNRk8iLCJlbWFpbCI6Im5vYW1mb0BpYm0uY29tIn0sImFjY291bnQiOnsiYm91bmRhcnkiOiJnbG9iYWwiLCJ2YWxpZCI6dHJ1ZSwiYnNzIjoiMDY3OGUzOWY3ZWYxNDkyODk1OWM0YzFhOGY2YTdiYmYifSwiaWF0IjoxNjM1NDQyMDI3LCJleHAiOjE2MzU0NDI5MjcsImlzcyI6Imh0dHBzOi8vaWFtLmNsb3VkLmlibS5jb20vaWRlbnRpdHkiLCJncmFudF90eXBlIjoidXJuOmlibTpwYXJhbXM6b2F1dGg6Z3JhbnQtdHlwZTpwYXNzY29kZSIsInNjb3BlIjoiaWJtIG9wZW5pZCIsImNsaWVudF9pZCI6ImJ4IiwiYWNyIjozLCJhbXIiOlsidG90cCIsIm1mYSIsIm90cCIsInB3ZCJdfQ.RsBd371ACEKOlhkTJngqBVDCY90Z-MT-iYb1OiLA5OpLYPZunR0saHUzBLh2LxnV-Jo0oeitPBmIK38jDk8MCb-rZa3qYNB2qe0WgO50bCMLKgwhKqJwVM6jMMpg4vg6up8kH8Ftc61kivaa1GrJKmQkonnHrjgrLo5IB2yfkMEAbUAMPb_jcRfjEsSP44I-Vx3dYIVSZs8bIufkgmDbJjlMmdhRenh57iwtQ7uImFgK2d-qQ-7sWLvhfzj2VdBLRHPa-dWYlrVgOAMpk6SCMz8wh6LcDUx9LdNKHpxMGCXpGT_UUWvwYqBuLTI3nmkIWIb_Cqa6al7-gQKPTC00Fw"
+	oldToken := "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYW1faWQiOiJJQk1pZC02NjYwMDE1UktKIiwiaWQiOiJJQk1pZC02NjYwMDE1UktKIiwicmVhbG1pZCI6IklCTWlkIiwic2Vzc2lvbl9pZCI6IkMtMDBkNDIyYjAtYzcyZC00MzNmLWE0YmUtMzc2ZjkyZDEyNDliIiwianRpIjoiNzNmMzVmNGQtZmI2Ny00NTc3LThlNGMtNDE3YzA5MDYwNDU3IiwiaWRlbnRpZmllciI6IjY2NjAwMTVSS0oiLCJnaXZlbl9uYW1lIjoiTkFOQSIsImZhbWlseV9uYW1lIjoiQU1GTyIsIm5hbWUiOiJOQU5BIEFNRk8iLCJlbWFpbCI6Im5vYW1mb0BpYm0uY29tIiwic3ViIjoibm9hbWZvQGlibS5jb20iLCJhdXRobiI6eyJzdWIiOiJub2FtZm9AaWJtLmNvbSIsImlhbV9pZCI6IklCTWlkLTY2NjAwMTVSS0oiLCJuYW1lIjoiTkFOQSBBTUZPIiwiZ2l2ZW5fbmFtZSI6Ik5BTkEiLCJmYW1pbHlfbmFtZSI6IkFNRk8iLCJlbWFpbCI6Im5vYW1mb0BpYm0uY29tIn0sImFjY291bnQiOnsiYm91bmRhcnkiOiJnbG9iYWwiLCJ2YWxpZCI6dHJ1ZSwiYnNzIjoiMDY3OGUzOWY3ZWYxNDkyODk1OWM0YzFhOGY2YTdiYmYifSwiaWF0IjoxNzM1NDQyMDI3LCJleHAiOjE3ODYxNzgyMDMsImlzcyI6Imh0dHBzOi8vaWFtLmNsb3VkLmlibS5jb20vaWRlbnRpdHkiLCJncmFudF90eXBlIjoidXJuOmlibTpwYXJhbXM6b2F1dGg6Z3JhbnQtdHlwZTpwYXNzY29kZSIsInNjb3BlIjoiaWJtIG9wZW5pZCIsImNsaWVudF9pZCI6ImJ4IiwiYWNyIjozLCJhbXIiOlsidG90cCIsIm1mYSIsIm90cCIsInB3ZCJdfQ.3ZOgRfe6JcQv303O3DYdCI9OCDkxdlMEBHp8f7iy1fI"
+	newToken := "eyJraWQiOiIyMDE3MTAzMC0wMDowMDowMCIsImFsZyI6IkhTMjU2In0.eyJpYW1faWQiOiJpYW0tUHJvZmlsZS05NDQ5N2QwZC0yYWMzLTQxYmYtYTk5My1hNDlkMWIxNDYyN2MiLCJpZCI6IklCTWlkLXRlc3QiLCJyZWFsbWlkIjoiaWFtIiwianRpIjoiMDRkMjBiMjUtZWUyZC00MDBmLTg2MjMtOGNkODA3MGI1NDY4IiwiaWRlbnRpZmllciI6IlByb2ZpbGUtOTQ0OTdkMGQtMmFjMy00MWJmLWE5OTMtYTQ5ZDFiMTQ2MjdjIiwibmFtZSI6Ik15IFByb2ZpbGUiLCJzdWIiOiJQcm9maWxlLTk0NDk3ZDBkLTJhYzMtNDFiZi1hOTkzLWE0OWQxYjE0NjI3YyIsInN1Yl90eXBlIjoiUHJvZmlsZSIsImF1dGhuIjp7InN1YiI6ImNybjp2MTpzdGFnaW5nOnB1YmxpYzppYW0taWRlbnRpdHk6OmEvMThlMzAyMDc0OWNlNDc0NGIwYjQ3MjQ2NmQ2MWZkYjQ6OmNvbXB1dGVyZXNvdXJjZTpGYWtlLUNvbXB1dGUtUmVzb3VyY2UiLCJpYW1faWQiOiJjcm4tY3JuOnYxOnN0YWdpbmc6cHVibGljOmlhbS1pZGVudGl0eTo6YS8xOGUzMDIwNzQ5Y2U0NzQ0YjBiNDcyNDY2ZDYxZmRiNDo6Y29tcHV0ZXJlc291cmNlOkZha2UtQ29tcHV0ZS1SZXNvdXJjZSIsIm5hbWUiOiJteV9jb21wdXRlX3Jlc291cmNlIn0sImFjY291bnQiOnsiYm91bmRhcnkiOiJnbG9iYWwiLCJ2YWxpZCI6dHJ1ZSwiYnNzIjoiZmFrZV9ic3MifSwiaWF0IjoxNjI5OTI5NDYzLCJleHAiOjgwMjk5MzMwNjMsImlzcyI6Imh0dHBzOi8vaWFtLmNsb3VkLmlibS5jb20vaWRlbnRpdHkiLCJncmFudF90eXBlIjoidXJuOmlibTpwYXJhbXM6b2F1dGg6Z3JhbnQtdHlwZTpjci10b2tlbiIsInNjb3BlIjoiaWJtIG9wZW5pZCIsImNsaWVudF9pZCI6ImJ4In0.ACeIK_8Wi0QmgQ19w4J2OA0OKgC4zb6M6PuGuPTEY_E"
 	tests := []struct {
 		name       string
 		token      string
+		newToken   string
 		refresh    string
+		newRefresh string
 		isLoggedIn bool
 	}{
 		{
-			name:       "token is valid",
-			token:      token,
-			refresh:    token,
+			name:       "token is expired and refresh token is present",
+			token:      expiredToken,
+			newToken:   "bearer " + newToken, // on refresh the bearer header is append to the token
+			refresh:    oldToken,
+			newRefresh: newToken,
 			isLoggedIn: true,
 		},
 		{
-			name:       "token is invalid but refresh is valid",
+			name:       "token is expired and refresh token is NOT present",
 			token:      expiredToken,
-			refresh:    token,
+			newToken:   expiredToken,
+			refresh:    "",
+			newRefresh: "",
+			isLoggedIn: false,
+		},
+		{
+			name:       "token is not expired",
+			token:      newToken,
+			newToken:   newToken,
+			refresh:    newToken,
+			newRefresh: newToken,
 			isLoggedIn: true,
 		},
 	}
 
+	IAMEndpoints := models.Endpoints{}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
+			ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				w.WriteHeader(200)
+				fmt.Fprintf(w, "{\"access_token\": \"%s\", \"refresh_token\": \"%s\", \"token_type\": \"bearer\"}", newToken, newToken)
+			}))
+			defer ts.Close()
+
+			IAMEndpoints.PublicEndpoint = ts.URL
+			IAMEndpoints.PrivateEndpoint = ts.URL
+			IAMEndpoints.PrivateVPCEndpoint = ts.URL
+
 			config.SetIAMToken(test.token)
 			config.SetIAMRefreshToken(test.refresh)
+			config.SetIAMEndpoints(IAMEndpoints)
 			assert.Equal(t, test.isLoggedIn, config.IsLoggedIn())
+			assert.Equal(t, test.newToken, config.IAMToken())
+			assert.Equal(t, test.newRefresh, config.IAMRefreshToken())
 			t.Cleanup(cleanupConfigFiles)
 		})
 	}
