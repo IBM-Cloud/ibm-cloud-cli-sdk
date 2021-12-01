@@ -74,6 +74,9 @@ func NewIAMTokenInfo(token string) IAMTokenInfo {
 	return ret
 }
 
+// DecodeAccessToken will decode an access token string into a raw JSON.
+// The encoded string is expected to be in three parts separated by a period.
+// This method does not validate the contents of the parts
 func DecodeAccessToken(token string) (tokenJSON []byte, err error) {
 	encodedParts := strings.Split(token, ".")
 
@@ -85,8 +88,10 @@ func DecodeAccessToken(token string) (tokenJSON []byte, err error) {
 	return base64.RawURLEncoding.DecodeString(encodedTokenJSON)
 }
 
-// hasExpired returns True if the token and refresh token expiry has occured
-// before today + delta time or a token is invalid
+func (t IAMTokenInfo) isValid() bool {
+	return t.ID != ""
+}
+
 func (t IAMTokenInfo) hasExpired() bool {
 	// We can assume that a token without an ID is invalid and expired
 	if t.ID == "" {
