@@ -85,9 +85,9 @@ func decodeAccessToken(token string) (tokenJSON []byte, err error) {
 	return base64.RawURLEncoding.DecodeString(encodedTokenJSON)
 }
 
-// HasExpired returns True if the token and refresh token expiry has occured
+// hasExpired returns True if the token and refresh token expiry has occured
 // before today + delta time or a token is invalid
-func (t IAMTokenInfo) HasExpired() bool {
+func (t IAMTokenInfo) hasExpired() bool {
 	// We can assume that a token without an ID is invalid and expired
 	if t.ID == "" {
 		return true
