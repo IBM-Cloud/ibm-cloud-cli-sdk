@@ -53,7 +53,7 @@ type Authn struct {
 }
 
 func NewIAMTokenInfo(token string) IAMTokenInfo {
-	tokenJSON, err := decodeAccessToken(token)
+	tokenJSON, err := DecodeAccessToken(token)
 	if err != nil {
 		return IAMTokenInfo{}
 	}
@@ -74,7 +74,7 @@ func NewIAMTokenInfo(token string) IAMTokenInfo {
 	return ret
 }
 
-func decodeAccessToken(token string) (tokenJSON []byte, err error) {
+func DecodeAccessToken(token string) (tokenJSON []byte, err error) {
 	encodedParts := strings.Split(token, ".")
 
 	if len(encodedParts) < 3 {

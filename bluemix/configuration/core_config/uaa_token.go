@@ -16,7 +16,7 @@ type UAATokenInfo struct {
 }
 
 func NewUAATokenInfo(token string) UAATokenInfo {
-	tokenJSON, err := decodeAccessToken(token)
+	tokenJSON, err := DecodeAccessToken(token)
 	if err != nil {
 		return UAATokenInfo{}
 	}
