@@ -2,11 +2,15 @@ package core_config
 
 import (
 	"encoding/json"
+	"errors"
+	"fmt"
 	"sync"
 	"time"
 
+	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/authentication/uaa"
 	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/configuration"
 	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/models"
+	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/common/rest"
 	"github.com/fatih/structs"
 )
 
@@ -153,6 +157,22 @@ func (c *cfConfig) writeRaw(cb func()) {
 	}
 }
 
+func (c *cfConfig) refreshToken(refreshToken string) (uaa.Token, error) {
+	auth := uaa.NewClient(uaa.DefaultConfig(c.data.AuthorizationEndpoint), rest.NewClient())
+	refreshedToken, err := auth.GetToken(uaa.RefreshTokenRequest(refreshToken))
+	if err != nil {
+		return uaa.Token{}, err
+	}
+
+	// return an error if refreshed token is invalid
+	refreshedTokenInfo := NewUAATokenInfo(refreshedToken.AccessToken)
+	if !refreshedTokenInfo.isValid() {
+		return uaa.Token{}, errors.New("could not refresh token")
+	}
+
+	return *refreshedToken, nil
+}
+
 func (c *cfConfig) APIVersion() (version string) {
 	c.read(func() {
 		version = c.data.APIVersion
@@ -279,11 +299,33 @@ func (c *cfConfig) Username() (name string) {
 	return
 }
 
+// IsLoggedIn will check if the user is logged in. To determine if the user is logged both the access
+//
+// If token is near expiration or expired, and a refresh token is present attempt to refresh the token.
+// If token refresh was successful, check if the new iam token is valid. If valid, user is logged in,
+// otherwise user can be considered logged out. If refresh failed, then user is considered logged out.
+// If no refresh token is present, and token is expired, then user is considered logged out.
 func (c *cfConfig) IsLoggedIn() (loggedIn bool) {
 	if token, refresh := c.UAAToken(), c.UAARefreshToken(); token != "" || refresh != "" {
 		uaaTokenInfo, refreshTokenInfo := NewUAATokenInfo(token), NewUAATokenInfo(refresh)
-		return !uaaTokenInfo.HasExpired() || !refreshTokenInfo.HasExpired()
+		if uaaTokenInfo.hasExpired() && refreshTokenInfo.isValid() {
+			refreshedToken, err := c.refreshToken(token)
+			if err != nil {
+				return false
+			}
+
+			uaaToken := fmt.Sprintf("%s %s", refreshedToken.TokenType, refreshedToken.AccessToken)
+			c.SetUAAToken(uaaToken)
+			c.SetUAARefreshToken(refreshedToken.RefreshToken)
+
+			return true
+		} else if uaaTokenInfo.hasExpired() && !refreshTokenInfo.isValid() {
+			return false
+		} else {
+			return true
+		}
 	}
+
 	return false
 }
 

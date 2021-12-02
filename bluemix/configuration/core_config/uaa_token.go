@@ -37,10 +37,12 @@ func NewUAATokenInfo(token string) UAATokenInfo {
 	return ret
 }
 
-// HasExpired returns True if the token expiry has occured
-// before today + delta time or a token is invalid
-func (t UAATokenInfo) HasExpired() bool {
-	// We can assume that a UAA token without an UserGUID is invalid and expired
+func (t UAATokenInfo) isValid() bool {
+	// UAA token without an UserGUID is invalid
+	return t.UserGUID != ""
+}
+
+func (t UAATokenInfo) hasExpired() bool {
 	if t.UserGUID == "" {
 		return true
 	}
