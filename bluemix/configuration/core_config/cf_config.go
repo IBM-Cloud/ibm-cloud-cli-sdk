@@ -299,16 +299,16 @@ func (c *cfConfig) Username() (name string) {
 	return
 }
 
-// IsLoggedIn will check if the user is logged in. To determine if the user is logged both the access
-//
+// IsLoggedIn will check if the user is logged in. To determine if the user is logged in both the
+// token and the refresh token will be checked
 // If token is near expiration or expired, and a refresh token is present attempt to refresh the token.
-// If token refresh was successful, check if the new iam token is valid. If valid, user is logged in,
+// If token refresh was successful, check if the new UAA token is valid. If valid, user is logged in,
 // otherwise user can be considered logged out. If refresh failed, then user is considered logged out.
 // If no refresh token is present, and token is expired, then user is considered logged out.
 func (c *cfConfig) IsLoggedIn() (loggedIn bool) {
 	if token, refresh := c.UAAToken(), c.UAARefreshToken(); token != "" || refresh != "" {
-		uaaTokenInfo, refreshTokenInfo := NewUAATokenInfo(token), NewUAATokenInfo(refresh)
-		if uaaTokenInfo.hasExpired() && refreshTokenInfo.exists() {
+		uaaTokenInfo := NewUAATokenInfo(token)
+		if uaaTokenInfo.hasExpired() && refresh != "" {
 			refreshedToken, err := c.refreshToken(token)
 			if err != nil {
 				return false
@@ -319,7 +319,7 @@ func (c *cfConfig) IsLoggedIn() (loggedIn bool) {
 			c.SetUAARefreshToken(refreshedToken.RefreshToken)
 
 			return true
-		} else if uaaTokenInfo.hasExpired() && !refreshTokenInfo.exists() {
+		} else if uaaTokenInfo.hasExpired() && refresh == "" {
 			return false
 		} else {
 			return true
