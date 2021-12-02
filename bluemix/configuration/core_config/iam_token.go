@@ -88,13 +88,13 @@ func DecodeAccessToken(token string) (tokenJSON []byte, err error) {
 	return base64.RawURLEncoding.DecodeString(encodedTokenJSON)
 }
 
-func (t IAMTokenInfo) isValid() bool {
+func (t IAMTokenInfo) exists() bool {
 	// token without an ID is invalid
 	return t.ID != ""
 }
 
 func (t IAMTokenInfo) hasExpired() bool {
-	if !t.isValid() {
+	if !t.exists() {
 		return true
 	}
 	if t.Expiry.IsZero() {

@@ -166,7 +166,7 @@ func (c *cfConfig) refreshToken(refreshToken string) (uaa.Token, error) {
 
 	// return an error if refreshed token is invalid
 	refreshedTokenInfo := NewUAATokenInfo(refreshedToken.AccessToken)
-	if !refreshedTokenInfo.isValid() {
+	if !refreshedTokenInfo.exists() {
 		return uaa.Token{}, errors.New("could not refresh token")
 	}
 
@@ -308,7 +308,7 @@ func (c *cfConfig) Username() (name string) {
 func (c *cfConfig) IsLoggedIn() (loggedIn bool) {
 	if token, refresh := c.UAAToken(), c.UAARefreshToken(); token != "" || refresh != "" {
 		uaaTokenInfo, refreshTokenInfo := NewUAATokenInfo(token), NewUAATokenInfo(refresh)
-		if uaaTokenInfo.hasExpired() && refreshTokenInfo.isValid() {
+		if uaaTokenInfo.hasExpired() && refreshTokenInfo.exists() {
 			refreshedToken, err := c.refreshToken(token)
 			if err != nil {
 				return false
@@ -319,7 +319,7 @@ func (c *cfConfig) IsLoggedIn() (loggedIn bool) {
 			c.SetUAARefreshToken(refreshedToken.RefreshToken)
 
 			return true
-		} else if uaaTokenInfo.hasExpired() && !refreshTokenInfo.isValid() {
+		} else if uaaTokenInfo.hasExpired() && !refreshTokenInfo.exists() {
 			return false
 		} else {
 			return true
