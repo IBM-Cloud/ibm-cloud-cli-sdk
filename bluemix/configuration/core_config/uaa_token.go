@@ -43,7 +43,7 @@ func (t UAATokenInfo) isValid() bool {
 }
 
 func (t UAATokenInfo) hasExpired() bool {
-	if t.UserGUID == "" {
+	if !t.isValid() {
 		return true
 	}
 	if t.Expiry.IsZero() {

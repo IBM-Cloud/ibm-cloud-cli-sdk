@@ -89,12 +89,12 @@ func DecodeAccessToken(token string) (tokenJSON []byte, err error) {
 }
 
 func (t IAMTokenInfo) isValid() bool {
+	// token without an ID is invalid
 	return t.ID != ""
 }
 
 func (t IAMTokenInfo) hasExpired() bool {
-	// We can assume that a token without an ID is invalid and expired
-	if t.ID == "" {
+	if !t.isValid() {
 		return true
 	}
 	if t.Expiry.IsZero() {
