@@ -73,7 +73,7 @@ func (d *FileDownloader) DownloadTo(url string, outputName string) (dest string,
 	if err != nil {
 		return dest, 0, err
 	}
-	/* #nosec G307 */
+
 	defer func() {
 		if err := f.Close(); err != nil {
 			fmt.Printf("Error closing file: %s\n", err)
