@@ -303,8 +303,8 @@ func TestVPCCRITokenURL(t *testing.T) {
 
 func TestIsLoggedIn(t *testing.T) {
 	config := prepareConfigForCLI(`{"UsageStatsEnabledLastUpdate": "2021-11-29T12:23:43.519017+08:00","UsageStatsEnabled": true}`, t)
+	refresh := "eyJhbGciOiJydCJ9.eyJzZXNzaW9uX2lkIjoiQy02YzUzN2U3My0wMjAxLTQ0YmUtODZlZC0zMDY0YTUwMTMwNGYiLCJpYW1faWQiOiJJQk1pZC02NjYwMDE1UktKIiwiYWNjb3VudF9pZCI6IjYwOWMxNGI4NjhmNTQ1OWM5YmZkOGJhOGI4OTZiYmE5In0._WLlp2iYEpA9PTStswtoXPj5GhiXwrEB0EhEVIF-SKu34qL3-gmfjIeN7RJGT--nwvmuuDfcVIdhA2j7MCmjPqk8YUMVmvR38YY7pA81sk7ynBOeJSg_D2_QCDeH-p1waMZlmedvzhVhSJAqhsorQYOR5GMDmz-kiwOwbQ0ewBiX7Bkc5S_49spJG7T5qsBwLjd8EXjCFGGWg4MS-QXn1SnVKBJZ82VyRL8lSTrMCC2DGseA29ptLOhJJldKVjDrfgLAMDILge08Rbz5NZplwkBRLYT7bvMEaO1cj_we6Ya1DPEO70rYkkIJQ-UtYyOUMEVw4th1LKHkKFNYK4oR_it5DpX-w4jTi49yNbV8ragDtmfUQy1dQ7Vxv5Xc7IsF8htFboxtqYwqRi32M0821ftoGYbxZRX2W6BsijmaBUpE_iaBV39ulFJrvW4Uf9fp-GvjIkZo3iJZN8syrr6LQ_RicB73s3rhZ1tIA7i4w7lapSMAgGH2xqufh6Ca31YBN7Karj0Cy6CxX_2P4aLPlAgZL4qJK3gOz56h4hWqmLhurjf5bn0uPXznPAMAoWpim2MwvSSH3EPRbxUyqGusUe-AXhcY_bTjfWibQJ59wL0q3s6gNwkn1y0RKEdlGoc1ofkJU9XfJWc_HCrZ0Lkq5PjQDqk3WkhkxxVGuD92Ha8LNlff-u_hqpBT86nV7D9r9das0vl4etJA6QK8FJMJ5prRNUpKmrVWpMJrSCQr5o8FxvB94yC0H6FcvDTdIl2slVtOO5wtOkaqtcHLm2trpQO6T3nyJQMWd9rUalJjWP32Gpv5yBSEHKC_toJk050oVemk8fis2B5_Qlb86b5vJsnAMqhBC4SttBztlPf0vIDlReMle_HHRnNXUl58Eaady9jgaGqD2b-dU20wjX8p6SLtfMuYbN0hWhYl2_hP2jfzY4zCtQtO3nGNYKeHy_H678NK_WTjvvqvLighORbbi0KINDEVWqepxLxBnzXywWrSMki6CF6016nUh49DMpEpSeziriuxYllg_j2Uwcl396ecuGxkuN9iziHt9qKhnjS4oyjRo8pE3lGw6oc5DMBgxZcpgPJ8QHGlti1rs8vxdCxl2XxFu-Rsckj9jKjTeULKRV4voQKmiFoFELbgodp91fanimBVCLdBygLhm0v04o5tw6J6NkLnu4GPlFvASTLTG9PydIdSnWvP8sXR0T8PS_4l4ot96N2jqd-UKcaQgk5A-fo3NVfTELMz9CvdFYH1r33GtQvO2BtWmlJxU24wge5KtHVwmXe1BFZOxwE_nfV2AMxY-SplWh8lkjM34vJ7YUw8kmvjdSB7nFjCAyxmhPA" // pragma: allowlist secret
 	expiredToken := "eyJpYW1faWQiOiJJQk1pZC02NjYwMDE1UktKIiwiaWQiOiJJQk1pZC02NjYwMDE1UktKIiwicmVhbG1pZCI6IklCTWlkIiwic2Vzc2lvbl9pZCI6IkMtMDBkNDIyYjAtYzcyZC00MzNmLWE0YmUtMzc2ZjkyZDEyNDliIiwianRpIjoiNzNmMzVmNGQtZmI2Ny00NTc3LThlNGMtNDE3YzA5MDYwNDU3IiwiaWRlbnRpZmllciI6IjY2NjAwMTVSS0oiLCJnaXZlbl9uYW1lIjoiTkFOQSIsImZhbWlseV9uYW1lIjoiQU1GTyIsIm5hbWUiOiJOQU5BIEFNRk8iLCJlbWFpbCI6Im5vYW1mb0BpYm0uY29tIiwic3ViIjoibm9hbWZvQGlibS5jb20iLCJhdXRobiI6eyJzdWIiOiJub2FtZm9AaWJtLmNvbSIsImlhbV9pZCI6IklCTWlkLTY2NjAwMTVSS0oiLCJuYW1lIjoiTkFOQSBBTUZPIiwiZ2l2ZW5fbmFtZSI6Ik5BTkEiLCJmYW1pbHlfbmFtZSI6IkFNRk8iLCJlbWFpbCI6Im5vYW1mb0BpYm0uY29tIn0sImFjY291bnQiOnsiYm91bmRhcnkiOiJnbG9iYWwiLCJ2YWxpZCI6dHJ1ZSwiYnNzIjoiMDY3OGUzOWY3ZWYxNDkyODk1OWM0YzFhOGY2YTdiYmYifSwiaWF0IjoxNjM1NDQyMDI3LCJleHAiOjE2MzU0NDI5MjcsImlzcyI6Imh0dHBzOi8vaWFtLmNsb3VkLmlibS5jb20vaWRlbnRpdHkiLCJncmFudF90eXBlIjoidXJuOmlibTpwYXJhbXM6b2F1dGg6Z3JhbnQtdHlwZTpwYXNzY29kZSIsInNjb3BlIjoiaWJtIG9wZW5pZCIsImNsaWVudF9pZCI6ImJ4IiwiYWNyIjozLCJhbXIiOlsidG90cCIsIm1mYSIsIm90cCIsInB3ZCJdfQ.RsBd371ACEKOlhkTJngqBVDCY90Z-MT-iYb1OiLA5OpLYPZunR0saHUzBLh2LxnV-Jo0oeitPBmIK38jDk8MCb-rZa3qYNB2qe0WgO50bCMLKgwhKqJwVM6jMMpg4vg6up8kH8Ftc61kivaa1GrJKmQkonnHrjgrLo5IB2yfkMEAbUAMPb_jcRfjEsSP44I-Vx3dYIVSZs8bIufkgmDbJjlMmdhRenh57iwtQ7uImFgK2d-qQ-7sWLvhfzj2VdBLRHPa-dWYlrVgOAMpk6SCMz8wh6LcDUx9LdNKHpxMGCXpGT_UUWvwYqBuLTI3nmkIWIb_Cqa6al7-gQKPTC00Fw"
-	oldToken := "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYW1faWQiOiJJQk1pZC02NjYwMDE1UktKIiwiaWQiOiJJQk1pZC02NjYwMDE1UktKIiwicmVhbG1pZCI6IklCTWlkIiwic2Vzc2lvbl9pZCI6IkMtMDBkNDIyYjAtYzcyZC00MzNmLWE0YmUtMzc2ZjkyZDEyNDliIiwianRpIjoiNzNmMzVmNGQtZmI2Ny00NTc3LThlNGMtNDE3YzA5MDYwNDU3IiwiaWRlbnRpZmllciI6IjY2NjAwMTVSS0oiLCJnaXZlbl9uYW1lIjoiTkFOQSIsImZhbWlseV9uYW1lIjoiQU1GTyIsIm5hbWUiOiJOQU5BIEFNRk8iLCJlbWFpbCI6Im5vYW1mb0BpYm0uY29tIiwic3ViIjoibm9hbWZvQGlibS5jb20iLCJhdXRobiI6eyJzdWIiOiJub2FtZm9AaWJtLmNvbSIsImlhbV9pZCI6IklCTWlkLTY2NjAwMTVSS0oiLCJuYW1lIjoiTkFOQSBBTUZPIiwiZ2l2ZW5fbmFtZSI6Ik5BTkEiLCJmYW1pbHlfbmFtZSI6IkFNRk8iLCJlbWFpbCI6Im5vYW1mb0BpYm0uY29tIn0sImFjY291bnQiOnsiYm91bmRhcnkiOiJnbG9iYWwiLCJ2YWxpZCI6dHJ1ZSwiYnNzIjoiMDY3OGUzOWY3ZWYxNDkyODk1OWM0YzFhOGY2YTdiYmYifSwiaWF0IjoxNzM1NDQyMDI3LCJleHAiOjE3ODYxNzgyMDMsImlzcyI6Imh0dHBzOi8vaWFtLmNsb3VkLmlibS5jb20vaWRlbnRpdHkiLCJncmFudF90eXBlIjoidXJuOmlibTpwYXJhbXM6b2F1dGg6Z3JhbnQtdHlwZTpwYXNzY29kZSIsInNjb3BlIjoiaWJtIG9wZW5pZCIsImNsaWVudF9pZCI6ImJ4IiwiYWNyIjozLCJhbXIiOlsidG90cCIsIm1mYSIsIm90cCIsInB3ZCJdfQ.3ZOgRfe6JcQv303O3DYdCI9OCDkxdlMEBHp8f7iy1fI"
 	newToken := "eyJraWQiOiIyMDE3MTAzMC0wMDowMDowMCIsImFsZyI6IkhTMjU2In0.eyJpYW1faWQiOiJpYW0tUHJvZmlsZS05NDQ5N2QwZC0yYWMzLTQxYmYtYTk5My1hNDlkMWIxNDYyN2MiLCJpZCI6IklCTWlkLXRlc3QiLCJyZWFsbWlkIjoiaWFtIiwianRpIjoiMDRkMjBiMjUtZWUyZC00MDBmLTg2MjMtOGNkODA3MGI1NDY4IiwiaWRlbnRpZmllciI6IlByb2ZpbGUtOTQ0OTdkMGQtMmFjMy00MWJmLWE5OTMtYTQ5ZDFiMTQ2MjdjIiwibmFtZSI6Ik15IFByb2ZpbGUiLCJzdWIiOiJQcm9maWxlLTk0NDk3ZDBkLTJhYzMtNDFiZi1hOTkzLWE0OWQxYjE0NjI3YyIsInN1Yl90eXBlIjoiUHJvZmlsZSIsImF1dGhuIjp7InN1YiI6ImNybjp2MTpzdGFnaW5nOnB1YmxpYzppYW0taWRlbnRpdHk6OmEvMThlMzAyMDc0OWNlNDc0NGIwYjQ3MjQ2NmQ2MWZkYjQ6OmNvbXB1dGVyZXNvdXJjZTpGYWtlLUNvbXB1dGUtUmVzb3VyY2UiLCJpYW1faWQiOiJjcm4tY3JuOnYxOnN0YWdpbmc6cHVibGljOmlhbS1pZGVudGl0eTo6YS8xOGUzMDIwNzQ5Y2U0NzQ0YjBiNDcyNDY2ZDYxZmRiNDo6Y29tcHV0ZXJlc291cmNlOkZha2UtQ29tcHV0ZS1SZXNvdXJjZSIsIm5hbWUiOiJteV9jb21wdXRlX3Jlc291cmNlIn0sImFjY291bnQiOnsiYm91bmRhcnkiOiJnbG9iYWwiLCJ2YWxpZCI6dHJ1ZSwiYnNzIjoiZmFrZV9ic3MifSwiaWF0IjoxNjI5OTI5NDYzLCJleHAiOjgwMjk5MzMwNjMsImlzcyI6Imh0dHBzOi8vaWFtLmNsb3VkLmlibS5jb20vaWRlbnRpdHkiLCJncmFudF90eXBlIjoidXJuOmlibTpwYXJhbXM6b2F1dGg6Z3JhbnQtdHlwZTpjci10b2tlbiIsInNjb3BlIjoiaWJtIG9wZW5pZCIsImNsaWVudF9pZCI6ImJ4In0.ACeIK_8Wi0QmgQ19w4J2OA0OKgC4zb6M6PuGuPTEY_E"
 	tests := []struct {
 		name       string
@@ -318,8 +318,8 @@ func TestIsLoggedIn(t *testing.T) {
 			name:       "token is expired and refresh token is present",
 			token:      expiredToken,
 			newToken:   "bearer " + newToken, // on refresh the bearer header is append to the token
-			refresh:    oldToken,
-			newRefresh: newToken,
+			refresh:    refresh,
+			newRefresh: refresh,
 			isLoggedIn: true,
 		},
 		{
@@ -334,8 +334,16 @@ func TestIsLoggedIn(t *testing.T) {
 			name:       "token is not expired",
 			token:      newToken,
 			newToken:   newToken,
-			refresh:    newToken,
-			newRefresh: newToken,
+			refresh:    refresh,
+			newRefresh: refresh,
+			isLoggedIn: true,
+		},
+		{
+			name:       "token is not expired and refresh it not present",
+			token:      newToken,
+			newToken:   newToken,
+			refresh:    "",
+			newRefresh: "",
 			isLoggedIn: true,
 		},
 	}
@@ -345,7 +353,7 @@ func TestIsLoggedIn(t *testing.T) {
 		t.Run(test.name, func(t *testing.T) {
 			ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 				w.WriteHeader(200)
-				fmt.Fprintf(w, "{\"access_token\": \"%s\", \"refresh_token\": \"%s\", \"token_type\": \"bearer\"}", newToken, newToken)
+				fmt.Fprintf(w, "{\"access_token\": \"%s\", \"refresh_token\": \"%s\", \"token_type\": \"bearer\"}", newToken, refresh)
 			}))
 			defer ts.Close()
 
