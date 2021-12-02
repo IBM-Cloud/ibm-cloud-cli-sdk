@@ -339,7 +339,7 @@ func TestIsLoggedIn(t *testing.T) {
 			isLoggedIn: true,
 		},
 		{
-			name:       "token is not expired and refresh is not present",
+			name:       "token is not expired and refresh is NOT present",
 			token:      newToken,
 			newToken:   newToken,
 			refresh:    "",
