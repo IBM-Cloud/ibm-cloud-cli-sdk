@@ -15,7 +15,7 @@ func ExtractTgz(src string, dest string) error {
 	if err != nil {
 		return err
 	}
-	/* #nosec G307 */
+
 	defer func() {
 		if err := fd.Close(); err != nil {
 			fmt.Printf("Error closing file: %s\n", err)
@@ -68,7 +68,7 @@ func extractFileInArchive(r io.Reader, hdr *tar.Header, dest string) error {
 		if err != nil {
 			return err
 		}
-		/* #nosec G307 */
+
 		defer func() {
 			if err := f.Close(); err != nil {
 				fmt.Printf("Error closing file: %s\n", err)
