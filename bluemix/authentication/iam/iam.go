@@ -26,8 +26,8 @@ const (
 
 // Grant types
 const (
-	GrantTypePassword              authentication.GrantType = "password" // #nosec G101
-	GrantTypeAPIKey                authentication.GrantType = "urn:ibm:params:oauth:grant-type:apikey" // #nosec G101
+	GrantTypePassword              authentication.GrantType = "password"                                 // #nosec G101
+	GrantTypeAPIKey                authentication.GrantType = "urn:ibm:params:oauth:grant-type:apikey"   // #nosec G101
 	GrantTypeOnetimePasscode       authentication.GrantType = "urn:ibm:params:oauth:grant-type:passcode" // #nosec G101
 	GrantTypeAuthorizationCode     authentication.GrantType = "authorization_code"
 	GrantTypeRefreshToken          authentication.GrantType = "refresh_token"
@@ -45,9 +45,9 @@ const (
 	ResponseTypeDelegatedRefreshToken authentication.ResponseType = "delegated_refresh_token" // #nosec G101
 )
 
-const  (
-	InvalidTokenErrorCode           = "BXNIM0407E"
-	RefreshTokenExpiryErrorCode     = "BXNIM0408E"
+const (
+	InvalidTokenErrorCode           = "BXNIM0407E" // #nosec G101
+	RefreshTokenExpiryErrorCode     = "BXNIM0408E" // #nosec G101
 	ExternalAuthenticationErrorCode = "BXNIM0400E"
 	SessionInactiveErrorCode        = "BXNIM0439E"
 )

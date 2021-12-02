@@ -73,7 +73,12 @@ func (d *FileDownloader) DownloadTo(url string, outputName string) (dest string,
 	if err != nil {
 		return dest, 0, err
 	}
-	defer func() { _ = f.Close() }()
+
+	defer func() {
+		if err := f.Close(); err != nil {
+			fmt.Printf("Error closing file: %s\n", err)
+		}
+	}()
 
 	var r io.Reader = resp.Body
 	if d.ProxyReader != nil {
