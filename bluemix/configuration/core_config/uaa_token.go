@@ -37,13 +37,13 @@ func NewUAATokenInfo(token string) UAATokenInfo {
 	return ret
 }
 
-func (t UAATokenInfo) isValid() bool {
+func (t UAATokenInfo) exists() bool {
 	// UAA token without an UserGUID is invalid
 	return t.UserGUID != ""
 }
 
 func (t UAATokenInfo) hasExpired() bool {
-	if !t.isValid() {
+	if !t.exists() {
 		return true
 	}
 	if t.Expiry.IsZero() {
