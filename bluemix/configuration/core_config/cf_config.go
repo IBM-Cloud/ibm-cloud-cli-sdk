@@ -314,6 +314,11 @@ func (c *cfConfig) IsLoggedIn() (loggedIn bool) {
 				return false
 			}
 
+			// Check again to make sure that the new token has not expired
+			if uaaTokenInfo = NewUAATokenInfo(c.UAAToken()); uaaTokenInfo.hasExpired() {
+				return false
+			}
+
 			uaaToken := fmt.Sprintf("%s %s", refreshedToken.TokenType, refreshedToken.AccessToken)
 			c.SetUAAToken(uaaToken)
 			c.SetUAARefreshToken(refreshedToken.RefreshToken)
