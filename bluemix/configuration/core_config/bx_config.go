@@ -310,6 +310,10 @@ func (c *bxConfig) IsLoggedIn() bool {
 			if _, err := repo.RefreshIAMToken(); err != nil {
 				return false
 			}
+			// Check again to make sure that the new token has not expired
+			if iamTokenInfo = NewIAMTokenInfo(c.IAMToken()); iamTokenInfo.hasExpired() {
+				return false
+			}
 
 			return true
 		} else if iamTokenInfo.hasExpired() && refresh == "" {
