@@ -17,7 +17,7 @@ We follow the offical [CodeReviewComments](https://github.com/golang/go/wiki/Cod
 Make sure you have good unit test. Run `go test -cover $(go list ./...)`, and ensure coverage is above 80% for major packages (aka packages other than i18n, fakes, docs...).
 
 #### Secret Detection
-This project uses the IBM Detect Secrets Module. Install the module, by following these [instructions](https://github.com/ibm/detect-secrets#installupgrade-module). Once installed, enable the pre-commit secret detection hook by following these [instructions](https://github.com/ibm/detect-secrets#installupgrade-module) to ensure no secrets are committed to this repo.
+This project uses the IBM Detect Secrets Module. Install the module, by following these [instructions](https://github.com/ibm/detect-secrets#installupgrade-module). Once installed, enable the pre-commit secret detection hook by following these [instructions](https://github.com/ibm/detect-secrets#prevention-pre-commit-hook) to ensure no secrets are committed to this repo.
 
 
 #### Commit Message
