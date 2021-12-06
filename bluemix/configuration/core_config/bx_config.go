@@ -296,11 +296,34 @@ func (c *bxConfig) IAMID() (guid string) {
 	return
 }
 
-func (c *bxConfig) IsLoggedIn() (loggedIn bool) {
-	c.read(func() {
-		loggedIn = c.data.IAMToken != ""
-	})
-	return
+// IsLoggedIn will check if the user is logged in. To determine if the user is logged in both the
+// token and the refresh token will be checked
+// If token is near expiration or expired, and a refresh token is present attempt to refresh the token.
+// If token refresh was successful, check if the new IAM token is valid. If valid, user is logged in,
+// otherwise user can be considered logged out. If refresh failed, then user is considered logged out.
+// If no refresh token is present, and token is expired, then user is considered logged out.
+func (c *bxConfig) IsLoggedIn() bool {
+	if token, refresh := c.IAMToken(), c.IAMRefreshToken(); token != "" || refresh != "" {
+		iamTokenInfo := NewIAMTokenInfo(token)
+		if iamTokenInfo.hasExpired() && refresh != "" {
+			repo := newRepository(c, nil)
+			if _, err := repo.RefreshIAMToken(); err != nil {
+				return false
+			}
+			// Check again to make sure that the new token has not expired
+			if iamTokenInfo = NewIAMTokenInfo(c.IAMToken()); iamTokenInfo.hasExpired() {
+				return false
+			}
+
+			return true
+		} else if iamTokenInfo.hasExpired() && refresh == "" {
+			return false
+		} else {
+			return true
+		}
+	}
+
+	return false
 }
 
 func (c *bxConfig) CurrentAccount() (account models.Account) {
