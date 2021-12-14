@@ -2,11 +2,11 @@ package main
 
 import (
 	"crypto/tls"
+	"fmt"
 	"net/http"
 	"os"
 	"regexp"
 	"time"
-	"fmt"
 
 	bhttp "github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/http"
 	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/terminal"
@@ -80,6 +80,7 @@ func NewHTTPClient(context plugin.PluginContext) *http.Client {
 			Proxy: http.ProxyFromEnvironment,
 			// ignore the following line from any 'gosec' scanning
 			// as to allow testing in environments that are not setup with TLS properly
+
 			// #nosec G402
 			TLSClientConfig: &tls.Config{
 				InsecureSkipVerify: context.IsSSLDisabled(),
