@@ -52,6 +52,7 @@ func CopyFile(src string, dest string) (err error) {
 		return fmt.Errorf("%s is not a regular file.", src)
 	}
 
+	//#nosec G304 -- This is a false positive
 	destFile, err := os.Create(dest)
 	if err != nil {
 		return
