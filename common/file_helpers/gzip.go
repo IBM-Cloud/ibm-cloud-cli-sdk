@@ -64,6 +64,7 @@ func extractFileInArchive(r io.Reader, hdr *tar.Header, dest string) error {
 			return err
 		}
 
+		//#nosec G304 -- This is a false positive
 		f, err := os.Create(path)
 		if err != nil {
 			return err
