@@ -52,7 +52,7 @@ func CopyFile(src string, dest string) (err error) {
 		return fmt.Errorf("%s is not a regular file.", src)
 	}
 
-	destFile, err := os.Create(dest)
+	destFile, err := os.Create(filepath.Clean(dest))
 	if err != nil {
 		return
 	}
