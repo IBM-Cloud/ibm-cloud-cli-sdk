@@ -119,6 +119,9 @@ type Repository interface {
 	SetCFEETargeted(bool)
 	CFEEEnvID() string
 	SetCFEEEnvID(string)
+
+	CheckMessageOfTheDay() bool
+	SetMessageOfTheDayTime()
 }
 
 // Deprecated
