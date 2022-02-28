@@ -431,6 +431,8 @@ func (c *bxConfig) CheckCLIVersionDisabled() (disabled bool) {
 	return
 }
 
+// CheckMessageOfTheDay will return true if the message-of-the-day
+// endpoint has not been check in the past 24 hours.
 func (c *bxConfig) CheckMessageOfTheDay() bool {
 	var lastCheck int64
 	c.read(func() {
