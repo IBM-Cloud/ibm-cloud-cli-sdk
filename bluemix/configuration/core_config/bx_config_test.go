@@ -7,6 +7,7 @@ import (
 	"net/http/httptest"
 	"os"
 	"testing"
+	"time"
 
 	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix"
 	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/authentication/vpc"
@@ -428,6 +429,27 @@ func TestClearSession(t *testing.T) {
 	// clear session
 	config.ClearSession()
 	assert.False(t, config.HasTargetedProfile())
+
+	t.Cleanup(cleanupConfigFiles)
+}
+
+func TestMOD(t *testing.T) {
+
+	config := prepareConfigForCLI(`{}`, t)
+
+	// check initial state
+	assert.True(t, config.CheckMessageOfTheDay())
+
+	// update mod time and check that mod should not be checked again
+	config.SetMessageOfTheDayTime()
+	assert.False(t, config.CheckMessageOfTheDay())
+
+	// manually update config value to be past one day
+	cleanupConfigFiles()
+	oneDayAgo := time.Now().AddDate(0, 0, -2).Unix()
+	config = prepareConfigForCLI(fmt.Sprintf(`{"MessageOfTheDayTime": %d}`, oneDayAgo), t)
+
+	assert.True(t, config.CheckMessageOfTheDay())
 
 	t.Cleanup(cleanupConfigFiles)
 }
