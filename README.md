@@ -6,10 +6,10 @@ IBM Cloud CLI plugin SDK provides predefined plugin interface, utilities and lib
 
 You firstly need [Go](http://www.golang.org) installed on your machine, and set up a [GOPATH](http://golang.org/doc/code.html#GOPATH). Then clone this repository into `$GOPATH/src/github.com/IBM-Cloud/ibm-cloud-cli-sdk`. 
 
-This project uses [govendor](https://github.com/kardianos/govendor) to manage dependencies. Go to the project directory and run the following command to restore the dependencies into vendor folder:
+This project uses [go modules](https://go.dev/blog/using-go-modules) to manage dependencies. Go to the project directory and run the following command to restore the dependencies into vendor folder:
 
 ```bash
-$ govendor sync
+$ go mod vendor
 ```
 
 and then run tests:
