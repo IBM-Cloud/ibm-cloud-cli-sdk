@@ -49,6 +49,7 @@ type BXConfigData struct {
 	PluginRepos                 []models.PluginRepo
 	SSLDisabled                 bool
 	Locale                      string
+	MessageOfTheDayTime         int64
 	Trace                       string
 	ColorEnabled                string
 	HTTPTimeout                 int
@@ -430,6 +431,25 @@ func (c *bxConfig) CheckCLIVersionDisabled() (disabled bool) {
 	return
 }
 
+// CheckMessageOfTheDay will return true if the message-of-the-day
+// endpoint has not been check in the past 24 hours.
+func (c *bxConfig) CheckMessageOfTheDay() bool {
+	var lastCheck int64
+	c.read(func() {
+		lastCheck = c.data.MessageOfTheDayTime
+	})
+
+	if lastCheck <= 0 {
+		return true
+	}
+
+	currentDate := time.Now()
+	lastCheckDate := time.Unix(lastCheck, 0)
+
+	// If MOD has not been checked in over 1 day
+	return currentDate.Sub(lastCheckDate).Hours() > 24
+}
+
 func (c *bxConfig) UpdateCheckInterval() (interval time.Duration) {
 	c.read(func() {
 		interval = c.data.UpdateCheckInterval
@@ -698,6 +718,12 @@ func (c *bxConfig) SetCloudType(ctype string) {
 func (c *bxConfig) SetCloudName(cname string) {
 	c.write(func() {
 		c.data.CloudName = cname
+	})
+}
+
+func (c *bxConfig) SetMessageOfTheDayTime() {
+	c.write(func() {
+		c.data.MessageOfTheDayTime = time.Now().Unix()
 	})
 }
 
