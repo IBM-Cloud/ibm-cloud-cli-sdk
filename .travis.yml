@@ -10,10 +10,6 @@ addons:
       - python3-pip 
       - python3-setuptools
 
-env:
-  global:
-    - GO111MODULE="off"
-
 before_install:
   - sudo apt-get update && sudo apt-get upgrade -y openssl
 
@@ -23,11 +19,10 @@ install:
   - python3 -m pip install -U pip
   - pip3 install --upgrade "git+https://github.com/ibm/detect-secrets.git@master#egg=detect-secrets"
   - curl -sfL https://raw.githubusercontent.com/securego/gosec/master/install.sh | sh -s -- -b $GOPATH/bin
-  - go get -u github.com/kardianos/govendor
 
 before_script:
   - bin/detect_secrets.sh
-  - govendor sync
+  - go mod vendor
 
 script:
   - go test $(go list ./... | grep -v "plugin_examples" | grep -v "vendor")
