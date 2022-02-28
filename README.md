@@ -4,7 +4,7 @@ IBM Cloud CLI plugin SDK provides predefined plugin interface, utilities and lib
 
 # Get started
 
-You firstly need [Go](http://www.golang.org) installed on your machine, and set up a [GOPATH](http://golang.org/doc/code.html#GOPATH). Then clone this repository into `$GOPATH/src/github.com/IBM-Cloud/ibm-cloud-cli-sdk`. 
+You firstly need [Go](http://www.golang.org) installed on your machine. Then clone this repository into `$GOPATH/src/github.com/IBM-Cloud/ibm-cloud-cli-sdk`. 
 
 This project uses [go modules](https://go.dev/blog/using-go-modules) to manage dependencies. Go to the project directory and run the following command to restore the dependencies into vendor folder:
 
