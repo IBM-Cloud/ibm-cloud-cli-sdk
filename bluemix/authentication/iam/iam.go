@@ -26,15 +26,15 @@ const (
 
 // Grant types
 const (
-	GrantTypePassword              authentication.GrantType = "password"                                 // #nosec G101
-	GrantTypeAPIKey                authentication.GrantType = "urn:ibm:params:oauth:grant-type:apikey"   // #nosec G101
-	GrantTypeOnetimePasscode       authentication.GrantType = "urn:ibm:params:oauth:grant-type:passcode" // #nosec G101
+	GrantTypePassword              authentication.GrantType = "password"                                 // #nosec G101 - this the API request grant type. Not a credential
+	GrantTypeAPIKey                authentication.GrantType = "urn:ibm:params:oauth:grant-type:apikey"   // #nosec G101 - this the API request grant type. Not a credential
+	GrantTypeOnetimePasscode       authentication.GrantType = "urn:ibm:params:oauth:grant-type:passcode" // #nosec G101 - this the API request grant type. Not a credential
 	GrantTypeAuthorizationCode     authentication.GrantType = "authorization_code"
 	GrantTypeRefreshToken          authentication.GrantType = "refresh_token"
-	GrantTypeDelegatedRefreshToken authentication.GrantType = "urn:ibm:params:oauth:grant-type:delegated-refresh-token" // #nosec G101
+	GrantTypeDelegatedRefreshToken authentication.GrantType = "urn:ibm:params:oauth:grant-type:delegated-refresh-token" // #nosec G101 - this the API request grant type. Not a credential
 	GrantTypeIdentityCookie        authentication.GrantType = "urn:ibm:params:oauth:grant-type:identity-cookie"
 	GrantTypeDerive                authentication.GrantType = "urn:ibm:params:oauth:grant-type:derive"
-	GrantTypeCRToken               authentication.GrantType = "urn:ibm:params:oauth:grant-type:cr-token" // #nosec G101
+	GrantTypeCRToken               authentication.GrantType = "urn:ibm:params:oauth:grant-type:cr-token" // #nosec G101 - this the API request grant type. Not a credential
 )
 
 // Response types
@@ -42,12 +42,12 @@ const (
 	ResponseTypeIAM                   authentication.ResponseType = "cloud_iam"
 	ResponseTypeUAA                   authentication.ResponseType = "uaa"
 	ResponseTypeIMS                   authentication.ResponseType = "ims_portal"
-	ResponseTypeDelegatedRefreshToken authentication.ResponseType = "delegated_refresh_token" // #nosec G101
+	ResponseTypeDelegatedRefreshToken authentication.ResponseType = "delegated_refresh_token" // #nosec G101 - this the API response grant type. Not a credential
 )
 
 const (
-	InvalidTokenErrorCode           = "BXNIM0407E" // #nosec G101
-	RefreshTokenExpiryErrorCode     = "BXNIM0408E" // #nosec G101
+	InvalidTokenErrorCode           = "BXNIM0407E" // #nosec G101 - this an API error response code. Not a credential
+	RefreshTokenExpiryErrorCode     = "BXNIM0408E" // #nosec G101 - this an API error response code. Not a credential
 	ExternalAuthenticationErrorCode = "BXNIM0400E"
 	SessionInactiveErrorCode        = "BXNIM0439E"
 )
