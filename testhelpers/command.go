@@ -18,7 +18,8 @@ func GenerateCobraCommand() *cobra.Command {
 	cmd.Flags().BoolP("quiet", "q", false, "Suppress verbose output")
 	cmd.Flags().BoolP("outputJSON", "", false, "Output data into JSON format")
 
-	cmd.Flags().MarkDeprecated("outputJSON", "outputJSON deprecated use --output instead")
+	// NOTE: Added #nosec tag since flag is not attached to a real command
+	cmd.Flags().MarkDeprecated("outputJSON", "outputJSON deprecated use --output instead") // #nosec
 	return cmd
 }
 
