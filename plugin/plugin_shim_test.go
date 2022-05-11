@@ -66,7 +66,6 @@ func (p *cobraTestPlugin) Run(context PluginContext, args []string)  {}
 func (p *urfaveTestPlugin) Run(context PluginContext, args []string) {}
 
 func TestStartWithArgsWithCobraCommand(t *testing.T) {
-	// TODO(me): Consider moving this to a method
 	orgStdout := os.Stdout
 	stdoutMock := testhelpers.CreateMockStdout()
 	stdoutFile := stdoutMock.File
