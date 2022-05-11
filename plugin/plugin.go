@@ -8,6 +8,8 @@ import (
 
 	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/endpoints"
 	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/models"
+	"github.com/spf13/cobra"
+	"github.com/spf13/pflag"
 )
 
 // PluginMetadata describes metadata of a plugin.
@@ -100,6 +102,33 @@ func (c Command) NameAndAliases() []string {
 		as = []string{c.Alias}
 	}
 	return append([]string{c.Name}, as...)
+}
+
+// ConvertCobraFlagsToPluginFlags will convert flags defined by Cobra framework to Plugin Flags
+// Method is used when defining the Flags in command metadata. @see Plugin#GetMetadata() for use case
+func ConvertCobraFlagsToPluginFlags(cmd *cobra.Command) []Flag {
+	var flags []Flag
+	cmd.Flags().VisitAll(func(f *pflag.Flag) {
+		var name string
+		if f.Shorthand != "" {
+			name = f.Shorthand + "," + f.Name
+		} else {
+			name = f.Name
+		}
+		hasValue := true
+		if f.Value.Type() == "bool" {
+			hasValue = false
+		}
+		flags = append(flags, Flag{
+			Name:        name,
+			Description: f.Usage,
+			HasValue:    hasValue,
+			Hidden:      f.Hidden,
+		})
+	})
+
+	return flags
+
 }
 
 // Flag describes a command option
