@@ -6,6 +6,7 @@ import (
 	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/plugin_examples/list_plugin/api/fakes"
 	. "github.com/IBM-Cloud/ibm-cloud-cli-sdk/plugin_examples/list_plugin/commands"
 	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/plugin_examples/list_plugin/models"
+	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/testhelpers/matchers"
 	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/testhelpers/terminal"
 
 	. "github.com/onsi/ginkgo"
@@ -36,18 +37,18 @@ var _ = Describe("ListCommand", func() {
 
 	})
 
-	JustBeforeEach(func() {
-		err = cmd.Run([]string{})
-	})
-
 	Context("When API endpoint not set", func() {
-		BeforeEach(func() {
-			cf.HasAPIEndpointReturns(false)
-		})
+		Context("when no fallback localized error message can be found", func() {
+			BeforeEach(func() {
+				cf.HasAPIEndpointReturns(false)
+			})
 
-		It("Should fail", func() {
-			Expect(err).To(HaveOccurred())
-			Expect(err.Error()).To(ContainSubstring("No CF API endpoint set"))
+			It("Should panic ", func() {
+				Expect(func() {
+					cmd.Run([]string{})
+				}).Should(matchers.PanicWithi18nErrorRegexp("\"No CF API endpoint set. Use '{{.Command}}' to target a CloudFoundry environment.\" not found in language \"(.*)\""))
+
+			})
 		})
 	})
 
@@ -57,6 +58,7 @@ var _ = Describe("ListCommand", func() {
 		})
 
 		It("Should fail", func() {
+			err = cmd.Run([]string{})
 			Expect(err).To(HaveOccurred())
 			Expect(err.Error()).To(ContainSubstring("Not logged in"))
 		})
@@ -68,12 +70,17 @@ var _ = Describe("ListCommand", func() {
 		})
 
 		It("Should fail", func() {
+			err = cmd.Run([]string{})
 			Expect(err).To(HaveOccurred())
 			Expect(err.Error()).To(ContainSubstring("No space targeted"))
 		})
 	})
 
 	Context("When user is logged in and a space is target", func() {
+		JustBeforeEach(func() {
+			err = cmd.Run([]string{})
+		})
+
 		BeforeEach(func() {
 			cf.CurrentOrganizationReturns(sdkmodels.OrganizationFields{
 				QuotaDefinition: sdkmodels.QuotaFields{
