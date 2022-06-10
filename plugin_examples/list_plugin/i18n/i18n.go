@@ -1,73 +1,67 @@
 package i18n
 
 import (
+	"fmt"
 	"os"
 	"path"
-	"sort"
 	"strings"
 
-	"github.com/nicksnyder/go-i18n/i18n"
-	"github.com/nicksnyder/go-i18n/i18n/language"
+	goi18n "github.com/nicksnyder/go-i18n/v2/i18n"
+	"golang.org/x/text/language"
 
+	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/i18n"
 	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/plugin"
 	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/plugin_examples/list_plugin/resources"
 )
 
 const (
 	defaultLocale   = "en_US"
-	resourcesSuffix = ".all.json"
+	resourcePrefix  = "all."
+	resourcesSuffix = ".json"
 )
 
-var T i18n.TranslateFunc
+var (
+	bundle *goi18n.Bundle
+	T      i18n.TranslateFunc
+)
 
 func Init(context plugin.PluginContext) i18n.TranslateFunc {
-	loadAsset("i18n/resources/" + defaultLocale + resourcesSuffix)
-	defaultTfunc := i18n.MustTfunc(defaultLocale)
+	bundle = i18n.Bundle()
+	loadAsset("i18n/resources/" + resourcePrefix + defaultLocale + resourcesSuffix)
+	defaultLocalizer := goi18n.NewLocalizer(bundle, defaultLocale)
+	defaultTfunc := i18n.Translate(defaultLocalizer)
 
-	supportedLocales := supportedLocales()
+	supportedLocales, supportedLocalToAsssetMap := supportedLocales()
 
 	sources := []string{
 		context.Locale(),
 		os.Getenv("LC_ALL"), // can also use jibber_jabber.DetectIETF()
 		os.Getenv("LANG"),   // can also use jibber_jabber.DetectLanguage()
 	}
+	// REMOVEME: Do not commit
+	fmt.Printf("\nsources: %s", sources)
 
 	for _, source := range sources {
 		if source == "" {
 			continue
 		}
 
-		for _, l := range language.Parse(source) {
-			switch l.Tag {
-			case "zh-cn", "zh-sg":
-				l.Tag = "zh-hans"
-			case "zh-hk", "zh-tw":
-				l.Tag = "zh-hant"
-			}
+		lang, _ := language.Parse(source)
+		matcher := language.NewMatcher(supportedLocales)
+		tag, _ := language.MatchStrings(matcher, lang.String())
+		assetName, found := supportedLocalToAsssetMap[tag.String()]
 
-			tags := l.MatchingTags()
-			sort.Strings(tags)
+		if found {
+			loadAsset(assetName)
+			localizer := goi18n.NewLocalizer(bundle, source)
 
-			var matchedLocale string
-			for i := len(tags) - 1; i >= 0; i-- {
-				for l, _ := range supportedLocales {
-					if strings.HasPrefix(l, tags[i]) {
-						matchedLocale = l
-					}
+			t := i18n.Translate(localizer)
+			return func(translationID string, args ...interface{}) string {
+				if translated := t(translationID, args...); translated != translationID {
+					return translated
 				}
-			}
 
-			if matchedLocale != "" {
-				loadAsset(supportedLocales[matchedLocale])
-
-				t := i18n.MustTfunc(matchedLocale)
-				return func(translationID string, args ...interface{}) string {
-					if translated := t(translationID, args...); translated != translationID {
-						return translated
-					}
-
-					return defaultTfunc(translationID, args...)
-				}
+				return defaultTfunc(translationID, args...)
 			}
 		}
 	}
@@ -75,13 +69,18 @@ func Init(context plugin.PluginContext) i18n.TranslateFunc {
 	return defaultTfunc
 }
 
-func supportedLocales() map[string]string {
+func supportedLocales() ([]language.Tag, map[string]string) {
+	l := []language.Tag{language.English}
 	m := make(map[string]string)
 	for _, assetName := range resources.AssetNames() {
-		locale := normalizeLocale(strings.TrimSuffix(path.Base(assetName), resourcesSuffix))
-		m[locale] = assetName
+		locale := normalizeLocale(strings.TrimSuffix(path.Base(assetName), ".json"))
+		if !strings.Contains(locale, defaultLocale) {
+			lang, _ := language.Parse(locale)
+			l = append(l, lang)
+			m[lang.String()] = assetName
+		}
 	}
-	return m
+	return l, m
 }
 
 func normalizeLocale(locale string) string {
@@ -91,7 +90,7 @@ func normalizeLocale(locale string) string {
 func loadAsset(assetName string) {
 	bytes, err := resources.Asset(assetName)
 	if err == nil {
-		err = i18n.ParseTranslationFileBytes(assetName, bytes)
+		_, err = bundle.ParseMessageFileBytes(bytes, assetName)
 	}
 	if err != nil {
 		panic(err)
