@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"path"
+	"path/filepath"
 	"strings"
 
 	"github.com/nicksnyder/go-i18n/v2/i18n"
@@ -19,13 +20,15 @@ const (
 )
 
 var (
-	bundle *i18n.Bundle
-	T      TranslateFunc
+	bundle        *i18n.Bundle
+	T             TranslateFunc
+	RESOURCE_PATH = filepath.Join("i18n", "resources")
 )
 
 func init() {
 	bundle = Bundle()
-	loadAsset("i18n/resources/" + resourcesPrefix + defaultLocale + resourcesSuffix)
+	resource := resourcesPrefix + defaultLocale + resourcesSuffix
+	loadAsset(filepath.Join(RESOURCE_PATH, resource))
 	T = Tfunc(defaultLocale)
 }
 
@@ -130,11 +133,17 @@ func loadAsset(assetName string) {
 }
 
 func supportedLocales() ([]language.Tag, map[string]string) {
+	// When matching against supported language the first language is set as the fallback
+	// so we will initialize the list with English as the first language
+	// @see https://pkg.go.dev/golang.org/x/text/language#hdr-Matching_preferred_against_supported_languages for more information
 	l := []language.Tag{language.English}
 	m := make(map[string]string)
 	for _, assetName := range resources.AssetNames() {
+		// Remove the "all." prefix and ".json" suffix to get language/locale
 		locale := normalizeLocale(strings.TrimSuffix(path.Base(assetName), ".json"))
-		if !strings.Contains(locale, defaultLocale) {
+		locale = strings.TrimPrefix(locale, "all.")
+
+		if !strings.Contains(locale, normalizeLocale(defaultLocale)) {
 			lang, _ := language.Parse(locale)
 			l = append(l, lang)
 			m[lang.String()] = assetName

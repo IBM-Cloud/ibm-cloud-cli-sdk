@@ -1,9 +1,9 @@
 package i18n
 
 import (
-	"fmt"
 	"os"
 	"path"
+	"path/filepath"
 	"strings"
 
 	goi18n "github.com/nicksnyder/go-i18n/v2/i18n"
@@ -21,13 +21,15 @@ const (
 )
 
 var (
-	bundle *goi18n.Bundle
-	T      i18n.TranslateFunc
+	bundle        *goi18n.Bundle
+	T             i18n.TranslateFunc
+	RESOURCE_PATH = filepath.Join("i18n", "resources")
 )
 
 func Init(context plugin.PluginContext) i18n.TranslateFunc {
 	bundle = i18n.Bundle()
-	loadAsset("i18n/resources/" + resourcePrefix + defaultLocale + resourcesSuffix)
+	resource := resourcePrefix + defaultLocale + resourcesSuffix
+	loadAsset(filepath.Join(RESOURCE_PATH, resource))
 	defaultLocalizer := goi18n.NewLocalizer(bundle, defaultLocale)
 	defaultTfunc := i18n.Translate(defaultLocalizer)
 
@@ -38,8 +40,6 @@ func Init(context plugin.PluginContext) i18n.TranslateFunc {
 		os.Getenv("LC_ALL"), // can also use jibber_jabber.DetectIETF()
 		os.Getenv("LANG"),   // can also use jibber_jabber.DetectLanguage()
 	}
-	// REMOVEME: Do not commit
-	fmt.Printf("\nsources: %s", sources)
 
 	for _, source := range sources {
 		if source == "" {
@@ -73,8 +73,11 @@ func supportedLocales() ([]language.Tag, map[string]string) {
 	l := []language.Tag{language.English}
 	m := make(map[string]string)
 	for _, assetName := range resources.AssetNames() {
+		// Remove the "all." prefix and ".json" suffix to get language/locale
 		locale := normalizeLocale(strings.TrimSuffix(path.Base(assetName), ".json"))
-		if !strings.Contains(locale, defaultLocale) {
+		locale = strings.TrimPrefix(locale, "all.")
+
+		if !strings.Contains(locale, normalizeLocale(defaultLocale)) {
 			lang, _ := language.Parse(locale)
 			l = append(l, lang)
 			m[lang.String()] = assetName
