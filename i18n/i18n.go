@@ -35,7 +35,7 @@ func init() {
 // Bundle returns an instane of i18n.bundle
 func Bundle() *i18n.Bundle {
 	if bundle == nil {
-		bundle = i18n.NewBundle(language.English)
+		bundle = i18n.NewBundle(language.AmericanEnglish)
 		bundle.RegisterUnmarshalFunc("json", json.Unmarshal)
 	}
 	return bundle
@@ -74,14 +74,19 @@ func Translate(loc *i18n.Localizer) TranslateFunc {
 
 		}
 
-		return loc.MustLocalize(&i18n.LocalizeConfig{
+		msg, err := loc.Localize(&i18n.LocalizeConfig{
 			MessageID:    messageId,
 			TemplateData: templateData,
 			PluralCount:  pluralCount,
-			DefaultMessage: &i18n.Message{
-				ID: messageId,
-			},
 		})
+
+		// If no message is returned we can assume that that
+		// the translation could not be found in any of the files
+		// panic and abort
+		if msg == "" {
+			panic(err)
+		}
+		return msg
 
 	}
 }
