@@ -43,7 +43,7 @@ var _ = Describe("ListCommand", func() {
 				cf.HasAPIEndpointReturns(false)
 			})
 
-			It("Should panic ", func() {
+			It("Should panic", func() {
 				Expect(func() {
 					cmd.Run([]string{})
 				}).Should(matchers.PanicWithi18nErrorRegexp("\"No CF API endpoint set. Use '{{.Command}}' to target a CloudFoundry environment.\" not found in language \"(.*)\""))

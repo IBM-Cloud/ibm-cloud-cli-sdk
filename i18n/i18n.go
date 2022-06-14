@@ -32,7 +32,7 @@ func init() {
 	T = Tfunc(defaultLocale)
 }
 
-// Bundle returns an instane of i18n.bundle
+// Bundle returns an instance of i18n.bundle
 func Bundle() *i18n.Bundle {
 	if bundle == nil {
 		bundle = i18n.NewBundle(language.AmericanEnglish)
