@@ -46,6 +46,15 @@ func Init(context plugin.PluginContext) i18n.TranslateFunc {
 			continue
 		}
 
+		// Handle chinese language variants
+		// (eg. Chinese (Simplified, Singapore), Chinese (Traditional, Hong Kong S.A.R.)
+		switch source {
+		case "zh-cn", "zh-sg":
+			source = "zh-hans"
+		case "zh-hk", "zh-tw":
+			source = "zh-hant"
+		}
+
 		lang, _ := language.Parse(source)
 		matcher := language.NewMatcher(supportedLocales)
 		tag, _ := language.MatchStrings(matcher, lang.String())

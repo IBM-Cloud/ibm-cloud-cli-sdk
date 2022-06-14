@@ -97,6 +97,32 @@ var _ = Describe("i18n", func() {
 		})
 	})
 
+	Context("Variants in zh_Hans", func() {
+		Context("When config is set to zh-cn", func() {
+			BeforeEach(func() {
+				locale = "zh-cn"
+				pluginContext.LocaleReturns(locale)
+			})
+
+			It("should translate message ID \"Created\" successfully using zh_Hans", func() {
+				t = i18n.Init(pluginContext)
+				Expect(t("Created")).To(Equal("创建"))
+			})
+		})
+
+		Context("When config is set to zh-sg", func() {
+			BeforeEach(func() {
+				locale = "zh-sg"
+				pluginContext.LocaleReturns(locale)
+			})
+
+			It("should translate message ID \"Created\" successfully using zh_Hans", func() {
+				t = i18n.Init(pluginContext)
+				Expect(t("Created")).To(Equal("创建"))
+			})
+		})
+	})
+
 	Context("Missing translation ID in Chinese language", func() {
 		var (
 			translationID string
