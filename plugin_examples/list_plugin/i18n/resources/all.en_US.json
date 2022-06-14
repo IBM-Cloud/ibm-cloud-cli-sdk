@@ -78,5 +78,9 @@
   {
     "id": "Unable to retrieve usage of the target org:\n",
     "translation": "Unable to retrieve usage of the target org:\n"
+  },
+  {
+    "id": "Test translation only in English",
+    "translation": "Test translation only in English"
   }
 ]
