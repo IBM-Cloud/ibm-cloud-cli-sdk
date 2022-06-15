@@ -1,6 +1,7 @@
 package i18n_test
 
 import (
+	"fmt"
 	"os"
 
 	bxi18n "github.com/IBM-Cloud/ibm-cloud-cli-sdk/i18n"
@@ -15,6 +16,8 @@ var _ = Describe("i18n", func() {
 		pluginContext *pluginfakes.FakePluginContext
 		t             bxi18n.TranslateFunc
 		locale        string
+		translationID string
+		translatedMsg string
 	)
 
 	BeforeEach(func() {
@@ -97,7 +100,7 @@ var _ = Describe("i18n", func() {
 		})
 	})
 
-	Context("Variants in zh_Hans", func() {
+	Context("Chinese variations", func() {
 		Context("When config is set to zh-cn", func() {
 			BeforeEach(func() {
 				locale = "zh-cn"
@@ -124,10 +127,6 @@ var _ = Describe("i18n", func() {
 	})
 
 	Context("Missing translation ID in Chinese language", func() {
-		var (
-			translationID string
-			translatedMsg string
-		)
 		BeforeEach(func() {
 			locale = "zh_Hans"
 			pluginContext.LocaleReturns(locale)
@@ -142,6 +141,46 @@ var _ = Describe("i18n", func() {
 			It("should translate message in english", func() {
 				t = i18n.Init(pluginContext)
 				Expect(t(translationID)).To(Equal(translatedMsg))
+			})
+		})
+	})
+
+	Context("Translation with template", func() {
+		var templateData map[string]interface{}
+
+		BeforeEach(func() {
+			templateData = map[string]interface{}{
+				"Used":  "10G",
+				"Limit": "500G",
+			}
+			translationID = "CloudFoundy Applications  {{.Used}}/{{.Limit}} used"
+		})
+
+		Context("When locale is zh_Hans", func() {
+
+			BeforeEach(func() {
+				locale = "zh_Hans"
+				pluginContext.LocaleReturns(locale)
+			})
+
+			It("should translate with template successfully in zh_Hans", func() {
+				t = i18n.Init(pluginContext)
+				translatedMsg = fmt.Sprintf("CloudFoundy 应用程序  %s/%s 已使用", templateData["Used"], templateData["Limit"])
+				Expect(t(translationID, templateData)).To(Equal(translatedMsg))
+			})
+		})
+
+		Context("When locale is en_US", func() {
+
+			BeforeEach(func() {
+				locale = "en_US"
+				pluginContext.LocaleReturns(locale)
+			})
+
+			It("should translate with template successfully in en_US", func() {
+				t = i18n.Init(pluginContext)
+				translatedMsg = fmt.Sprintf("CloudFoundy Applications  %s/%s used", templateData["Used"], templateData["Limit"])
+				Expect(t(translationID, templateData)).To(Equal(translatedMsg))
 			})
 		})
 	})
