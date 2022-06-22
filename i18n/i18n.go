@@ -29,7 +29,7 @@ func init() {
 	bundle = Bundle()
 	resource := resourcesPrefix + defaultLocale + resourcesSuffix
 	loadAsset(filepath.Join(RESOURCE_PATH, resource))
-	T = Tfunc(defaultLocale)
+	T = MustTfunc(defaultLocale)
 }
 
 // Bundle returns an instance of i18n.bundle
@@ -95,7 +95,7 @@ func Translate(loc *i18n.Localizer) TranslateFunc {
 // @see https://github.com/nicksnyder/go-i18n/blob/v1.3.0/i18n/bundle/bundle.go#L19
 type TranslateFunc func(translateID string, args ...interface{}) string
 
-func Tfunc(sources ...string) TranslateFunc {
+func MustTfunc(sources ...string) TranslateFunc {
 	defaultLocalizer := i18n.NewLocalizer(bundle, defaultLocale)
 	defaultTfunc := Translate(defaultLocalizer)
 
