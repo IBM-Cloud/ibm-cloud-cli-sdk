@@ -1076,7 +1076,7 @@ var (
   config  *pluginfakes.FakePluginConfig
 )
 
-BeforeEach(() => {
+BeforeEach(func() {
   context = new(pluginfakes.FakePluginContext)
   config = new(pluginfakes.FakePluginConfig)
 
