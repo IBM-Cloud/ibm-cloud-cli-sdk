@@ -1062,9 +1062,9 @@ func TestStart() {
 
 ### 6.1 Using the Test Doubles
 
-When writing unit tests you may need to mock parts of the cli-sdk, dev-plugin, or your own interfaces. The dev-plug uses [counterfeiter](https://github.com/maxbrunsfeld/counterfeiter) to mock interfaces that allow you to fake their implementation.
+When writing unit tests you may need to mock parts of the cli-sdk, dev-plugin, or your own interfaces. The dev-plugin uses [counterfeiter](https://github.com/maxbrunsfeld/counterfeiter) to mock interfaces that allow you to fake their implementation.
 
-You can use the fakes implementation to mock the return, arguments, etc. Below are a few example of showing how to stub various methods in [PluginContext](https://github.com/IBM-Cloud/ibm-cloud-cli-sdk/blob/master/plugin/plugin_context.go)
+You can use the fakes implementation to mock the return, arguments, etc. Below are a few example of showing how to stub various methods in [PluginContext](https://github.com/IBM-Cloud/ibm-cloud-cli-sdk/blob/master/plugin/plugin_context.go) and [PluginConfig](https://github.com/IBM-Cloud/ibm-cloud-cli-sdk/blob/master/plugin/plugin_config.go)
 
 
 ```
