@@ -1067,7 +1067,7 @@ When writing unit tests you may need to mock parts of the cli-sdk, dev-plugin, o
 You can use the fakes implementation to mock the return, arguments, etc. Below are a few example of showing how to stub various methods in [PluginContext](https://github.com/IBM-Cloud/ibm-cloud-cli-sdk/blob/master/plugin/plugin_context.go) and [PluginConfig](https://github.com/IBM-Cloud/ibm-cloud-cli-sdk/blob/master/plugin/plugin_config.go).
 
 
-```
+```go
 import (
   "github.com/IBM-Cloud/ibm-cloud-cli-sdk/plugin/pluginfakes"
 )
@@ -1102,7 +1102,7 @@ It("should call RefreshToken more than once", func() {
 
 ```
 
-You can find other examples in the [tests](https://github.com/maxbrunsfeld/counterfeiter/blob/master/generated_fakes_test.go) found in counterfeiter.
+You can find other examples in [tests](https://github.com/maxbrunsfeld/counterfeiter/blob/master/generated_fakes_test.go) found in counterfeiter.
 
 ## 7. Globalization
 
