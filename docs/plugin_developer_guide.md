@@ -1060,6 +1060,50 @@ func TestStart() {
 }
 ```
 
+### 6.1 Using the Test Doubles
+
+When writing unit tests you may need to mock parts of the cli-sdk, dev-plugin, or your own interfaces. The dev-plugin uses [counterfeiter](https://github.com/maxbrunsfeld/counterfeiter) to mock interfaces that allow you to fake their implementation.
+
+You can use the fakes implementation to mock the return, arguments, etc. Below are a few example of showing how to stub various methods in [PluginContext](https://github.com/IBM-Cloud/ibm-cloud-cli-sdk/blob/master/plugin/plugin_context.go) and [PluginConfig](https://github.com/IBM-Cloud/ibm-cloud-cli-sdk/blob/master/plugin/plugin_config.go).
+
+
+```go
+import (
+  "github.com/IBM-Cloud/ibm-cloud-cli-sdk/plugin/pluginfakes"
+)
+var (
+  context *pluginfakes.FakePluginContext
+  config  *pluginfakes.FakePluginConfig
+)
+
+BeforeEach(func() {
+  context = new(pluginfakes.FakePluginContext)
+  config = new(pluginfakes.FakePluginConfig)
+
+  // mock the IsLoggedIn method to always return true
+  // NOTE: expect method signature format to be `<METHOD_NAME>Returns()`
+  context.IsLoggedInReturns(true)
+
+  // mock the second IsLoggedIn call return false
+  // NOTE: expect method signature format to be `<METHOD_NAME>ReturnsOnCall()`
+  context.IsLoggedInReturnsOnCall(1, false)
+
+  // stub the arguments for the first PluginConfig.Set method
+  // NOTE: expect method signature format to be `<METHOD_NAME>ArgsForCall(...args)`
+  config.SetArgsForCall("region", "us-south")
+})
+
+It("should call RefreshToken more than once", func() {
+
+  // return the number of times a method is called
+  // NOTE: expect method signature format to be `<METHOD_NAME>Calls()`
+  Expect(context.RefreshIAMTokenCalls()).Should(BeNumerically(">", 0))
+})
+
+```
+
+You can find other examples in [tests](https://github.com/maxbrunsfeld/counterfeiter/blob/master/generated_fakes_test.go) found in counterfeiter.
+
 ## 7. Globalization
 
 IBM Cloud CLI tends to be used globally. Both IBM Cloud CLI and its plug-ins should support globalization. We have enabled internationalization (i18n) for CLI's base commands with the help of the third-party tool "[go-i18n](https://github.com/nicksnyder/go-i18n)". To keep user experience consistent, we recommend plug-in developers follow the CLI's way of i18n enablement.
