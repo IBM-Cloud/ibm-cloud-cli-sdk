@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	DefaultMetadataServiceVersion = "2021-09-30"
+	DefaultMetadataServiceVersion = "2022-03-01"
 	DefaultServerEndpoint         = "http://169.254.169.254"
 
 	defaultMetadataFlavor                 = "ibm"
