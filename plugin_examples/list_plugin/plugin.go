@@ -22,7 +22,8 @@ type ListPlugin struct{}
 
 func (p *ListPlugin) GetMetadata() plugin.PluginMetadata {
 	return plugin.PluginMetadata{
-		Name: "ibmcloud-list",
+		Name:          "ibmcloud-list",
+		IsCobraPlugin: true,
 		Version: plugin.VersionType{
 			Major: 0,
 			Minor: 0,
