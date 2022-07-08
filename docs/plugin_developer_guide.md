@@ -51,6 +51,8 @@ IBM Cloud CLI SDK provides a set of APIs to register and manage plug-ins. It als
 
             PrivateEndpointSupported: true,
 
+            IsCobraPlugin: true,
+
             Commands: []plugin.Command{
                 {
                     Name:        "echo",
@@ -75,6 +77,7 @@ IBM Cloud CLI SDK provides a set of APIs to register and manage plug-ins. It als
     - _Version_: The version of plug-in.
     - _MinCliVersion_: The minimal version of IBM Cloud CLI required by the plug-in.
     - _PrivateEndpointSupported_: Indicates if the plug-in is designed to also be used over the private network.
+    - _IsCobraPlugin_: Indicates if the plug-in is built using the Cobra framework
     - _Commands_: The array of `plugin.Commands` to register the plug-in commands.
     - _Alias_: Alias of the Alias usually is a short name of the command.
     - _Command.Flags_: The command flags (options) which will be displayed as a part of help output of the command.
