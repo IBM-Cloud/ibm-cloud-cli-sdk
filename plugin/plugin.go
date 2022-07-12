@@ -34,6 +34,9 @@ type PluginMetadata struct {
 
 	// Whether the plugin supports private endpoint access via VPC
 	IsAccessFromVPC bool
+
+	// Whether the plugin was built using Cobra
+	IsCobraPlugin bool
 }
 
 func (p PluginMetadata) NameAndAliases() []string {
