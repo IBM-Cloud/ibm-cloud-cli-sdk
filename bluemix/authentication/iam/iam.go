@@ -186,6 +186,7 @@ func SetPhoneAuthToken(token string) authentication.TokenOption {
 type Token struct {
 	AccessToken  string    `json:"access_token"`
 	RefreshToken string    `json:"refresh_token"`
+	SessionID    string    `json:"session_id"`
 	TokenType    string    `json:"token_type"`
 	Scope        string    `json:"scope"`
 	Expiry       time.Time `json:"expiration"`
@@ -226,6 +227,7 @@ type Endpoint struct {
 
 type Interface interface {
 	GetEndpoint() (*Endpoint, error)
+	RefreshSession(sessionId string) error
 	GetToken(req *authentication.TokenRequest) (*Token, error)
 	InitiateIMSPhoneFactor(req *authentication.TokenRequest) (authToken string, err error)
 }
@@ -233,6 +235,7 @@ type Interface interface {
 type Config struct {
 	IAMEndpoint     string
 	TokenEndpoint   string // Optional. Default value is <IAMEndpoint>/identity/token
+	SessionEndpoint string // Optional. Default value is <IAMEndpoint>/v1/sessions
 	ClientID        string
 	ClientSecret    string
 	UAAClientID     string
@@ -246,10 +249,18 @@ func (c Config) tokenEndpoint() string {
 	return c.IAMEndpoint + "/identity/token"
 }
 
+func (c Config) sessionEndpoint() string {
+	if c.SessionEndpoint != "" {
+		return c.SessionEndpoint
+	}
+	return c.IAMEndpoint + "/v1/sessions"
+}
+
 func DefaultConfig(iamEndpoint string) Config {
 	return Config{
 		IAMEndpoint:     iamEndpoint,
 		TokenEndpoint:   iamEndpoint + "/identity/token",
+		SessionEndpoint: iamEndpoint + "/v1/sessions",
 		ClientID:        defaultClientID,
 		ClientSecret:    defaultClientSecret,
 		UAAClientID:     defaultUAAClientID,
@@ -305,6 +316,24 @@ func (c *client) GetToken(tokenReq *authentication.TokenRequest) (*Token, error)
 	ret := tokenResponse.Token
 	ret.Expiry = time.Time(tokenResponse.Expiry)
 	return &ret, nil
+}
+
+// Refresh maintains the session state. Useful for async workloads
+// @param sessionID string - the session ID
+func (c *client) RefreshSession(sessionID string) error {
+	// If no session ID is provided there is no need to refresh
+	if sessionID == "" {
+		return nil
+	}
+	url := fmt.Sprintf("%s/%s/state", c.config.sessionEndpoint(), sessionID)
+	r := rest.PatchRequest(url).
+		Set("Authorization", "Basic "+base64.StdEncoding.EncodeToString([]byte(fmt.Sprintf("%s:%s", c.config.ClientID, c.config.ClientSecret))))
+
+	if err := c.doRequest(r, nil); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (c *client) InitiateIMSPhoneFactor(tokenReq *authentication.TokenRequest) (authToken string, err error) {
