@@ -966,6 +966,10 @@ newRefreshToken := token.RefreshToken
 
 config.SetAccessToken(accessToken)
 config.SetRefreshToken(newRefreshToken)
+
+// optional, maintain session for long running workloads
+request = iam.RefreshSessionRequest(token)
+client.RefreshSession(token)
 ```
 
 ### 5.3 VPC Compute Resource Identity Authentication
