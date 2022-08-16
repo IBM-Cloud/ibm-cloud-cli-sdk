@@ -318,7 +318,7 @@ func (c *client) GetToken(tokenReq *authentication.TokenRequest) (*Token, error)
 	return &ret, nil
 }
 
-// Refresh maintains the session state. Useful for async workloads
+// RefreshSession maintains the session state. Useful for async workloads
 // @param sessionID string - the session ID
 func (c *client) RefreshSession(sessionID string) error {
 	// If no session ID is provided there is no need to refresh
