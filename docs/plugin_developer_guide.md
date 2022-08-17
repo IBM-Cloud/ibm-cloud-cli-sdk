@@ -48,8 +48,10 @@ IBM Cloud CLI SDK provides a set of APIs to register and manage plug-ins. It als
                 Minor: 0,
                 Build: 1,
             },
-	    
+
             PrivateEndpointSupported: true,
+
+            IsCobraPlugin: true,
 
             Commands: []plugin.Command{
                 {
@@ -75,6 +77,7 @@ IBM Cloud CLI SDK provides a set of APIs to register and manage plug-ins. It als
     - _Version_: The version of plug-in.
     - _MinCliVersion_: The minimal version of IBM Cloud CLI required by the plug-in.
     - _PrivateEndpointSupported_: Indicates if the plug-in is designed to also be used over the private network.
+    - _IsCobraPlugin_: Indicates if the plug-in is built using the Cobra framework
     - _Commands_: The array of `plugin.Commands` to register the plug-in commands.
     - _Alias_: Alias of the Alias usually is a short name of the command.
     - _Command.Flags_: The command flags (options) which will be displayed as a part of help output of the command.
@@ -729,6 +732,13 @@ $ibmcloud account orgs --output json
 []
 ```
 
+If the output is expected to be an object but no object is returned the plugin should return the normal error: For example, if a service-id could not be found then an error is returned:
+```
+$ibmcloud iam service-id 15a15a0f-725e-453a-b3ac-755280ad7300 --output json
+FAILED
+Service ID '15a15a0f-725e-453a-b3ac-755280ad7300' was not found.
+```
+
 ### 2.12. Common options
 
 Customers will be writing scripts that use multiple services.  Consistency with option names will help them be successful.
@@ -960,8 +970,8 @@ config.SetRefreshToken(newRefreshToken)
 
 ### 5.3 VPC Compute Resource Identity Authentication
 
-#### 5.3.1 Get the IAM Access Token 
-The IBM CLoud CLI supports logging in as a VPC compute resource identity. The CLI will fetch a VPC instance identity token and exchange it for an IAM access token when logging in as a VPC compute resource identity. This access token is stored in configuration once a user successfully logs into the CLI. 
+#### 5.3.1 Get the IAM Access Token
+The IBM CLoud CLI supports logging in as a VPC compute resource identity. The CLI will fetch a VPC instance identity token and exchange it for an IAM access token when logging in as a VPC compute resource identity. This access token is stored in configuration once a user successfully logs into the CLI.
 
 Plug-ins can invoke `plugin.PluginContext.IsLoggedInAsCRI()` and `plugin.PluginContext.CRIType()` in the CLI SDK to detect whether the user has logged in as a VPC compute resource identity.
 You can get the IAM access token resulting from the user logging in as a VPC compute resource identity from the IBM CLoud SDK as follows:
@@ -1052,6 +1062,50 @@ func TestStart() {
     assert.IsFalse(fakeUI.ContainsOutput("FAILED"))
 }
 ```
+
+### 6.1 Using the Test Doubles
+
+When writing unit tests you may need to mock parts of the cli-sdk, dev-plugin, or your own interfaces. The dev-plugin uses [counterfeiter](https://github.com/maxbrunsfeld/counterfeiter) to mock interfaces that allow you to fake their implementation.
+
+You can use the fakes implementation to mock the return, arguments, etc. Below are a few example of showing how to stub various methods in [PluginContext](https://github.com/IBM-Cloud/ibm-cloud-cli-sdk/blob/master/plugin/plugin_context.go) and [PluginConfig](https://github.com/IBM-Cloud/ibm-cloud-cli-sdk/blob/master/plugin/plugin_config.go).
+
+
+```go
+import (
+  "github.com/IBM-Cloud/ibm-cloud-cli-sdk/plugin/pluginfakes"
+)
+var (
+  context *pluginfakes.FakePluginContext
+  config  *pluginfakes.FakePluginConfig
+)
+
+BeforeEach(func() {
+  context = new(pluginfakes.FakePluginContext)
+  config = new(pluginfakes.FakePluginConfig)
+
+  // mock the IsLoggedIn method to always return true
+  // NOTE: expect method signature format to be `<METHOD_NAME>Returns()`
+  context.IsLoggedInReturns(true)
+
+  // mock the second IsLoggedIn call return false
+  // NOTE: expect method signature format to be `<METHOD_NAME>ReturnsOnCall()`
+  context.IsLoggedInReturnsOnCall(1, false)
+
+  // stub the arguments for the first PluginConfig.Set method
+  // NOTE: expect method signature format to be `<METHOD_NAME>ArgsForCall(...args)`
+  config.SetArgsForCall("region", "us-south")
+})
+
+It("should call RefreshToken more than once", func() {
+
+  // return the number of times a method is called
+  // NOTE: expect method signature format to be `<METHOD_NAME>Calls()`
+  Expect(context.RefreshIAMTokenCalls()).Should(BeNumerically(">", 0))
+})
+
+```
+
+You can find other examples in [tests](https://github.com/maxbrunsfeld/counterfeiter/blob/master/generated_fakes_test.go) found in counterfeiter.
 
 ## 7. Globalization
 
@@ -1156,7 +1210,7 @@ When users are using CLI, they probably have already targeted region or resource
             region = config.CurrentRegion().Name
             ui.Say("Currently targeted region: " + region)
         }
-    
+
         // get currently targeted resource group
         group := ""
         if config.HasTargetedResourceGroup() {
@@ -1173,23 +1227,23 @@ When users are using CLI, they probably have already targeted region or resource
 
 ## 9. Private Endpoint Support
 
-Private endpoint enables customers to connect to IBM Cloud services over IBM's private network. Plug-ins should provide the private endpoint support whenever possible. If the user chooses to use the private endpoint, all the traffic between the CLI client and IBM Cloud services must go through the private network. If private endpoint is not supported by the plug-in, the CLI should fail any requests instead of falling back to using the public network. 
+Private endpoint enables customers to connect to IBM Cloud services over IBM's private network. Plug-ins should provide the private endpoint support whenever possible. If the user chooses to use the private endpoint, all the traffic between the CLI client and IBM Cloud services must go through the private network. If private endpoint is not supported by the plug-in, the CLI should fail any requests instead of falling back to using the public network.
 
 **Choosing private endpoint**
 
-IBM CLoud CLI users can select to go with private network by specifying `private.cloud.ibm.com` as the API endpoint of IBM Cloud CLI, either with command `ibmcloud api private.cloud.ibm.com` or `ibmcloud login -a private.cloud.ibm.com`. 
+IBM CLoud CLI users can select to go with private network by specifying `private.cloud.ibm.com` as the API endpoint of IBM Cloud CLI, either with command `ibmcloud api private.cloud.ibm.com` or `ibmcloud login -a private.cloud.ibm.com`.
 
-Plug-ins can invoke `plugin.PluginContext.IsPrivateEndpointEnabled()` in the CLI SDK to detect whether the user has selected private endpoint or not. 
+Plug-ins can invoke `plugin.PluginContext.IsPrivateEndpointEnabled()` in the CLI SDK to detect whether the user has selected private endpoint or not.
 
 **Publishing Plug-in with private endpoint support**
 
 There is a field `private_endpoint_supported` in the plug-in metadata file indicating whether a plug-in supports private endpoint or not. The default value is `false`.  When publishing a plug-in, it needs to be set to `true` if the plug-in has private endpoint support. Likewise, in the plug-in Golang code, the `plugin.PluginMetadata` struct needs to have the `PrivateEndpointSupported` field set the same as this field in the metadata file. Otherwise the core CLI will fail the plug-in commands if the user chooses to use private endpoint.
 
-If the plug-in for an IBM Cloud service only has partial private endpoint support in specific regions, this field should still be set to be `true`. It is the plug-in's responsibility to get the region setting and decide whether to fail the command or not. The plug-in should not fall back to the public endpoint if the region does not have private endpoint support. 
+If the plug-in for an IBM Cloud service only has partial private endpoint support in specific regions, this field should still be set to be `true`. It is the plug-in's responsibility to get the region setting and decide whether to fail the command or not. The plug-in should not fall back to the public endpoint if the region does not have private endpoint support.
 
 **Private endpoints of platform services**
 
-The CLI SDK provides an API to retrieve both the public endpoint and private endpoint of core platform services. 
+The CLI SDK provides an API to retrieve both the public endpoint and private endpoint of core platform services.
 
 `plugin.PluginContext.ConsoleEndpoint()` returns the public endpoint of IBM Cloud console API if the user selects to go with public endpoint. It returns private endpoint of IBM Cloud console API if the user chooses private endpoint when logging into IBM Cloud.
 
