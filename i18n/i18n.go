@@ -42,8 +42,8 @@ func Bundle() *i18n.Bundle {
 }
 
 // Translate returns a method based on translate method signature in v1.3.0.
-// To allow compatability between v1.30 and v2.0+, the `messageId` and `args` parameters will
-// transformed to fit with the new Localize API method.
+// To allow compatability between v1.3.0 and v2.0+, the `messageId` and `args` parameters are
+// processed to fit with the new Localize API method.
 // @see https://github.com/nicksnyder/go-i18n/blob/v1.3.0/i18n/bundle/bundle.go#L227-L257 for more
 // information on the translate method
 func Translate(loc *i18n.Localizer) TranslateFunc {
@@ -53,7 +53,7 @@ func Translate(loc *i18n.Localizer) TranslateFunc {
 
 		/**
 		 * For the common usecases we can expect two scenarios. Below are two examples:
-		 *  1) T("login_error",  map[string]interface{}{"Command": "ibmcloud login"})
+		 *  1) T("Cannot login in region {{.REGION}}",  map[string]interface{}{"REGION": "us-south"})
 		 *  2) T("login_fail_count", "2", map[string]interface{}{"Command": "ibmcloud login"})
 		 *
 		 * First paramter is always the `messageId`
