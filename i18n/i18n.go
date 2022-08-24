@@ -127,13 +127,13 @@ func MustTfunc(sources ...string) TranslateFunc {
 }
 
 func loadAsset(assetName string) {
-	bytes, err := resources.Asset(assetName)
-	if err != nil {
-		panic(fmt.Sprintf("Could not load asset '%s': %s", assetName, err.Error()))
+	bytes, assetErr := resources.Asset(assetName)
+	if assetErr != nil {
+		panic(fmt.Sprintf("Could not load asset '%s': %s", assetName, assetErr.Error()))
 	}
 
-	if _, err := bundle.ParseMessageFileBytes(bytes, assetName); err != nil {
-		panic(fmt.Sprintf("Could not load translations '%s': %s", assetName, err.Error()))
+	if _, parseErr := bundle.ParseMessageFileBytes(bytes, assetName); parseErr != nil {
+		panic(fmt.Sprintf("Could not load translations '%s': %s", assetName, parseErr.Error()))
 	}
 }
 
