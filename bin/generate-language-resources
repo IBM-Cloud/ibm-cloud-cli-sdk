@@ -3,8 +3,9 @@
 set -e
 
 go get github.com/jteeuwen/go-bindata/...
-go-bindata -nometadata -nocompress -pkg resources -o resources/i18n_resources.go i18n/resources/*.all.json
+go-bindata -nometadata -nocompress -pkg resources -o resources/i18n_resources.go i18n/resources/*.json
 
-pushd resources
+# quiet noisy pushd/popd output
+pushd resources 1>/dev/null
   go fmt ./...
-popd
+popd 1>/dev/null
