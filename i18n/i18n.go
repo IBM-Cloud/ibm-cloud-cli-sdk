@@ -20,9 +20,10 @@ const (
 )
 
 var (
-	bundle        *i18n.Bundle
-	T             TranslateFunc
-	RESOURCE_PATH = filepath.Join("i18n", "resources")
+	bundle                *i18n.Bundle
+	T                     TranslateFunc
+	RESOURCE_PATH         = filepath.Join("i18n", "resources")
+	TRANSLATION_NOT_FOUND = "!!i18N_MESSAGE_NOT_FOUND!!"
 )
 
 func init() {
@@ -74,7 +75,7 @@ func Translate(loc *i18n.Localizer) TranslateFunc {
 
 		}
 
-		msg, err := loc.Localize(&i18n.LocalizeConfig{
+		msg, _ := loc.Localize(&i18n.LocalizeConfig{
 			MessageID:    messageId,
 			TemplateData: templateData,
 			PluralCount:  pluralCount,
@@ -82,9 +83,9 @@ func Translate(loc *i18n.Localizer) TranslateFunc {
 
 		// If no message is returned we can assume that that
 		// the translation could not be found in any of the files
-		// panic and abort
+		// Set the message as !!i18N_MESSAGE_NOT_FOUND!!
 		if msg == "" {
-			panic(err)
+			msg = TRANSLATION_NOT_FOUND
 		}
 		return msg
 
