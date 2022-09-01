@@ -50,6 +50,7 @@ type BXConfigData struct {
 	SSLDisabled                 bool
 	Locale                      string
 	MessageOfTheDayTime         int64
+	LastSessionUpdateTime       int64
 	Trace                       string
 	ColorEnabled                string
 	HTTPTimeout                 int
@@ -725,6 +726,20 @@ func (c *bxConfig) SetMessageOfTheDayTime() {
 	c.write(func() {
 		c.data.MessageOfTheDayTime = time.Now().Unix()
 	})
+}
+
+func (c *bxConfig) SetLastSessionUpdateTime() {
+	c.write(func() {
+		c.data.LastSessionUpdateTime = time.Now().Unix()
+	})
+}
+
+func (c *bxConfig) LastSessionUpdateTime() (session int64) {
+	c.read(func() {
+		session = c.data.LastSessionUpdateTime
+	})
+
+	return
 }
 
 func (c *bxConfig) ClearSession() {

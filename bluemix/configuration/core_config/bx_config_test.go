@@ -454,6 +454,21 @@ func TestMOD(t *testing.T) {
 	t.Cleanup(cleanupConfigFiles)
 }
 
+func TestLastUpdateSessionTime(t *testing.T) {
+
+	config := prepareConfigForCLI(`{}`, t)
+
+	// check initial state
+	assert.Empty(t, config.LastSessionUpdateTime())
+
+	// Set last session update time and check that the timestamp is set
+	config.SetLastSessionUpdateTime()
+
+	// Best effort to check session time was just updated (delta ~1min)
+	assert.WithinDuration(t, time.Now(), time.Unix(config.LastSessionUpdateTime(), 0), 60*time.Second)
+
+}
+
 func checkUsageStats(enabled bool, timeStampExist bool, config core_config.Repository, t *testing.T) {
 	assert.Equal(t, config.UsageStatsEnabled(), enabled)
 	assert.Equal(t, config.UsageStatsEnabledLastUpdate().IsZero(), !timeStampExist)
