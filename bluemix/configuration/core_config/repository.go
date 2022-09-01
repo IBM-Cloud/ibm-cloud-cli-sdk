@@ -122,6 +122,9 @@ type Repository interface {
 
 	CheckMessageOfTheDay() bool
 	SetMessageOfTheDayTime()
+
+	SetLastSessionUpdateTime()
+	LastSessionUpdateTime() (session int64)
 }
 
 // Deprecated
@@ -266,6 +269,8 @@ func (c repository) RefreshIAMToken() (string, error) {
 		c.SetIAMRefreshToken(token.RefreshToken)
 	}
 
+	c.SetLastSessionUpdateTime()
+
 	return ret, nil
 }
 
@@ -353,6 +358,14 @@ func (c repository) UnsetAPI() {
 func (c repository) ClearSession() {
 	c.bxConfig.ClearSession()
 	c.cfConfig.ClearSession()
+}
+
+func (c repository) LastSessionUpdateTime() (session int64) {
+	return c.bxConfig.LastSessionUpdateTime()
+}
+
+func (c repository) SetLastSessionUpdateTime() {
+	c.bxConfig.SetLastSessionUpdateTime()
 }
 
 func NewCoreConfig(errHandler func(error)) ReadWriter {
