@@ -13,6 +13,7 @@ import (
 )
 
 const (
+	crAuthTestSessionId      string = "C-6376c629-9808-4447-8751-65a2d9414fx"
 	crAuthMockIAMProfileName string = "iam-user-123"
 	crAuthMockIAMProfileID   string = "iam-id-123"
 	crAuthMockIAMProfileCRN  string = "crn:v1:bluemix:public:iam-identity::a/123456::profile:Profile-9fd84246-7df4-4667-94e4-8ecde51d5ac5"
@@ -258,28 +259,26 @@ func TestGetTokenOneFromServerFailureWithProfileNameAndIDAndCRN(t *testing.T) {
 
 func TestGetTokenOneFromServerApiErrorWithProfileNameAndID(t *testing.T) {
 	errorCases := []struct {
-		errorCode string
+		errorCode    string
 		errorMessage string
-
 	}{
 		{
-			errorCode: InvalidTokenErrorCode,
+			errorCode:    InvalidTokenErrorCode,
 			errorMessage: "invalid token",
 		},
 		{
-			errorCode: RefreshTokenExpiryErrorCode,
+			errorCode:    RefreshTokenExpiryErrorCode,
 			errorMessage: "refresh token expired",
 		},
 		{
-			errorCode: ExternalAuthenticationErrorCode,
+			errorCode:    ExternalAuthenticationErrorCode,
 			errorMessage: "External authentication failed",
 		},
 		{
-			errorCode: SessionInactiveErrorCode,
+			errorCode:    SessionInactiveErrorCode,
 			errorMessage: "sdf",
 		},
 	}
-
 
 	for _, errorCase := range errorCases {
 		errorJson := fmt.Sprintf(`{"errorCode": "%s", "errorMessage": "%s", "errorDetails": "", "requirements": {"code": "", "error": ""}}`, errorCase.errorCode, errorCase.errorMessage)
@@ -296,13 +295,20 @@ func TestGetTokenOneFromServerApiErrorWithProfileNameAndID(t *testing.T) {
 		IAMToken, err := mockClient.GetToken(tokenReq)
 		assert.NotNil(t, err)
 		assert.Nil(t, IAMToken)
-		assert.Contains(t, err.Error(),errorCase.errorMessage)
-
-
+		assert.Contains(t, err.Error(), errorCase.errorMessage)
 	}
+}
 
+func TestRefreshSession(t *testing.T) {
+	server := startMockIAMServerForCRExchange(t, 1, http.StatusAccepted, "")
+	defer server.Close()
 
+	mockIAMEndpoint := server.URL
+	mockConfig := DefaultConfig(mockIAMEndpoint)
+	mockClient := NewClient(mockConfig, rest.NewClient())
+	err := mockClient.RefreshSession(crAuthTestSessionId)
 
+	assert.Nil(t, err)
 }
 
 // startMockIAMServerForCRExchange will start a mock server endpoint that supports both the
@@ -350,7 +356,7 @@ func startMockIAMServerForCRExchange(t *testing.T, call int, statusCode int, err
 				if errorJson == "" {
 					mockErrorJson = "Sorry, bad request!"
 				}
-				fmt.Fprint(res,  mockErrorJson)
+				fmt.Fprint(res, mockErrorJson)
 
 			case http.StatusUnauthorized:
 				if errorJson == "" {
@@ -358,6 +364,12 @@ func startMockIAMServerForCRExchange(t *testing.T, call int, statusCode int, err
 				}
 				fmt.Fprint(res, mockErrorJson)
 			}
+		} else if operationPath == fmt.Sprintf("/v1/sessions/%s/state", crAuthTestSessionId) {
+			username, password, ok := req.BasicAuth()
+			assert.True(t, ok)
+			assert.Equal(t, defaultClientID, username)
+			assert.Equal(t, defaultClientSecret, password)
+			res.WriteHeader(statusCode)
 		} else {
 			assert.Fail(t, "unknown operation path: "+operationPath)
 		}

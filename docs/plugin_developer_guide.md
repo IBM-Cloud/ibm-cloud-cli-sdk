@@ -963,15 +963,18 @@ accessToken := token.AccessToken
 newRefreshToken := token.RefreshToken
 
 // optional, set access token and refresh token back to config
-
 config.SetAccessToken(accessToken)
 config.SetRefreshToken(newRefreshToken)
+
+// optional, maintain session for long running workloads
+request = iam.RefreshSessionRequest(token)
+client.RefreshSession(token)
 ```
 
 ### 5.3 VPC Compute Resource Identity Authentication
 
 #### 5.3.1 Get the IAM Access Token
-The IBM CLoud CLI supports logging in as a VPC compute resource identity. The CLI will fetch a VPC instance identity token and exchange it for an IAM access token when logging in as a VPC compute resource identity. This access token is stored in configuration once a user successfully logs into the CLI.
+The IBM Cloud CLI supports logging in as a VPC compute resource identity. The CLI will fetch a VPC instance identity token and exchange it for an IAM access token when logging in as a VPC compute resource identity. This access token is stored in configuration once a user successfully logs into the CLI.
 
 Plug-ins can invoke `plugin.PluginContext.IsLoggedInAsCRI()` and `plugin.PluginContext.CRIType()` in the CLI SDK to detect whether the user has logged in as a VPC compute resource identity.
 You can get the IAM access token resulting from the user logging in as a VPC compute resource identity from the IBM CLoud SDK as follows:
