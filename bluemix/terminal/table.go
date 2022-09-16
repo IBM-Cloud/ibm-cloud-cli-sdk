@@ -8,6 +8,12 @@ import (
 	"github.com/mattn/go-runewidth"
 )
 
+const (
+	// minSpace is the number of spaces between the end of the longest value and
+	// the start of the next row
+	minSpace = 3
+)
+
 type Table interface {
 	Add(row ...string)
 	Print()
@@ -108,10 +114,10 @@ func (t *PrintableTable) printRow(row []string) {
 
 func (t *PrintableTable) cellValue(col int, value string) string {
 	padding := ""
-	if col < len(t.headers)-1 {
-		padding = strings.Repeat(" ", t.maxSizes[col]-runewidth.StringWidth(Decolorize(value)))
+	if col < len(t.maxSizes)-1 {
+		padding = strings.Repeat(" ", t.maxSizes[col]-runewidth.StringWidth(Decolorize(value))+minSpace)
 	}
-	return fmt.Sprintf("%s%s   ", value, padding)
+	return fmt.Sprintf("%s%s", value, padding)
 }
 
 // Prints out a nicely/human formatted Json string instead of a table structure
