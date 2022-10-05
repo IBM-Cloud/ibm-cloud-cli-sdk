@@ -338,7 +338,10 @@ func readPassword(fd int) (string, error) {
 
 	go func() {
 		<-c
-		terminal.Restore(fd, oldState)
+		err := terminal.Restore(fd, oldState)
+		if err != nil {
+			fmt.Println(err.Error())
+		}
 		os.Exit(2)
 	}()
 

@@ -1,19 +1,19 @@
 [
   {
     "id": "\nEnter a number",
-    "translation": "\nEscriba un número"
+    "translation": "\n请输入数字"
   },
   {
     "id": "An error occurred when creating log file '{{.Path}}':\n{{.Error}}\n\n",
-    "translation": "Se ha producido un error al crear el archivo de registro '{{.Path}}':\n{{.Error}}\n\n"
+    "translation": "创建日志文件“{{.Path}}”时发生错误：\n{{.Error}}\n\n"
   },
   {
     "id": "An error occurred while dumping request:\n{{.Error}}\n",
-    "translation": "Se ha producido un error al volcar la solicitud:\n{{.Error}}\n"
+    "translation": "转储请求时发生错误：\n{{.Error}}\n"
   },
   {
     "id": "An error occurred while dumping response:\n{{.Error}}\n",
-    "translation": "Se ha producido un error al volcar la respuesta:\n{{.Error}}\n"
+    "translation": "转储响应时发生错误：\n{{.Error}}\n"
   },
   {
     "id": "Could not read from input: ",
@@ -21,7 +21,7 @@
   },
   {
     "id": "Elapsed:",
-    "translation": "Transcurrido:"
+    "translation": "经过时长："
   },
   {
     "id": "External authentication failed. Error code: {{.ErrorCode}}, message: {{.Message}}",
@@ -29,7 +29,7 @@
   },
   {
     "id": "FAILED",
-    "translation": "ERROR"
+    "translation": "失败"
   },
   {
     "id": "Invalid grant type: ",
@@ -37,46 +37,50 @@
   },
   {
     "id": "Invalid token: ",
-    "translation": "Señal no válida: "
+    "translation": "令牌无效："
   },
   {
     "id": "OK",
-    "translation": "Correcto"
+    "translation": "确定"
   },
   {
     "id": "Please enter 'y', 'n', 'yes' or 'no'.",
-    "translation": "Especifique 'y', 'n', 'yes' o 'no'."
+    "translation": "请输入“y”、“n”、“yes”或“no”。"
   },
   {
     "id": "Please enter a number between 1 to {{.Count}}.",
-    "translation": "Especifique un número entre 1 y {{.Count}}."
+    "translation": "请输入 1 到 {{.Count}} 之间的数字。"
   },
   {
     "id": "Please enter a valid floating number.",
-    "translation": "Especifique un número flotante válido."
+    "translation": "请输入有效的浮点数。"
   },
   {
     "id": "Please enter a valid number.",
-    "translation": "Especifique un número válido."
+    "translation": "请输入有效的数字。"
   },
   {
     "id": "Please enter value.",
-    "translation": "Especifique un valor."
+    "translation": "请输入有效的值。"
   },
   {
     "id": "REQUEST:",
-    "translation": "SOLICITUD:"
+    "translation": "请求: "
   },
   {
     "id": "RESPONSE:",
-    "translation": "RESPUESTA:"
+    "translation": "响应: "
   },
   {
     "id": "Remote server error. Status code: {{.StatusCode}}, error code: {{.ErrorCode}}, message: {{.Message}}",
-    "translation": "Error del servidor remoto. Código de estado: {{.StatusCode}}, código de error: {{.ErrorCode}}, mensaje: {{.Message}}"
+    "translation": "远程服务器错误。状态码：{{.StatusCode}}，错误代码：{{.ErrorCode}}，消息：{{.Message}}"
   },
   {
     "id": "Unable to save plugin config: ",
-    "translation": "No se ha podido guardar la configuración del plugin:"
+    "translation": "无法保存插件配置："
+  },
+  {
+    "id": "Session inactive: ",
+    "translation": "Session inactive: "
   }
 ]

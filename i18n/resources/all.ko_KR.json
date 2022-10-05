@@ -1,19 +1,19 @@
 [
   {
     "id": "\nEnter a number",
-    "translation": "\n请输入数字"
+    "translation": "\n번호 입력"
   },
   {
     "id": "An error occurred when creating log file '{{.Path}}':\n{{.Error}}\n\n",
-    "translation": "创建日志文件“{{.Path}}”时发生错误：\n{{.Error}}\n\n"
+    "translation": "'{{.Path}}' 로그 파일을 작성할 때 다음 오류가 발생했습니다. \n{{.Error}}\n\n"
   },
   {
     "id": "An error occurred while dumping request:\n{{.Error}}\n",
-    "translation": "转储请求时发生错误：\n{{.Error}}\n"
+    "translation": "요청을 덤프할 때 다음 오류가 발생했습니다. \n{{.Error}}\n"
   },
   {
     "id": "An error occurred while dumping response:\n{{.Error}}\n",
-    "translation": "转储响应时发生错误：\n{{.Error}}\n"
+    "translation": "응답을 덤프할 때 다음 오류가 발생했습니다. \n{{.Error}}\n"
   },
   {
     "id": "Could not read from input: ",
@@ -21,7 +21,7 @@
   },
   {
     "id": "Elapsed:",
-    "translation": "经过时长："
+    "translation": "경과 시간:"
   },
   {
     "id": "External authentication failed. Error code: {{.ErrorCode}}, message: {{.Message}}",
@@ -29,7 +29,7 @@
   },
   {
     "id": "FAILED",
-    "translation": "失败"
+    "translation": "실패"
   },
   {
     "id": "Invalid grant type: ",
@@ -37,46 +37,50 @@
   },
   {
     "id": "Invalid token: ",
-    "translation": "令牌无效："
+    "translation": "올바르지 않은 토큰: "
   },
   {
     "id": "OK",
-    "translation": "确定"
+    "translation": "확인"
   },
   {
     "id": "Please enter 'y', 'n', 'yes' or 'no'.",
-    "translation": "请输入“y”、“n”、“yes”或“no”。"
+    "translation": "'y', 'n', '예' 또는 '아니오'를 입력하십시오."
   },
   {
     "id": "Please enter a number between 1 to {{.Count}}.",
-    "translation": "请输入 1 到 {{.Count}} 之间的数字。"
+    "translation": "1 - {{.Count}} 사이의 수를 입력하십시오."
   },
   {
     "id": "Please enter a valid floating number.",
-    "translation": "请输入有效的浮点数。"
+    "translation": "올바른 float 수를 입력하십시오."
   },
   {
     "id": "Please enter a valid number.",
-    "translation": "请输入有效的数字。"
+    "translation": "올바른 수를 입력하십시오."
   },
   {
     "id": "Please enter value.",
-    "translation": "请输入有效的值。"
+    "translation": "값을 입력하십시오."
   },
   {
     "id": "REQUEST:",
-    "translation": "请求: "
+    "translation": "요청:"
   },
   {
     "id": "RESPONSE:",
-    "translation": "响应: "
+    "translation": "응답:"
   },
   {
     "id": "Remote server error. Status code: {{.StatusCode}}, error code: {{.ErrorCode}}, message: {{.Message}}",
-    "translation": "远程服务器错误。状态码：{{.StatusCode}}，错误代码：{{.ErrorCode}}，消息：{{.Message}}"
+    "translation": "원격 서버 오류가 발생했습니다. 상태 코드: {{.StatusCode}}, 오류 코드: {{.ErrorCode}}, 메시지: {{.Message}}"
   },
   {
     "id": "Unable to save plugin config: ",
-    "translation": "无法保存插件配置："
+    "translation": "플러그인 구성을 저장할 수 없음:"
+  },
+  {
+    "id": "Session inactive: ",
+    "translation": "Session inactive: "
   }
 ]

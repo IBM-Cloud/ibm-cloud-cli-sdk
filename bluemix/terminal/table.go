@@ -8,9 +8,16 @@ import (
 	"github.com/mattn/go-runewidth"
 )
 
+const (
+	// minSpace is the number of spaces between the end of the longest value and
+	// the start of the next row
+	minSpace = 3
+)
+
 type Table interface {
 	Add(row ...string)
 	Print()
+	PrintJson()
 }
 
 type PrintableTable struct {
@@ -51,6 +58,11 @@ func (t *PrintableTable) Add(row ...string) {
 			}
 		}
 		t.rows = append(t.rows, row)
+	}
+
+	// Incase we have more columns in a row than headers, need to update maxSizes
+	if len(row) > len(t.maxSizes) {
+		t.maxSizes = make([]int, len(row))
 	}
 }
 
@@ -102,8 +114,46 @@ func (t *PrintableTable) printRow(row []string) {
 
 func (t *PrintableTable) cellValue(col int, value string) string {
 	padding := ""
-	if col < len(t.headers)-1 {
-		padding = strings.Repeat(" ", t.maxSizes[col]-runewidth.StringWidth(Decolorize(value)))
+	if col < len(t.maxSizes)-1 {
+		padding = strings.Repeat(" ", t.maxSizes[col]-runewidth.StringWidth(Decolorize(value))+minSpace)
 	}
-	return fmt.Sprintf("%s%s   ", value, padding)
+	return fmt.Sprintf("%s%s", value, padding)
+}
+
+// Prints out a nicely/human formatted Json string instead of a table structure
+func (t *PrintableTable) PrintJson() {
+	total_col := len(t.headers) - 1
+	total_row := len(t.rows) - 1
+	fmt.Fprintln(t.writer, "[")
+	// Iterate through the rows
+	for i, row := range t.rows {
+		fmt.Fprintln(t.writer, "\t{")
+		// Iterate through the columns in a specific row
+		for x, point := range row {
+			cur_col := ""
+			// Some rows might have more columns than headers
+			// or empty headers
+			if x > total_col || t.headers[x] == "" {
+				cur_col = fmt.Sprintf("column_%d", (x + 1))
+			} else {
+				cur_col = t.headers[x]
+			}
+			entry := fmt.Sprintf("\t\t\"%s\": \"%s\"", cur_col, point)
+			// emit a "," unless were at the last element
+			if x != (len(row) - 1) {
+				fmt.Fprintln(t.writer, fmt.Sprintf("%s,", entry))
+			} else {
+				fmt.Fprintln(t.writer, fmt.Sprintf("%s", entry))
+			}
+		}
+
+		if i != total_row {
+			fmt.Fprintln(t.writer, "\t},")
+		} else {
+			fmt.Fprintln(t.writer, "\t}")
+		}
+	}
+	fmt.Fprintln(t.writer, "]")
+	// mimic behavior of Print()
+	t.rows = [][]string{}
 }

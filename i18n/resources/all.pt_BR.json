@@ -1,19 +1,19 @@
 [
   {
     "id": "\nEnter a number",
-    "translation": "\n번호 입력"
+    "translation": "\nInsira um número"
   },
   {
     "id": "An error occurred when creating log file '{{.Path}}':\n{{.Error}}\n\n",
-    "translation": "'{{.Path}}' 로그 파일을 작성할 때 다음 오류가 발생했습니다. \n{{.Error}}\n\n"
+    "translation": "Ocorreu um erro ao criar o arquivo de log '{{.Path}}':\n{{.Error}}\n\n"
   },
   {
     "id": "An error occurred while dumping request:\n{{.Error}}\n",
-    "translation": "요청을 덤프할 때 다음 오류가 발생했습니다. \n{{.Error}}\n"
+    "translation": "Ocorreu um erro ao fazer dump da solicitação:\n{{.Error}}\n"
   },
   {
     "id": "An error occurred while dumping response:\n{{.Error}}\n",
-    "translation": "응답을 덤프할 때 다음 오류가 발생했습니다. \n{{.Error}}\n"
+    "translation": "Ocorreu um erro ao fazer dump da resposta:\n{{.Error}}\n"
   },
   {
     "id": "Could not read from input: ",
@@ -21,7 +21,7 @@
   },
   {
     "id": "Elapsed:",
-    "translation": "경과 시간:"
+    "translation": "Decorrido:"
   },
   {
     "id": "External authentication failed. Error code: {{.ErrorCode}}, message: {{.Message}}",
@@ -29,7 +29,7 @@
   },
   {
     "id": "FAILED",
-    "translation": "실패"
+    "translation": "COM FALHA"
   },
   {
     "id": "Invalid grant type: ",
@@ -37,46 +37,50 @@
   },
   {
     "id": "Invalid token: ",
-    "translation": "올바르지 않은 토큰: "
+    "translation": "Token inválido: "
   },
   {
     "id": "OK",
-    "translation": "확인"
+    "translation": "OK"
   },
   {
     "id": "Please enter 'y', 'n', 'yes' or 'no'.",
-    "translation": "'y', 'n', '예' 또는 '아니오'를 입력하십시오."
+    "translation": "Insira 'y', 'n', 'yes' ou 'no'."
   },
   {
     "id": "Please enter a number between 1 to {{.Count}}.",
-    "translation": "1 - {{.Count}} 사이의 수를 입력하십시오."
+    "translation": "Insira um número entre 1 e {{.Count}}."
   },
   {
     "id": "Please enter a valid floating number.",
-    "translation": "올바른 float 수를 입력하십시오."
+    "translation": "Insira um número flutuante válido."
   },
   {
     "id": "Please enter a valid number.",
-    "translation": "올바른 수를 입력하십시오."
+    "translation": "Digite um número válido."
   },
   {
     "id": "Please enter value.",
-    "translation": "값을 입력하십시오."
+    "translation": "Insira um valor."
   },
   {
     "id": "REQUEST:",
-    "translation": "요청:"
+    "translation": "SOLICITAÇÃO:"
   },
   {
     "id": "RESPONSE:",
-    "translation": "응답:"
+    "translation": "RESPOSTA:"
   },
   {
     "id": "Remote server error. Status code: {{.StatusCode}}, error code: {{.ErrorCode}}, message: {{.Message}}",
-    "translation": "원격 서버 오류가 발생했습니다. 상태 코드: {{.StatusCode}}, 오류 코드: {{.ErrorCode}}, 메시지: {{.Message}}"
+    "translation": "Erro do servidor remoto. Código de status: {{.StatusCode}}, código de erro: {{.ErrorCode}}, mensagem: {{.Message}}"
   },
   {
     "id": "Unable to save plugin config: ",
-    "translation": "플러그인 구성을 저장할 수 없음:"
+    "translation": "Não é possível salvar a configuração do plug-in: "
+  },
+  {
+    "id": "Session inactive: ",
+    "translation": "Session inactive: "
   }
 ]

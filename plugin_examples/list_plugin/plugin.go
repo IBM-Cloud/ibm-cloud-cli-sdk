@@ -2,6 +2,7 @@ package main
 
 import (
 	"crypto/tls"
+	"fmt"
 	"net/http"
 	"os"
 	"regexp"
@@ -77,9 +78,7 @@ func NewHTTPClient(context plugin.PluginContext) *http.Client {
 	transport := bhttp.NewTraceLoggingTransport(
 		&http.Transport{
 			Proxy: http.ProxyFromEnvironment,
-			// ignore the following line from any 'gosec' scanning
-			// as to allow testing in environments that are not setup with TLS properly
-			// #nosec G402
+			// #nosec G402: used for example and for some customer cases, we need to allow insecure SSL
 			TLSClientConfig: &tls.Config{
 				InsecureSkipVerify: context.IsSSLDisabled(),
 			},
@@ -92,7 +91,10 @@ func NewHTTPClient(context plugin.PluginContext) *http.Client {
 }
 
 func DefaultHeader(cf plugin.CFContext) http.Header {
-	cf.RefreshUAAToken()
+	_, err := cf.RefreshUAAToken()
+	if err != nil {
+		fmt.Println(err.Error())
+	}
 
 	h := http.Header{}
 	h.Add("Authorization", cf.UAAToken())

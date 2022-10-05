@@ -1,19 +1,19 @@
 [
   {
     "id": "\nEnter a number",
-    "translation": "\n数値を入力してください"
+    "translation": "\nGeben Sie eine Zahl ein."
   },
   {
     "id": "An error occurred when creating log file '{{.Path}}':\n{{.Error}}\n\n",
-    "translation": "ログ・ファイル '{{.Path}}' を作成中にエラーが発生しました:\n{{.Error}}\n\n"
+    "translation": "Beim Erstellen der Protokolldatei '{{.Path}}' ist ein Fehler aufgetreten:\n{{.Error}}\n\n"
   },
   {
     "id": "An error occurred while dumping request:\n{{.Error}}\n",
-    "translation": "要求のダンプ中にエラーが発生しました:\n{{.Error}}\n"
+    "translation": "Bei der Anforderung zum Erstellen eines Speicherauszugs ist ein Fehler aufgetreten:\n{{.Error}}\n"
   },
   {
     "id": "An error occurred while dumping response:\n{{.Error}}\n",
-    "translation": "応答のダンプ中にエラーが発生しました:\n{{.Error}}\n"
+    "translation": "Bei der Antwort bezüglich der Erstellung eines Speicherauszugs ist ein Fehler aufgetreten:\n{{.Error}}\n"
   },
   {
     "id": "Could not read from input: ",
@@ -21,7 +21,7 @@
   },
   {
     "id": "Elapsed:",
-    "translation": "経過:"
+    "translation": "Verstrichen:"
   },
   {
     "id": "External authentication failed. Error code: {{.ErrorCode}}, message: {{.Message}}",
@@ -29,7 +29,7 @@
   },
   {
     "id": "FAILED",
-    "translation": "失敗"
+    "translation": "FEHLGESCHLAGEN"
   },
   {
     "id": "Invalid grant type: ",
@@ -37,7 +37,7 @@
   },
   {
     "id": "Invalid token: ",
-    "translation": "トークンが無効です: "
+    "translation": "Ungültiges Token: "
   },
   {
     "id": "OK",
@@ -45,38 +45,42 @@
   },
   {
     "id": "Please enter 'y', 'n', 'yes' or 'no'.",
-    "translation": "「y」、「n」、「yes」、または「no」を入力してください。"
+    "translation": "Geben Sie 'j', 'n', 'ja' oder 'nein' ein."
   },
   {
     "id": "Please enter a number between 1 to {{.Count}}.",
-    "translation": "1 から {{.Count}} までの数値を入力してください。"
+    "translation": "Geben Sie eine Zahl zwischen 1 und {{.Count}} ein."
   },
   {
     "id": "Please enter a valid floating number.",
-    "translation": "有効な浮動小数点数を入力してください。"
+    "translation": "Geben Sie eine gültige Gleitkommazahl ein."
   },
   {
     "id": "Please enter a valid number.",
-    "translation": "有効な数値を入力してください。"
+    "translation": "Geben Sie eine gültige Zahl ein."
   },
   {
     "id": "Please enter value.",
-    "translation": "値を入力してください。"
+    "translation": "Geben Sie einen Wert ein."
   },
   {
     "id": "REQUEST:",
-    "translation": "要求:"
+    "translation": "ANFORDERUNG:"
   },
   {
     "id": "RESPONSE:",
-    "translation": "応答:"
+    "translation": "ANTWORT:"
   },
   {
     "id": "Remote server error. Status code: {{.StatusCode}}, error code: {{.ErrorCode}}, message: {{.Message}}",
-    "translation": "リモート・サーバー・エラー。 状況コード: {{.StatusCode}}、エラー・コード: {{.ErrorCode}}、メッセージ: {{.Message}}"
+    "translation": "Fehler auf dem fernen Server. Statuscode: {{.StatusCode}}, Fehlercode: {{.ErrorCode}}, Nachricht: {{.Message}}"
   },
   {
     "id": "Unable to save plugin config: ",
-    "translation": "プラグイン構成を保存できません: "
+    "translation": "Speichern der Plug-in-Konfiguration nicht möglich: "
+  },
+  {
+    "id": "Session inactive: ",
+    "translation": "Session inactive: "
   }
 ]

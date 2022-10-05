@@ -36,7 +36,12 @@ func CopyFile(src string, dest string) (err error) {
 	if err != nil {
 		return
 	}
-	defer srcFile.Close()
+
+	defer func() {
+		if err := srcFile.Close(); err != nil {
+			fmt.Printf("Error closing file: %s\n", err)
+		}
+	}()
 
 	srcStat, err := srcFile.Stat()
 	if err != nil {
@@ -47,13 +52,21 @@ func CopyFile(src string, dest string) (err error) {
 		return fmt.Errorf("%s is not a regular file.", src)
 	}
 
-	destFile, err := os.Create(dest)
+	destFile, err := os.Create(filepath.Clean(dest))
 	if err != nil {
 		return
 	}
-	defer destFile.Close()
 
-	destFile.Chmod(srcStat.Mode())
+	defer func() {
+		if err := destFile.Close(); err != nil {
+			fmt.Printf("Error closing file: %s\n", err)
+		}
+	}()
+
+	err = os.Chmod(dest, srcStat.Mode())
+	if err != nil {
+		return
+	}
 
 	_, err = io.Copy(destFile, srcFile)
 	return

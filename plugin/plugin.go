@@ -8,6 +8,8 @@ import (
 
 	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/endpoints"
 	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/models"
+	"github.com/spf13/cobra"
+	"github.com/spf13/pflag"
 )
 
 // PluginMetadata describes metadata of a plugin.
@@ -29,6 +31,12 @@ type PluginMetadata struct {
 
 	// Whether the plugin supports private endpoint
 	PrivateEndpointSupported bool
+
+	// Whether the plugin supports private endpoint access via VPC
+	IsAccessFromVPC bool
+
+	// Whether the plugin was built using Cobra
+	IsCobraPlugin bool
 }
 
 func (p PluginMetadata) NameAndAliases() []string {
@@ -99,6 +107,33 @@ func (c Command) NameAndAliases() []string {
 	return append([]string{c.Name}, as...)
 }
 
+// ConvertCobraFlagsToPluginFlags will convert flags defined by Cobra framework to Plugin Flags
+// Method is used when defining the Flags in command metadata. @see Plugin#GetMetadata() for use case
+func ConvertCobraFlagsToPluginFlags(cmd *cobra.Command) []Flag {
+	var flags []Flag
+	cmd.Flags().VisitAll(func(f *pflag.Flag) {
+		var name string
+		if f.Shorthand != "" {
+			name = f.Shorthand + "," + f.Name
+		} else {
+			name = f.Name
+		}
+		hasValue := true
+		if f.Value.Type() == "bool" {
+			hasValue = false
+		}
+		flags = append(flags, Flag{
+			Name:        name,
+			Description: f.Usage,
+			HasValue:    hasValue,
+			Hidden:      f.Hidden,
+		})
+	})
+
+	return flags
+
+}
+
 // Flag describes a command option
 type Flag struct {
 	Name        string // name of the option
@@ -136,6 +171,9 @@ type PluginContext interface {
 	// IsPrivateEndpointEnabled returns whether use of the private endpoint has been chosen
 	IsPrivateEndpointEnabled() bool
 
+	// IsAccessFromVPC returns true if the access from VPC private endpoint is enabled.
+	IsAccessFromVPC() bool
+
 	// ConsoleEndpoint returns console's public endpoint if api endpoint is public, or returns
 	// private endpoint if api endpoint is private.
 	ConsoleEndpoint() string
@@ -164,6 +202,13 @@ type PluginContext interface {
 	// Region returns the targeted region
 	CurrentRegion() models.Region
 
+	// CRIType returns the type of compute resource the user logged in as, if applicable. Valid values are `IKS`, `VPC`, or `OTHER`
+	CRIType() string
+
+	// VPCCRITokenURL() returns the value specified by the environment variable 'IBMCLOUD_CR_VPC_URL', if set.
+	// Otherwise, the default VPC auth url specified by the constant `DefaultServerEndpoint` is returned
+	VPCCRITokenURL() string
+
 	// HasTargetedRegion() return whether a region is targeted
 	HasTargetedRegion() bool
 
@@ -187,6 +232,12 @@ type PluginContext interface {
 	// IsLoggedInWithServiceID returns if a user has logged into IBM cloud using service ID.
 	IsLoggedInWithServiceID() bool
 
+	// IsLoggedInAsProfile returns true if a user logged into IBM Cloud using an IAM token pertaining to a trusted profile
+	IsLoggedInAsProfile() bool
+
+	// IsLoggedInAsCRI returns true if a user logged into IBM Cloud as a compute resource.
+	IsLoggedInAsCRI() bool
+
 	// IMSAccountID returns ID of the IMS account linked to the targeted BSS
 	// account
 	IMSAccountID() string
@@ -196,6 +247,15 @@ type PluginContext interface {
 
 	// HasTargetedAccount returns whether an account has been targeted
 	HasTargetedAccount() bool
+
+	// HasTargetedProfile returns whether a profile has been targeted
+	HasTargetedProfile() bool
+
+	// CurrentProfile returns the targeted trusted profile
+	CurrentProfile() models.Profile
+
+	// HasTargetedComputeResource returns whether a compute resource has been targeted
+	HasTargetedComputeResource() bool
 
 	// ResourceGroup returns the targeted resource group
 	CurrentResourceGroup() models.ResourceGroup

@@ -3,6 +3,7 @@ package file_helpers
 import (
 	"archive/tar"
 	"compress/gzip"
+	"fmt"
 	"io"
 	"os"
 	"path/filepath"
@@ -14,7 +15,12 @@ func ExtractTgz(src string, dest string) error {
 	if err != nil {
 		return err
 	}
-	defer fd.Close()
+
+	defer func() {
+		if err := fd.Close(); err != nil {
+			fmt.Printf("Error closing file: %s\n", err)
+		}
+	}()
 
 	gReader, err := gzip.NewReader(fd)
 	if err != nil {
@@ -48,7 +54,7 @@ func ExtractTgz(src string, dest string) error {
 
 func extractFileInArchive(r io.Reader, hdr *tar.Header, dest string) error {
 	fi := hdr.FileInfo()
-	path := filepath.Join(dest, hdr.Name)
+	path := filepath.Join(filepath.Clean(dest), filepath.Clean(hdr.Name))
 
 	if fi.IsDir() {
 		return os.MkdirAll(path, fi.Mode())
@@ -58,11 +64,16 @@ func extractFileInArchive(r io.Reader, hdr *tar.Header, dest string) error {
 			return err
 		}
 
-		f, err := os.Create(path)
+		f, err := os.Create(filepath.Clean(path))
 		if err != nil {
 			return err
 		}
-		defer f.Close()
+
+		defer func() {
+			if err := f.Close(); err != nil {
+				fmt.Printf("Error closing file: %s\n", err)
+			}
+		}()
 
 		_, err = io.Copy(f, r)
 		return err

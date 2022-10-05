@@ -2,13 +2,11 @@ package plugin
 
 import (
 	"fmt"
-	"os"
 	"path/filepath"
 	"strconv"
 	"strings"
 
 	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix"
-	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/authentication/iam"
 	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/authentication/uaa"
 	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/configuration/core_config"
 	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/endpoints"
@@ -59,20 +57,20 @@ func (c *pluginContext) APIEndpoint() string {
 	return c.ReadWriter.APIEndpoint()
 }
 
-func (c *pluginContext) IAMEndpoint() string {
-	if c.IsPrivateEndpointEnabled() {
-		return c.IAMEndpoints().PrivateEndpoint
-	}
-	return c.IAMEndpoints().PublicEndpoint
-}
-
 func (c *pluginContext) ConsoleEndpoint() string {
 	if c.IsPrivateEndpointEnabled() {
-		return c.ConsoleEndpoints().PrivateEndpoint
+		if c.IsAccessFromVPC() {
+			// return VPC endpoint
+			return c.ConsoleEndpoints().PrivateVPCEndpoint
+		} else {
+			// return CSE endpoint
+			return c.ConsoleEndpoints().PrivateEndpoint
+		}
 	}
 	return c.ConsoleEndpoints().PublicEndpoint
 }
 
+// GetEndpoint returns the private or public endpoint for a requested service
 func (c *pluginContext) GetEndpoint(svc endpoints.Service) (string, error) {
 	if c.CloudType() != "public" {
 		return "", fmt.Errorf("only public cloud is supported")
@@ -92,7 +90,7 @@ func (c *pluginContext) GetEndpoint(svc endpoints.Service) (string, error) {
 		return "", fmt.Errorf("unknown cloud name '%s'", cname)
 	}
 
-	return endpoints.Endpoint(svc, cloudDomain, c.CurrentRegion().Name, c.IsPrivateEndpointEnabled())
+	return endpoints.Endpoint(svc, cloudDomain, c.CurrentRegion().Name, c.IsPrivateEndpointEnabled(), c.IsAccessFromVPC())
 }
 
 func compareVersion(v1, v2 string) int {
@@ -132,27 +130,6 @@ func (c *pluginContext) PluginDirectory() string {
 
 func (c *pluginContext) PluginConfig() PluginConfig {
 	return c.pluginConfig
-}
-
-func (c *pluginContext) RefreshIAMToken() (string, error) {
-	iamEndpoint := os.Getenv("IAM_ENDPOINT")
-	if iamEndpoint == "" {
-		iamEndpoint = c.IAMEndpoint()
-	}
-	if iamEndpoint == "" {
-		return "", fmt.Errorf("IAM endpoint is not set")
-	}
-
-	auth := iam.NewClient(iam.DefaultConfig(iamEndpoint), rest.NewClient())
-	token, err := auth.GetToken(iam.RefreshTokenRequest(c.IAMRefreshToken()))
-	if err != nil {
-		return "", err
-	}
-
-	ret := fmt.Sprintf("%s %s", token.TokenType, token.AccessToken)
-	c.SetIAMToken(ret)
-	c.SetIAMRefreshToken(token.RefreshToken)
-	return ret, nil
 }
 
 func (c *pluginContext) Trace() string {

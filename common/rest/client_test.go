@@ -35,10 +35,65 @@ func TestDoWithContext_WithSuccessV(t *testing.T) {
 	assert.Equal("bar", res["foo"])
 }
 
+func TestDoWithContext_WithSuccessYAML(t *testing.T) {
+	assert := assert.New(t)
+
+	ts := httptest.NewServer(serveHandler(200, "\"foo\": \"bar\""))
+	defer ts.Close()
+
+	var res map[string]string
+	resp, err := NewClient().DoWithContext(context.TODO(), GetRequest(ts.URL), &res, nil)
+	assert.NoError(err)
+	assert.Equal(http.StatusOK, resp.StatusCode)
+	assert.Equal("bar", res["foo"])
+}
+
+func TestDoWithContext_WithSuccessComplexYAML(t *testing.T) {
+	assert := assert.New(t)
+
+	ts := httptest.NewServer(serveHandler(200, `
+---
+doe: "a deer, a female deer"
+ray: "a drop of golden sun"
+pi: 3.14159
+xmas: true
+french-hens: 3
+calling-birds:
+  - huey
+  - dewey
+  - louie
+  - fred`))
+	defer ts.Close()
+
+	var res map[string]interface{}
+	resp, err := NewClient().DoWithContext(context.TODO(), GetRequest(ts.URL), &res, nil)
+	assert.NoError(err)
+	assert.Equal(http.StatusOK, resp.StatusCode)
+	assert.Equal("a deer, a female deer", res["doe"])
+	assert.Equal("a drop of golden sun", res["ray"])
+	assert.Equal(3.14159, res["pi"])
+	assert.Equal(true, res["xmas"])
+	callingBirds := []interface{}{"huey", "dewey", "louie", "fred"}
+	assert.Equal(callingBirds, res["calling-birds"])
+}
+
 func TestDoWithContext_NilContext_WithSuccessV(t *testing.T) {
 	assert := assert.New(t)
 
 	ts := httptest.NewServer(serveHandler(200, "{\"foo\": \"bar\"}"))
+	defer ts.Close()
+
+	var res map[string]string
+	resp, err := NewClient().DoWithContext(nil, GetRequest(ts.URL), &res, nil)
+	assert.NoError(err)
+	assert.Equal(http.StatusOK, resp.StatusCode)
+	assert.Equal("bar", res["foo"])
+}
+
+func TestDoWithContext_NilContext_WithSuccessYAML(t *testing.T) {
+	assert := assert.New(t)
+
+	ts := httptest.NewServer(serveHandler(200, "\"foo\": \"bar\""))
 	defer ts.Close()
 
 	var res map[string]string
@@ -63,6 +118,19 @@ func TestDo_WithSuccessV(t *testing.T) {
 	assert := assert.New(t)
 
 	ts := httptest.NewServer(serveHandler(200, "{\"foo\": \"bar\"}"))
+	defer ts.Close()
+
+	var res map[string]string
+	resp, err := NewClient().Do(GetRequest(ts.URL), &res, nil)
+	assert.NoError(err)
+	assert.Equal(http.StatusOK, resp.StatusCode)
+	assert.Equal("bar", res["foo"])
+}
+
+func TestDo_WithSuccessYAML(t *testing.T) {
+	assert := assert.New(t)
+
+	ts := httptest.NewServer(serveHandler(200, "\"foo\": \"bar\""))
 	defer ts.Close()
 
 	var res map[string]string
@@ -128,10 +196,7 @@ func TestNoContent(t *testing.T) {
 
 	var successV interface{}
 	_, err := NewClient().Do(req, &successV, nil)
-	assert.Error(err) // empty response body error
-
-	_, err = NewClient().Do(req, nil, nil)
-	assert.NoError(err)
+	assert.NoError(err) // no empty response body error
 }
 
 func TestDownloadFile(t *testing.T) {

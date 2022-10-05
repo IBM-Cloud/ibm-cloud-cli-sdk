@@ -1,19 +1,19 @@
 [
   {
     "id": "\nEnter a number",
-    "translation": "\nEntrez un nombre"
+    "translation": "\nImmetti un numero"
   },
   {
     "id": "An error occurred when creating log file '{{.Path}}':\n{{.Error}}\n\n",
-    "translation": "Erreur lors de la création du fichier journal '{{.Path}}':\n{{.Error}}\n\n"
+    "translation": "Si è verificato un errore durante la creazione del file di log '{{.Path}}':\n{{.Error}}\n\n"
   },
   {
     "id": "An error occurred while dumping request:\n{{.Error}}\n",
-    "translation": "Erreur lors de la demande de vidage :\n{{.Error}}\n"
+    "translation": "Si è verificato un errore durante il dump della richiesta:\n{{.Error}}\n"
   },
   {
     "id": "An error occurred while dumping response:\n{{.Error}}\n",
-    "translation": "Erreur lors de la réponse de vidage :\n{{.Error}}\n"
+    "translation": "Si è verificato un errore durante il dump della risposta:\n{{.Error}}\n"
   },
   {
     "id": "Could not read from input: ",
@@ -21,7 +21,7 @@
   },
   {
     "id": "Elapsed:",
-    "translation": "Ecoulé :"
+    "translation": "Trascorso:"
   },
   {
     "id": "External authentication failed. Error code: {{.ErrorCode}}, message: {{.Message}}",
@@ -29,7 +29,7 @@
   },
   {
     "id": "FAILED",
-    "translation": "ECHEC"
+    "translation": "NON RIUSCITO"
   },
   {
     "id": "Invalid grant type: ",
@@ -37,7 +37,7 @@
   },
   {
     "id": "Invalid token: ",
-    "translation": "Jeton non valide : "
+    "translation": "Token non valido: "
   },
   {
     "id": "OK",
@@ -45,38 +45,42 @@
   },
   {
     "id": "Please enter 'y', 'n', 'yes' or 'no'.",
-    "translation": "L'entrée doit être 'y', 'n', 'yes' ou 'no'."
+    "translation": "Immetti 's', 'n', 'sì' o 'no'."
   },
   {
     "id": "Please enter a number between 1 to {{.Count}}.",
-    "translation": "Entrez un nombre entre 1 et {{.Count}}."
+    "translation": "Immetti un numero compreso tra 1 e {{.Count}}."
   },
   {
     "id": "Please enter a valid floating number.",
-    "translation": "Entrez un nombre flottant valide."
+    "translation": "Immetti un numero decimale valido."
   },
   {
     "id": "Please enter a valid number.",
-    "translation": "Entrez un nombre valide."
+    "translation": "Immetti un numero valido."
   },
   {
     "id": "Please enter value.",
-    "translation": "Entrez une valeur."
+    "translation": "Immetti un valore."
   },
   {
     "id": "REQUEST:",
-    "translation": "DEMANDE :"
+    "translation": "RICHIESTA:"
   },
   {
     "id": "RESPONSE:",
-    "translation": "REPONSE :"
+    "translation": "RISPOSTA:"
   },
   {
     "id": "Remote server error. Status code: {{.StatusCode}}, error code: {{.ErrorCode}}, message: {{.Message}}",
-    "translation": "Erreur du serveur distant. Code de statut : {{.StatusCode}}, code d'erreur : {{.ErrorCode}}, message : {{.Message}}"
+    "translation": "Errore server remoto. Codice di stato: {{.StatusCode}}, codice di errore: {{.ErrorCode}}, messaggio: {{.Message}}"
   },
   {
     "id": "Unable to save plugin config: ",
-    "translation": "Impossible d'enregistrer la configuration du plug-in : "
+    "translation": "Impossibile salvare la configurazione del plug-in: "
+  },
+  {
+    "id": "Session inactive: ",
+    "translation": "Session inactive: "
   }
 ]

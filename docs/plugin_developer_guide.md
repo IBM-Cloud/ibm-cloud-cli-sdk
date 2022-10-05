@@ -48,6 +48,11 @@ IBM Cloud CLI SDK provides a set of APIs to register and manage plug-ins. It als
                 Minor: 0,
                 Build: 1,
             },
+
+            PrivateEndpointSupported: true,
+
+            IsCobraPlugin: true,
+
             Commands: []plugin.Command{
                 {
                     Name:        "echo",
@@ -71,6 +76,8 @@ IBM Cloud CLI SDK provides a set of APIs to register and manage plug-ins. It als
     - _Name_: The name of plug-in. It will be displayed when using `ibmcloud plugin list` command or can be used to uninstall the plug-in through `ibmcloud plugin uninstall` command.
     - _Version_: The version of plug-in.
     - _MinCliVersion_: The minimal version of IBM Cloud CLI required by the plug-in.
+    - _PrivateEndpointSupported_: Indicates if the plug-in is designed to also be used over the private network.
+    - _IsCobraPlugin_: Indicates if the plug-in is built using the Cobra framework
     - _Commands_: The array of `plugin.Commands` to register the plug-in commands.
     - _Alias_: Alias of the Alias usually is a short name of the command.
     - _Command.Flags_: The command flags (options) which will be displayed as a part of help output of the command.
@@ -725,6 +732,13 @@ $ibmcloud account orgs --output json
 []
 ```
 
+If the output is expected to be an object but no object is returned the plugin should return the normal error: For example, if a service-id could not be found then an error is returned:
+```
+$ibmcloud iam service-id 15a15a0f-725e-453a-b3ac-755280ad7300 --output json
+FAILED
+Service ID '15a15a0f-725e-453a-b3ac-755280ad7300' was not found.
+```
+
 ### 2.12. Common options
 
 Customers will be writing scripts that use multiple services.  Consistency with option names will help them be successful.
@@ -949,10 +963,64 @@ accessToken := token.AccessToken
 newRefreshToken := token.RefreshToken
 
 // optional, set access token and refresh token back to config
-
 config.SetAccessToken(accessToken)
 config.SetRefreshToken(newRefreshToken)
+
+// optional, maintain session for long running workloads
+request = iam.RefreshSessionRequest(token)
+client.RefreshSession(token)
 ```
+
+### 5.3 VPC Compute Resource Identity Authentication
+
+#### 5.3.1 Get the IAM Access Token
+The IBM Cloud CLI supports logging in as a VPC compute resource identity. The CLI will fetch a VPC instance identity token and exchange it for an IAM access token when logging in as a VPC compute resource identity. This access token is stored in configuration once a user successfully logs into the CLI.
+
+Plug-ins can invoke `plugin.PluginContext.IsLoggedInAsCRI()` and `plugin.PluginContext.CRIType()` in the CLI SDK to detect whether the user has logged in as a VPC compute resource identity.
+You can get the IAM access token resulting from the user logging in as a VPC compute resource identity from the IBM CLoud SDK as follows:
+
+```go
+func (demo *DemoPlugin) Run(context plugin.PluginContext, args []string){
+    // confirm user is logged in as a VPC compute resource identity
+    isLoggedInAsCRI := context.IsLoggedInAsCRI()
+    criType := context.CRIType()
+    if isLoggedInAsCRI && criType == "VPC" {
+        // get IAM access token
+        iamToken := context.IAMToken()
+        if iamToken == "" {
+            ui.Say("IAM token is not available. Have you logged in?")
+            return
+        }
+    }
+    ...
+}
+```
+
+This token can be used to access IBM Cloud back-end APIs. You can set the `Authorization` header of the HTTP request to the token value.
+
+```go
+h := http.Header{}
+h.Set("Authorization", iamToken)
+```
+
+#### 5.3.2 Get a VPC Instance Identity Token and exchange it for an IAM Access Token
+When an HTTP 401 or 403 is returned from back-end service, it could mean the access token is expired. You can manually fetch a new VPC instance identity token, and exchange it for a new IAM access token. When using the method below, the new token is stored in
+configuration and will be used for subsequent IAM enabled service calls.
+
+Example:
+
+```go
+token, err := context.RefreshIAMToken()
+if err != nil {
+	return err
+}
+```
+The `RefreshIAMToken()` method will detect if the user is logged in as a VPC VSI compute resource, and perform the token exchange
+using the VPC metadata service using the trusted profile information stored in configuration.
+
+For more details of the API, refer to the docs for [vpc](https://godoc.org/github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/authentication/vpc). For more details of the `RefreshIAMToken` method, refer to the docs for [RefreshIAMToken](https://godoc.org/github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/configuration/core_config#Repository).
+
+_Note_: Currently an IAM refresh token is not supported when authenticating as a VPC compute resource identity.
 
 
 ## 6. Utility for Unit Testing
@@ -998,9 +1066,55 @@ func TestStart() {
 }
 ```
 
+### 6.1 Using the Test Doubles
+
+When writing unit tests you may need to mock parts of the cli-sdk, dev-plugin, or your own interfaces. The dev-plugin uses [counterfeiter](https://github.com/maxbrunsfeld/counterfeiter) to mock interfaces that allow you to fake their implementation.
+
+You can use the fakes implementation to mock the return, arguments, etc. Below are a few example of showing how to stub various methods in [PluginContext](https://github.com/IBM-Cloud/ibm-cloud-cli-sdk/blob/master/plugin/plugin_context.go) and [PluginConfig](https://github.com/IBM-Cloud/ibm-cloud-cli-sdk/blob/master/plugin/plugin_config.go).
+
+
+```go
+import (
+  "github.com/IBM-Cloud/ibm-cloud-cli-sdk/plugin/pluginfakes"
+)
+var (
+  context *pluginfakes.FakePluginContext
+  config  *pluginfakes.FakePluginConfig
+)
+
+BeforeEach(func() {
+  context = new(pluginfakes.FakePluginContext)
+  config = new(pluginfakes.FakePluginConfig)
+
+  // mock the IsLoggedIn method to always return true
+  // NOTE: expect method signature format to be `<METHOD_NAME>Returns()`
+  context.IsLoggedInReturns(true)
+
+  // mock the second IsLoggedIn call return false
+  // NOTE: expect method signature format to be `<METHOD_NAME>ReturnsOnCall()`
+  context.IsLoggedInReturnsOnCall(1, false)
+
+  // stub the arguments for the first PluginConfig.Set method
+  // NOTE: expect method signature format to be `<METHOD_NAME>ArgsForCall(...args)`
+  config.SetArgsForCall("region", "us-south")
+})
+
+It("should call RefreshToken more than once", func() {
+
+  // return the number of times a method is called
+  // NOTE: expect method signature format to be `<METHOD_NAME>Calls()`
+  Expect(context.RefreshIAMTokenCalls()).Should(BeNumerically(">", 0))
+})
+
+```
+
+You can find other examples in [tests](https://github.com/maxbrunsfeld/counterfeiter/blob/master/generated_fakes_test.go) found in counterfeiter.
+
 ## 7. Globalization
 
 IBM Cloud CLI tends to be used globally. Both IBM Cloud CLI and its plug-ins should support globalization. We have enabled internationalization (i18n) for CLI's base commands with the help of the third-party tool "[go-i18n](https://github.com/nicksnyder/go-i18n)". To keep user experience consistent, we recommend plug-in developers follow the CLI's way of i18n enablement.
+
+Please install the *go-i18n* CLI for version 1.10.0. Newer versions of the CLI are no longer compatible with translations files prior to go-i18n@2.0.0. You can install the CLI using the command: `go install github.com/nicksnyder/go-i18n/goi18n@1.10.1`
 
 Here's the workflow:
 
@@ -1037,10 +1151,10 @@ Here's the workflow:
           1.  Create empty files `zh-hans.all.json` and `fr-br.all.json`, and run:
           2.  Run:
               ```bash
-              goi18n –outputdir <directory\_of\_generated\_translation\_files> en-us.all.json zh-hans.all.json fr-br.all.json
+              goi18n -flat=false –outdir <directory\_of\_generated\_translation\_files> en-us.all.json zh-hans.all.json fr-br.all.json
               ```
 
-          The previous command will generate 2 output files for each language: `xx-yy.all.json` contains all strings for the language, and `xx-yy.untranslated.json` contains untranslated strings. After the strings are translated, they should be merged back into `xx-yy.all.json`. For more details, refer to goi18n CLI's help by 'goi18n –help'.
+      The previous command will generate 2 output files for each language: `xx-yy.all.json` contains all strings for the language, and `xx-yy.untranslated.json` contains untranslated strings. After the strings are translated, they should be merged back into `xx-yy.all.json`. If plugin is on the ibm-cloud-cli-sdk 1.00 or above, rename the file from `xx-yy.all.json` to `all.xx-yy.json`. For more details, refer to goi18n CLI's help by 'goi18n –help'.
 
 3.  Package translation files. IBM Cloud CLI is to be built as a stand-alone binary distribution. In order to load i18n resource files in code, we use [go-bindata](https://github.com/jteeuwen/go-bindata) to auto-generate Go source code from all i18n resource files and the compile them into the binary. You can write a script to do it automatically during build. A sample script could be like:
 
@@ -1062,34 +1176,49 @@ Here's the workflow:
     `T()` must be initialized before use. During i18n initialization in IBM Cloud CLI, user locale is used if it's set in `~/.bluemix/config.json` (plug-in can get user locale via `PluginContext.Locale()`). Otherwise, system locale is auto discovered (see [jibber\_jabber](https://github.com/cloudfoundry/jibber_jabber)) and used. If system locale is not detected or supported, default locale `en\_US` is then used. Next, we initialize the translate function with the locale. Sample code:
 
     ```go
-    func initWithLocale(locale string) goi18n.TranslateFunc {
+    import (
+      "fmt"
+      "github.com/IBM-Cloud/ibm-cloud-cli-sdk/i18n"
+    )
+
+    var T i18n.TranslateFunc = Init(core_config.NewCoreConfig(func(e error) {}), new(JibberJabberDetector))
+
+    func Init(coreConfig core_config.Repository, detector Detector) i18n.TranslateFunc {
+	    bundle = i18n.Bundle()
+	    userLocale := coreConfig.Locale()
+	    if userLocale != "" {
+		    return initWithLocale(userLocale)
+      }
+		}
+
+    func initWithLocale(locale string) i18n.TranslateFunc {
         err := loadFromAsset(locale)
         if err != nil {
             panic(err)
         }
-        return goi18n.MustTfunc(locale, DEFAULT_LOCALE)
+        return i18n.MustTfunc(locale, DEFAULT_LOCALE)
     }
 
     // load translation asset for the given locale
     func loadFromAsset(locale string) (err error) {
-        assetName := locale + ".all.json"
+        assetName := fmt.Sprintf("all.%s.json", locale)
         assetKey := filepath.Join(resourcePath, assetName)
         bytes, err := resources.Asset(assetKey)
         if err != nil {
            return
         }
-        err = goi18n.ParseTranslationFileBytes(assetName, bytes)
+        _, err = bundle.ParseMessageFileBytes(bytes, resourceKey)
         return
     }
     ```
 
 ## 8. Command Design
 
-### 8.1. Honour Region/Resource Group Setting of CLI
+### 8.1. Honor Region/Resource Group Setting of CLI
 
 When users are using CLI, they probably have already targeted region or resource group during login. It's cumbersome to ask users to re-target region or resource group in specific command again.
 
-- By default, plugin should honour the region/resource group setting of CLI. Check `CurrentRegion`, `HasTargetedRegion`, `CurrentResourceGroup`, and `HasTargetedResourceGroup` in the [`core_config.Repository`](https://godoc.org/github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/configuration/core_config#Repository).
+- By default, plugin should honor the region/resource group setting of CLI. Check `CurrentRegion`, `HasTargetedRegion`, `CurrentResourceGroup`, and `HasTargetedResourceGroup` in the [`core_config.Repository`](https://godoc.org/github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/configuration/core_config#Repository).
 
     ```go
     func (demo *DemoPlugin) Run(context plugin.PluginContext, args []string){
@@ -1101,7 +1230,7 @@ When users are using CLI, they probably have already targeted region or resource
             region = config.CurrentRegion().Name
             ui.Say("Currently targeted region: " + region)
         }
-    
+
         // get currently targeted resource group
         group := ""
         if config.HasTargetedResourceGroup() {
@@ -1118,23 +1247,23 @@ When users are using CLI, they probably have already targeted region or resource
 
 ## 9. Private Endpoint Support
 
-Private endpoint enables customers to connect to IBM Cloud services over IBM's private network. Plug-ins should provide the private endpoint support whenever possible. If the user chooses to use the private endpoint, all the traffic between the CLI client and IBM Cloud services must go through the private network. If private endpoint is not supported by the plug-in, the CLI should fail any requests instead of falling back to using the public network. 
+Private endpoint enables customers to connect to IBM Cloud services over IBM's private network. Plug-ins should provide the private endpoint support whenever possible. If the user chooses to use the private endpoint, all the traffic between the CLI client and IBM Cloud services must go through the private network. If private endpoint is not supported by the plug-in, the CLI should fail any requests instead of falling back to using the public network.
 
 **Choosing private endpoint**
 
-IBM CLoud CLI users can select to go with private network by specifying `private.cloud.ibm.com` as the API endpoint of IBM Cloud CLI, either with command `ibmcloud api private.cloud.ibm.com` or `ibmcloud login -a private.cloud.ibm.com`. 
+IBM CLoud CLI users can select to go with private network by specifying `private.cloud.ibm.com` as the API endpoint of IBM Cloud CLI, either with command `ibmcloud api private.cloud.ibm.com` or `ibmcloud login -a private.cloud.ibm.com`.
 
-Plug-ins can invoke `plugin.PluginContext.IsPrivateEndpointEnabled()` in the CLI SDK to detect whether the user has selected private endpoint or not. 
+Plug-ins can invoke `plugin.PluginContext.IsPrivateEndpointEnabled()` in the CLI SDK to detect whether the user has selected private endpoint or not.
 
 **Publishing Plug-in with private endpoint support**
 
-There is a field `private_endpoint_supported` in the plug-in metadata indicating whether a plug-in supports private endpoint or not. The default value is `false`.  When publishing a plug-in, it needs to be set to `true` if the plug-in has private endpoint support. Otherwise the core CLI will fail the plug-in commands if the user chooses to use private endpoint. 
+There is a field `private_endpoint_supported` in the plug-in metadata file indicating whether a plug-in supports private endpoint or not. The default value is `false`.  When publishing a plug-in, it needs to be set to `true` if the plug-in has private endpoint support. Likewise, in the plug-in Golang code, the `plugin.PluginMetadata` struct needs to have the `PrivateEndpointSupported` field set the same as this field in the metadata file. Otherwise the core CLI will fail the plug-in commands if the user chooses to use private endpoint.
 
-If the plug-in for an IBM Cloud service only has partial private endpoint support in specific regions, this field should still be set to be `true`. It is the plug-in's responsibility to get the region setting and decide whether to fail the command or not. The plug-in should not fall back to the public endpoint if the region does not have private endpoint support. 
+If the plug-in for an IBM Cloud service only has partial private endpoint support in specific regions, this field should still be set to be `true`. It is the plug-in's responsibility to get the region setting and decide whether to fail the command or not. The plug-in should not fall back to the public endpoint if the region does not have private endpoint support.
 
 **Private endpoints of platform services**
 
-The CLI SDK provides an API to retrieve both the public endpoint and private endpoint of core platform services. 
+The CLI SDK provides an API to retrieve both the public endpoint and private endpoint of core platform services.
 
 `plugin.PluginContext.ConsoleEndpoint()` returns the public endpoint of IBM Cloud console API if the user selects to go with public endpoint. It returns private endpoint of IBM Cloud console API if the user chooses private endpoint when logging into IBM Cloud.
 

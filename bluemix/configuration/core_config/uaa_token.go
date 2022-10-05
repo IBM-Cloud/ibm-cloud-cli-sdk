@@ -16,7 +16,7 @@ type UAATokenInfo struct {
 }
 
 func NewUAATokenInfo(token string) UAATokenInfo {
-	tokenJSON, err := decodeAccessToken(token)
+	tokenJSON, err := DecodeAccessToken(token)
 	if err != nil {
 		return UAATokenInfo{}
 	}
@@ -35,4 +35,19 @@ func NewUAATokenInfo(token string) UAATokenInfo {
 	ret.Expiry = t.Expiry.Time()
 	ret.IssueAt = t.IssueAt.Time()
 	return ret
+}
+
+func (t UAATokenInfo) exists() bool {
+	// UAA token without an UserGUID is invalid
+	return t.UserGUID != ""
+}
+
+func (t UAATokenInfo) hasExpired() bool {
+	if !t.exists() {
+		return true
+	}
+	if t.Expiry.IsZero() {
+		return false
+	}
+	return t.Expiry.Before(time.Now().Add(expiryDelta))
 }

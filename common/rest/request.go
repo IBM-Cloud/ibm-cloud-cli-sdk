@@ -245,7 +245,10 @@ func (r *Request) buildFormMultipart() (io.Reader, error) {
 		for _, f := range files {
 			defer func() {
 				if f, ok := f.Content.(io.ReadCloser); ok {
-					f.Close()
+					err := f.Close()
+					if err != nil {
+						fmt.Println(err.Error())
+					}
 				}
 			}()
 

@@ -10,13 +10,17 @@ import (
 )
 
 const (
-	SubjectTypeServiceID = "ServiceId"
+	SubjectTypeServiceID      = "ServiceId"
+	SubjectTypeTrustedProfile = "Profile"
 )
+
+const expiryDelta = 10 * time.Second
 
 type IAMTokenInfo struct {
 	IAMID       string       `json:"iam_id"`
 	ID          string       `json:"id"`
 	RealmID     string       `json:"realmid"`
+	SessionID   string       `json:"session_id"`
 	Identifier  string       `json:"identifier"`
 	Firstname   string       `json:"given_name"`
 	Lastname    string       `json:"family_name"`
@@ -28,6 +32,7 @@ type IAMTokenInfo struct {
 	Issuer      string       `json:"iss"`
 	GrantType   string       `json:"grant_type"`
 	Scope       string       `json:"scope"`
+	Authn       Authn        `json:"authn"`
 	Expiry      time.Time
 	IssueAt     time.Time
 }
@@ -38,8 +43,17 @@ type AccountsInfo struct {
 	Valid        bool   `json:"valid"`
 }
 
+type Authn struct {
+	Subject   string `json:"sub"`
+	IAMID     string `json:"iam_id"`
+	Name      string `json:"name"`
+	Firstname string `json:"given_name"`
+	Lastname  string `json:"family_name"`
+	Email     string `json:"email"`
+}
+
 func NewIAMTokenInfo(token string) IAMTokenInfo {
-	tokenJSON, err := decodeAccessToken(token)
+	tokenJSON, err := DecodeAccessToken(token)
 	if err != nil {
 		return IAMTokenInfo{}
 	}
@@ -60,7 +74,10 @@ func NewIAMTokenInfo(token string) IAMTokenInfo {
 	return ret
 }
 
-func decodeAccessToken(token string) (tokenJSON []byte, err error) {
+// DecodeAccessToken will decode an access token string into a raw JSON.
+// The encoded string is expected to be in three parts separated by a period.
+// This method does not validate the contents of the parts
+func DecodeAccessToken(token string) (tokenJSON []byte, err error) {
 	encodedParts := strings.Split(token, ".")
 
 	if len(encodedParts) < 3 {
@@ -69,4 +86,19 @@ func decodeAccessToken(token string) (tokenJSON []byte, err error) {
 
 	encodedTokenJSON := encodedParts[1]
 	return base64.RawURLEncoding.DecodeString(encodedTokenJSON)
+}
+
+func (t IAMTokenInfo) exists() bool {
+	// token without an ID is invalid
+	return t.ID != ""
+}
+
+func (t IAMTokenInfo) hasExpired() bool {
+	if !t.exists() {
+		return true
+	}
+	if t.Expiry.IsZero() {
+		return false
+	}
+	return t.Expiry.Before(time.Now().Add(expiryDelta))
 }

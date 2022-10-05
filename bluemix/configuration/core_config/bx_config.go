@@ -25,17 +25,23 @@ func (r raw) Unmarshal(bytes []byte) error {
 type BXConfigData struct {
 	APIEndpoint                 string
 	IsPrivate                   bool
+	IsAccessFromVPC             bool
 	ConsoleEndpoint             string
 	ConsolePrivateEndpoint      string
+	ConsolePrivateVPCEndpoint   string
 	CloudType                   string
 	CloudName                   string
+	CRIType                     string
 	Region                      string
 	RegionID                    string
 	IAMEndpoint                 string
 	IAMPrivateEndpoint          string
+	IAMPrivateVPCEndpoint       string
 	IAMToken                    string
 	IAMRefreshToken             string
+	IsLoggedInAsCRI             bool
 	Account                     models.Account
+	Profile                     models.Profile
 	ResourceGroup               models.ResourceGroup
 	LoginAt                     time.Time
 	CFEETargeted                bool
@@ -43,6 +49,8 @@ type BXConfigData struct {
 	PluginRepos                 []models.PluginRepo
 	SSLDisabled                 bool
 	Locale                      string
+	MessageOfTheDayTime         int64
+	LastSessionUpdateTime       int64
 	Trace                       string
 	ColorEnabled                string
 	HTTPTimeout                 int
@@ -164,6 +172,20 @@ func (c *bxConfig) IsPrivateEndpointEnabled() (isPrivate bool) {
 	return
 }
 
+func (c *bxConfig) IsLoggedInAsCRI() (isCRI bool) {
+	c.read(func() {
+		isCRI = c.data.IsLoggedInAsCRI
+	})
+	return
+}
+
+func (c *bxConfig) IsAccessFromVPC() (isVPC bool) {
+	c.read(func() {
+		isVPC = c.data.IsAccessFromVPC
+	})
+	return
+}
+
 func (c *bxConfig) HasAPIEndpoint() bool {
 	return c.APIEndpoint() != ""
 }
@@ -179,6 +201,7 @@ func (c *bxConfig) ConsoleEndpoints() (endpoints models.Endpoints) {
 	c.read(func() {
 		endpoints.PublicEndpoint = c.data.ConsoleEndpoint
 		endpoints.PrivateEndpoint = c.data.ConsolePrivateEndpoint
+		endpoints.PrivateVPCEndpoint = c.data.ConsolePrivateVPCEndpoint
 	})
 	return
 }
@@ -212,10 +235,18 @@ func (c *bxConfig) CloudType() (ctype string) {
 	return
 }
 
+func (c *bxConfig) CRIType() (criType string) {
+	c.read(func() {
+		criType = c.data.CRIType
+	})
+	return
+}
+
 func (c *bxConfig) IAMEndpoints() (endpoints models.Endpoints) {
 	c.read(func() {
 		endpoints.PublicEndpoint = c.data.IAMEndpoint
 		endpoints.PrivateEndpoint = c.data.IAMPrivateEndpoint
+		endpoints.PrivateVPCEndpoint = c.data.IAMPrivateVPCEndpoint
 	})
 	return
 }
@@ -267,11 +298,34 @@ func (c *bxConfig) IAMID() (guid string) {
 	return
 }
 
-func (c *bxConfig) IsLoggedIn() (loggedIn bool) {
-	c.read(func() {
-		loggedIn = c.data.IAMToken != ""
-	})
-	return
+// IsLoggedIn will check if the user is logged in. To determine if the user is logged in both the
+// token and the refresh token will be checked
+// If token is near expiration or expired, and a refresh token is present attempt to refresh the token.
+// If token refresh was successful, check if the new IAM token is valid. If valid, user is logged in,
+// otherwise user can be considered logged out. If refresh failed, then user is considered logged out.
+// If no refresh token is present, and token is expired, then user is considered logged out.
+func (c *bxConfig) IsLoggedIn() bool {
+	if token, refresh := c.IAMToken(), c.IAMRefreshToken(); token != "" || refresh != "" {
+		iamTokenInfo := NewIAMTokenInfo(token)
+		if iamTokenInfo.hasExpired() && refresh != "" {
+			repo := newRepository(c, nil)
+			if _, err := repo.RefreshIAMToken(); err != nil {
+				return false
+			}
+			// Check again to make sure that the new token has not expired
+			if iamTokenInfo = NewIAMTokenInfo(c.IAMToken()); iamTokenInfo.hasExpired() {
+				return false
+			}
+
+			return true
+		} else if iamTokenInfo.hasExpired() && refresh == "" {
+			return false
+		} else {
+			return true
+		}
+	}
+
+	return false
 }
 
 func (c *bxConfig) CurrentAccount() (account models.Account) {
@@ -285,8 +339,24 @@ func (c *bxConfig) HasTargetedAccount() bool {
 	return c.CurrentAccount().GUID != ""
 }
 
+func (c *bxConfig) HasTargetedProfile() bool {
+	return c.CurrentProfile().ID != ""
+}
+
+func (c *bxConfig) HasTargetedComputeResource() bool {
+	authn := c.CurrentProfile().ComputeResource
+	return authn.ID != ""
+}
+
 func (c *bxConfig) IMSAccountID() string {
 	return NewIAMTokenInfo(c.IAMToken()).Accounts.IMSAccountID
+}
+
+func (c *bxConfig) CurrentProfile() (profile models.Profile) {
+	c.read(func() {
+		profile = c.data.Profile
+	})
+	return
 }
 
 func (c *bxConfig) CurrentResourceGroup() (group models.ResourceGroup) {
@@ -360,6 +430,25 @@ func (c *bxConfig) CheckCLIVersionDisabled() (disabled bool) {
 		disabled = c.data.CheckCLIVersionDisabled
 	})
 	return
+}
+
+// CheckMessageOfTheDay will return true if the message-of-the-day
+// endpoint has not been check in the past 24 hours.
+func (c *bxConfig) CheckMessageOfTheDay() bool {
+	var lastCheck int64
+	c.read(func() {
+		lastCheck = c.data.MessageOfTheDayTime
+	})
+
+	if lastCheck <= 0 {
+		return true
+	}
+
+	currentDate := time.Now()
+	lastCheckDate := time.Unix(lastCheck, 0)
+
+	// If MOD has not been checked in over 1 day
+	return currentDate.Sub(lastCheckDate).Hours() > 24
 }
 
 func (c *bxConfig) UpdateCheckInterval() (interval time.Duration) {
@@ -437,10 +526,17 @@ func (c *bxConfig) SetPrivateEndpointEnabled(isPrivate bool) {
 	})
 }
 
+func (c *bxConfig) SetAccessFromVPC(isVPC bool) {
+	c.write(func() {
+		c.data.IsAccessFromVPC = isVPC
+	})
+}
+
 func (c *bxConfig) SetConsoleEndpoints(endpoint models.Endpoints) {
 	c.write(func() {
 		c.data.ConsoleEndpoint = endpoint.PublicEndpoint
 		c.data.ConsolePrivateEndpoint = endpoint.PrivateEndpoint
+		c.data.ConsolePrivateVPCEndpoint = endpoint.PrivateVPCEndpoint
 	})
 }
 
@@ -455,6 +551,7 @@ func (c *bxConfig) SetIAMEndpoints(endpoints models.Endpoints) {
 	c.write(func() {
 		c.data.IAMEndpoint = endpoints.PublicEndpoint
 		c.data.IAMPrivateEndpoint = endpoints.PrivateEndpoint
+		c.data.IAMPrivateVPCEndpoint = endpoints.PrivateVPCEndpoint
 	})
 }
 
@@ -475,6 +572,24 @@ func (c *bxConfig) SetIAMRefreshToken(token string) {
 func (c *bxConfig) SetAccount(account models.Account) {
 	c.write(func() {
 		c.data.Account = account
+	})
+}
+
+func (c *bxConfig) SetProfile(profile models.Profile) {
+	c.write(func() {
+		c.data.Profile = profile
+	})
+}
+
+func (c *bxConfig) SetCRIType(criType string) {
+	c.write(func() {
+		c.data.CRIType = criType
+	})
+}
+
+func (c *bxConfig) SetIsLoggedInAsCRI(isCRI bool) {
+	c.write(func() {
+		c.data.IsLoggedInAsCRI = isCRI
 	})
 }
 
@@ -607,11 +722,34 @@ func (c *bxConfig) SetCloudName(cname string) {
 	})
 }
 
+func (c *bxConfig) SetMessageOfTheDayTime() {
+	c.write(func() {
+		c.data.MessageOfTheDayTime = time.Now().Unix()
+	})
+}
+
+func (c *bxConfig) SetLastSessionUpdateTime() {
+	c.write(func() {
+		c.data.LastSessionUpdateTime = time.Now().Unix()
+	})
+}
+
+func (c *bxConfig) LastSessionUpdateTime() (session int64) {
+	c.read(func() {
+		session = c.data.LastSessionUpdateTime
+	})
+
+	return
+}
+
 func (c *bxConfig) ClearSession() {
 	c.write(func() {
 		c.data.IAMToken = ""
 		c.data.IAMRefreshToken = ""
 		c.data.Account = models.Account{}
+		c.data.Profile = models.Profile{}
+		c.data.CRIType = ""
+		c.data.IsLoggedInAsCRI = false
 		c.data.ResourceGroup = models.ResourceGroup{}
 		c.data.LoginAt = time.Time{}
 	})
@@ -622,12 +760,15 @@ func (c *bxConfig) UnsetAPI() {
 		c.data.APIEndpoint = ""
 		c.data.SSLDisabled = false
 		c.data.IsPrivate = false
+		c.data.IsAccessFromVPC = false
 		c.data.Region = ""
 		c.data.RegionID = ""
 		c.data.ConsoleEndpoint = ""
 		c.data.ConsolePrivateEndpoint = ""
+		c.data.ConsolePrivateVPCEndpoint = ""
 		c.data.IAMEndpoint = ""
 		c.data.IAMPrivateEndpoint = ""
+		c.data.IAMPrivateVPCEndpoint = ""
 		c.data.CloudName = ""
 		c.data.CloudType = ""
 	})

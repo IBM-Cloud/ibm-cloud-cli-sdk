@@ -18,18 +18,23 @@ const (
 	defaultClientSecret    = "bx"
 	defaultUAAClientID     = "cf"
 	defaultUAAClientSecret = ""
+	crTokenParam           = "cr_token"
+	profileIDParam         = "profile_id"
+	profileNameParam       = "profile_name"
+	profileCRNParam        = "profile_crn"
 )
 
 // Grant types
 const (
-	GrantTypePassword              authentication.GrantType = "password"
-	GrantTypeAPIKey                authentication.GrantType = "urn:ibm:params:oauth:grant-type:apikey"
-	GrantTypeOnetimePasscode       authentication.GrantType = "urn:ibm:params:oauth:grant-type:passcode" // #nosec G101
+	GrantTypePassword              authentication.GrantType = "password"                                 // #nosec G101 - this the API request grant type. Not a credential
+	GrantTypeAPIKey                authentication.GrantType = "urn:ibm:params:oauth:grant-type:apikey"   // #nosec G101 - this the API request grant type. Not a credential
+	GrantTypeOnetimePasscode       authentication.GrantType = "urn:ibm:params:oauth:grant-type:passcode" // #nosec G101 - this the API request grant type. Not a credential
 	GrantTypeAuthorizationCode     authentication.GrantType = "authorization_code"
 	GrantTypeRefreshToken          authentication.GrantType = "refresh_token"
-	GrantTypeDelegatedRefreshToken authentication.GrantType = "urn:ibm:params:oauth:grant-type:delegated-refresh-token" // #nosec G101
+	GrantTypeDelegatedRefreshToken authentication.GrantType = "urn:ibm:params:oauth:grant-type:delegated-refresh-token" // #nosec G101 - this the API request grant type. Not a credential
 	GrantTypeIdentityCookie        authentication.GrantType = "urn:ibm:params:oauth:grant-type:identity-cookie"
 	GrantTypeDerive                authentication.GrantType = "urn:ibm:params:oauth:grant-type:derive"
+	GrantTypeCRToken               authentication.GrantType = "urn:ibm:params:oauth:grant-type:cr-token" // #nosec G101 - this the API request grant type. Not a credential
 )
 
 // Response types
@@ -37,7 +42,14 @@ const (
 	ResponseTypeIAM                   authentication.ResponseType = "cloud_iam"
 	ResponseTypeUAA                   authentication.ResponseType = "uaa"
 	ResponseTypeIMS                   authentication.ResponseType = "ims_portal"
-	ResponseTypeDelegatedRefreshToken authentication.ResponseType = "delegated_refresh_token" // #nosec G101
+	ResponseTypeDelegatedRefreshToken authentication.ResponseType = "delegated_refresh_token" // #nosec G101 - this the API response grant type. Not a credential
+)
+
+const (
+	InvalidTokenErrorCode           = "BXNIM0407E" // #nosec G101 - this an API error response code. Not a credential
+	RefreshTokenExpiryErrorCode     = "BXNIM0408E" // #nosec G101 - this an API error response code. Not a credential
+	ExternalAuthenticationErrorCode = "BXNIM0400E"
+	SessionInactiveErrorCode        = "BXNIM0439E"
 )
 
 type MFAVendor string
@@ -75,6 +87,36 @@ func OnetimePasscodeTokenRequest(passcode string, opts ...authentication.TokenOp
 func APIKeyTokenRequest(apikey string, opts ...authentication.TokenOption) *authentication.TokenRequest {
 	r := authentication.NewTokenRequest(GrantTypeAPIKey)
 	r.SetTokenParam("apikey", apikey)
+	for _, o := range opts {
+		r.WithOption(o)
+	}
+	return r
+}
+
+// CRTokenRequest builds a 'TokenRequest' struct from the user input. The value of 'crToken' is set as the value of the 'cr_token' form
+// parameter of the request. 'profileID' and 'profileName' are optional parameters used to set the 'profile_id' and 'profile_name' form parameters
+// in the request, respectively.
+func CRTokenRequest(crToken string, profileID string, profileName string, opts ...authentication.TokenOption) *authentication.TokenRequest {
+	return CRTokenRequestWithCRN(crToken, profileID, profileName, "", opts...)
+}
+
+// CRTokenRequestWithCRN builds a 'TokenRequest' struct from the user input. The value of 'crToken' is set as the value of the 'cr_token' form
+// parameter of the request. 'profileID', 'profileName', and 'profileCRN' are optional parameters used to set the 'profile_id', 'profile_name',
+// and 'profile_crn' form parameters in the request, respectively.
+func CRTokenRequestWithCRN(crToken string, profileID string, profileName string, profileCRN string, opts ...authentication.TokenOption) *authentication.TokenRequest {
+	r := authentication.NewTokenRequest(GrantTypeCRToken)
+	r.SetTokenParam(crTokenParam, crToken)
+
+	if profileID != "" {
+		r.SetTokenParam(profileIDParam, profileID)
+	}
+	if profileName != "" {
+		r.SetTokenParam(profileNameParam, profileName)
+	}
+	if profileCRN != "" {
+		r.SetTokenParam(profileCRNParam, profileCRN)
+	}
+
 	for _, o := range opts {
 		r.WithOption(o)
 	}
@@ -144,6 +186,7 @@ func SetPhoneAuthToken(token string) authentication.TokenOption {
 type Token struct {
 	AccessToken  string    `json:"access_token"`
 	RefreshToken string    `json:"refresh_token"`
+	SessionID    string    `json:"session_id"`
 	TokenType    string    `json:"token_type"`
 	Scope        string    `json:"scope"`
 	Expiry       time.Time `json:"expiration"`
@@ -184,6 +227,7 @@ type Endpoint struct {
 
 type Interface interface {
 	GetEndpoint() (*Endpoint, error)
+	RefreshSession(sessionId string) error
 	GetToken(req *authentication.TokenRequest) (*Token, error)
 	InitiateIMSPhoneFactor(req *authentication.TokenRequest) (authToken string, err error)
 }
@@ -191,6 +235,7 @@ type Interface interface {
 type Config struct {
 	IAMEndpoint     string
 	TokenEndpoint   string // Optional. Default value is <IAMEndpoint>/identity/token
+	SessionEndpoint string // Optional. Default value is <IAMEndpoint>/v1/sessions
 	ClientID        string
 	ClientSecret    string
 	UAAClientID     string
@@ -204,10 +249,18 @@ func (c Config) tokenEndpoint() string {
 	return c.IAMEndpoint + "/identity/token"
 }
 
+func (c Config) sessionEndpoint() string {
+	if c.SessionEndpoint != "" {
+		return c.SessionEndpoint
+	}
+	return c.IAMEndpoint + "/v1/sessions"
+}
+
 func DefaultConfig(iamEndpoint string) Config {
 	return Config{
 		IAMEndpoint:     iamEndpoint,
 		TokenEndpoint:   iamEndpoint + "/identity/token",
+		SessionEndpoint: iamEndpoint + "/v1/sessions",
 		ClientID:        defaultClientID,
 		ClientSecret:    defaultClientSecret,
 		UAAClientID:     defaultUAAClientID,
@@ -265,6 +318,24 @@ func (c *client) GetToken(tokenReq *authentication.TokenRequest) (*Token, error)
 	return &ret, nil
 }
 
+// RefreshSession maintains the session state. Useful for async workloads
+// @param sessionID string - the session ID
+func (c *client) RefreshSession(sessionID string) error {
+	// If no session ID is provided there is no need to refresh
+	if sessionID == "" {
+		return nil
+	}
+	url := fmt.Sprintf("%s/%s/state", c.config.sessionEndpoint(), sessionID)
+	r := rest.PatchRequest(url).
+		Set("Authorization", "Basic "+base64.StdEncoding.EncodeToString([]byte(fmt.Sprintf("%s:%s", c.config.ClientID, c.config.ClientSecret))))
+
+	if err := c.doRequest(r, nil); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (c *client) InitiateIMSPhoneFactor(tokenReq *authentication.TokenRequest) (authToken string, err error) {
 	v := make(url.Values)
 	tokenReq.SetValue(v)
@@ -304,12 +375,14 @@ func (c *client) doRequest(r *rest.Request, respV interface{}) error {
 		if jsonErr := json.Unmarshal([]byte(err.Message), &apiErr); jsonErr == nil {
 			switch apiErr.ErrorCode {
 			case "":
-			case "BXNIM0407E":
+			case InvalidTokenErrorCode:
 				return authentication.NewInvalidTokenError(apiErr.errorMessage())
-			case "BXNIM0408E":
+			case RefreshTokenExpiryErrorCode:
 				return authentication.NewRefreshTokenExpiryError(apiErr.errorMessage())
-			case "BXNIM0400E":
+			case ExternalAuthenticationErrorCode:
 				return &authentication.ExternalAuthenticationError{ErrorCode: apiErr.Requirements.ErrorCode, ErrorMessage: apiErr.Requirements.ErrorMessage}
+			case SessionInactiveErrorCode:
+				return authentication.NewSessionInactiveError(apiErr.errorMessage())
 			default:
 				return authentication.NewServerError(err.StatusCode, apiErr.ErrorCode, apiErr.errorMessage())
 			}

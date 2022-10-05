@@ -23,14 +23,17 @@ func StartWithArgs(plugin Plugin, args []string) {
 		if err != nil {
 			panic(err)
 		}
-		os.Stdout.Write(json)
+		_, err = os.Stdout.Write(json)
+		if err != nil {
+			panic(err)
+		}
 		return
 	}
 
 	context := InitPluginContext(plugin.GetMetadata().Name)
 
 	// initialization
-	i18n.T = i18n.Tfunc(context.Locale())
+	i18n.T = i18n.MustTfunc(context.Locale())
 
 	plugin.Run(context, args)
 }
