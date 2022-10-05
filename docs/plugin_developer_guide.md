@@ -1114,6 +1114,8 @@ You can find other examples in [tests](https://github.com/maxbrunsfeld/counterfe
 
 IBM Cloud CLI tends to be used globally. Both IBM Cloud CLI and its plug-ins should support globalization. We have enabled internationalization (i18n) for CLI's base commands with the help of the third-party tool "[go-i18n](https://github.com/nicksnyder/go-i18n)". To keep user experience consistent, we recommend plug-in developers follow the CLI's way of i18n enablement.
 
+Please install the *go-i18n* CLI for version 1.10.0. Newer versions of the CLI are no longer compatible with translations files prior to go-i18n@2.0.0. You can install the CLI using the command: `go install github.com/nicksnyder/go-i18n/goi18n@1.10.1`
+
 Here's the workflow:
 
 1.  Add new strings or replace existing strings with `T()` function calls to load the translated strings.  For example:
@@ -1149,10 +1151,10 @@ Here's the workflow:
           1.  Create empty files `zh-hans.all.json` and `fr-br.all.json`, and run:
           2.  Run:
               ```bash
-              goi18n –outputdir <directory\_of\_generated\_translation\_files> en-us.all.json zh-hans.all.json fr-br.all.json
+              goi18n -flat=false –outdir <directory\_of\_generated\_translation\_files> en-us.all.json zh-hans.all.json fr-br.all.json
               ```
 
-          The previous command will generate 2 output files for each language: `xx-yy.all.json` contains all strings for the language, and `xx-yy.untranslated.json` contains untranslated strings. After the strings are translated, they should be merged back into `xx-yy.all.json`. For more details, refer to goi18n CLI's help by 'goi18n –help'.
+      The previous command will generate 2 output files for each language: `xx-yy.all.json` contains all strings for the language, and `xx-yy.untranslated.json` contains untranslated strings. After the strings are translated, they should be merged back into `xx-yy.all.json`. If plugin is on the ibm-cloud-cli-sdk 1.00 or above, rename the file from `xx-yy.all.json` to `all.xx-yy.json`. For more details, refer to goi18n CLI's help by 'goi18n –help'.
 
 3.  Package translation files. IBM Cloud CLI is to be built as a stand-alone binary distribution. In order to load i18n resource files in code, we use [go-bindata](https://github.com/jteeuwen/go-bindata) to auto-generate Go source code from all i18n resource files and the compile them into the binary. You can write a script to do it automatically during build. A sample script could be like:
 
@@ -1174,34 +1176,49 @@ Here's the workflow:
     `T()` must be initialized before use. During i18n initialization in IBM Cloud CLI, user locale is used if it's set in `~/.bluemix/config.json` (plug-in can get user locale via `PluginContext.Locale()`). Otherwise, system locale is auto discovered (see [jibber\_jabber](https://github.com/cloudfoundry/jibber_jabber)) and used. If system locale is not detected or supported, default locale `en\_US` is then used. Next, we initialize the translate function with the locale. Sample code:
 
     ```go
-    func initWithLocale(locale string) goi18n.TranslateFunc {
+    import (
+      "fmt"
+      "github.com/IBM-Cloud/ibm-cloud-cli-sdk/i18n"
+    )
+
+    var T i18n.TranslateFunc = Init(core_config.NewCoreConfig(func(e error) {}), new(JibberJabberDetector))
+
+    func Init(coreConfig core_config.Repository, detector Detector) i18n.TranslateFunc {
+	    bundle = i18n.Bundle()
+	    userLocale := coreConfig.Locale()
+	    if userLocale != "" {
+		    return initWithLocale(userLocale)
+      }
+		}
+
+    func initWithLocale(locale string) i18n.TranslateFunc {
         err := loadFromAsset(locale)
         if err != nil {
             panic(err)
         }
-        return goi18n.MustTfunc(locale, DEFAULT_LOCALE)
+        return i18n.MustTfunc(locale, DEFAULT_LOCALE)
     }
 
     // load translation asset for the given locale
     func loadFromAsset(locale string) (err error) {
-        assetName := locale + ".all.json"
+        assetName := fmt.Sprintf("all.%s.json", locale)
         assetKey := filepath.Join(resourcePath, assetName)
         bytes, err := resources.Asset(assetKey)
         if err != nil {
            return
         }
-        err = goi18n.ParseTranslationFileBytes(assetName, bytes)
+        _, err = bundle.ParseMessageFileBytes(bytes, resourceKey)
         return
     }
     ```
 
 ## 8. Command Design
 
-### 8.1. Honour Region/Resource Group Setting of CLI
+### 8.1. Honor Region/Resource Group Setting of CLI
 
 When users are using CLI, they probably have already targeted region or resource group during login. It's cumbersome to ask users to re-target region or resource group in specific command again.
 
-- By default, plugin should honour the region/resource group setting of CLI. Check `CurrentRegion`, `HasTargetedRegion`, `CurrentResourceGroup`, and `HasTargetedResourceGroup` in the [`core_config.Repository`](https://godoc.org/github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/configuration/core_config#Repository).
+- By default, plugin should honor the region/resource group setting of CLI. Check `CurrentRegion`, `HasTargetedRegion`, `CurrentResourceGroup`, and `HasTargetedResourceGroup` in the [`core_config.Repository`](https://godoc.org/github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/configuration/core_config#Repository).
 
     ```go
     func (demo *DemoPlugin) Run(context plugin.PluginContext, args []string){

@@ -33,7 +33,7 @@ func StartWithArgs(plugin Plugin, args []string) {
 	context := InitPluginContext(plugin.GetMetadata().Name)
 
 	// initialization
-	i18n.T = i18n.Tfunc(context.Locale())
+	i18n.T = i18n.MustTfunc(context.Locale())
 
 	plugin.Run(context, args)
 }
