@@ -28,4 +28,7 @@ before_script:
 script:
   - go test $(go list ./... | grep -v "plugin_examples" | grep -v "vendor")
   - gosec -exclude-dir=plugin_examples -exclude-dir=vendor -quiet ./...
-  - nancy go.sum
+    # NOTE: Nancy is returning 500 when access Nexus OSSI Index 
+    # Until a fix is release we will disable nancy from the build
+    # @see https://github.com/sonatype-nexus-community/nancy/issues/263 for more information
+    # - nancy go.sum
