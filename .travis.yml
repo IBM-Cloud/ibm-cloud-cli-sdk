@@ -19,7 +19,7 @@ install:
   - python3 -m pip install -U pip
   - pip3 install --upgrade "git+https://github.com/ibm/detect-secrets.git@master#egg=detect-secrets"
   - curl -sfL https://raw.githubusercontent.com/securego/gosec/master/install.sh | sh -s -- -b $GOPATH/bin
-  - sudo curl -s -L "https://github.com/sonatype-nexus-community/nancy/releases/download/v0.1.15/nancy-linux.amd64-v0.1.15" -o "/usr/local/bin/nancy" && sudo chmod +x "/usr/local/bin/nancy"
+  - sudo curl -s -L "https://github.com/sonatype-nexus-community/nancy/releases/download/v1.0.41/nancy-v1.0.41-linux-amd64" -o "/usr/local/bin/nancy" && sudo chmod +x "/usr/local/bin/nancy"
 
 before_script:
   - bin/detect_secrets.sh
@@ -28,4 +28,4 @@ before_script:
 script:
   - go test $(go list ./... | grep -v "plugin_examples" | grep -v "vendor")
   - gosec -exclude-dir=plugin_examples -exclude-dir=vendor -quiet ./...
-  - nancy go.sum
+  - go list -json -deps ./... | nancy sleuth
