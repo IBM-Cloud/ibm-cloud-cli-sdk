@@ -20,10 +20,9 @@ const (
 )
 
 var (
-	bundle                *i18n.Bundle
-	T                     TranslateFunc
-	RESOURCE_PATH         = filepath.Join("i18n", "resources")
-	TRANSLATION_NOT_FOUND = "!!i18N_MESSAGE_NOT_FOUND!!"
+	bundle        *i18n.Bundle
+	T             TranslateFunc
+	RESOURCE_PATH = filepath.Join("i18n", "resources")
 )
 
 func init() {
@@ -83,9 +82,9 @@ func Translate(loc *i18n.Localizer) TranslateFunc {
 
 		// If no message is returned we can assume that that
 		// the translation could not be found in any of the files
-		// Set the message as !!i18N_MESSAGE_NOT_FOUND!!
+		// Set the message as the messageID
 		if msg == "" {
-			msg = TRANSLATION_NOT_FOUND
+			msg = messageId
 		}
 		return msg
 
