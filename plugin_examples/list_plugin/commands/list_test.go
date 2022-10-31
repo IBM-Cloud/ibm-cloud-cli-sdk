@@ -2,7 +2,6 @@ package commands_test
 
 import (
 	sdkmodels "github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/models"
-	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/i18n"
 	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/plugin/pluginfakes"
 	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/plugin_examples/list_plugin/api/fakes"
 	. "github.com/IBM-Cloud/ibm-cloud-cli-sdk/plugin_examples/list_plugin/commands"
@@ -46,7 +45,7 @@ var _ = Describe("ListCommand", func() {
 			It("Should fail", func() {
 				err = cmd.Run([]string{})
 				Expect(err).To(HaveOccurred())
-				Expect(err.Error()).To(Equal(i18n.TRANSLATION_NOT_FOUND))
+				Expect(err.Error()).To(Equal("No CF API endpoint set. Use '{{.Command}}' to target a CloudFoundry environment."))
 			})
 		})
 	})
