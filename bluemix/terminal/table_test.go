@@ -92,3 +92,36 @@ func TestNotEnoughRowEntiresJson(t *testing.T) {
 	assert.Contains(t, buf.String(), "\"column_1\": \"row1\"")
 	assert.Contains(t, buf.String(), "\"column_1\": \"\"")
 }
+
+func TestPrintCsvSimple(t *testing.T) {
+	buf := bytes.Buffer{}
+	testTable := NewTable(&buf, []string{"col1", "col2"})
+	testTable.Add("row1-col1", "row1-col2")
+	testTable.Add("row2-col1", "row2-col2")
+	testTable.PrintCsv()
+	assert.Contains(t, buf.String(), "col1,col2")
+	assert.Contains(t, buf.String(), "row1-col1,row1-col2")
+	assert.Contains(t, buf.String(), "row2-col1,row2-col2")
+}
+
+func TestNotEnoughColPrintCsv(t *testing.T) {
+	buf := bytes.Buffer{}
+	testTable := NewTable(&buf, []string{"", "col2"})
+	testTable.Add("row1-col1", "row1-col2")
+	testTable.Add("row2-col1", "row2-col2")
+	testTable.PrintCsv()
+	assert.Contains(t, buf.String(), ",col2")
+	assert.Contains(t, buf.String(), "row1-col1,row1-col2")
+	assert.Contains(t, buf.String(), "row2-col1,row2-col2")
+}
+
+func TestNotEnoughRowPrintCsv(t *testing.T) {
+	buf := bytes.Buffer{}
+	testTable := NewTable(&buf, []string{"col1", "col2"})
+	testTable.Add("row1-col1", "row1-col2")
+	testTable.Add("row2-col1", "")
+	testTable.PrintCsv()
+	assert.Contains(t, buf.String(), "col1,col2")
+	assert.Contains(t, buf.String(), "row1-col1,row1-col2")
+	assert.Contains(t, buf.String(), "row2-col1,")
+}

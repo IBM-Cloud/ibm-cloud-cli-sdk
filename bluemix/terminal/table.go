@@ -1,6 +1,7 @@
 package terminal
 
 import (
+	"encoding/csv"
 	"fmt"
 	"io"
 	"strings"
@@ -18,6 +19,7 @@ type Table interface {
 	Add(row ...string)
 	Print()
 	PrintJson()
+	PrintCsv()
 }
 
 type PrintableTable struct {
@@ -156,4 +158,10 @@ func (t *PrintableTable) PrintJson() {
 	fmt.Fprintln(t.writer, "]")
 	// mimic behavior of Print()
 	t.rows = [][]string{}
+}
+
+func (t *PrintableTable) PrintCsv() {
+	csvwriter := csv.NewWriter(t.writer)
+	csvwriter.Write(t.headers)
+	csvwriter.WriteAll(t.rows)
 }
