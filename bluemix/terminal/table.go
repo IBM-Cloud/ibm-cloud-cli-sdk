@@ -162,6 +162,12 @@ func (t *PrintableTable) PrintJson() {
 
 func (t *PrintableTable) PrintCsv() {
 	csvwriter := csv.NewWriter(t.writer)
-	csvwriter.Write(t.headers)
-	csvwriter.WriteAll(t.rows)
+	err := csvwriter.Write(t.headers)
+	if err != nil {
+		fmt.Fprintln(t.writer, "Failed, header could not convert to csv format")
+	}
+	err = csvwriter.WriteAll(t.rows)
+	if err != nil {
+		fmt.Fprintln(t.writer, "Failed, rows could not convert to csv format")
+	}
 }
