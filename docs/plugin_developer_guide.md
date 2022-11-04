@@ -74,6 +74,9 @@ IBM Cloud CLI SDK provides a set of APIs to register and manage plug-ins. It als
 
     **Understanding the fields in this `plugin.PluginMetadata` struct:**
     - _Name_: The name of plug-in. It will be displayed when using `ibmcloud plugin list` command or can be used to uninstall the plug-in through `ibmcloud plugin uninstall` command.
+      - It **strongly** encouraged to use a name that best describes the service the plugin is provided.
+    - _Aliases_: A list of short names of the plugin's name that can be used as a stand-in for installing or uninstall the plugin.
+      - It is strongly recommended that you have at least one alias to better usability of the plugin.
     - _Version_: The version of plug-in.
     - _MinCliVersion_: The minimal version of IBM Cloud CLI required by the plug-in.
     - _PrivateEndpointSupported_: Indicates if the plug-in is designed to also be used over the private network.
