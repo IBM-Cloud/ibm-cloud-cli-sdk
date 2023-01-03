@@ -10,16 +10,6 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-// import (
-// 	"io/ioutil"
-// 	"os"
-// 	"path/filepath"
-// 	"testing"
-
-// 	"github.com/stretchr/testify/assert"
-// 	"github.ibm.com/bluemix-cli-release/build/src/github.ibm.com/Bluemix/bluemix-cli-common/file_helpers"
-// )
-
 func captureAndPrepareEnv(a *assert.Assertions) ([]string, string) {
 	env := os.Environ()
 
