@@ -30,7 +30,11 @@ func captureAndPrepareEnv(a *assert.Assertions) ([]string, string) {
 	os.Unsetenv("IBMCLOUD_HOME")
 	os.Unsetenv("BLUEMIX_HOME")
 	os.Setenv("HOME", userHome)
-
+	// UserHomeDir() uses HOMEDRIVE + HOMEPATH for windows
+	if os.Getenv("OS") == "Windows_NT" {
+		// ioutil.TempDir has the drive letter in the path, so we need to remove it when we set HOMEDRIVE
+		os.Setenv("HOMEPATH", strings.Replace(userHome, os.Getenv("HOMEDRIVE"), "", -1))
+	}
 	a.NoError(os.RemoveAll(userHome))
 
 	return env, userHome
