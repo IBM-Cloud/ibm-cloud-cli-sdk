@@ -10,6 +10,7 @@ import (
 	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/configuration"
 	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/models"
 	"github.com/fatih/structs"
+	"github.com/gofrs/flock"
 )
 
 type raw map[string]interface{}
@@ -95,9 +96,11 @@ func (data *BXConfigData) Unmarshal(bytes []byte) error {
 type bxConfig struct {
 	data      *BXConfigData
 	persistor configuration.Persistor
-	initOnce  *sync.Once
-	lock      sync.RWMutex
-	onError   func(error)
+	// new item:
+	flock    *flock.Flock
+	initOnce *sync.Once
+	lock     sync.RWMutex
+	onError  func(error)
 }
 
 func createBluemixConfigFromPersistor(persistor configuration.Persistor, errHandler func(error)) *bxConfig {
