@@ -10,7 +10,7 @@ import (
 	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/configuration"
 	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/models"
 	"github.com/fatih/structs"
-	"github.com/gofrs/flock"
+	// "github.com/gofrs/flock"
 )
 
 type raw map[string]interface{}
@@ -97,7 +97,7 @@ type bxConfig struct {
 	data      *BXConfigData
 	persistor configuration.Persistor
 	// new item:
-	flock    *flock.Flock
+	// flock    *flock.Flock
 	initOnce *sync.Once
 	lock     sync.RWMutex
 	onError  func(error)
@@ -157,7 +157,9 @@ func (c *bxConfig) writeRaw(cb func()) {
 
 	err := c.persistor.Save(c.data.raw)
 	if err != nil {
-		c.onError(err)
+		c.onError(err) // NOTE: the error could be triggered by a file-locking issue,
+		// a file-unlocking issue, OR a file-writing issue; so a TODO is to check the adequacy of
+		// the config-object-provided onError() for this
 	}
 }
 

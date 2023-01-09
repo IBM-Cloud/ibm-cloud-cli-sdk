@@ -6,6 +6,7 @@ import (
 	"path/filepath"
 
 	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/common/file_helpers"
+	"github.com/gofrs/flock"
 )
 
 const (
@@ -26,6 +27,7 @@ type Persistor interface {
 
 type DiskPersistor struct {
 	filePath string
+	fileLock *flock.Flock
 }
 
 func NewDiskPersistor(path string) DiskPersistor {
@@ -51,7 +53,15 @@ func (dp DiskPersistor) Load(data DataInterface) error {
 }
 
 func (dp DiskPersistor) Save(data DataInterface) error {
-	return dp.write(data)
+	lockErr := dp.fileLock.Lock() // provide a file lock, in addition to the RW mutex, just while dp.write is called
+	if lockErr != nil {
+		return lockErr
+	}
+	writeErr := dp.write(data)
+	if unlockErr := dp.fileLock.Unlock(); unlockErr != nil {
+		return unlockErr
+	}
+	return writeErr
 }
 
 func (dp DiskPersistor) read(data DataInterface) error {
