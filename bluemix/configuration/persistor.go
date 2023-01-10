@@ -33,6 +33,7 @@ type DiskPersistor struct {
 func NewDiskPersistor(path string) DiskPersistor {
 	return DiskPersistor{
 		filePath: path,
+		fileLock: flock.New(path),
 	}
 }
 
