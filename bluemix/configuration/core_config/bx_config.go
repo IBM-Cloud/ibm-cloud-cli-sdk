@@ -155,8 +155,9 @@ func (c *bxConfig) writeRaw(cb func()) {
 	err := c.persistor.Save(c.data.raw)
 	if err != nil {
 		c.onError(err) // NOTE: the error could be triggered by a file-locking issue,
-		// a file-unlocking issue, OR a file-writing issue; so a TODO is to check the adequacy of
-		// the config-object-provided onError() for this
+		// a file-unlocking issue, OR a file-writing issue; currently, the error chain
+		// ends in `panic("configuration error: " + err.Error()"`, which is somewhat
+		// generic but sufficient for all three of these error types
 	}
 }
 
