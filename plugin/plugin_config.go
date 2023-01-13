@@ -414,6 +414,7 @@ func (c *pluginConfig) write(cb func()) error {
 	defer c.lock.Unlock()
 
 	c.init()
+
 	cb()
 
 	err := c.persistor.Save(c.data)
