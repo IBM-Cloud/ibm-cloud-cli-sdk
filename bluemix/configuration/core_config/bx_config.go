@@ -10,7 +10,6 @@ import (
 	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/configuration"
 	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/models"
 	"github.com/fatih/structs"
-	// "github.com/gofrs/flock"
 )
 
 type raw map[string]interface{}
