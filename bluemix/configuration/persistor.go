@@ -47,22 +47,26 @@ func (dp DiskPersistor) Load(data DataInterface) error {
 		return err
 	}
 
-	if err != nil {
-		err = dp.write(data)
+	if err != nil { // strange: requiring an error (to allow write attempt to continue), as long as it is not a permission error
+		err = dp.lockedWrite(data)
 	}
 	return err
 }
 
-func (dp DiskPersistor) Save(data DataInterface) error {
-	lockErr := dp.fileLock.Lock() // provide a file lock, in addition to the RW mutex, just while dp.write is called
+func (dp DiskPersistor) lockedWrite(data DataInterface) error {
+	lockErr := dp.fileLock.Lock() // provide a file lock, in addition to the RW mutex (in calling functions), just while dp.write is called
 	if lockErr != nil {
 		return lockErr
 	}
 	writeErr := dp.write(data)
-	if unlockErr := dp.fileLock.Unlock(); unlockErr != nil {
-		return unlockErr
+	if writeErr != nil {
+		return writeErr
 	}
-	return writeErr
+	return dp.fileLock.Unlock()
+}
+
+func (dp DiskPersistor) Save(data DataInterface) error {
+	return dp.lockedWrite(data)
 }
 
 func (dp DiskPersistor) read(data DataInterface) error {

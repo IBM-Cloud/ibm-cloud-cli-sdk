@@ -96,11 +96,9 @@ func (data *BXConfigData) Unmarshal(bytes []byte) error {
 type bxConfig struct {
 	data      *BXConfigData
 	persistor configuration.Persistor
-	// new item:
-	// flock    *flock.Flock
-	initOnce *sync.Once
-	lock     sync.RWMutex
-	onError  func(error)
+	initOnce  *sync.Once
+	lock      sync.RWMutex
+	onError   func(error)
 }
 
 func createBluemixConfigFromPersistor(persistor configuration.Persistor, errHandler func(error)) *bxConfig {
