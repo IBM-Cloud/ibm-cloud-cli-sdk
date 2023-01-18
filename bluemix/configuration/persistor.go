@@ -62,7 +62,7 @@ func (dp DiskPersistor) lockedWrite(data DataInterface) error {
 	specified after the deferred call to cancelLockCtx) */
 	defer cancelLockCtx()
 	_, lockErr := dp.fileLock.TryLockContext(lockCtx, 500*time.Millisecond) /* provide a file lock, in addition to the RW mutex (in calling functions), just while dp.write is called
-	The boolean (first return value) can be wild-carded because lockErr must be non-nil when the lock-acquiring fails */
+	The boolean (first return value) can be wild-carded because lockErr must be non-nil when the lock-acquiring fails (whereby the boolean will be false) */
 	if lockErr != nil {
 		return lockErr
 	}
