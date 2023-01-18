@@ -66,7 +66,6 @@ func (dp DiskPersistor) lockedWrite(data DataInterface) error {
 	if lockErr != nil {
 		return lockErr
 	}
-
 	writeErr := dp.write(data)
 	if writeErr != nil {
 		return writeErr
