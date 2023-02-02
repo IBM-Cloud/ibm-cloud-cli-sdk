@@ -2,6 +2,7 @@ package configuration
 
 import (
 	"context"
+	"fmt"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -70,6 +71,7 @@ func (dp DiskPersistor) lockedWrite(data DataInterface) error {
 	if writeErr != nil {
 		return writeErr
 	}
+	fmt.Printf("THE WRITING SHOULD BE LOCKED PROCESS WIDE!\n")
 	return dp.fileLock.Unlock()
 }
 
