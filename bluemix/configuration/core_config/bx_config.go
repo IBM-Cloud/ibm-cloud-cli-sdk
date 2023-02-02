@@ -96,7 +96,7 @@ type bxConfig struct {
 	data      *BXConfigData
 	persistor configuration.Persistor
 	initOnce  *sync.Once
-	lock      sync.RWMutex
+	lock      sync.Mutex
 	onError   func(error)
 }
 
@@ -119,8 +119,8 @@ func (c *bxConfig) init() {
 }
 
 func (c *bxConfig) read(cb func()) {
-	c.lock.RLock()
-	defer c.lock.RUnlock()
+	c.lock.Lock()
+	defer c.lock.Unlock()
 
 	c.init()
 
