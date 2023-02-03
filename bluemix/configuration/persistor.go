@@ -46,7 +46,7 @@ func (dp DiskPersistor) Exists() bool {
 }
 
 func (dp *DiskPersistor) lockedRead(data DataInterface) error {
-	lockCtx, cancelLockCtx := context.WithTimeout(dp.parentContext, 3*time.Second) /* allotting a 5-second timeout means there can be a maximum of 5 retrials (each up to 500 ms, as
+	lockCtx, cancelLockCtx := context.WithTimeout(dp.parentContext, 30*time.Second) /* allotting a 30-second timeout means there can be a maximum of 28 retrials (each up to 500 ms, as
 	specified after the deferred call to cancelLockCtx) */
 	defer cancelLockCtx()
 	_, lockErr := dp.fileLock.TryLockContext(lockCtx, 500*time.Millisecond) /* provide a file lock, in addition to the RW mutex (in calling functions), just while dp.read is called
