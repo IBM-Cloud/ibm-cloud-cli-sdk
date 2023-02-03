@@ -96,8 +96,8 @@ type bxConfig struct {
 	data      *BXConfigData
 	persistor configuration.Persistor
 	initOnce  *sync.Once
-	//lock      sync.RWMutex
-	onError func(error)
+	lock      sync.RWMutex
+	onError   func(error)
 }
 
 func createBluemixConfigFromPersistor(persistor configuration.Persistor, errHandler func(error)) *bxConfig {
@@ -119,8 +119,6 @@ func (c *bxConfig) init() {
 }
 
 func (c *bxConfig) read(cb func()) {
-	// c.lock.Lock()
-	// defer c.lock.Unlock()
 
 	c.init()
 
@@ -128,8 +126,8 @@ func (c *bxConfig) read(cb func()) {
 }
 
 func (c *bxConfig) write(cb func()) {
-	// c.lock.Lock()
-	// defer c.lock.Unlock()
+	c.lock.Lock()
+	defer c.lock.Unlock()
 
 	c.init()
 
@@ -145,8 +143,8 @@ func (c *bxConfig) write(cb func()) {
 }
 
 func (c *bxConfig) writeRaw(cb func()) {
-	// c.lock.Lock()
-	// defer c.lock.Unlock()
+	c.lock.Lock()
+	defer c.lock.Unlock()
 
 	c.init()
 
