@@ -49,7 +49,7 @@ func (dp *DiskPersistor) lockedRead(data DataInterface) error {
 	lockCtx, cancelLockCtx := context.WithTimeout(dp.parentContext, 3*time.Second) /* allotting a 3-second timeout means there can be a maximum of 5 retrials (each up to 500 ms, as
 	specified after the deferred call to cancelLockCtx) */
 	defer cancelLockCtx()
-	_, lockErr := dp.fileLock.TryLockContext(lockCtx, 500*time.Millisecond) /* provide a file lock, in addition to the RW mutex (in calling functions), just while dp.write is called
+	_, lockErr := dp.fileLock.TryLockContext(lockCtx, 500*time.Millisecond) /* provide a file lock, in addition to the RW mutex (in calling functions), just while dp.read is called
 	The boolean (first return value) can be wild-carded because lockErr must be non-nil when the lock-acquiring fails (whereby the boolean will be false) */
 	if lockErr != nil {
 		return lockErr
@@ -67,7 +67,7 @@ func (dp DiskPersistor) Load(data DataInterface) error {
 		return err
 	}
 
-	if err != nil { // strange: requiring a reading error (to allow write attempt to continue), as long as it is not a permission error
+	if err == nil { // strange: requiring a reading error (to allow write attempt to continue), as long as it is not a permission error
 		err = dp.lockedWrite(data)
 	}
 	return err
