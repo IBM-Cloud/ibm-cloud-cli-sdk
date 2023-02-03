@@ -2,7 +2,6 @@ package configuration
 
 import (
 	"context"
-	"fmt"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -66,10 +65,6 @@ func (dp DiskPersistor) Load(data DataInterface) error {
 	err := dp.lockedRead(data)
 	if os.IsPermission(err) {
 		return err
-	}
-
-	if err != nil {
-		fmt.Printf("error after perm check on loadfn was:\n%s\n", err.Error())
 	}
 
 	if err == nil {
