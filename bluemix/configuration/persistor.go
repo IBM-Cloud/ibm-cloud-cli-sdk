@@ -68,7 +68,9 @@ func (dp DiskPersistor) Load(data DataInterface) error {
 		return err
 	}
 
-	fmt.Printf("error after perm check on loadfn was:\n%s\n", err.Error())
+	if err != nil {
+		fmt.Printf("error after perm check on loadfn was:\n%s\n", err.Error())
+	}
 
 	if err == nil {
 		err = dp.lockedWrite(data)
