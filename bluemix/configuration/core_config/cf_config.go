@@ -119,8 +119,8 @@ func (c *cfConfig) init() {
 }
 
 func (c *cfConfig) read(cb func()) {
-	/* concurrency note: init() calls the persistor's Load(), which has an flock,
-	via lockedRead(), surrounding the critical section */
+	/* concurrency note: init() calls the persistor's Load(), which has a flock,
+	via lockedRead() and lockedWrite(), surrounding the critical sections */
 	c.init()
 
 	cb()
