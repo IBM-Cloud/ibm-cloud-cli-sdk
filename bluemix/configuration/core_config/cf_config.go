@@ -86,7 +86,7 @@ type cfConfig struct {
 	data      *CFConfigData
 	persistor configuration.Persistor
 	initOnce  *sync.Once
-	lock      sync.Mutex
+	lock      sync.RWMutex
 	onError   func(error)
 }
 
@@ -119,8 +119,8 @@ func (c *cfConfig) init() {
 }
 
 func (c *cfConfig) read(cb func()) {
-	c.lock.Lock()
-	defer c.lock.Unlock()
+	c.lock.RLock()
+	defer c.lock.RUnlock()
 
 	c.init()
 
