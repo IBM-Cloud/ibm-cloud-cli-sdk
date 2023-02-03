@@ -62,7 +62,7 @@ func (dp *DiskPersistor) lockedRead(data DataInterface) error {
 }
 
 func (dp DiskPersistor) Load(data DataInterface) error {
-	err := dp.lockedRead(data)
+	err := dp.read(data)
 	if os.IsPermission(err) {
 		return err
 	}

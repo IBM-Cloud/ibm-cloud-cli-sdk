@@ -119,8 +119,8 @@ func (c *bxConfig) init() {
 }
 
 func (c *bxConfig) read(cb func()) {
-	// c.lock.Lock()
-	// defer c.lock.Unlock()
+	c.lock.Lock()
+	defer c.lock.Unlock()
 	c.init()
 
 	cb()
