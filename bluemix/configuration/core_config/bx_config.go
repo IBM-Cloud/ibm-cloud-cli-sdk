@@ -127,8 +127,8 @@ func (c *bxConfig) read(cb func()) {
 }
 
 func (c *bxConfig) write(cb func()) {
-	// c.lock.Lock()
-	// defer c.lock.Unlock()
+	c.lock.Lock()
+	defer c.lock.Unlock()
 
 	c.init()
 

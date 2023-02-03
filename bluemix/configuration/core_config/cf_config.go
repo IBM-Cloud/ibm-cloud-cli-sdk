@@ -119,8 +119,8 @@ func (c *cfConfig) init() {
 }
 
 func (c *cfConfig) read(cb func()) {
-	// c.lock.Lock()
-	// defer c.lock.Unlock()
+	c.lock.Lock()
+	defer c.lock.Unlock()
 
 	c.init()
 
