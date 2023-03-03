@@ -121,6 +121,8 @@ func (c *bxConfig) init() {
 func (c *bxConfig) read(cb func()) {
 	/* concurrency note: init() calls the persistor's Load(), which has a flock,
 	via lockedRead() and lockedWrite(), surrounding the critical sections */
+	c.lock.Lock()
+	defer c.lock.Unlock() //restoring this possibly
 	c.init()
 
 	cb()
