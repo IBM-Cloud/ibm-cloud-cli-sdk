@@ -96,7 +96,7 @@ type bxConfig struct {
 	data      *BXConfigData
 	persistor configuration.Persistor
 	initOnce  *sync.Once
-	lock      sync.RWMutex
+	lock      sync.Mutex
 	onError   func(error)
 }
 
