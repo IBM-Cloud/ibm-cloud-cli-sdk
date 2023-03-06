@@ -78,6 +78,7 @@ func (dp DiskPersistor) Load(data DataInterface) error {
 }
 
 func (dp DiskPersistor) lockedWrite(data DataInterface) error {
+	fmt.Printf("Checking that lockedwrite is still being used lol\n")
 	lockCtx, cancelLockCtx := context.WithTimeout(dp.parentContext, 30*time.Second) /* allotting a 30-second timeout means there can be a maximum of 28 failed retrials (each up to 500 ms, as
 	specified after the deferred call to cancelLockCtx). 30 appears to be a conventional value for a parent context passed to TryLockContext, as per docs */
 	defer cancelLockCtx()
