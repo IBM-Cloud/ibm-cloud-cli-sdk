@@ -2,6 +2,7 @@ package configuration
 
 import (
 	"context"
+	"fmt"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -52,10 +53,12 @@ func (dp *DiskPersistor) lockedRead(data DataInterface) error {
 	_, lockErr := dp.fileLock.TryLockContext(lockCtx, 100*time.Millisecond) /* provide a file lock just while dp.read is called, because it calls an unmarshaling function
 	The boolean (first return value) can be wild-carded because lockErr must be non-nil when the lock-acquiring fails (whereby the boolean will be false) */
 	if lockErr != nil {
+		fmt.Printf("failed to acquire read lock\n")
 		return lockErr
 	}
 	readErr := dp.read(data)
 	if readErr != nil {
+		fmt.Printf("failed to read and unmarshal\n")
 		return readErr
 	}
 	return dp.fileLock.Unlock()
@@ -80,10 +83,12 @@ func (dp DiskPersistor) lockedWrite(data DataInterface) error {
 	_, lockErr := dp.fileLock.TryLockContext(lockCtx, 100*time.Millisecond) /* provide a file lock just while dp.read is called, because it calls an unmarshaling function
 	The boolean (first return value) can be wild-carded because lockErr must be non-nil when the lock-acquiring fails (whereby the boolean will be false) */
 	if lockErr != nil {
+		fmt.Printf("failed to acquire write lock\n")
 		return lockErr
 	}
 	writeErr := dp.write(data)
 	if writeErr != nil {
+		fmt.Printf("failed to write\n")
 		return writeErr
 	}
 	return dp.fileLock.Unlock()
