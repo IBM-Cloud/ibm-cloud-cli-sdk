@@ -1,11 +1,14 @@
 package configuration
 
 import (
+	"context"
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"time"
 
 	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/common/file_helpers"
+	"github.com/gofrs/flock"
 )
 
 const (
@@ -25,12 +28,16 @@ type Persistor interface {
 }
 
 type DiskPersistor struct {
-	filePath string
+	filePath      string
+	fileLock      *flock.Flock
+	parentContext context.Context
 }
 
 func NewDiskPersistor(path string) DiskPersistor {
 	return DiskPersistor{
-		filePath: path,
+		filePath:      path,
+		fileLock:      flock.New(path),
+		parentContext: context.Background(),
 	}
 }
 
@@ -44,14 +51,33 @@ func (dp DiskPersistor) Load(data DataInterface) error {
 		return err
 	}
 
-	if err != nil {
-		err = dp.write(data)
+	if err != nil { // strange: requiring a reading error (to allow write attempt to continue), as long as it is not a permission error
+		err = dp.lockedWrite(data)
 	}
 	return err
 }
 
+func (dp DiskPersistor) lockedWrite(data DataInterface) error {
+	/* allotting a 3-second timeout means there can be a maximum of 5 retrials (each up to 500 ms, as
+	specified after the deferred call to cancelLockCtx) */
+	lockCtx, cancelLockCtx := context.WithTimeout(dp.parentContext, 3*time.Second)
+	defer cancelLockCtx()
+	/* provide a file lock, in addition to the RW mutex (in calling functions), just while dp.write is called
+	The boolean (first return value) can be wild-carded because lockErr must be non-nil when the lock-acquiring
+	fails (whereby the boolean will be false) */
+	_, lockErr := dp.fileLock.TryLockContext(lockCtx, 500*time.Millisecond)
+	if lockErr != nil {
+		return lockErr
+	}
+	writeErr := dp.write(data)
+	if writeErr != nil {
+		return writeErr
+	}
+	return dp.fileLock.Unlock()
+}
+
 func (dp DiskPersistor) Save(data DataInterface) error {
-	return dp.write(data)
+	return dp.lockedWrite(data)
 }
 
 func (dp DiskPersistor) read(data DataInterface) error {
