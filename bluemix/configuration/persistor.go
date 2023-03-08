@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"sync"
 	"time"
 
 	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/common/file_helpers"
@@ -30,6 +31,7 @@ type Persistor interface {
 type DiskPersistor struct {
 	filePath      string
 	fileLock      *flock.Flock
+	marshalLock   *sync.Mutex
 	parentContext context.Context
 }
 
@@ -99,6 +101,8 @@ func (dp DiskPersistor) read(data DataInterface) error {
 		return err
 	}
 
+	dp.marshalLock.Lock()
+	defer dp.marshalLock.Unlock()
 	bytes, err := ioutil.ReadFile(dp.filePath)
 	if err != nil {
 		return err
