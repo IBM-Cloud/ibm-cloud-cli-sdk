@@ -58,7 +58,13 @@ func (d *FileDownloader) DownloadTo(url string, outputName string) (dest string,
 	if err != nil {
 		return "", 0, err
 	}
-	defer resp.Body.Close()
+
+	defer func() error {
+		if err := resp.Body.Close(); err != nil {
+			return err
+		}
+		return nil
+	}()
 
 	if resp.StatusCode != 200 {
 		return "", 0, fmt.Errorf("Unexpected response code %d", resp.StatusCode)
