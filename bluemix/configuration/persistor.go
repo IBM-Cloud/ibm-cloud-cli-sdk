@@ -103,6 +103,7 @@ func (dp DiskPersistor) read(data DataInterface) error {
 
 	dp.marshalLock.Lock()
 	defer dp.marshalLock.Unlock()
+
 	bytes, err := ioutil.ReadFile(dp.filePath)
 	if err != nil {
 		return err
