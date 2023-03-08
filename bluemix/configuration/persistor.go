@@ -2,6 +2,7 @@ package configuration
 
 import (
 	"context"
+	"fmt"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -52,14 +53,14 @@ func (dp *DiskPersistor) lockedRead(data DataInterface) error {
 	lockCtx, cancelLockCtx := context.WithTimeout(dp.parentContext, 30*time.Second) /* allotting a 30-second timeout means there can be a maximum of 28 failed retrials (each up to 500 ms, as
 	specified after the deferred call to cancelLockCtx). 30 appears to be a conventional value for a parent context passed to TryLockContext, as per docs */
 	defer cancelLockCtx()
-	_, lockErr := dp.fileLock.TryLockContext(lockCtx, 500*time.Millisecond) /* provide a file lock just while dp.read is called, because it calls an unmarshaling function
+	_, lockErr := dp.fileLock.TryLockContext(lockCtx, 10*time.Millisecond) /* provide a file lock just while dp.read is called, because it calls an unmarshaling function
 	The boolean (first return value) can be wild-carded because lockErr must be non-nil when the lock-acquiring fails (whereby the boolean will be false) */
 	if lockErr != nil {
 		return lockErr
 	}
 	readErr := dp.read(data)
 	if readErr != nil {
-		return readErr
+		return fmt.Errorf("Readerror: " + readErr.Error())
 	}
 	return dp.fileLock.Unlock()
 }
@@ -80,14 +81,14 @@ func (dp DiskPersistor) lockedWrite(data DataInterface) error {
 	lockCtx, cancelLockCtx := context.WithTimeout(dp.parentContext, 30*time.Second) /* allotting a 30-second timeout means there can be a maximum of 28 failed retrials (each up to 500 ms, as
 	specified after the deferred call to cancelLockCtx). 30 appears to be a conventional value for a parent context passed to TryLockContext, as per docs */
 	defer cancelLockCtx()
-	_, lockErr := dp.fileLock.TryLockContext(lockCtx, 500*time.Millisecond) /* provide a file lock just while dp.read is called, because it calls an unmarshaling function
+	_, lockErr := dp.fileLock.TryLockContext(lockCtx, 10*time.Millisecond) /* provide a file lock just while dp.read is called, because it calls an unmarshaling function
 	The boolean (first return value) can be wild-carded because lockErr must be non-nil when the lock-acquiring fails (whereby the boolean will be false) */
 	if lockErr != nil {
 		return lockErr
 	}
 	writeErr := dp.write(data)
 	if writeErr != nil {
-		return writeErr
+		return fmt.Errorf("Readerror: " + writeErr.Error())
 	}
 	return dp.fileLock.Unlock()
 }
@@ -101,9 +102,6 @@ func (dp DiskPersistor) read(data DataInterface) error {
 	if err != nil {
 		return err
 	}
-
-	dp.marshalLock.Lock()
-	defer dp.marshalLock.Unlock()
 
 	bytes, err := ioutil.ReadFile(dp.filePath)
 	if err != nil {
