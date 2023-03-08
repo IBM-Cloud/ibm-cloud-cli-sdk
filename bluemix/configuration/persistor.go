@@ -39,6 +39,7 @@ func NewDiskPersistor(path string) DiskPersistor {
 	return DiskPersistor{
 		filePath:      path,
 		fileLock:      flock.New(path),
+		marshalLock:   new(sync.Mutex),
 		parentContext: context.Background(),
 	}
 }
