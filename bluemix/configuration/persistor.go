@@ -6,7 +6,6 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
-	"sync"
 	"time"
 
 	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/common/file_helpers"
@@ -32,7 +31,6 @@ type Persistor interface {
 type DiskPersistor struct {
 	filePath      string
 	fileLock      *flock.Flock
-	marshalLock   *sync.Mutex
 	parentContext context.Context
 }
 
@@ -40,7 +38,6 @@ func NewDiskPersistor(path string) DiskPersistor {
 	return DiskPersistor{
 		filePath:      path,
 		fileLock:      flock.New(path),
-		marshalLock:   new(sync.Mutex),
 		parentContext: context.Background(),
 	}
 }
