@@ -52,14 +52,15 @@ func (dp *DiskPersistor) lockedRead(data DataInterface) error {
 	defer cancelLockCtx()
 	_, lockErr := dp.fileLock.TryLockContext(lockCtx, 100*time.Millisecond) /* provide a file lock just while dp.read is called, because it calls an unmarshaling function
 	The boolean (first return value) can be wild-carded because lockErr must be non-nil when the lock-acquiring fails (whereby the boolean will be false) */
+	defer dp.fileLock.Unlock()
 	if lockErr != nil {
 		fmt.Errorf("Readlock error: " + lockErr.Error())
 	}
 	readErr := dp.read(data)
 	if readErr != nil {
-		return fmt.Errorf("Readerror: " + readErr.Error())
+		return fmt.Errorf("Read Error: " + readErr.Error())
 	}
-	return dp.fileLock.Unlock()
+	return nil
 }
 
 func (dp DiskPersistor) Load(data DataInterface) error {
@@ -68,7 +69,7 @@ func (dp DiskPersistor) Load(data DataInterface) error {
 		return err
 	}
 
-	if err == nil {
+	if err != nil { /* would happen if there was nothing to read (EOF) */
 		err = dp.lockedWrite(data)
 	}
 	return err
@@ -80,14 +81,15 @@ func (dp DiskPersistor) lockedWrite(data DataInterface) error {
 	defer cancelLockCtx()
 	_, lockErr := dp.fileLock.TryLockContext(lockCtx, 100*time.Millisecond) /* provide a file lock just while dp.read is called, because it calls an unmarshaling function
 	The boolean (first return value) can be wild-carded because lockErr must be non-nil when the lock-acquiring fails (whereby the boolean will be false) */
+	defer dp.fileLock.Unlock()
 	if lockErr != nil {
 		fmt.Errorf("Writelock error: " + lockErr.Error())
 	}
 	writeErr := dp.write(data)
 	if writeErr != nil {
-		return fmt.Errorf("Readerror: " + writeErr.Error())
+		return fmt.Errorf("Write Error: " + writeErr.Error())
 	}
-	return dp.fileLock.Unlock()
+	return nil
 }
 
 func (dp DiskPersistor) Save(data DataInterface) error {
