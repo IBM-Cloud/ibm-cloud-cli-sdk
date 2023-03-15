@@ -2,6 +2,7 @@ package terminal_test
 
 import (
 	"bytes"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -124,4 +125,11 @@ func TestNotEnoughRowPrintCsv(t *testing.T) {
 	assert.Contains(t, buf.String(), "col1,col2")
 	assert.Contains(t, buf.String(), "row1-col1,row1-col2")
 	assert.Contains(t, buf.String(), "row2-col1,")
+}
+
+func TestEmptyTable(t *testing.T) {
+	buf := bytes.Buffer{}
+	testTable := NewTable(&buf, []string{})
+	testTable.PrintCsv()
+	assert.Equal(t, len(strings.TrimSpace(buf.String())), 0)
 }
