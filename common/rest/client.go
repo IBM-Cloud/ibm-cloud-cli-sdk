@@ -67,7 +67,12 @@ func (c *Client) DoWithContext(ctx context.Context, r *Request, respV interface{
 	if err != nil {
 		return resp, err
 	}
-	defer resp.Body.Close()
+	defer func() error {
+		if err := resp.Body.Close(); err != nil {
+			return err
+		}
+		return nil
+	}()
 
 	if resp.StatusCode < 200 || resp.StatusCode > 299 {
 		raw, err := ioutil.ReadAll(resp.Body)
