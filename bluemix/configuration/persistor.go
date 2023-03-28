@@ -55,12 +55,10 @@ func (dp *DiskPersistor) lockedRead(data DataInterface) error {
 	if lockErr != nil {
 		return lockErr
 	}
-	readErr := dp.read(data)
-	if readErr != nil {
-		if os.IsPermission(readErr) {
-			return readErr
-		}
-	}
+	_ = dp.read(data)
+	// if readErr != nil {
+	// 	return readErr
+	// }
 	return nil
 }
 
