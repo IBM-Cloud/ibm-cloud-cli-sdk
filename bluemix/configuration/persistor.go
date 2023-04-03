@@ -32,8 +32,6 @@ type DiskPersistor struct {
 	fileLock      *flock.Flock
 	parentContext context.Context
 	runtimeGOOS   string
-	// readFunc func(dataInterface) error
-	// writeFunc func(dataInterface) error
 }
 
 func NewDiskPersistor(path string, GOOS string) DiskPersistor {
@@ -90,7 +88,7 @@ func (dp DiskPersistor) writeWithFileLock(data DataInterface) error {
 }
 
 func (dp DiskPersistor) Load(data DataInterface) error {
-	err := dp.lockedRead(data)
+	err := dp.readWithFileLock(data)
 	if os.IsPermission(err) {
 		return err
 	}
