@@ -1,0 +1,63 @@
+{
+  "APIEndpoint": "",
+  "IsPrivate": false,
+  "IsAccessFromVPC": false,
+  "ConsoleEndpoint": "",
+  "ConsolePrivateEndpoint": "",
+  "ConsolePrivateVPCEndpoint": "",
+  "CloudType": "",
+  "CloudName": "",
+  "CRIType": "",
+  "Region": "",
+  "RegionID": "",
+  "IAMEndpoint": "",
+  "IAMPrivateEndpoint": "",
+  "IAMPrivateVPCEndpoint": "",
+  "IAMToken": "",
+  "IAMRefreshToken": "",
+  "IsLoggedInAsCRI": false,
+  "Account": {
+    "GUID": "",
+    "Name": "",
+    "Owner": ""
+  },
+  "Profile": {
+    "ID": "",
+    "Name": "",
+    "ComputeResource": {
+      "Name": "",
+      "ID": ""
+    },
+    "User": {
+      "Name": "",
+      "ID": ""
+    }
+  },
+  "ResourceGroup": {
+    "GUID": "",
+    "Name": "",
+    "State": "",
+    "Default": false,
+    "QuotaID": ""
+  },
+  "LoginAt": "0001-01-01T00:00:00Z",
+  "CFEETargeted": false,
+  "CFEEEnvID": "",
+  "PluginRepos": null,
+  "SSLDisabled": false,
+  "Locale": "",
+  "MessageOfTheDayTime": 0,
+  "LastSessionUpdateTime": 1680542833,
+  "Trace": "",
+  "ColorEnabled": "",
+  "HTTPTimeout": 0,
+  "CLIInfoEndpoint": "",
+  "CheckCLIVersionDisabled": false,
+  "UsageStatsDisabled": false,
+  "UsageStatsEnabled": false,
+  "UsageStatsEnabledLastUpdate": "0001-01-01T00:00:00Z",
+  "SDKVersion": "1.0.2",
+  "UpdateCheckInterval": 0,
+  "UpdateRetryCheckInterval": 0,
+  "UpdateNotificationInterval": 0
+}

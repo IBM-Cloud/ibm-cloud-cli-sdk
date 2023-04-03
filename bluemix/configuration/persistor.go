@@ -31,18 +31,27 @@ type DiskPersistor struct {
 	filePath      string
 	fileLock      *flock.Flock
 	parentContext context.Context
+	runtimeGOOS   string
+	// readFunc func(dataInterface) error
+	// writeFunc func(dataInterface) error
 }
 
-func NewDiskPersistor(path string) DiskPersistor {
+func NewDiskPersistor(path string, GOOS string) DiskPersistor {
 	return DiskPersistor{
 		filePath:      path,
 		fileLock:      flock.New(path),
 		parentContext: context.Background(),
+		runtimeGOOS:   GOOS,
 	}
 }
 
 func (dp DiskPersistor) Exists() bool {
 	return file_helpers.FileExists(dp.filePath)
+}
+
+func (dp *DiskPersistor) windowsLockedRead(data DataInterface) error {
+	// TO DO: exclusive file-locking NOT yet implemented
+	return dp.read(data)
 }
 
 func (dp *DiskPersistor) lockedRead(data DataInterface) error {
@@ -62,6 +71,24 @@ func (dp *DiskPersistor) lockedRead(data DataInterface) error {
 	return nil
 }
 
+func (dp DiskPersistor) readWithFileLock(data DataInterface) error {
+	switch dp.runtimeGOOS {
+	case "windows":
+		return dp.windowsLockedRead(data)
+	default:
+		return dp.lockedRead(data)
+	}
+}
+
+func (dp DiskPersistor) writeWithFileLock(data DataInterface) error {
+	switch dp.runtimeGOOS {
+	case "windows":
+		return dp.windowsLockedWrite(data)
+	default:
+		return dp.lockedWrite(data)
+	}
+}
+
 func (dp DiskPersistor) Load(data DataInterface) error {
 	err := dp.lockedRead(data)
 	if os.IsPermission(err) {
@@ -69,9 +96,14 @@ func (dp DiskPersistor) Load(data DataInterface) error {
 	}
 
 	if err != nil { /* would happen if there was nothing to read (EOF) */
-		err = dp.lockedWrite(data)
+		err = dp.writeWithFileLock(data)
 	}
 	return err
+}
+
+func (dp *DiskPersistor) windowsLockedWrite(data DataInterface) error {
+	// TO DO: exclusive file-locking NOT yet implemented
+	return dp.read(data)
 }
 
 func (dp DiskPersistor) lockedWrite(data DataInterface) error {
@@ -92,7 +124,7 @@ func (dp DiskPersistor) lockedWrite(data DataInterface) error {
 }
 
 func (dp DiskPersistor) Save(data DataInterface) error {
-	return dp.lockedWrite(data)
+	return dp.writeWithFileLock(data)
 }
 
 func (dp DiskPersistor) read(data DataInterface) error {

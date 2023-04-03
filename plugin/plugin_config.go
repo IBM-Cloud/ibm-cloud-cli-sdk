@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"runtime"
 	"strconv"
 	"sync"
 
@@ -115,7 +116,7 @@ func loadPluginConfigFromPath(path string) PluginConfig {
 	return &pluginConfig{
 		initOnce:  new(sync.Once),
 		data:      make(map[string]interface{}),
-		persistor: configuration.NewDiskPersistor(path),
+		persistor: configuration.NewDiskPersistor(path, runtime.GOOS),
 	}
 }
 
