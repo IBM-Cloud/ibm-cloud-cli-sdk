@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"time"
 
@@ -35,12 +36,12 @@ type DiskPersistor struct {
 	runtimeGOOS   string
 }
 
-func NewDiskPersistor(path string, GOOS string) DiskPersistor {
+func NewDiskPersistor(path string) DiskPersistor {
 	return DiskPersistor{
 		filePath:      path,
 		fileLock:      flock.New(path),
 		parentContext: context.Background(),
-		runtimeGOOS:   GOOS,
+		runtimeGOOS:   runtime.GOOS,
 	}
 }
 

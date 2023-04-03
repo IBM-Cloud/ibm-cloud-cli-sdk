@@ -5,7 +5,6 @@ package core_config
 import (
 	"fmt"
 	"os"
-	"runtime"
 	"time"
 
 	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix"
@@ -375,7 +374,7 @@ func NewCoreConfig(errHandler func(error)) ReadWriter {
 }
 
 func NewCoreConfigFromPath(cfConfigPath string, bxConfigPath string, errHandler func(error)) ReadWriter {
-	return NewCoreConfigFromPersistor(configuration.NewDiskPersistor(cfConfigPath, runtime.GOOS), configuration.NewDiskPersistor(bxConfigPath, runtime.GOOS), errHandler)
+	return NewCoreConfigFromPersistor(configuration.NewDiskPersistor(cfConfigPath), configuration.NewDiskPersistor(bxConfigPath), errHandler)
 }
 
 func NewCoreConfigFromPersistor(cfPersistor configuration.Persistor, bxPersistor configuration.Persistor, errHandler func(error)) ReadWriter {
