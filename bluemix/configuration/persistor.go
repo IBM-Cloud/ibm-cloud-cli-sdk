@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"strings"
 	"time"
 
 	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/common/file_helpers"
@@ -52,6 +53,10 @@ func (dp *DiskPersistor) windowsLockedRead(data DataInterface) error {
 	return dp.read(data)
 }
 
+func isNilOrAllowedReadErr(err error) bool {
+	return err == nil || strings.Contains(err.Error(), "no such file or directory")
+}
+
 func (dp *DiskPersistor) lockedRead(data DataInterface) error {
 	lockCtx, cancelLockCtx := context.WithTimeout(dp.parentContext, 30*time.Second) /* allotting a 30-second timeout means there can be a maximum of 298 failed retrials (each up to 500 ms, as
 	specified after the deferred call to cancelLockCtx). 30 appears to be a conventional value for a parent context passed to TryLockContext, as per docs */
@@ -59,7 +64,7 @@ func (dp *DiskPersistor) lockedRead(data DataInterface) error {
 	_, lockErr := dp.fileLock.TryLockContext(lockCtx, 100*time.Millisecond) /* provide a file lock just while dp.read is called, because it calls an unmarshaling function
 	The boolean (first return value) can be wild-carded because lockErr must be non-nil when the lock-acquiring fails (whereby the boolean will be false) */
 	defer dp.fileLock.Unlock()
-	if lockErr != nil {
+	if !isNilOrAllowedReadErr(lockErr) {
 		return lockErr
 	}
 	readErr := dp.read(data)
@@ -111,7 +116,7 @@ func (dp DiskPersistor) lockedWrite(data DataInterface) error {
 	_, lockErr := dp.fileLock.TryLockContext(lockCtx, 100*time.Millisecond) /* provide a file lock just while dp.read is called, because it calls an unmarshaling function
 	The boolean (first return value) can be wild-carded because lockErr must be non-nil when the lock-acquiring fails (whereby the boolean will be false) */
 	defer dp.fileLock.Unlock()
-	if lockErr != nil {
+	if !isNilOrAllowedReadErr(lockErr) {
 		return lockErr
 	}
 	writeErr := dp.write(data)
