@@ -101,7 +101,7 @@ func (dp DiskPersistor) Load(data DataInterface) error {
 
 func (dp *DiskPersistor) windowsLockedWrite(data DataInterface) error {
 	// TO DO: exclusive file-locking NOT yet implemented
-	return dp.read(data)
+	return dp.write(data)
 }
 
 func (dp DiskPersistor) lockedWrite(data DataInterface) error {
