@@ -49,12 +49,12 @@ func (dp DiskPersistor) Exists() bool {
 }
 
 func (dp *DiskPersistor) windowsLockedRead(data DataInterface) error {
-	// TO DO: exclusive file-locking NOT yet implemented
+	// TO DO: exclusive file-locking for the reading NOT yet implemented
 	return dp.read(data)
 }
 
-func isNilOrAllowedReadErr(err error) bool {
-	return err == nil || strings.Contains(err.Error(), "no such file or directory")
+func isBlockingLockError(err error) bool {
+	return err != nil && !strings.Contains(err.Error(), "no such file or directory")
 }
 
 func (dp *DiskPersistor) lockedRead(data DataInterface) error {
@@ -64,7 +64,7 @@ func (dp *DiskPersistor) lockedRead(data DataInterface) error {
 	_, lockErr := dp.fileLock.TryLockContext(lockCtx, 100*time.Millisecond) /* provide a file lock just while dp.read is called, because it calls an unmarshaling function
 	The boolean (first return value) can be wild-carded because lockErr must be non-nil when the lock-acquiring fails (whereby the boolean will be false) */
 	defer dp.fileLock.Unlock()
-	if !isNilOrAllowedReadErr(lockErr) {
+	if isBlockingLockError(lockErr) {
 		return lockErr
 	}
 	readErr := dp.read(data)
@@ -105,7 +105,7 @@ func (dp DiskPersistor) Load(data DataInterface) error {
 }
 
 func (dp *DiskPersistor) windowsLockedWrite(data DataInterface) error {
-	// TO DO: exclusive file-locking NOT yet implemented
+	// TO DO: exclusive file-locking for the writing NOT yet implemented
 	return dp.write(data)
 }
 
@@ -116,7 +116,7 @@ func (dp DiskPersistor) lockedWrite(data DataInterface) error {
 	_, lockErr := dp.fileLock.TryLockContext(lockCtx, 100*time.Millisecond) /* provide a file lock just while dp.read is called, because it calls an unmarshaling function
 	The boolean (first return value) can be wild-carded because lockErr must be non-nil when the lock-acquiring fails (whereby the boolean will be false) */
 	defer dp.fileLock.Unlock()
-	if !isNilOrAllowedReadErr(lockErr) {
+	if isBlockingLockError(lockErr) {
 		return lockErr
 	}
 	writeErr := dp.write(data)
