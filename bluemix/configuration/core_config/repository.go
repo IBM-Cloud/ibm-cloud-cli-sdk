@@ -51,7 +51,7 @@ type Repository interface {
 	PluginRepos() []models.PluginRepo
 	PluginRepo(string) (models.PluginRepo, bool)
 	IsSSLDisabled() bool
-	StyleOfSSO() string
+	TypeOfSSO() string
 	HTTPTimeout() int
 	CLIInfoEndpoint() string
 	CheckCLIVersionDisabled() bool
@@ -100,7 +100,7 @@ type Repository interface {
 	SetPluginRepo(models.PluginRepo)
 	UnsetPluginRepo(string)
 	SetSSLDisabled(bool)
-	SetStyleOfSSO(string)
+	SetTypeOfSSO(string)
 	SetHTTPTimeout(int)
 	// SetUsageSatsDisabled disable or enable usage statistics data collection
 	// Deprecated: use SetUsageSatsEnabled instead

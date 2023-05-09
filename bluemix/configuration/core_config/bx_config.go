@@ -54,7 +54,7 @@ type BXConfigData struct {
 	Trace                       string
 	ColorEnabled                string
 	HTTPTimeout                 int
-	StyleOfSSO                  string
+	TypeOfSSO                   string
 	CLIInfoEndpoint             string // overwrite the cli info endpoint
 	CheckCLIVersionDisabled     bool
 	UsageStatsDisabled          bool // deprecated: use UsageStatsEnabled
@@ -411,9 +411,9 @@ func (c *bxConfig) ColorEnabled() (enabled string) {
 	return
 }
 
-func (c *bxConfig) StyleOfSSO() (style string) {
+func (c *bxConfig) TypeOfSSO() (style string) {
 	c.read(func() {
-		style = c.data.StyleOfSSO
+		style = c.data.TypeOfSSO
 	})
 	return
 }
@@ -645,9 +645,9 @@ func (c *bxConfig) SetHTTPTimeout(timeout int) {
 	})
 }
 
-func (c *bxConfig) SetStyleOfSSO(style string) {
+func (c *bxConfig) SetTypeOfSSO(style string) {
 	c.write(func() {
-		c.data.StyleOfSSO = style
+		c.data.TypeOfSSO = style
 	})
 }
 
