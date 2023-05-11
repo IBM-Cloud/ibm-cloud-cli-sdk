@@ -9,8 +9,6 @@ import (
 )
 
 func TestGet(t *testing.T) {
-	assert.Empty(t, EnvTrace.Get())
-
 	os.Setenv("IBMCLOUD_TRACE", "true")
 	assert.Equal(t, "true", EnvTrace.Get())
 

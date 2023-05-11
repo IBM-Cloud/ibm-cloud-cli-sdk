@@ -10,16 +10,6 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-// import (
-// 	"io/ioutil"
-// 	"os"
-// 	"path/filepath"
-// 	"testing"
-
-// 	"github.com/stretchr/testify/assert"
-// 	"github.ibm.com/bluemix-cli-release/build/src/github.ibm.com/Bluemix/bluemix-cli-common/file_helpers"
-// )
-
 func captureAndPrepareEnv(a *assert.Assertions) ([]string, string) {
 	env := os.Environ()
 
@@ -30,7 +20,11 @@ func captureAndPrepareEnv(a *assert.Assertions) ([]string, string) {
 	os.Unsetenv("IBMCLOUD_HOME")
 	os.Unsetenv("BLUEMIX_HOME")
 	os.Setenv("HOME", userHome)
-
+	// UserHomeDir() uses HOMEDRIVE + HOMEPATH for windows
+	if os.Getenv("OS") == "Windows_NT" {
+		// ioutil.TempDir has the drive letter in the path, so we need to remove it when we set HOMEDRIVE
+		os.Setenv("HOMEPATH", strings.Replace(userHome, os.Getenv("HOMEDRIVE"), "", -1))
+	}
 	a.NoError(os.RemoveAll(userHome))
 
 	return env, userHome
