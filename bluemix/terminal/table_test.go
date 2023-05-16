@@ -99,7 +99,8 @@ func TestPrintCsvSimple(t *testing.T) {
 	testTable := NewTable(&buf, []string{"col1", "col2"})
 	testTable.Add("row1-col1", "row1-col2")
 	testTable.Add("row2-col1", "row2-col2")
-	testTable.PrintCsv()
+	err := testTable.PrintCsv()
+	assert.Equal(t, err, nil)
 	assert.Contains(t, buf.String(), "col1,col2")
 	assert.Contains(t, buf.String(), "row1-col1,row1-col2")
 	assert.Contains(t, buf.String(), "row2-col1,row2-col2")
@@ -110,7 +111,8 @@ func TestNotEnoughColPrintCsv(t *testing.T) {
 	testTable := NewTable(&buf, []string{"", "col2"})
 	testTable.Add("row1-col1", "row1-col2")
 	testTable.Add("row2-col1", "row2-col2")
-	testTable.PrintCsv()
+	err := testTable.PrintCsv()
+	assert.Equal(t, err, nil)
 	assert.Contains(t, buf.String(), ",col2")
 	assert.Contains(t, buf.String(), "row1-col1,row1-col2")
 	assert.Contains(t, buf.String(), "row2-col1,row2-col2")
@@ -121,7 +123,8 @@ func TestNotEnoughRowPrintCsv(t *testing.T) {
 	testTable := NewTable(&buf, []string{"col1", "col2"})
 	testTable.Add("row1-col1", "row1-col2")
 	testTable.Add("row2-col1", "")
-	testTable.PrintCsv()
+	err := testTable.PrintCsv()
+	assert.Equal(t, err, nil)
 	assert.Contains(t, buf.String(), "col1,col2")
 	assert.Contains(t, buf.String(), "row1-col1,row1-col2")
 	assert.Contains(t, buf.String(), "row2-col1,")
@@ -130,6 +133,7 @@ func TestNotEnoughRowPrintCsv(t *testing.T) {
 func TestEmptyTable(t *testing.T) {
 	buf := bytes.Buffer{}
 	testTable := NewTable(&buf, []string{})
-	testTable.PrintCsv()
+	err := testTable.PrintCsv()
+	assert.Equal(t, err, nil)
 	assert.Equal(t, len(strings.TrimSpace(buf.String())), 0)
 }
