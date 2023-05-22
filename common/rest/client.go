@@ -63,6 +63,7 @@ func (c *Client) DoWithContext(ctx context.Context, r *Request, respV interface{
 		client = http.DefaultClient
 	}
 
+	req.Close = true
 	resp, err := client.Do(req)
 	if err != nil {
 		return resp, err
