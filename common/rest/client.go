@@ -49,6 +49,9 @@ func (c *Client) DoWithContext(ctx context.Context, r *Request, respV interface{
 	var resp *http.Response
 	var err error
 	for trial := 0; trial < retryLimit; trial += 1 {
+		if trial > 0 {
+			fmt.Printf("ATTENTION ATTENTION: RETRY %d on request\n", trial)
+		}
 		resp, err = c.DoWithContextRetry(ctx, r, respV, errV)
 		if err != nil {
 			if strings.Contains(err.Error(), "nexpected EOF") {
