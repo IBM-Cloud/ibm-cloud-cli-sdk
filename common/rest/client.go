@@ -88,7 +88,7 @@ func (c *Client) DoWithContextRetry(ctx context.Context, r *Request, respV inter
 
 	if resp.StatusCode < 200 || resp.StatusCode > 299 {
 		recvBuf := make([]byte, resp.ContentLength)
-		raw, err := io.ReadFull(resp.Body, recvBuf)
+		_, err := io.ReadFull(resp.Body, recvBuf)
 		if err != nil {
 			return resp, fmt.Errorf("Error reading response: %v", err)
 		}
@@ -99,7 +99,7 @@ func (c *Client) DoWithContextRetry(ctx context.Context, r *Request, respV inter
 			}
 		}
 
-		return resp, &ErrorResponse{resp.StatusCode, string(raw)}
+		return resp, &ErrorResponse{resp.StatusCode, string(recvBuf)}
 	}
 
 	if respV != nil {
