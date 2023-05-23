@@ -54,9 +54,9 @@ func (c *Client) DoWithContext(ctx context.Context, r *Request, respV interface{
 		}
 		resp, err = c.DoWithContextRetry(ctx, r, respV, errV)
 		if err != nil {
-			if strings.Contains(err.Error(), "EOF") || strings.Contains(err.Error(), "unparseable") {
+			if strings.Contains(err.Error(), "EOF") || strings.Contains(err.Error(), "unparseable") || err == ErrEmptyResponseBody {
 				continue
-			} else { // don't retry if the error is something other than eof
+			} else { // don't retry if the error is something other than eof/unparseable/empty body
 				return resp, err
 			}
 		} else { // break (and immediately return) if no error
@@ -125,7 +125,7 @@ func (c *Client) DoWithContextRetry(ctx context.Context, r *Request, respV inter
 				err = nil
 			} else if err == io.EOF {
 				err = ErrEmptyResponseBody
-			} else {
+			} else if err != nil {
 				fmt.Printf("aight so here we got a sitch where respV is the following nonparseable stuff:\n%+v\n", respV)
 				err = fmt.Errorf("ATTN: unparseable")
 			}
