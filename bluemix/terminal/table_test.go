@@ -2,6 +2,7 @@ package terminal_test
 
 import (
 	"bytes"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -91,4 +92,48 @@ func TestNotEnoughRowEntiresJson(t *testing.T) {
 	assert.Contains(t, buf.String(), "\"column_2\": \"row2\"")
 	assert.Contains(t, buf.String(), "\"column_1\": \"row1\"")
 	assert.Contains(t, buf.String(), "\"column_1\": \"\"")
+}
+
+func TestPrintCsvSimple(t *testing.T) {
+	buf := bytes.Buffer{}
+	testTable := NewTable(&buf, []string{"col1", "col2"})
+	testTable.Add("row1-col1", "row1-col2")
+	testTable.Add("row2-col1", "row2-col2")
+	err := testTable.PrintCsv()
+	assert.Equal(t, err, nil)
+	assert.Contains(t, buf.String(), "col1,col2")
+	assert.Contains(t, buf.String(), "row1-col1,row1-col2")
+	assert.Contains(t, buf.String(), "row2-col1,row2-col2")
+}
+
+func TestNotEnoughColPrintCsv(t *testing.T) {
+	buf := bytes.Buffer{}
+	testTable := NewTable(&buf, []string{"", "col2"})
+	testTable.Add("row1-col1", "row1-col2")
+	testTable.Add("row2-col1", "row2-col2")
+	err := testTable.PrintCsv()
+	assert.Equal(t, err, nil)
+	assert.Contains(t, buf.String(), ",col2")
+	assert.Contains(t, buf.String(), "row1-col1,row1-col2")
+	assert.Contains(t, buf.String(), "row2-col1,row2-col2")
+}
+
+func TestNotEnoughRowPrintCsv(t *testing.T) {
+	buf := bytes.Buffer{}
+	testTable := NewTable(&buf, []string{"col1", "col2"})
+	testTable.Add("row1-col1", "row1-col2")
+	testTable.Add("row2-col1", "")
+	err := testTable.PrintCsv()
+	assert.Equal(t, err, nil)
+	assert.Contains(t, buf.String(), "col1,col2")
+	assert.Contains(t, buf.String(), "row1-col1,row1-col2")
+	assert.Contains(t, buf.String(), "row2-col1,")
+}
+
+func TestEmptyTable(t *testing.T) {
+	buf := bytes.Buffer{}
+	testTable := NewTable(&buf, []string{})
+	err := testTable.PrintCsv()
+	assert.Equal(t, err, nil)
+	assert.Equal(t, len(strings.TrimSpace(buf.String())), 0)
 }

@@ -32,6 +32,14 @@
     "translation": "FAILED"
   },
   {
+    "id": "Failed, header could not convert to csv format",
+    "translation": "Failed, header could not convert to csv format"
+  },
+  {
+    "id": "Failed, rows could not convert to csv format",
+    "translation": "Failed, rows could not convert to csv format"
+  },
+  {
     "id": "Invalid grant type: ",
     "translation": "Invalid grant type: "
   },
