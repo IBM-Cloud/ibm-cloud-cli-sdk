@@ -5,6 +5,7 @@ go 1.17
 require (
 	github.com/fatih/color v1.7.1-0.20180516100307-2d684516a886
 	github.com/fatih/structs v1.0.1-0.20171020064819-f5faa72e7309
+	github.com/gofrs/flock v0.8.1
 	github.com/mattn/go-colorable v0.0.0-20160210001857-9fdad7c47650
 	github.com/mattn/go-runewidth v0.0.0-20151118072159-d96d1bd051f2
 	github.com/nicksnyder/go-i18n/v2 v2.2.0
@@ -22,10 +23,10 @@ require (
 require (
 	github.com/BurntSushi/toml v1.1.0 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
-	github.com/gofrs/flock v0.8.1 // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/hpcloud/tail v1.0.0 // indirect
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
+	github.com/jteeuwen/go-bindata v3.0.7+incompatible // indirect
 	github.com/mattn/go-isatty v0.0.5-0.20180830101745-3fb116b82035 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	golang.org/x/net v0.7.0 // indirect
