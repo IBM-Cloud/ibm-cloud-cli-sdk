@@ -1,10 +1,12 @@
 package terminal
 
 import (
+	"encoding/csv"
 	"fmt"
 	"io"
 	"strings"
 
+	. "github.com/IBM-Cloud/ibm-cloud-cli-sdk/i18n"
 	"github.com/mattn/go-runewidth"
 )
 
@@ -18,6 +20,7 @@ type Table interface {
 	Add(row ...string)
 	Print()
 	PrintJson()
+	PrintCsv() error
 }
 
 type PrintableTable struct {
@@ -156,4 +159,17 @@ func (t *PrintableTable) PrintJson() {
 	fmt.Fprintln(t.writer, "]")
 	// mimic behavior of Print()
 	t.rows = [][]string{}
+}
+
+func (t *PrintableTable) PrintCsv() error {
+	csvwriter := csv.NewWriter(t.writer)
+	err := csvwriter.Write(t.headers)
+	if err != nil {
+		return fmt.Errorf(T("Failed, header could not convert to csv format"), err.Error())
+	}
+	err = csvwriter.WriteAll(t.rows)
+	if err != nil {
+		return fmt.Errorf(T("Failed, rows could not convert to csv format"), err.Error())
+	}
+	return nil
 }
