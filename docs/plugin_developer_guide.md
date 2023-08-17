@@ -1298,7 +1298,7 @@ When a new major version of a plugin introduces incompatible changes, support fo
 
 ## 11. Building
 
-A CLI plugin is required to be built for the following architectures: `Win64`, `Linux64`, `Linux64 ARM`, `MacOS`, and `MacOS ARM(M1)`. Below are a list of commands you can use for for building these architectures.
+A CLI plug-in can be built for numerous architectures. For example: `Win64`, `Linux64`, `Linux64 ARM`, `MacOS`, and `MacOS ARM(M1)`. Below are a list of commands you can use for building these architectures.
 
 
 ```bash
