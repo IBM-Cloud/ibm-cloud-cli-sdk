@@ -1295,3 +1295,27 @@ The CLI SDK provides an API to retrieve both the public endpoint and private end
 A CLI plugin should maintain backward compatibility within a major version, but MAY introduce incompatible changes in command format, parameters, or behavior in a major release of the plugin.
 
 When a new major version of a plugin introduces incompatible changes, support for the prior major version of the plugin may only be withdrawn one year from an official deprecation notice for that version of the plugin.
+
+## 11. Building
+
+A CLI plug-in can be built for numerous architectures. For example: `Win64`, `Linux64`, `Linux64 ARM`, `MacOS`, and `MacOS ARM(M1)`. Below are a list of commands you can use for building these architectures.
+
+
+```bash
+# WIN64
+env GOOS=windows GOARCH=amd64 go build
+
+# Linux64
+env GOOS=linux GOARCH=amd64 go build
+
+# Linux64 ARM
+env GOOS=linux GOARCH=arm64 go build
+
+# MacOS
+env GOOS=darwin GOARCH=amd64 go build
+
+# MacOS ARM(M1)
+env GOOS=darwin GOARCH=arm64 go build
+```
+
+To view other possible combinations of GOOS and GOARCH run the command: `go tool dist list`
