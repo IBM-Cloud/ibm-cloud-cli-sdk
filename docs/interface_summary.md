@@ -23,7 +23,7 @@ Option 1: hyphenated commands ([reference](https://github.com/IBM-Cloud/ibm-clou
 
 Option 2: using namespaced commands
 - follows the same rules as Option 1, only the delimiter is not hyphen, but space
-- Example: `object create`
+- Example: "object create"
 
 ## Command and namespace descriptions ([reference](https://github.com/IBM-Cloud/ibm-cloud-cli-sdk/blob/master/docs/plugin_developer_guide.md#22-name-and-decription-of-plug-in-namespace-and-command))
 
@@ -42,8 +42,6 @@ Incorrect description:
 
 ## Messaging standards ([reference](https://github.com/IBM-Cloud/ibm-cloud-cli-sdk/blob/master/docs/plugin_developer_guide.md#21-global-specification))
 
-The examples below also use recommended coloring in messages:
-
 1. Do NOT use "Please" in any message.
    Correct:
    <pre>First log in by running '<span class="yellow">ibmcloud login</span>'.</pre>
@@ -55,7 +53,7 @@ The examples below also use recommended coloring in messages:
   <pre>-i   Number of instances</pre>
 
 3. Add "..." at the end of "in-progress" messages. For example:
-  <pre>Scaling container group '<span class="cyan">xxx</span>'...</pre>
+  <pre>Scaling container group '<span class="cyan">abc</span>'...</pre>
 
 4. Use "plug-in" instead of "plugin" in all places.
 
@@ -79,7 +77,7 @@ Mapping route 'my-app.us-south.cf.cloud.ibm.com' to CF application 'my-app'...
 ### Command Help ([reference](https://github.com/IBM-Cloud/ibm-cloud-cli-sdk/blob/master/docs/plugin_developer_guide.md#24-help-of-command))
 
 - Use "-" for single letter flags, and "--" for multiple letter flags, e.g. `-c ACCOUNT_ID` and `--guid`.
-- All user input values should be shown capital letters, e.g. `ibmcloud scale RESOURCE_NAME`
+- All user input values should be shown as capital letters, e.g. `ibmcloud scale RESOURCE_NAME`
 - For optional parameters and flags, surround them with "[...]", e.g. `ibmcloud account orgs [--guid]`.
 - For exclusive parameters and flags, group them together by "(...)" and separate by "|".
   - Example: `ibmcloud test create (NAME | --uuid ID)`
@@ -124,7 +122,7 @@ OPTIONS:
 ### Command Output
 #### Incorrect Usage ([reference](https://github.com/IBM-Cloud/ibm-cloud-cli-sdk/blob/master/docs/plugin_developer_guide.md#25-incorrect-usage))
 
-When the user runs a command with the wrong usage (e.g. incorrect number of arguments, invalid option value, required options not specified and etc.), the message should be displayed and include help for the user for the command as below:
+When the user runs a command with the wrong usage (e.g. incorrect number of arguments, invalid option value, required options not specified, etc.), the message should be displayed and include help for the user for the command as below:
 
 ```
 Incorrect usage.
@@ -184,7 +182,7 @@ The important information displayed to the end-user should be cyan with **bold**
 
 ```
 A newer version of the IBM Cloud CLI is available.
-You can download it from http://xxx.xxx.xxx
+You can download it from http://abc.abc.abc
 ```
 
 ### User Input Prompts ([reference](https://github.com/IBM-Cloud/ibm-cloud-cli-sdk/blob/master/docs/plugin_developer_guide.md#210-user-input-prompt))
@@ -201,7 +199,7 @@ Following are examples:
 
 ```
 Logging in to https://cloud.ibm.com...
-Email>xxx@example.com
+Email>abc@example.com
 Password>
 OK
 ```
