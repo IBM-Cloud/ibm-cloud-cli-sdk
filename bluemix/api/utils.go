@@ -2,11 +2,10 @@ package api
 
 import (
 	"fmt"
-	"net/url"
-	"path"
 	"regexp"
 	"strings"
 
+	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/i18n"
 	"github.com/Masterminds/semver"
 )
 
@@ -16,33 +15,14 @@ const (
 
 var coercableSemver = regexp.MustCompile(`^\d+(\.\d+)?$`)
 
-func GetFullURL(base string, path string) string {
-	if base == "" {
-		return path
-	}
-
-	return base + CleanPath(path)
-}
-
-func CleanPath(p string) string {
-	if p == "" {
-		return "/"
-	}
-	if !strings.HasPrefix(p, "/") {
-		p = "/" + p
-	}
-	return path.Clean(p)
-}
-
 type SemverConstraintInvalidError struct {
 	Constraint string
 	Err        error
 }
 
 func (e SemverConstraintInvalidError) Error() string {
-	return "Invalid version constraint"
-	// return i18n.T("Version constraint {{.Constraint}} is invalid:\n",
-	// 	map[string]interface{}{"Constraint": e.Constraint}) + e.Err.Error()
+	return i18n.T("Version constraint {{.Constraint}} is invalid:\n",
+		map[string]interface{}{"Constraint": e.Constraint}) + e.Err.Error()
 }
 
 type SemverConstraint interface {
@@ -114,13 +94,4 @@ func coerce(semverRange string) string {
 		return semverRange
 	}
 	return semverRange + ".x"
-}
-
-func ParametrizeQuery(path string, params map[string]string) string {
-	urlParsed, _ := url.Parse(path)
-	urlValues := urlParsed.Query()
-	for k, v := range params {
-		urlValues.Add(k, v)
-	}
-	return path + "?" + urlValues.Encode()
 }

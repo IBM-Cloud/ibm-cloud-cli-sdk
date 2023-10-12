@@ -1,8 +1,9 @@
 module github.com/IBM-Cloud/ibm-cloud-cli-sdk
 
-go 1.20
+go 1.19
 
 require (
+	github.com/Masterminds/semver v1.5.0
 	github.com/fatih/color v1.7.1-0.20180516100307-2d684516a886
 	github.com/fatih/structs v1.0.1-0.20171020064819-f5faa72e7309
 	github.com/gofrs/flock v0.8.1
