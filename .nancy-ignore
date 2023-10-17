@@ -1,1 +1,2 @@
 CVE-2022-32149 # No upgrade path for github.com/Xuanwo/go-locale, github.com/onsi/gomega and github.com/onsi/ginkgo/v2 at this time
+CVE-2023-39325 # The CLI SDK does not host a server (and the network clients made available here will not behave maliciously as described in the issue), so this vulnerability is not a concern
