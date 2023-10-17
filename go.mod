@@ -10,11 +10,11 @@ require (
 	github.com/mattn/go-colorable v0.0.0-20160210001857-9fdad7c47650
 	github.com/mattn/go-runewidth v0.0.0-20151118072159-d96d1bd051f2
 	github.com/nicksnyder/go-i18n/v2 v2.2.0
-	github.com/onsi/ginkgo v1.6.0
-	github.com/onsi/gomega v1.10.0
+	github.com/onsi/ginkgo v1.16.5
+	github.com/onsi/gomega v1.10.1
 	github.com/spf13/cobra v1.0.0
 	github.com/spf13/pflag v1.0.3
-	github.com/stretchr/testify v1.2.2
+	github.com/stretchr/testify v1.5.1
 	golang.org/x/crypto v0.12.0
 	golang.org/x/text v0.12.0
 	gopkg.in/cheggaaa/pb.v1 v1.0.15
@@ -24,15 +24,17 @@ require (
 require (
 	github.com/BurntSushi/toml v1.1.0 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
+	github.com/fsnotify/fsnotify v1.4.9 // indirect
 	github.com/golang/protobuf v1.5.3 // indirect
 	github.com/hpcloud/tail v1.0.0 // indirect
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
 	github.com/mattn/go-isatty v0.0.5-0.20180830101745-3fb116b82035 // indirect
+	github.com/nxadm/tail v1.4.8 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	golang.org/x/net v0.14.0 // indirect
 	golang.org/x/sys v0.11.0 // indirect
 	golang.org/x/term v0.11.0 // indirect
-	golang.org/x/xerrors v0.0.0-20191204190536-9bdfabe68543 // indirect
+	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 // indirect
 	google.golang.org/protobuf v1.30.0 // indirect
 	gopkg.in/fsnotify.v1 v1.4.7 // indirect
 	gopkg.in/tomb.v1 v1.0.0-20141024135613-dd632973f1e7 // indirect
