@@ -125,6 +125,10 @@ type Repository interface {
 
 	SetLastSessionUpdateTime()
 	LastSessionUpdateTime() (session int64)
+
+	SetPaginationURLs(paginationURLs []models.PaginationURL) (err error)
+	AddPaginationURL(lastIndex int, nextURL string) error
+	PaginationURLs() ([]models.PaginationURL, error)
 }
 
 // Deprecated
@@ -366,6 +370,18 @@ func (c repository) LastSessionUpdateTime() (session int64) {
 
 func (c repository) SetLastSessionUpdateTime() {
 	c.bxConfig.SetLastSessionUpdateTime()
+}
+
+func (c repository) PaginationURLs() ([]models.PaginationURL, error) {
+	return c.bxConfig.PaginationURLs()
+}
+
+func (c repository) AddPaginationURL(index int, url string) error {
+	return c.bxConfig.AddPaginationURL(index, url)
+}
+
+func (c repository) SetPaginationURLs(paginationURLs []models.PaginationURL) error {
+	return c.bxConfig.SetPaginationURLs(paginationURLs)
 }
 
 func NewCoreConfig(errHandler func(error)) ReadWriter {

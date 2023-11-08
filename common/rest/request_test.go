@@ -1,12 +1,15 @@
-package rest
+package rest_test
 
 import (
 	"bytes"
 	"io"
-	"io/ioutil"
 	"os"
 	"strings"
 	"testing"
+
+	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/models"
+	. "github.com/IBM-Cloud/ibm-cloud-cli-sdk/common/rest"
+	testhelpers "github.com/IBM-Cloud/ibm-cloud-cli-sdk/testhelpers/configuration"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -49,7 +52,7 @@ func TestRequestFormText(t *testing.T) {
 	assert.NoError(err)
 	err = req.ParseForm()
 	assert.NoError(err)
-	assert.Equal(formUrlEncodedContentType, req.Header.Get(contentType))
+	assert.Equal(FormUrlEncodedContentType, req.Header.Get(ContentType))
 	assert.Equal("bar", req.FormValue("foo"))
 }
 
@@ -57,7 +60,7 @@ func TestRequestFormMultipart(t *testing.T) {
 	assert := assert.New(t)
 
 	var prepareFileWithContent = func(text string) (*os.File, error) {
-		f, err := ioutil.TempFile("", "BluemixCliRestTest")
+		f, err := os.CreateTemp("", "BluemixCliRestTest")
 		if err != nil {
 			return nil, err
 		}
@@ -84,7 +87,7 @@ func TestRequestFormMultipart(t *testing.T) {
 		Build()
 
 	assert.NoError(err)
-	assert.Contains(req.Header.Get(contentType), "multipart/form-data")
+	assert.Contains(req.Header.Get(ContentType), "multipart/form-data")
 
 	err = req.ParseMultipartForm(int64(5000))
 	assert.NoError(err)
@@ -125,7 +128,85 @@ func TestRequestJSON(t *testing.T) {
 
 	req, err := PostRequest("http://www.example.com").Body(&foo).Build()
 	assert.NoError(err)
-	body, err := ioutil.ReadAll(req.Body)
+	body, err := io.ReadAll(req.Body)
 	assert.NoError(err)
 	assert.Equal("{\"Name\":\"bar\"}", string(body))
+}
+
+func TestCachedPaginationNextURL(t *testing.T) {
+	testCases := []struct {
+		name            string
+		paginationURLs  []models.PaginationURL
+		offset          int
+		expectedNextURL string
+	}{
+		{
+			name:   "return cached next URL",
+			offset: 200,
+			paginationURLs: []models.PaginationURL{
+				{
+					NextURL:   "/v2/example.com/stuff?limit=100",
+					LastIndex: 100,
+				},
+			},
+			expectedNextURL: "/v2/example.com/stuff?limit=100",
+		},
+		{
+			name:   "return empty string if cache URL cannot be determined",
+			offset: 40,
+			paginationURLs: []models.PaginationURL{
+				{
+					NextURL:   "/v2/example.com/stuff?limit=100",
+					LastIndex: 60,
+				},
+			},
+			expectedNextURL: "",
+		},
+		{
+			name:            "return empty string if no cache available",
+			offset:          40,
+			paginationURLs:  []models.PaginationURL{},
+			expectedNextURL: "",
+		},
+	}
+
+	assert := assert.New(t)
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			url := CachedPaginationNextURL(tc.paginationURLs, tc.offset)
+			assert.Equal(tc.expectedNextURL, url)
+		})
+	}
+}
+
+func TestAddPaginationURL(t *testing.T) {
+	config := testhelpers.NewFakeCoreConfig()
+	assert := assert.New(t)
+	unsortedUrls := []models.PaginationURL{
+		{
+			NextURL:   "/v2/example.com/stuff?limit=200",
+			LastIndex: 200,
+		},
+		{
+			NextURL:   "/v2/example.com/stuff?limit=100",
+			LastIndex: 100,
+		},
+	}
+
+	var err error
+	for _, p := range unsortedUrls {
+		err = config.AddPaginationURL(p.LastIndex, p.NextURL)
+		assert.Nil(err)
+	}
+
+	// expect url to be sorted in ascending order by LastIndex
+	sortedUrls, err := config.PaginationURLs()
+	assert.Nil(err)
+
+	assert.Equal(2, len(sortedUrls))
+	assert.Equal(sortedUrls[0].LastIndex, unsortedUrls[1].LastIndex)
+	assert.Equal(sortedUrls[0].NextURL, unsortedUrls[1].NextURL)
+	assert.Equal(sortedUrls[1].LastIndex, unsortedUrls[0].LastIndex)
+	assert.Equal(sortedUrls[1].NextURL, unsortedUrls[0].NextURL)
 }

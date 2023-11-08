@@ -1,7 +1,9 @@
 package core_config
 
 import (
+	"encoding/base64"
 	"encoding/json"
+	"sort"
 	"strings"
 	"sync"
 	"time"
@@ -63,6 +65,7 @@ type BXConfigData struct {
 	UpdateCheckInterval         time.Duration
 	UpdateRetryCheckInterval    time.Duration
 	UpdateNotificationInterval  time.Duration
+	PaginationURLs              string
 	raw                         raw
 }
 
@@ -752,7 +755,48 @@ func (c *bxConfig) ClearSession() {
 		c.data.IsLoggedInAsCRI = false
 		c.data.ResourceGroup = models.ResourceGroup{}
 		c.data.LoginAt = time.Time{}
+		c.data.PaginationURLs = ""
 	})
+}
+
+func (c *bxConfig) SetPaginationURLs(paginationURLs []models.PaginationURL) (err error) {
+	c.write(func() {
+		var data []byte
+		data, err = json.Marshal(paginationURLs)
+		c.data.PaginationURLs = base64.RawURLEncoding.EncodeToString(data)
+	})
+	return
+}
+
+func (c *bxConfig) AddPaginationURL(index int, url string) error {
+	urls, err := c.PaginationURLs()
+	if err != nil {
+		return err
+	}
+
+	urls = append(urls, models.PaginationURL{
+		LastIndex: index,
+		NextURL:   url,
+	})
+
+	// sort by last index for easier retrieval
+	sort.Sort(models.ByLastIndex(urls))
+	return c.SetPaginationURLs(urls)
+}
+
+func (c *bxConfig) PaginationURLs() (paginationURLs []models.PaginationURL, err error) {
+	var data []byte
+	c.read(func() {
+		// NOTE: json.Unmarshal will throw an error when attempting to parse an empty string.
+		// To avoid this error we will return an empty []models.PaginationURLs
+		if c.data.PaginationURLs == "" {
+			return
+		}
+		data, err = base64.RawURLEncoding.DecodeString(c.data.PaginationURLs)
+		err = json.Unmarshal(data, &paginationURLs)
+	})
+
+	return
 }
 
 func (c *bxConfig) UnsetAPI() {
