@@ -469,6 +469,34 @@ func TestLastUpdateSessionTime(t *testing.T) {
 
 }
 
+func TestPaginationURLs(t *testing.T) {
+	config := prepareConfigForCLI(`{}`, t)
+
+	// check initial state
+	paginationURLs, err := config.PaginationURLs()
+	assert.Nil(t, err)
+	assert.Empty(t, paginationURLs)
+
+	// update session
+	expected := []models.PaginationURL{
+		{
+			NextURL:   "https://api.example.com?token=dd3784000d9744acb2a23ad121a7bb4b",
+			LastIndex: 50,
+		},
+	}
+	err = config.SetPaginationURLs(expected)
+	assert.Nil(t, err)
+
+	paginationURLs, err = config.PaginationURLs()
+	assert.Nil(t, err)
+	assert.Equal(t, 1, len(paginationURLs))
+	assert.Equal(t, expected[0].LastIndex, paginationURLs[0].LastIndex)
+	assert.Equal(t, expected[0].NextURL, paginationURLs[0].NextURL)
+
+	t.Cleanup(cleanupConfigFiles)
+
+}
+
 func checkUsageStats(enabled bool, timeStampExist bool, config core_config.Repository, t *testing.T) {
 	assert.Equal(t, config.UsageStatsEnabled(), enabled)
 	assert.Equal(t, config.UsageStatsEnabledLastUpdate().IsZero(), !timeStampExist)
