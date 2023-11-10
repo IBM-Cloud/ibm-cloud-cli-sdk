@@ -3,7 +3,7 @@ package config_helpers
 
 import (
 	"bytes"
-	"compress/gzip"
+	"compress/zlib"
 	"encoding/base64"
 	"io"
 	"os"
@@ -115,12 +115,12 @@ func UserHomeDir() string {
 
 func CompressEncode(data []byte) (string, error) {
 	var b bytes.Buffer
-	gz := gzip.NewWriter(&b)
+	zb := zlib.NewWriter(&b)
 
-	if _, err := gz.Write(data); err != nil {
+	if _, err := zb.Write(data); err != nil {
 		return "", err
 	}
-	if err := gz.Close(); err != nil {
+	if err := zb.Close(); err != nil {
 		return "", err
 	}
 
@@ -133,9 +133,18 @@ func DecodeDecompress(data string) ([]byte, error) {
 		return []byte{}, err
 	}
 	reader := bytes.NewReader([]byte(decoded))
-	gz, err := gzip.NewReader(reader)
+	zb, err := zlib.NewReader(reader)
 	if err != nil {
 		return []byte{}, err
 	}
-	return io.ReadAll(gz)
+	out, err := io.ReadAll(zb)
+	if err != nil {
+		return []byte{}, err
+	}
+
+	if err := zb.Close(); err != nil {
+		return []byte{}, err
+	}
+
+	return out, err
 }
