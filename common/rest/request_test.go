@@ -1,5 +1,4 @@
 package rest_test
-
 import (
 	"bytes"
 	"io"

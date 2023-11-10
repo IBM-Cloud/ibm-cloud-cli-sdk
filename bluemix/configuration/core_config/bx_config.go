@@ -1,7 +1,6 @@
 package core_config
 
 import (
-	"encoding/base64"
 	"encoding/json"
 	"sort"
 	"strings"
@@ -10,6 +9,7 @@ import (
 
 	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix"
 	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/configuration"
+	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/configuration/config_helpers"
 	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/models"
 	"github.com/fatih/structs"
 )
@@ -763,7 +763,8 @@ func (c *bxConfig) SetPaginationURLs(paginationURLs []models.PaginationURL) (err
 	c.write(func() {
 		var data []byte
 		data, err = json.Marshal(paginationURLs)
-		c.data.PaginationURLs = base64.RawURLEncoding.EncodeToString(data)
+		// NOTE: url can be very large so we should compress the json before encoding
+		c.data.PaginationURLs, err = config_helpers.CompressEncode(data)
 	})
 	return
 }
@@ -792,7 +793,7 @@ func (c *bxConfig) PaginationURLs() (paginationURLs []models.PaginationURL, err 
 		if c.data.PaginationURLs == "" {
 			return
 		}
-		data, err = base64.RawURLEncoding.DecodeString(c.data.PaginationURLs)
+		data, err = config_helpers.DecodeDecompress(c.data.PaginationURLs)
 		err = json.Unmarshal(data, &paginationURLs)
 	})
 

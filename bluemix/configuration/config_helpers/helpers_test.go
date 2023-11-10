@@ -104,81 +104,18 @@ func TestConfigDir_IbmCloudConfigHomeSet_Exists(t *testing.T) {
 	assert.Equal(userHome, ConfigDir())
 }
 
-// func TestMigrateFromOldConfig(t *testing.T) {
-// 	assert := assert.New(t)
+func TestCompressEncodeDecompressDecode(t *testing.T) {
+	assert := assert.New(t)
 
-// 	err := prepareBluemixHome()
-// 	assert.NoError(err)
-// 	defer clearBluemixHome()
+	data := "eyJraWQiOiIyMDE3MTAzMC0wMDowMDowMCIsImFsZyI6IlJTMjU2In0.eyJpYW1faWQiOiJJQk1pZC0yNzAwMDZWOEhNIiwiaWQiOiJJQk1pZC0yNzAwMDZWOEhNIiwicmVhbG1pZCI6IklCTWlkIiwiaWRlbnRpZmllciI6IjI3MDAwNlY4SE0iLCJnaXZlbl9uYW1lIjoiT0UgUnVudGltZXMiLCJmYW1pbHlfbmFtZSI6IlN5c3RlbSBVc2VyIiwibmFtZSI6Ik9FIFJ1bnRpbWVzIFN5c3RlbSBVc2VyIiwiZW1haWwiOiJydHN5c3VzckBjbi5pYm0uY29tIiwic3ViIjoicnRzeXN1c3JAY24uaWJtLmNvbSIsImFjY291bnQiOnsiYnNzIjoiOGQ2M2ZiMWNjNWU5OWU4NmRkNzIyOWRkZGZmYzA1YTUifSwiaWF0IjoxNTE2MTc0NjAzLCJleHAiOjE1MTYxNzgyMDMsImlzcyI6Imh0dHBzOi8vaWFtLmJsdWVtaXgubmV0L2lkZW50aXR5IiwiZ3JhbnRfdHlwZSI6InBhc3N3b3JkIiwic2NvcGUiOiJvcGVuaWQiLCJjbGllbnRfaWQiOiJieCJ9.gx-HQ1CSEwz5d4O1HXx4pusaYeEsqkQZgoBZ6esMBZG6wK6wQFPvC4D0Yvdi6CvKrVU-zV9PM_o3n5c-DFKjjTyTnRbQgrG0EPCRPmFW3bpepSb7eSw01S2YOLy5UTbz0cdM9hq-jafOu1S8pe9xeSMIMiA3-EFzCap5Z5CuoK9oIYJIFWseb1KsOyoiNOellbw1MaOmMzb4fsFz5Dr1Y8c1pNhoqp8M62E3y1yHe2jc6YepDab7Dqn2benK_e-MI3BlyWuBu4yo5mY2oCinJthr2E1YgbzWvcMy5a-ximnQIb4K6kscuUW_Yj_1GhDGJs4MP9u7M3-XdY1CNBGYeQp"
 
-// 	err = os.MkdirAll(oldConfigDir(), 0700)
-// 	assert.NoError(err)
-// 	oldConfigPath := filepath.Join(oldConfigDir(), "config.json")
-// 	err = ioutil.WriteFile(oldConfigPath, []byte("old"), 0600)
-// 	assert.NoError(err)
+	encode, err := CompressEncode([]byte(data))
+	assert.Nil(err)
 
-// 	err = MigrateFromOldConfig()
-// 	assert.NoError(err)
+	// expect the compressed encoded string to be smaller than the original data
+	assert.True(len(encode) < len(data))
 
-// 	newConfigPath := filepath.Join(newConfigDir(), "config.json")
-// 	assert.True(file_helpers.FileExists(newConfigPath))
-// 	content, err := ioutil.ReadFile(newConfigPath)
-// 	assert.NoError(err)
-// 	assert.Equal([]byte("old"), content, "should copy old config file")
-
-// 	assert.False(file_helpers.FileExists(oldConfigDir()), "old config dir should be deleted")
-// }
-
-// func TestMigrateFromOldConfig_NewConfigExist(t *testing.T) {
-// 	assert := assert.New(t)
-
-// 	err := prepareBluemixHome()
-// 	assert.NoError(err)
-// 	defer clearBluemixHome()
-
-// 	err = os.MkdirAll(oldConfigDir(), 0700)
-// 	assert.NoError(err)
-// 	oldConfigPath := filepath.Join(oldConfigDir(), "config.json")
-// 	err = ioutil.WriteFile(oldConfigPath, []byte("old"), 0600)
-// 	assert.NoError(err)
-
-// 	err = os.MkdirAll(newConfigDir(), 0700)
-// 	assert.NoError(err)
-// 	newConfigPath := filepath.Join(newConfigDir(), "config.json")
-// 	err = ioutil.WriteFile(newConfigPath, []byte("new"), 0600)
-// 	assert.NoError(err)
-
-// 	err = MigrateFromOldConfig()
-// 	assert.NoError(err)
-
-// 	content, err := ioutil.ReadFile(newConfigPath)
-// 	assert.NoError(err)
-// 	assert.Equal([]byte("new"), content, "should not copy old config file")
-// }
-
-// func TestMigrateFromOldConfig_OldConfigNotExist(t *testing.T) {
-// 	assert := assert.New(t)
-
-// 	err := prepareBluemixHome()
-// 	assert.NoError(err)
-// 	defer clearBluemixHome()
-
-// 	err = MigrateFromOldConfig()
-// 	assert.NoError(err)
-// }
-
-// func prepareBluemixHome() error {
-// 	temp, err := ioutil.TempDir("", "IBMCloudSDKConfigTest")
-// 	if err != nil {
-// 		return err
-// 	}
-// 	os.Setenv("BLUEMIX_HOME", temp)
-// 	return nil
-// }
-
-// func clearBluemixHome() {
-// 	if homeDir := os.Getenv("BLUEMIX_HOME"); homeDir != "" {
-// 		os.RemoveAll(homeDir)
-// 		os.Unsetenv("BLUEMIX_HOME")
-// 	}
-// }
+	decode, err := DecodeDecompress(encode)
+	assert.Nil(err)
+	assert.Equal(string(decode), data)
+}

@@ -2,6 +2,10 @@
 package config_helpers
 
 import (
+	"bytes"
+	"compress/gzip"
+	"encoding/base64"
+	"io"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -107,4 +111,31 @@ func UserHomeDir() string {
 	}
 
 	return os.Getenv("HOME")
+}
+
+func CompressEncode(data []byte) (string, error) {
+	var b bytes.Buffer
+	gz := gzip.NewWriter(&b)
+
+	if _, err := gz.Write(data); err != nil {
+		return "", err
+	}
+	if err := gz.Close(); err != nil {
+		return "", err
+	}
+
+	return base64.StdEncoding.EncodeToString(b.Bytes()), nil
+}
+
+func DecodeDecompress(data string) ([]byte, error) {
+	decoded, err := base64.StdEncoding.DecodeString(string(data))
+	if err != nil {
+		return []byte{}, err
+	}
+	reader := bytes.NewReader([]byte(decoded))
+	gz, err := gzip.NewReader(reader)
+	if err != nil {
+		return []byte{}, err
+	}
+	return io.ReadAll(gz)
 }
