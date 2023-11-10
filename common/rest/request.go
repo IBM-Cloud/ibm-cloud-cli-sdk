@@ -141,15 +141,15 @@ func OptionsRequest(rawUrl string) *Request {
 	return NewRequest(rawUrl).Method("OPTIONS")
 }
 
-// CachedPaginationNextURL will attempt to return a cached URL
+// CachedPaginationNextURL will attempt to return a cached URL with last index
 // if there exists a URL with a last index smaller than the offset provided
-func CachedPaginationNextURL(paginationURLs []models.PaginationURL, offset int) string {
+func CachedPaginationNextURL(paginationURLs []models.PaginationURL, offset int) models.PaginationURL {
 	for _, p := range paginationURLs {
 		if p.LastIndex < offset {
-			return p.NextURL
+			return p
 		}
 	}
-	return ""
+	return models.PaginationURL{}
 }
 
 // Add adds the key, value pair to the request header. It appends to any

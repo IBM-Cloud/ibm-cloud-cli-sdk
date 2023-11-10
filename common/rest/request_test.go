@@ -1,4 +1,5 @@
 package rest_test
+
 import (
 	"bytes"
 	"io"
@@ -172,9 +173,9 @@ func TestCachedPaginationNextURL(t *testing.T) {
 	assert := assert.New(t)
 
 	for _, tc := range testCases {
-		t.Run(tc.name, func(t *testing.T) {
-			url := CachedPaginationNextURL(tc.paginationURLs, tc.offset)
-			assert.Equal(tc.expectedNextURL, url)
+		t.Run(tc.name, func(_ *testing.T) {
+			p := CachedPaginationNextURL(tc.paginationURLs, tc.offset)
+			assert.Equal(tc.expectedNextURL, p.NextURL)
 		})
 	}
 }
