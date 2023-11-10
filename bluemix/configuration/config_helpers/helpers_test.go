@@ -103,19 +103,3 @@ func TestConfigDir_IbmCloudConfigHomeSet_Exists(t *testing.T) {
 	os.Setenv("IBMCLOUD_CONFIG_HOME", userHome)
 	assert.Equal(userHome, ConfigDir())
 }
-
-func TestCompressEncodeDecompressDecode(t *testing.T) {
-	assert := assert.New(t)
-
-	data := "eyJraWQiOiIyMDE3MTAzMC0wMDowMDowMCIsImFsZyI6IlJTMjU2In0.eyJpYW1faWQiOiJJQk1pZC0yNzAwMDZWOEhNIiwiaWQiOiJJQk1pZC0yNzAwMDZWOEhNIiwicmVhbG1pZCI6IklCTWlkIiwiaWRlbnRpZmllciI6IjI3MDAwNlY4SE0iLCJnaXZlbl9uYW1lIjoiT0UgUnVudGltZXMiLCJmYW1pbHlfbmFtZSI6IlN5c3RlbSBVc2VyIiwibmFtZSI6Ik9FIFJ1bnRpbWVzIFN5c3RlbSBVc2VyIiwiZW1haWwiOiJydHN5c3VzckBjbi5pYm0uY29tIiwic3ViIjoicnRzeXN1c3JAY24uaWJtLmNvbSIsImFjY291bnQiOnsiYnNzIjoiOGQ2M2ZiMWNjNWU5OWU4NmRkNzIyOWRkZGZmYzA1YTUifSwiaWF0IjoxNTE2MTc0NjAzLCJleHAiOjE1MTYxNzgyMDMsImlzcyI6Imh0dHBzOi8vaWFtLmJsdWVtaXgubmV0L2lkZW50aXR5IiwiZ3JhbnRfdHlwZSI6InBhc3N3b3JkIiwic2NvcGUiOiJvcGVuaWQiLCJjbGllbnRfaWQiOiJieCJ9.gx-HQ1CSEwz5d4O1HXx4pusaYeEsqkQZgoBZ6esMBZG6wK6wQFPvC4D0Yvdi6CvKrVU-zV9PM_o3n5c-DFKjjTyTnRbQgrG0EPCRPmFW3bpepSb7eSw01S2YOLy5UTbz0cdM9hq-jafOu1S8pe9xeSMIMiA3-EFzCap5Z5CuoK9oIYJIFWseb1KsOyoiNOellbw1MaOmMzb4fsFz5Dr1Y8c1pNhoqp8M62E3y1yHe2jc6YepDab7Dqn2benK_e-MI3BlyWuBu4yo5mY2oCinJthr2E1YgbzWvcMy5a-ximnQIb4K6kscuUW_Yj_1GhDGJs4MP9u7M3-XdY1CNBGYeQp"
-
-	encode, err := CompressEncode([]byte(data))
-	assert.Nil(err)
-
-	// expect the compressed encoded string to be smaller than the original data
-	assert.True(len(encode) < len(data))
-
-	decode, err := DecodeDecompress(encode)
-	assert.Nil(err)
-	assert.Equal(string(decode), data)
-}

@@ -2,10 +2,6 @@
 package config_helpers
 
 import (
-	"bytes"
-	"compress/zlib"
-	"encoding/base64"
-	"io"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -24,23 +20,6 @@ func ConfigDir() string {
 	}
 	return defaultConfigDirOld()
 }
-
-// func MigrateFromOldConfig() error {
-// 	new := defaultConfigDirNew()
-// 	if file_helpers.FileExists(new) {
-// 		return nil
-// 	}
-
-// 	old := defaultConfigDirOld()
-// 	if !file_helpers.FileExists(old) {
-// 		return nil
-// 	}
-
-// 	if err := file_helpers.CopyDir(old, new); err != nil {
-// 		return err
-// 	}
-// 	return os.RemoveAll(old)
-// }
 
 func defaultConfigDirNew() string {
 	return filepath.Join(homeDir(), ".ibmcloud")
@@ -111,40 +90,4 @@ func UserHomeDir() string {
 	}
 
 	return os.Getenv("HOME")
-}
-
-func CompressEncode(data []byte) (string, error) {
-	var b bytes.Buffer
-	zb := zlib.NewWriter(&b)
-
-	if _, err := zb.Write(data); err != nil {
-		return "", err
-	}
-	if err := zb.Close(); err != nil {
-		return "", err
-	}
-
-	return base64.StdEncoding.EncodeToString(b.Bytes()), nil
-}
-
-func DecodeDecompress(data string) ([]byte, error) {
-	decoded, err := base64.StdEncoding.DecodeString(string(data))
-	if err != nil {
-		return []byte{}, err
-	}
-	reader := bytes.NewReader([]byte(decoded))
-	zb, err := zlib.NewReader(reader)
-	if err != nil {
-		return []byte{}, err
-	}
-	out, err := io.ReadAll(zb)
-	if err != nil {
-		return []byte{}, err
-	}
-
-	if err := zb.Close(); err != nil {
-		return []byte{}, err
-	}
-
-	return out, err
 }

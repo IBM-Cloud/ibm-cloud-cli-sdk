@@ -9,7 +9,6 @@ import (
 
 	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix"
 	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/configuration"
-	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/configuration/config_helpers"
 	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/models"
 	"github.com/fatih/structs"
 )
@@ -65,7 +64,7 @@ type BXConfigData struct {
 	UpdateCheckInterval         time.Duration
 	UpdateRetryCheckInterval    time.Duration
 	UpdateNotificationInterval  time.Duration
-	PaginationURLs              string
+	PaginationURLs              []models.PaginationURL
 	raw                         raw
 }
 
@@ -755,18 +754,20 @@ func (c *bxConfig) ClearSession() {
 		c.data.IsLoggedInAsCRI = false
 		c.data.ResourceGroup = models.ResourceGroup{}
 		c.data.LoginAt = time.Time{}
-		c.data.PaginationURLs = ""
+		c.data.PaginationURLs = []models.PaginationURL{}
 	})
 }
 
-func (c *bxConfig) SetPaginationURLs(paginationURLs []models.PaginationURL) (err error) {
+func (c *bxConfig) SetPaginationURLs(paginationURLs []models.PaginationURL) {
 	c.write(func() {
-		var data []byte
-		data, err = json.Marshal(paginationURLs)
-		// NOTE: url can be very large so we should compress the json before encoding
-		c.data.PaginationURLs, err = config_helpers.CompressEncode(data)
+		c.data.PaginationURLs = paginationURLs
 	})
-	return
+}
+
+func (c *bxConfig) ClearPaginationURLs() {
+	c.write(func() {
+		c.data.PaginationURLs = []models.PaginationURL{}
+	})
 }
 
 func (c *bxConfig) AddPaginationURL(index int, url string) error {
@@ -782,19 +783,15 @@ func (c *bxConfig) AddPaginationURL(index int, url string) error {
 
 	// sort by last index for easier retrieval
 	sort.Sort(models.ByLastIndex(urls))
-	return c.SetPaginationURLs(urls)
+	c.SetPaginationURLs(urls)
+	return nil
 }
 
 func (c *bxConfig) PaginationURLs() (paginationURLs []models.PaginationURL, err error) {
-	var data []byte
 	c.read(func() {
 		// NOTE: json.Unmarshal will throw an error when attempting to parse an empty string.
 		// To avoid this error we will return an empty []models.PaginationURLs
-		if c.data.PaginationURLs == "" {
-			return
-		}
-		data, err = config_helpers.DecodeDecompress(c.data.PaginationURLs)
-		err = json.Unmarshal(data, &paginationURLs)
+		paginationURLs = c.data.PaginationURLs
 	})
 
 	return
