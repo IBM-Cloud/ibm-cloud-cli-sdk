@@ -129,7 +129,7 @@ type Repository interface {
 	SetPaginationURLs(paginationURLs []models.PaginationURL)
 	ClearPaginationURLs()
 	AddPaginationURL(lastIndex int, nextURL string) error
-	PaginationURLs() ([]models.PaginationURL, error)
+	PaginationURLs() []models.PaginationURL
 }
 
 // Deprecated
@@ -373,7 +373,7 @@ func (c repository) SetLastSessionUpdateTime() {
 	c.bxConfig.SetLastSessionUpdateTime()
 }
 
-func (c repository) PaginationURLs() ([]models.PaginationURL, error) {
+func (c repository) PaginationURLs() []models.PaginationURL {
 	return c.bxConfig.PaginationURLs()
 }
 

@@ -473,8 +473,7 @@ func TestPaginationURLs(t *testing.T) {
 	config := prepareConfigForCLI(`{}`, t)
 
 	// check initial state
-	paginationURLs, err := config.PaginationURLs()
-	assert.Nil(t, err)
+	paginationURLs := config.PaginationURLs()
 	assert.Empty(t, paginationURLs)
 
 	// update session
@@ -485,10 +484,8 @@ func TestPaginationURLs(t *testing.T) {
 		},
 	}
 	config.SetPaginationURLs(expected)
-	assert.Nil(t, err)
 
-	paginationURLs, err = config.PaginationURLs()
-	assert.Nil(t, err)
+	paginationURLs = config.PaginationURLs()
 	assert.Equal(t, 1, len(paginationURLs))
 	assert.Equal(t, expected[0].LastIndex, paginationURLs[0].LastIndex)
 	assert.Equal(t, expected[0].NextURL, paginationURLs[0].NextURL)

@@ -201,8 +201,7 @@ func TestAddPaginationURL(t *testing.T) {
 	}
 
 	// expect url to be sorted in ascending order by LastIndex
-	sortedUrls, err := config.PaginationURLs()
-	assert.Nil(err)
+	sortedUrls := config.PaginationURLs()
 
 	assert.Equal(2, len(sortedUrls))
 	assert.Equal(sortedUrls[0].LastIndex, unsortedUrls[1].LastIndex)
