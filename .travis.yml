@@ -1,5 +1,5 @@
 language: go
-dist: mantic
+dist: focal
 go:
 - '1.21.x'
 addons:
