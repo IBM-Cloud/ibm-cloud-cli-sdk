@@ -1,45 +1,44 @@
 // Request examples:
+//   // create a simple GET request
+//   req := GetRequest("http://www.example.com")
 //
-//	// create a simple GET request
-//	req := GetRequest("http://www.example.com")
+//   // set header
+//   req.Set("Accept", "application/json")
 //
-//	// set header
-//	req.Set("Accept", "application/json")
+//   // set query parameters
+//   req.Query("foo1", "bar1")
+//   req.Query("foo2", "bar2")
 //
-//	// set query parameters
-//	req.Query("foo1", "bar1")
-//	req.Query("foo2", "bar2")
+//   // Build to a HTTP request
+//   req.Build()
 //
-//	// Build to a HTTP request
-//	req.Build()
+//   // method chaining is also supported
+//   // the above is equal to:
+//   GetRequest("http://www.example.com").
+//       Set("Accept", "application/json").
+//       Query("foo1", "bar1").
+//       Query("foo2", "bar2").
+//       Build()
 //
-//	// method chaining is also supported
-//	// the above is equal to:
-//	GetRequest("http://www.example.com").
-//	    Set("Accept", "application/json").
-//	    Query("foo1", "bar1").
-//	    Query("foo2", "bar2").
-//	    Build()
+//   // struct body
+//   foo = Foo{Bar: "val"}
+//   PostRequest("http://www.example.com").
+//       Body(foo)
 //
-//	// struct body
-//	foo = Foo{Bar: "val"}
-//	PostRequest("http://www.example.com").
-//	    Body(foo)
+//   // String body
+//   PostRequest("http://www.example.com").
+//       Body("{\"bar\": \"val\"}")
 //
-//	// String body
-//	PostRequest("http://www.example.com").
-//	    Body("{\"bar\": \"val\"}")
+//   // Stream body
+//   PostRequest("http://www.example.com").
+//       Body(strings.NewReader("abcde"))
 //
-//	// Stream body
-//	PostRequest("http://www.example.com").
-//	    Body(strings.NewReader("abcde"))
-//
-//	// Multipart POST request
-//	var f *os.File
-//	PostRequest("http://www.example.com").
-//	    Field("foo", "bar").
-//	    File("file1", File{Name: f.Name(), Content: f}).
-//	    File("file2", File{Name: "1.txt", Content: []byte("abcde"), Type: "text/plain"})
+//   // Multipart POST request
+//   var f *os.File
+//   PostRequest("http://www.example.com").
+//       Field("foo", "bar").
+//       File("file1", File{Name: f.Name(), Content: f}).
+//       File("file2", File{Name: "1.txt", Content: []byte("abcde"), Type: "text/plain"})
 package rest
 
 import (
