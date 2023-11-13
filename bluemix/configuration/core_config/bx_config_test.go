@@ -484,7 +484,7 @@ func TestPaginationURLs(t *testing.T) {
 			LastIndex: 50,
 		},
 	}
-	err = config.SetPaginationURLs(expected)
+	config.SetPaginationURLs(expected)
 	assert.Nil(t, err)
 
 	paginationURLs, err = config.PaginationURLs()
