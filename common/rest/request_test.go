@@ -9,7 +9,6 @@ import (
 
 	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/models"
 	. "github.com/IBM-Cloud/ibm-cloud-cli-sdk/common/rest"
-	testhelpers "github.com/IBM-Cloud/ibm-cloud-cli-sdk/testhelpers/configuration"
 
 	"github.com/stretchr/testify/assert"
 )
