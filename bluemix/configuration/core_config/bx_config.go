@@ -2,6 +2,7 @@ package core_config
 
 import (
 	"encoding/json"
+	"sort"
 	"strings"
 	"sync"
 	"time"
@@ -64,6 +65,7 @@ type BXConfigData struct {
 	UpdateCheckInterval         time.Duration
 	UpdateRetryCheckInterval    time.Duration
 	UpdateNotificationInterval  time.Duration
+	PaginationURLs              []models.PaginationURL
 	raw                         raw
 }
 
@@ -766,7 +768,41 @@ func (c *bxConfig) ClearSession() {
 		c.data.IsLoggedInAsCRI = false
 		c.data.ResourceGroup = models.ResourceGroup{}
 		c.data.LoginAt = time.Time{}
+		c.data.PaginationURLs = []models.PaginationURL{}
 	})
+}
+
+func (c *bxConfig) SetPaginationURLs(paginationURLs []models.PaginationURL) {
+	c.write(func() {
+		c.data.PaginationURLs = paginationURLs
+	})
+}
+
+func (c *bxConfig) ClearPaginationURLs() {
+	c.write(func() {
+		c.data.PaginationURLs = []models.PaginationURL{}
+	})
+}
+
+func (c *bxConfig) AddPaginationURL(index int, url string) {
+	urls := c.PaginationURLs()
+
+	urls = append(urls, models.PaginationURL{
+		LastIndex: index,
+		NextURL:   url,
+	})
+
+	// sort by last index for easier retrieval
+	sort.Sort(models.ByLastIndex(urls))
+	c.SetPaginationURLs(urls)
+}
+
+func (c *bxConfig) PaginationURLs() (paginationURLs []models.PaginationURL) {
+	c.read(func() {
+		paginationURLs = c.data.PaginationURLs
+	})
+
+	return
 }
 
 func (c *bxConfig) UnsetAPI() {

@@ -52,12 +52,14 @@ import (
 	"net/textproto"
 	"net/url"
 	"strings"
+
+	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/models"
 )
 
 const (
-	contentType               = "Content-Type"
-	jsonContentType           = "application/json"
-	formUrlEncodedContentType = "application/x-www-form-urlencoded"
+	ContentType               = "Content-Type"
+	JSONContentType           = "application/json"
+	FormUrlEncodedContentType = "application/x-www-form-urlencoded"
 )
 
 // File represents a file upload in HTTP request
@@ -144,6 +146,17 @@ func PatchRequest(rawUrl string) *Request {
 // Creates a request with HTTP OPTIONS.
 func OptionsRequest(rawUrl string) *Request {
 	return NewRequest(rawUrl).Method("OPTIONS")
+}
+
+// CachedPaginationNextURL will attempt to return a cached URL with last index
+// if there exists a URL with a last index smaller than the offset provided
+func CachedPaginationNextURL(paginationURLs []models.PaginationURL, offset int) models.PaginationURL {
+	for _, p := range paginationURLs {
+		if p.LastIndex < offset {
+			return p
+		}
+	}
+	return models.PaginationURL{}
 }
 
 // Add adds the key, value pair to the request header. It appends to any
@@ -292,7 +305,7 @@ func (r *Request) buildFormMultipart() (io.Reader, error) {
 		}
 	}
 
-	r.header.Set(contentType, w.FormDataContentType())
+	r.header.Set(ContentType, w.FormDataContentType())
 	return b, nil
 }
 
@@ -316,7 +329,7 @@ func escapeQuotes(s string) string {
 }
 
 func (r *Request) buildFormFields() (io.Reader, error) {
-	r.header.Set(contentType, formUrlEncodedContentType)
+	r.header.Set(ContentType, FormUrlEncodedContentType)
 	return strings.NewReader(r.formParams.Encode()), nil
 }
 
