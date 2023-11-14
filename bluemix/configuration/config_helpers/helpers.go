@@ -21,23 +21,6 @@ func ConfigDir() string {
 	return defaultConfigDirOld()
 }
 
-// func MigrateFromOldConfig() error {
-// 	new := defaultConfigDirNew()
-// 	if file_helpers.FileExists(new) {
-// 		return nil
-// 	}
-
-// 	old := defaultConfigDirOld()
-// 	if !file_helpers.FileExists(old) {
-// 		return nil
-// 	}
-
-// 	if err := file_helpers.CopyDir(old, new); err != nil {
-// 		return err
-// 	}
-// 	return os.RemoveAll(old)
-// }
-
 func defaultConfigDirNew() string {
 	return filepath.Join(homeDir(), ".ibmcloud")
 }
