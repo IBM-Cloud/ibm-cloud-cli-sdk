@@ -770,7 +770,7 @@ func (c *bxConfig) ClearPaginationURLs() {
 	})
 }
 
-func (c *bxConfig) AddPaginationURL(index int, url string) error {
+func (c *bxConfig) AddPaginationURL(index int, url string) {
 	urls := c.PaginationURLs()
 
 	urls = append(urls, models.PaginationURL{
@@ -781,7 +781,6 @@ func (c *bxConfig) AddPaginationURL(index int, url string) error {
 	// sort by last index for easier retrieval
 	sort.Sort(models.ByLastIndex(urls))
 	c.SetPaginationURLs(urls)
-	return nil
 }
 
 func (c *bxConfig) PaginationURLs() (paginationURLs []models.PaginationURL) {

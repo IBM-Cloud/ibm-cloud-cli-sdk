@@ -128,7 +128,7 @@ type Repository interface {
 
 	SetPaginationURLs(paginationURLs []models.PaginationURL)
 	ClearPaginationURLs()
-	AddPaginationURL(lastIndex int, nextURL string) error
+	AddPaginationURL(lastIndex int, nextURL string)
 	PaginationURLs() []models.PaginationURL
 }
 
@@ -377,8 +377,8 @@ func (c repository) PaginationURLs() []models.PaginationURL {
 	return c.bxConfig.PaginationURLs()
 }
 
-func (c repository) AddPaginationURL(index int, url string) error {
-	return c.bxConfig.AddPaginationURL(index, url)
+func (c repository) AddPaginationURL(index int, url string) {
+	c.bxConfig.AddPaginationURL(index, url)
 }
 
 func (c repository) SetPaginationURLs(paginationURLs []models.PaginationURL) {

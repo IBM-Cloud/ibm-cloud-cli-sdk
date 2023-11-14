@@ -476,7 +476,6 @@ func TestPaginationURLs(t *testing.T) {
 	paginationURLs := config.PaginationURLs()
 	assert.Empty(t, paginationURLs)
 
-	// update session
 	expected := []models.PaginationURL{
 		{
 			NextURL:   "https://api.example.com?token=dd3784000d9744acb2a23ad121a7bb4b",
@@ -492,6 +491,40 @@ func TestPaginationURLs(t *testing.T) {
 
 	t.Cleanup(cleanupConfigFiles)
 
+}
+
+func TestAddPaginationURL(t *testing.T) {
+	config := prepareConfigForCLI(`{}`, t)
+	assert := assert.New(t)
+	unsortedUrls := []models.PaginationURL{
+		{
+			NextURL:   "/v2/example.com/stuff?limit=200",
+			LastIndex: 200,
+		},
+		{
+			NextURL:   "/v2/example.com/stuff?limit=100",
+			LastIndex: 50,
+		},
+		{
+			NextURL:   "/v2/example.com/stuff?limit=100",
+			LastIndex: 100,
+		},
+	}
+
+	for _, p := range unsortedUrls {
+		config.AddPaginationURL(p.LastIndex, p.NextURL)
+	}
+
+	// expect url to be sorted in ascending order by LastIndex
+	sortedUrls := config.PaginationURLs()
+
+	assert.Equal(3, len(sortedUrls))
+	assert.Equal(sortedUrls[0].LastIndex, unsortedUrls[1].LastIndex)
+	assert.Equal(sortedUrls[0].NextURL, unsortedUrls[1].NextURL)
+	assert.Equal(sortedUrls[1].LastIndex, unsortedUrls[2].LastIndex)
+	assert.Equal(sortedUrls[1].NextURL, unsortedUrls[2].NextURL)
+	assert.Equal(sortedUrls[2].LastIndex, unsortedUrls[0].LastIndex)
+	assert.Equal(sortedUrls[2].NextURL, unsortedUrls[0].NextURL)
 }
 
 func checkUsageStats(enabled bool, timeStampExist bool, config core_config.Repository, t *testing.T) {
