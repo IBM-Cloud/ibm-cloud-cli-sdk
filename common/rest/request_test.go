@@ -137,13 +137,11 @@ func TestCachedPaginationNextURL(t *testing.T) {
 		name            string
 		paginationURLs  []models.PaginationURL
 		offset          int
-		limit           int
 		expectedNextURL string
 	}{
 		{
 			name:   "return cached next URL",
 			offset: 200,
-			limit:  100,
 			paginationURLs: []models.PaginationURL{
 				{
 					NextURL:   "/v2/example.com/stuff?limit=100",
@@ -155,7 +153,6 @@ func TestCachedPaginationNextURL(t *testing.T) {
 		{
 			name:   "return empty string if cache URL cannot be determined",
 			offset: 40,
-			limit:  100,
 			paginationURLs: []models.PaginationURL{
 				{
 					NextURL:   "/v2/example.com/stuff?limit=100",
@@ -167,20 +164,7 @@ func TestCachedPaginationNextURL(t *testing.T) {
 		{
 			name:            "return empty string if no cache available",
 			offset:          40,
-			limit:           100,
 			paginationURLs:  []models.PaginationURL{},
-			expectedNextURL: "",
-		},
-		{
-			name:   "return empty string if limit in url is different than provided limit",
-			offset: 200,
-			limit:  200,
-			paginationURLs: []models.PaginationURL{
-				{
-					NextURL:   "/v2/example.com?stuff?limit=100",
-					LastIndex: 100,
-				},
-			},
 			expectedNextURL: "",
 		},
 	}
