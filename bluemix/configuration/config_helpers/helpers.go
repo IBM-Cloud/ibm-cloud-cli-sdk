@@ -2,6 +2,8 @@
 package config_helpers
 
 import (
+	"encoding/base64"
+	gourl "net/url"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -90,4 +92,46 @@ func UserHomeDir() string {
 	}
 
 	return os.Getenv("HOME")
+}
+
+// IsValidPaginationNextURL will return true if the provided nextURL has the expected queries provided
+func IsValidPaginationNextURL(nextURL string, cursorQueryParamName string, expectedQueries gourl.Values) bool {
+	parsedURL, parseErr := gourl.Parse(nextURL)
+	// NOTE: ignore handling error(s) since if there error(s)
+	// we can assume the url is invalid
+	if parseErr != nil {
+		return false
+	}
+
+	// retrive encoded cursor
+	// eg. /api?cursor=<encode_string>
+	queries := parsedURL.Query()
+	encodedQuery := queries.Get(cursorQueryParamName)
+	if encodedQuery == "" {
+		return false
+
+	}
+	// decode string and parse encoded queries
+	decodedQuery, decodedErr := base64.RawURLEncoding.DecodeString(encodedQuery)
+	if decodedErr != nil {
+		return false
+	}
+	queries, parsedErr := gourl.ParseQuery(string(decodedQuery))
+	if parsedErr != nil {
+		return false
+	}
+
+	// compare expected queries that should match
+	// NOTE: assume queries are single value queries.
+	// if multi-value queries will check the first query
+	for expectedQuery := range expectedQueries {
+		paginationQueryValue := queries.Get(expectedQuery)
+		expectedQueryValue := expectedQueries.Get(expectedQuery)
+		if paginationQueryValue != expectedQueryValue {
+			return false
+		}
+
+	}
+
+	return true
 }

@@ -1,7 +1,9 @@
 package config_helpers
 
 import (
+	"encoding/base64"
 	"io/ioutil"
+	gourl "net/url"
 	"os"
 	"path/filepath"
 	"strings"
@@ -102,4 +104,63 @@ func TestConfigDir_IbmCloudConfigHomeSet_Exists(t *testing.T) {
 	// if IBMCLOUD_CONFIG_HOME is set and exists, IBMCLOUD_CONFIG_HOME is used
 	os.Setenv("IBMCLOUD_CONFIG_HOME", userHome)
 	assert.Equal(userHome, ConfigDir())
+}
+
+func TestIsValidPaginationNextURL(t *testing.T) {
+	assert := assert.New(t)
+
+	testCases := []struct {
+		name              string
+		nextURL           string
+		encodedQueryParam string
+		expectedQueries   gourl.Values
+		isValid           bool
+	}{
+		{
+			name:              "return true for matching expected queries in pagination url",
+			nextURL:           "/api/example?cursor=" + base64.RawURLEncoding.EncodeToString([]byte("limit=100&active=true")),
+			encodedQueryParam: "cursor",
+			expectedQueries: gourl.Values{
+				"limit":  []string{"100"},
+				"active": []string{"true"},
+			},
+			isValid: true,
+		},
+		{
+			name:              "return true for matching expected queries with extraneous queries in pagination url",
+			nextURL:           "/api/example?cursor=" + base64.RawURLEncoding.EncodeToString([]byte("limit=100&active=true&extra=foo")),
+			encodedQueryParam: "cursor",
+			expectedQueries: gourl.Values{
+				"limit":  []string{"100"},
+				"active": []string{"true"},
+			},
+			isValid: true,
+		},
+		{
+			name:              "return false for different limit in pagination url",
+			nextURL:           "/api/example?cursor=" + base64.RawURLEncoding.EncodeToString([]byte("limit=200")),
+			encodedQueryParam: "cursor",
+			expectedQueries: gourl.Values{
+				"limit": []string{"100"},
+			},
+			isValid: false,
+		},
+		{
+			name:              "return false for different query among multiple parameters in the pagination url",
+			nextURL:           "/api/example?cursor=" + base64.RawURLEncoding.EncodeToString([]byte("limit=100&active=true")),
+			encodedQueryParam: "cursor",
+			expectedQueries: gourl.Values{
+				"limit":  []string{"100"},
+				"active": []string{"false"},
+			},
+			isValid: false,
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(_ *testing.T) {
+			isValid := IsValidPaginationNextURL(tc.nextURL, tc.encodedQueryParam, tc.expectedQueries)
+			assert.Equal(tc.isValid, isValid)
+		})
+	}
 }
