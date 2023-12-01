@@ -1,7 +1,9 @@
 package config_helpers
 
 import (
+	"encoding/base64"
 	"io/ioutil"
+	gourl "net/url"
 	"os"
 	"path/filepath"
 	"strings"
@@ -104,81 +106,61 @@ func TestConfigDir_IbmCloudConfigHomeSet_Exists(t *testing.T) {
 	assert.Equal(userHome, ConfigDir())
 }
 
-// func TestMigrateFromOldConfig(t *testing.T) {
-// 	assert := assert.New(t)
+func TestIsValidPaginationNextURL(t *testing.T) {
+	assert := assert.New(t)
 
-// 	err := prepareBluemixHome()
-// 	assert.NoError(err)
-// 	defer clearBluemixHome()
+	testCases := []struct {
+		name              string
+		nextURL           string
+		encodedQueryParam string
+		expectedQueries   gourl.Values
+		isValid           bool
+	}{
+		{
+			name:              "return true for matching expected queries in pagination url",
+			nextURL:           "/api/example?cursor=" + base64.RawURLEncoding.EncodeToString([]byte("limit=100&active=true")),
+			encodedQueryParam: "cursor",
+			expectedQueries: gourl.Values{
+				"limit":  []string{"100"},
+				"active": []string{"true"},
+			},
+			isValid: true,
+		},
+		{
+			name:              "return true for matching expected queries with extraneous queries in pagination url",
+			nextURL:           "/api/example?cursor=" + base64.RawURLEncoding.EncodeToString([]byte("limit=100&active=true&extra=foo")),
+			encodedQueryParam: "cursor",
+			expectedQueries: gourl.Values{
+				"limit":  []string{"100"},
+				"active": []string{"true"},
+			},
+			isValid: true,
+		},
+		{
+			name:              "return false for different limit in pagination url",
+			nextURL:           "/api/example?cursor=" + base64.RawURLEncoding.EncodeToString([]byte("limit=200")),
+			encodedQueryParam: "cursor",
+			expectedQueries: gourl.Values{
+				"limit": []string{"100"},
+			},
+			isValid: false,
+		},
+		{
+			name:              "return false for different query among multiple parameters in the pagination url",
+			nextURL:           "/api/example?cursor=" + base64.RawURLEncoding.EncodeToString([]byte("limit=100&active=true")),
+			encodedQueryParam: "cursor",
+			expectedQueries: gourl.Values{
+				"limit":  []string{"100"},
+				"active": []string{"false"},
+			},
+			isValid: false,
+		},
+	}
 
-// 	err = os.MkdirAll(oldConfigDir(), 0700)
-// 	assert.NoError(err)
-// 	oldConfigPath := filepath.Join(oldConfigDir(), "config.json")
-// 	err = ioutil.WriteFile(oldConfigPath, []byte("old"), 0600)
-// 	assert.NoError(err)
-
-// 	err = MigrateFromOldConfig()
-// 	assert.NoError(err)
-
-// 	newConfigPath := filepath.Join(newConfigDir(), "config.json")
-// 	assert.True(file_helpers.FileExists(newConfigPath))
-// 	content, err := ioutil.ReadFile(newConfigPath)
-// 	assert.NoError(err)
-// 	assert.Equal([]byte("old"), content, "should copy old config file")
-
-// 	assert.False(file_helpers.FileExists(oldConfigDir()), "old config dir should be deleted")
-// }
-
-// func TestMigrateFromOldConfig_NewConfigExist(t *testing.T) {
-// 	assert := assert.New(t)
-
-// 	err := prepareBluemixHome()
-// 	assert.NoError(err)
-// 	defer clearBluemixHome()
-
-// 	err = os.MkdirAll(oldConfigDir(), 0700)
-// 	assert.NoError(err)
-// 	oldConfigPath := filepath.Join(oldConfigDir(), "config.json")
-// 	err = ioutil.WriteFile(oldConfigPath, []byte("old"), 0600)
-// 	assert.NoError(err)
-
-// 	err = os.MkdirAll(newConfigDir(), 0700)
-// 	assert.NoError(err)
-// 	newConfigPath := filepath.Join(newConfigDir(), "config.json")
-// 	err = ioutil.WriteFile(newConfigPath, []byte("new"), 0600)
-// 	assert.NoError(err)
-
-// 	err = MigrateFromOldConfig()
-// 	assert.NoError(err)
-
-// 	content, err := ioutil.ReadFile(newConfigPath)
-// 	assert.NoError(err)
-// 	assert.Equal([]byte("new"), content, "should not copy old config file")
-// }
-
-// func TestMigrateFromOldConfig_OldConfigNotExist(t *testing.T) {
-// 	assert := assert.New(t)
-
-// 	err := prepareBluemixHome()
-// 	assert.NoError(err)
-// 	defer clearBluemixHome()
-
-// 	err = MigrateFromOldConfig()
-// 	assert.NoError(err)
-// }
-
-// func prepareBluemixHome() error {
-// 	temp, err := ioutil.TempDir("", "IBMCloudSDKConfigTest")
-// 	if err != nil {
-// 		return err
-// 	}
-// 	os.Setenv("BLUEMIX_HOME", temp)
-// 	return nil
-// }
-
-// func clearBluemixHome() {
-// 	if homeDir := os.Getenv("BLUEMIX_HOME"); homeDir != "" {
-// 		os.RemoveAll(homeDir)
-// 		os.Unsetenv("BLUEMIX_HOME")
-// 	}
-// }
+	for _, tc := range testCases {
+		t.Run(tc.name, func(_ *testing.T) {
+			isValid := IsValidPaginationNextURL(tc.nextURL, tc.encodedQueryParam, tc.expectedQueries)
+			assert.Equal(tc.isValid, isValid)
+		})
+	}
+}
