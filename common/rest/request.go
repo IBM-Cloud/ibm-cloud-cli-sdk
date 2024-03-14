@@ -1,44 +1,45 @@
 // Request examples:
-//   // create a simple GET request
-//   req := GetRequest("http://www.example.com")
 //
-//   // set header
-//   req.Set("Accept", "application/json")
+//	// create a simple GET request
+//	req := GetRequest("http://www.example.com")
 //
-//   // set query parameters
-//   req.Query("foo1", "bar1")
-//   req.Query("foo2", "bar2")
+//	// set header
+//	req.Set("Accept", "application/json")
 //
-//   // Build to a HTTP request
-//   req.Build()
+//	// set query parameters
+//	req.Query("foo1", "bar1")
+//	req.Query("foo2", "bar2")
 //
-//   // method chaining is also supported
-//   // the above is equal to:
-//   GetRequest("http://www.example.com").
-//       Set("Accept", "application/json").
-//       Query("foo1", "bar1").
-//       Query("foo2", "bar2").
-//       Build()
+//	// Build to a HTTP request
+//	req.Build()
 //
-//   // struct body
-//   foo = Foo{Bar: "val"}
-//   PostRequest("http://www.example.com").
-//       Body(foo)
+//	// method chaining is also supported
+//	// the above is equal to:
+//	GetRequest("http://www.example.com").
+//	    Set("Accept", "application/json").
+//	    Query("foo1", "bar1").
+//	    Query("foo2", "bar2").
+//	    Build()
 //
-//   // String body
-//   PostRequest("http://www.example.com").
-//       Body("{\"bar\": \"val\"}")
+//	// struct body
+//	foo = Foo{Bar: "val"}
+//	PostRequest("http://www.example.com").
+//	    Body(foo)
 //
-//   // Stream body
-//   PostRequest("http://www.example.com").
-//       Body(strings.NewReader("abcde"))
+//	// String body
+//	PostRequest("http://www.example.com").
+//	    Body("{\"bar\": \"val\"}")
 //
-//   // Multipart POST request
-//   var f *os.File
-//   PostRequest("http://www.example.com").
-//       Field("foo", "bar").
-//       File("file1", File{Name: f.Name(), Content: f}).
-//       File("file2", File{Name: "1.txt", Content: []byte("abcde"), Type: "text/plain"})
+//	// Stream body
+//	PostRequest("http://www.example.com").
+//	    Body(strings.NewReader("abcde"))
+//
+//	// Multipart POST request
+//	var f *os.File
+//	PostRequest("http://www.example.com").
+//	    Field("foo", "bar").
+//	    File("file1", File{Name: f.Name(), Content: f}).
+//	    File("file2", File{Name: "1.txt", Content: []byte("abcde"), Type: "text/plain"})
 package rest
 
 import (
@@ -79,11 +80,18 @@ type Request struct {
 	queryParams url.Values
 	formParams  url.Values
 
+	basicAuthn *BasicAuthInfo
+
 	// files to upload
 	files map[string][]File
 
 	// custom request body
 	body interface{}
+}
+
+type BasicAuthInfo struct {
+	user string
+	pass string
 }
 
 // NewRequest creates a new request with a given rawUrl.
@@ -165,6 +173,14 @@ func (r *Request) Set(key string, value string) *Request {
 	return r
 }
 
+func (r *Request) SetBasicAuth(user string, pass string) *Request {
+	r.basicAuthn = &BasicAuthInfo{
+		user: user,
+		pass: pass,
+	}
+	return r
+}
+
 // Query appends the key, value pair to the request query which will be
 // encoded as url query parameters on HTTP request's url.
 func (r *Request) Query(key string, value string) *Request {
@@ -208,6 +224,10 @@ func (r *Request) Build() (*http.Request, error) {
 	req, err := http.NewRequest(r.method, url, body)
 	if err != nil {
 		return req, err
+	}
+
+	if r.basicAuthn != nil {
+		req.SetBasicAuth(r.basicAuthn.user, r.basicAuthn.pass)
 	}
 
 	for k, vs := range r.header {
