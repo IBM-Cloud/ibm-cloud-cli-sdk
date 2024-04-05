@@ -14,14 +14,12 @@ import (
 )
 
 const (
-	defaultClientID        = "bx"
-	defaultClientSecret    = "bx"
-	defaultUAAClientID     = "cf"
-	defaultUAAClientSecret = ""
-	crTokenParam           = "cr_token"
-	profileIDParam         = "profile_id"
-	profileNameParam       = "profile_name"
-	profileCRNParam        = "profile_crn"
+	defaultClientID     = "bx"
+	defaultClientSecret = "bx"
+	crTokenParam        = "cr_token"
+	profileIDParam      = "profile_id"
+	profileNameParam    = "profile_name"
+	profileCRNParam     = "profile_crn"
 )
 
 // Grant types
@@ -40,7 +38,6 @@ const (
 // Response types
 const (
 	ResponseTypeIAM                   authentication.ResponseType = "cloud_iam"
-	ResponseTypeUAA                   authentication.ResponseType = "uaa"
 	ResponseTypeIMS                   authentication.ResponseType = "ims_portal"
 	ResponseTypeDelegatedRefreshToken authentication.ResponseType = "delegated_refresh_token" // #nosec G101 - this the API response grant type. Not a credential
 )
@@ -191,10 +188,6 @@ type Token struct {
 	Scope        string    `json:"scope"`
 	Expiry       time.Time `json:"expiration"`
 
-	// Fields present when ResponseTypeUAA is set
-	UAAToken        string `json:"uaa_token"`
-	UAARefreshToken string `json:"uaa_refresh_token"`
-
 	// Fields present when ResponseTypeIMS is set
 	IMSUserID int64  `json:"ims_user_id"`
 	IMSToken  string `json:"ims_token"`
@@ -263,8 +256,6 @@ func DefaultConfig(iamEndpoint string) Config {
 		SessionEndpoint: iamEndpoint + "/v1/sessions",
 		ClientID:        defaultClientID,
 		ClientSecret:    defaultClientSecret,
-		UAAClientID:     defaultUAAClientID,
-		UAAClientSecret: defaultUAAClientSecret,
 	}
 }
 
@@ -285,13 +276,6 @@ func (c *client) GetToken(tokenReq *authentication.TokenRequest) (*Token, error)
 	tokenReq.SetValue(v)
 
 	responseTypes := tokenReq.ResponseTypes()
-	for _, t := range responseTypes {
-		if t == ResponseTypeUAA {
-			v.Set("uaa_client_id", c.config.UAAClientID)
-			v.Set("uaa_client_secret", c.config.UAAClientSecret)
-			break
-		}
-	}
 	if len(responseTypes) == 0 {
 		v.Set("response_type", ResponseTypeIAM.String())
 	}

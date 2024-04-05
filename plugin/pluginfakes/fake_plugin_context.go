@@ -20,26 +20,6 @@ type FakePluginContext struct {
 	aPIEndpointReturnsOnCall map[int]struct {
 		result1 string
 	}
-	CFStub        func() plugin.CFContext
-	cFMutex       sync.RWMutex
-	cFArgsForCall []struct {
-	}
-	cFReturns struct {
-		result1 plugin.CFContext
-	}
-	cFReturnsOnCall map[int]struct {
-		result1 plugin.CFContext
-	}
-	CFEEEnvIDStub        func() string
-	cFEEEnvIDMutex       sync.RWMutex
-	cFEEEnvIDArgsForCall []struct {
-	}
-	cFEEEnvIDReturns struct {
-		result1 string
-	}
-	cFEEEnvIDReturnsOnCall map[int]struct {
-		result1 string
-	}
 	CLINameStub        func() string
 	cLINameMutex       sync.RWMutex
 	cLINameArgsForCall []struct {
@@ -203,26 +183,6 @@ type FakePluginContext struct {
 	hasTargetedAccountReturnsOnCall map[int]struct {
 		result1 bool
 	}
-	HasTargetedCFStub        func() bool
-	hasTargetedCFMutex       sync.RWMutex
-	hasTargetedCFArgsForCall []struct {
-	}
-	hasTargetedCFReturns struct {
-		result1 bool
-	}
-	hasTargetedCFReturnsOnCall map[int]struct {
-		result1 bool
-	}
-	HasTargetedCFEEStub        func() bool
-	hasTargetedCFEEMutex       sync.RWMutex
-	hasTargetedCFEEArgsForCall []struct {
-	}
-	hasTargetedCFEEReturns struct {
-		result1 bool
-	}
-	hasTargetedCFEEReturnsOnCall map[int]struct {
-		result1 bool
-	}
 	HasTargetedComputeResourceStub        func() bool
 	hasTargetedComputeResourceMutex       sync.RWMutex
 	hasTargetedComputeResourceArgsForCall []struct {
@@ -241,16 +201,6 @@ type FakePluginContext struct {
 		result1 bool
 	}
 	hasTargetedProfileReturnsOnCall map[int]struct {
-		result1 bool
-	}
-	HasTargetedPublicCFStub        func() bool
-	hasTargetedPublicCFMutex       sync.RWMutex
-	hasTargetedPublicCFArgsForCall []struct {
-	}
-	hasTargetedPublicCFReturns struct {
-		result1 bool
-	}
-	hasTargetedPublicCFReturnsOnCall map[int]struct {
 		result1 bool
 	}
 	HasTargetedRegionStub        func() bool
@@ -484,15 +434,16 @@ func (fake *FakePluginContext) APIEndpoint() string {
 	ret, specificReturn := fake.aPIEndpointReturnsOnCall[len(fake.aPIEndpointArgsForCall)]
 	fake.aPIEndpointArgsForCall = append(fake.aPIEndpointArgsForCall, struct {
 	}{})
+	stub := fake.APIEndpointStub
+	fakeReturns := fake.aPIEndpointReturns
 	fake.recordInvocation("APIEndpoint", []interface{}{})
 	fake.aPIEndpointMutex.Unlock()
-	if fake.APIEndpointStub != nil {
-		return fake.APIEndpointStub()
+	if stub != nil {
+		return stub()
 	}
 	if specificReturn {
 		return ret.result1
 	}
-	fakeReturns := fake.aPIEndpointReturns
 	return fakeReturns.result1
 }
 
@@ -531,124 +482,21 @@ func (fake *FakePluginContext) APIEndpointReturnsOnCall(i int, result1 string) {
 	}{result1}
 }
 
-func (fake *FakePluginContext) CF() plugin.CFContext {
-	fake.cFMutex.Lock()
-	ret, specificReturn := fake.cFReturnsOnCall[len(fake.cFArgsForCall)]
-	fake.cFArgsForCall = append(fake.cFArgsForCall, struct {
-	}{})
-	fake.recordInvocation("CF", []interface{}{})
-	fake.cFMutex.Unlock()
-	if fake.CFStub != nil {
-		return fake.CFStub()
-	}
-	if specificReturn {
-		return ret.result1
-	}
-	fakeReturns := fake.cFReturns
-	return fakeReturns.result1
-}
-
-func (fake *FakePluginContext) CFCallCount() int {
-	fake.cFMutex.RLock()
-	defer fake.cFMutex.RUnlock()
-	return len(fake.cFArgsForCall)
-}
-
-func (fake *FakePluginContext) CFCalls(stub func() plugin.CFContext) {
-	fake.cFMutex.Lock()
-	defer fake.cFMutex.Unlock()
-	fake.CFStub = stub
-}
-
-func (fake *FakePluginContext) CFReturns(result1 plugin.CFContext) {
-	fake.cFMutex.Lock()
-	defer fake.cFMutex.Unlock()
-	fake.CFStub = nil
-	fake.cFReturns = struct {
-		result1 plugin.CFContext
-	}{result1}
-}
-
-func (fake *FakePluginContext) CFReturnsOnCall(i int, result1 plugin.CFContext) {
-	fake.cFMutex.Lock()
-	defer fake.cFMutex.Unlock()
-	fake.CFStub = nil
-	if fake.cFReturnsOnCall == nil {
-		fake.cFReturnsOnCall = make(map[int]struct {
-			result1 plugin.CFContext
-		})
-	}
-	fake.cFReturnsOnCall[i] = struct {
-		result1 plugin.CFContext
-	}{result1}
-}
-
-func (fake *FakePluginContext) CFEEEnvID() string {
-	fake.cFEEEnvIDMutex.Lock()
-	ret, specificReturn := fake.cFEEEnvIDReturnsOnCall[len(fake.cFEEEnvIDArgsForCall)]
-	fake.cFEEEnvIDArgsForCall = append(fake.cFEEEnvIDArgsForCall, struct {
-	}{})
-	fake.recordInvocation("CFEEEnvID", []interface{}{})
-	fake.cFEEEnvIDMutex.Unlock()
-	if fake.CFEEEnvIDStub != nil {
-		return fake.CFEEEnvIDStub()
-	}
-	if specificReturn {
-		return ret.result1
-	}
-	fakeReturns := fake.cFEEEnvIDReturns
-	return fakeReturns.result1
-}
-
-func (fake *FakePluginContext) CFEEEnvIDCallCount() int {
-	fake.cFEEEnvIDMutex.RLock()
-	defer fake.cFEEEnvIDMutex.RUnlock()
-	return len(fake.cFEEEnvIDArgsForCall)
-}
-
-func (fake *FakePluginContext) CFEEEnvIDCalls(stub func() string) {
-	fake.cFEEEnvIDMutex.Lock()
-	defer fake.cFEEEnvIDMutex.Unlock()
-	fake.CFEEEnvIDStub = stub
-}
-
-func (fake *FakePluginContext) CFEEEnvIDReturns(result1 string) {
-	fake.cFEEEnvIDMutex.Lock()
-	defer fake.cFEEEnvIDMutex.Unlock()
-	fake.CFEEEnvIDStub = nil
-	fake.cFEEEnvIDReturns = struct {
-		result1 string
-	}{result1}
-}
-
-func (fake *FakePluginContext) CFEEEnvIDReturnsOnCall(i int, result1 string) {
-	fake.cFEEEnvIDMutex.Lock()
-	defer fake.cFEEEnvIDMutex.Unlock()
-	fake.CFEEEnvIDStub = nil
-	if fake.cFEEEnvIDReturnsOnCall == nil {
-		fake.cFEEEnvIDReturnsOnCall = make(map[int]struct {
-			result1 string
-		})
-	}
-	fake.cFEEEnvIDReturnsOnCall[i] = struct {
-		result1 string
-	}{result1}
-}
-
 func (fake *FakePluginContext) CLIName() string {
 	fake.cLINameMutex.Lock()
 	ret, specificReturn := fake.cLINameReturnsOnCall[len(fake.cLINameArgsForCall)]
 	fake.cLINameArgsForCall = append(fake.cLINameArgsForCall, struct {
 	}{})
+	stub := fake.CLINameStub
+	fakeReturns := fake.cLINameReturns
 	fake.recordInvocation("CLIName", []interface{}{})
 	fake.cLINameMutex.Unlock()
-	if fake.CLINameStub != nil {
-		return fake.CLINameStub()
+	if stub != nil {
+		return stub()
 	}
 	if specificReturn {
 		return ret.result1
 	}
-	fakeReturns := fake.cLINameReturns
 	return fakeReturns.result1
 }
 
@@ -745,15 +593,16 @@ func (fake *FakePluginContext) CloudName() string {
 	ret, specificReturn := fake.cloudNameReturnsOnCall[len(fake.cloudNameArgsForCall)]
 	fake.cloudNameArgsForCall = append(fake.cloudNameArgsForCall, struct {
 	}{})
+	stub := fake.CloudNameStub
+	fakeReturns := fake.cloudNameReturns
 	fake.recordInvocation("CloudName", []interface{}{})
 	fake.cloudNameMutex.Unlock()
-	if fake.CloudNameStub != nil {
-		return fake.CloudNameStub()
+	if stub != nil {
+		return stub()
 	}
 	if specificReturn {
 		return ret.result1
 	}
-	fakeReturns := fake.cloudNameReturns
 	return fakeReturns.result1
 }
 
@@ -797,15 +646,16 @@ func (fake *FakePluginContext) CloudType() string {
 	ret, specificReturn := fake.cloudTypeReturnsOnCall[len(fake.cloudTypeArgsForCall)]
 	fake.cloudTypeArgsForCall = append(fake.cloudTypeArgsForCall, struct {
 	}{})
+	stub := fake.CloudTypeStub
+	fakeReturns := fake.cloudTypeReturns
 	fake.recordInvocation("CloudType", []interface{}{})
 	fake.cloudTypeMutex.Unlock()
-	if fake.CloudTypeStub != nil {
-		return fake.CloudTypeStub()
+	if stub != nil {
+		return stub()
 	}
 	if specificReturn {
 		return ret.result1
 	}
-	fakeReturns := fake.cloudTypeReturns
 	return fakeReturns.result1
 }
 
@@ -849,15 +699,16 @@ func (fake *FakePluginContext) ColorEnabled() string {
 	ret, specificReturn := fake.colorEnabledReturnsOnCall[len(fake.colorEnabledArgsForCall)]
 	fake.colorEnabledArgsForCall = append(fake.colorEnabledArgsForCall, struct {
 	}{})
+	stub := fake.ColorEnabledStub
+	fakeReturns := fake.colorEnabledReturns
 	fake.recordInvocation("ColorEnabled", []interface{}{})
 	fake.colorEnabledMutex.Unlock()
-	if fake.ColorEnabledStub != nil {
-		return fake.ColorEnabledStub()
+	if stub != nil {
+		return stub()
 	}
 	if specificReturn {
 		return ret.result1
 	}
-	fakeReturns := fake.colorEnabledReturns
 	return fakeReturns.result1
 }
 
@@ -901,15 +752,16 @@ func (fake *FakePluginContext) CommandNamespace() string {
 	ret, specificReturn := fake.commandNamespaceReturnsOnCall[len(fake.commandNamespaceArgsForCall)]
 	fake.commandNamespaceArgsForCall = append(fake.commandNamespaceArgsForCall, struct {
 	}{})
+	stub := fake.CommandNamespaceStub
+	fakeReturns := fake.commandNamespaceReturns
 	fake.recordInvocation("CommandNamespace", []interface{}{})
 	fake.commandNamespaceMutex.Unlock()
-	if fake.CommandNamespaceStub != nil {
-		return fake.CommandNamespaceStub()
+	if stub != nil {
+		return stub()
 	}
 	if specificReturn {
 		return ret.result1
 	}
-	fakeReturns := fake.commandNamespaceReturns
 	return fakeReturns.result1
 }
 
@@ -953,15 +805,16 @@ func (fake *FakePluginContext) ConsoleEndpoint() string {
 	ret, specificReturn := fake.consoleEndpointReturnsOnCall[len(fake.consoleEndpointArgsForCall)]
 	fake.consoleEndpointArgsForCall = append(fake.consoleEndpointArgsForCall, struct {
 	}{})
+	stub := fake.ConsoleEndpointStub
+	fakeReturns := fake.consoleEndpointReturns
 	fake.recordInvocation("ConsoleEndpoint", []interface{}{})
 	fake.consoleEndpointMutex.Unlock()
-	if fake.ConsoleEndpointStub != nil {
-		return fake.ConsoleEndpointStub()
+	if stub != nil {
+		return stub()
 	}
 	if specificReturn {
 		return ret.result1
 	}
-	fakeReturns := fake.consoleEndpointReturns
 	return fakeReturns.result1
 }
 
@@ -1005,15 +858,16 @@ func (fake *FakePluginContext) ConsoleEndpoints() models.Endpoints {
 	ret, specificReturn := fake.consoleEndpointsReturnsOnCall[len(fake.consoleEndpointsArgsForCall)]
 	fake.consoleEndpointsArgsForCall = append(fake.consoleEndpointsArgsForCall, struct {
 	}{})
+	stub := fake.ConsoleEndpointsStub
+	fakeReturns := fake.consoleEndpointsReturns
 	fake.recordInvocation("ConsoleEndpoints", []interface{}{})
 	fake.consoleEndpointsMutex.Unlock()
-	if fake.ConsoleEndpointsStub != nil {
-		return fake.ConsoleEndpointsStub()
+	if stub != nil {
+		return stub()
 	}
 	if specificReturn {
 		return ret.result1
 	}
-	fakeReturns := fake.consoleEndpointsReturns
 	return fakeReturns.result1
 }
 
@@ -1057,15 +911,16 @@ func (fake *FakePluginContext) CurrentAccount() models.Account {
 	ret, specificReturn := fake.currentAccountReturnsOnCall[len(fake.currentAccountArgsForCall)]
 	fake.currentAccountArgsForCall = append(fake.currentAccountArgsForCall, struct {
 	}{})
+	stub := fake.CurrentAccountStub
+	fakeReturns := fake.currentAccountReturns
 	fake.recordInvocation("CurrentAccount", []interface{}{})
 	fake.currentAccountMutex.Unlock()
-	if fake.CurrentAccountStub != nil {
-		return fake.CurrentAccountStub()
+	if stub != nil {
+		return stub()
 	}
 	if specificReturn {
 		return ret.result1
 	}
-	fakeReturns := fake.currentAccountReturns
 	return fakeReturns.result1
 }
 
@@ -1109,15 +964,16 @@ func (fake *FakePluginContext) CurrentProfile() models.Profile {
 	ret, specificReturn := fake.currentProfileReturnsOnCall[len(fake.currentProfileArgsForCall)]
 	fake.currentProfileArgsForCall = append(fake.currentProfileArgsForCall, struct {
 	}{})
+	stub := fake.CurrentProfileStub
+	fakeReturns := fake.currentProfileReturns
 	fake.recordInvocation("CurrentProfile", []interface{}{})
 	fake.currentProfileMutex.Unlock()
-	if fake.CurrentProfileStub != nil {
-		return fake.CurrentProfileStub()
+	if stub != nil {
+		return stub()
 	}
 	if specificReturn {
 		return ret.result1
 	}
-	fakeReturns := fake.currentProfileReturns
 	return fakeReturns.result1
 }
 
@@ -1161,15 +1017,16 @@ func (fake *FakePluginContext) CurrentRegion() models.Region {
 	ret, specificReturn := fake.currentRegionReturnsOnCall[len(fake.currentRegionArgsForCall)]
 	fake.currentRegionArgsForCall = append(fake.currentRegionArgsForCall, struct {
 	}{})
+	stub := fake.CurrentRegionStub
+	fakeReturns := fake.currentRegionReturns
 	fake.recordInvocation("CurrentRegion", []interface{}{})
 	fake.currentRegionMutex.Unlock()
-	if fake.CurrentRegionStub != nil {
-		return fake.CurrentRegionStub()
+	if stub != nil {
+		return stub()
 	}
 	if specificReturn {
 		return ret.result1
 	}
-	fakeReturns := fake.currentRegionReturns
 	return fakeReturns.result1
 }
 
@@ -1213,15 +1070,16 @@ func (fake *FakePluginContext) CurrentResourceGroup() models.ResourceGroup {
 	ret, specificReturn := fake.currentResourceGroupReturnsOnCall[len(fake.currentResourceGroupArgsForCall)]
 	fake.currentResourceGroupArgsForCall = append(fake.currentResourceGroupArgsForCall, struct {
 	}{})
+	stub := fake.CurrentResourceGroupStub
+	fakeReturns := fake.currentResourceGroupReturns
 	fake.recordInvocation("CurrentResourceGroup", []interface{}{})
 	fake.currentResourceGroupMutex.Unlock()
-	if fake.CurrentResourceGroupStub != nil {
-		return fake.CurrentResourceGroupStub()
+	if stub != nil {
+		return stub()
 	}
 	if specificReturn {
 		return ret.result1
 	}
-	fakeReturns := fake.currentResourceGroupReturns
 	return fakeReturns.result1
 }
 
@@ -1266,15 +1124,16 @@ func (fake *FakePluginContext) GetEndpoint(arg1 endpoints.Service) (string, erro
 	fake.getEndpointArgsForCall = append(fake.getEndpointArgsForCall, struct {
 		arg1 endpoints.Service
 	}{arg1})
+	stub := fake.GetEndpointStub
+	fakeReturns := fake.getEndpointReturns
 	fake.recordInvocation("GetEndpoint", []interface{}{arg1})
 	fake.getEndpointMutex.Unlock()
-	if fake.GetEndpointStub != nil {
-		return fake.GetEndpointStub(arg1)
+	if stub != nil {
+		return stub(arg1)
 	}
 	if specificReturn {
 		return ret.result1, ret.result2
 	}
-	fakeReturns := fake.getEndpointReturns
 	return fakeReturns.result1, fakeReturns.result2
 }
 
@@ -1328,15 +1187,16 @@ func (fake *FakePluginContext) HTTPTimeout() int {
 	ret, specificReturn := fake.hTTPTimeoutReturnsOnCall[len(fake.hTTPTimeoutArgsForCall)]
 	fake.hTTPTimeoutArgsForCall = append(fake.hTTPTimeoutArgsForCall, struct {
 	}{})
+	stub := fake.HTTPTimeoutStub
+	fakeReturns := fake.hTTPTimeoutReturns
 	fake.recordInvocation("HTTPTimeout", []interface{}{})
 	fake.hTTPTimeoutMutex.Unlock()
-	if fake.HTTPTimeoutStub != nil {
-		return fake.HTTPTimeoutStub()
+	if stub != nil {
+		return stub()
 	}
 	if specificReturn {
 		return ret.result1
 	}
-	fakeReturns := fake.hTTPTimeoutReturns
 	return fakeReturns.result1
 }
 
@@ -1380,15 +1240,16 @@ func (fake *FakePluginContext) HasAPIEndpoint() bool {
 	ret, specificReturn := fake.hasAPIEndpointReturnsOnCall[len(fake.hasAPIEndpointArgsForCall)]
 	fake.hasAPIEndpointArgsForCall = append(fake.hasAPIEndpointArgsForCall, struct {
 	}{})
+	stub := fake.HasAPIEndpointStub
+	fakeReturns := fake.hasAPIEndpointReturns
 	fake.recordInvocation("HasAPIEndpoint", []interface{}{})
 	fake.hasAPIEndpointMutex.Unlock()
-	if fake.HasAPIEndpointStub != nil {
-		return fake.HasAPIEndpointStub()
+	if stub != nil {
+		return stub()
 	}
 	if specificReturn {
 		return ret.result1
 	}
-	fakeReturns := fake.hasAPIEndpointReturns
 	return fakeReturns.result1
 }
 
@@ -1432,15 +1293,16 @@ func (fake *FakePluginContext) HasTargetedAccount() bool {
 	ret, specificReturn := fake.hasTargetedAccountReturnsOnCall[len(fake.hasTargetedAccountArgsForCall)]
 	fake.hasTargetedAccountArgsForCall = append(fake.hasTargetedAccountArgsForCall, struct {
 	}{})
+	stub := fake.HasTargetedAccountStub
+	fakeReturns := fake.hasTargetedAccountReturns
 	fake.recordInvocation("HasTargetedAccount", []interface{}{})
 	fake.hasTargetedAccountMutex.Unlock()
-	if fake.HasTargetedAccountStub != nil {
-		return fake.HasTargetedAccountStub()
+	if stub != nil {
+		return stub()
 	}
 	if specificReturn {
 		return ret.result1
 	}
-	fakeReturns := fake.hasTargetedAccountReturns
 	return fakeReturns.result1
 }
 
@@ -1479,124 +1341,21 @@ func (fake *FakePluginContext) HasTargetedAccountReturnsOnCall(i int, result1 bo
 	}{result1}
 }
 
-func (fake *FakePluginContext) HasTargetedCF() bool {
-	fake.hasTargetedCFMutex.Lock()
-	ret, specificReturn := fake.hasTargetedCFReturnsOnCall[len(fake.hasTargetedCFArgsForCall)]
-	fake.hasTargetedCFArgsForCall = append(fake.hasTargetedCFArgsForCall, struct {
-	}{})
-	fake.recordInvocation("HasTargetedCF", []interface{}{})
-	fake.hasTargetedCFMutex.Unlock()
-	if fake.HasTargetedCFStub != nil {
-		return fake.HasTargetedCFStub()
-	}
-	if specificReturn {
-		return ret.result1
-	}
-	fakeReturns := fake.hasTargetedCFReturns
-	return fakeReturns.result1
-}
-
-func (fake *FakePluginContext) HasTargetedCFCallCount() int {
-	fake.hasTargetedCFMutex.RLock()
-	defer fake.hasTargetedCFMutex.RUnlock()
-	return len(fake.hasTargetedCFArgsForCall)
-}
-
-func (fake *FakePluginContext) HasTargetedCFCalls(stub func() bool) {
-	fake.hasTargetedCFMutex.Lock()
-	defer fake.hasTargetedCFMutex.Unlock()
-	fake.HasTargetedCFStub = stub
-}
-
-func (fake *FakePluginContext) HasTargetedCFReturns(result1 bool) {
-	fake.hasTargetedCFMutex.Lock()
-	defer fake.hasTargetedCFMutex.Unlock()
-	fake.HasTargetedCFStub = nil
-	fake.hasTargetedCFReturns = struct {
-		result1 bool
-	}{result1}
-}
-
-func (fake *FakePluginContext) HasTargetedCFReturnsOnCall(i int, result1 bool) {
-	fake.hasTargetedCFMutex.Lock()
-	defer fake.hasTargetedCFMutex.Unlock()
-	fake.HasTargetedCFStub = nil
-	if fake.hasTargetedCFReturnsOnCall == nil {
-		fake.hasTargetedCFReturnsOnCall = make(map[int]struct {
-			result1 bool
-		})
-	}
-	fake.hasTargetedCFReturnsOnCall[i] = struct {
-		result1 bool
-	}{result1}
-}
-
-func (fake *FakePluginContext) HasTargetedCFEE() bool {
-	fake.hasTargetedCFEEMutex.Lock()
-	ret, specificReturn := fake.hasTargetedCFEEReturnsOnCall[len(fake.hasTargetedCFEEArgsForCall)]
-	fake.hasTargetedCFEEArgsForCall = append(fake.hasTargetedCFEEArgsForCall, struct {
-	}{})
-	fake.recordInvocation("HasTargetedCFEE", []interface{}{})
-	fake.hasTargetedCFEEMutex.Unlock()
-	if fake.HasTargetedCFEEStub != nil {
-		return fake.HasTargetedCFEEStub()
-	}
-	if specificReturn {
-		return ret.result1
-	}
-	fakeReturns := fake.hasTargetedCFEEReturns
-	return fakeReturns.result1
-}
-
-func (fake *FakePluginContext) HasTargetedCFEECallCount() int {
-	fake.hasTargetedCFEEMutex.RLock()
-	defer fake.hasTargetedCFEEMutex.RUnlock()
-	return len(fake.hasTargetedCFEEArgsForCall)
-}
-
-func (fake *FakePluginContext) HasTargetedCFEECalls(stub func() bool) {
-	fake.hasTargetedCFEEMutex.Lock()
-	defer fake.hasTargetedCFEEMutex.Unlock()
-	fake.HasTargetedCFEEStub = stub
-}
-
-func (fake *FakePluginContext) HasTargetedCFEEReturns(result1 bool) {
-	fake.hasTargetedCFEEMutex.Lock()
-	defer fake.hasTargetedCFEEMutex.Unlock()
-	fake.HasTargetedCFEEStub = nil
-	fake.hasTargetedCFEEReturns = struct {
-		result1 bool
-	}{result1}
-}
-
-func (fake *FakePluginContext) HasTargetedCFEEReturnsOnCall(i int, result1 bool) {
-	fake.hasTargetedCFEEMutex.Lock()
-	defer fake.hasTargetedCFEEMutex.Unlock()
-	fake.HasTargetedCFEEStub = nil
-	if fake.hasTargetedCFEEReturnsOnCall == nil {
-		fake.hasTargetedCFEEReturnsOnCall = make(map[int]struct {
-			result1 bool
-		})
-	}
-	fake.hasTargetedCFEEReturnsOnCall[i] = struct {
-		result1 bool
-	}{result1}
-}
-
 func (fake *FakePluginContext) HasTargetedComputeResource() bool {
 	fake.hasTargetedComputeResourceMutex.Lock()
 	ret, specificReturn := fake.hasTargetedComputeResourceReturnsOnCall[len(fake.hasTargetedComputeResourceArgsForCall)]
 	fake.hasTargetedComputeResourceArgsForCall = append(fake.hasTargetedComputeResourceArgsForCall, struct {
 	}{})
+	stub := fake.HasTargetedComputeResourceStub
+	fakeReturns := fake.hasTargetedComputeResourceReturns
 	fake.recordInvocation("HasTargetedComputeResource", []interface{}{})
 	fake.hasTargetedComputeResourceMutex.Unlock()
-	if fake.HasTargetedComputeResourceStub != nil {
-		return fake.HasTargetedComputeResourceStub()
+	if stub != nil {
+		return stub()
 	}
 	if specificReturn {
 		return ret.result1
 	}
-	fakeReturns := fake.hasTargetedComputeResourceReturns
 	return fakeReturns.result1
 }
 
@@ -1640,15 +1399,16 @@ func (fake *FakePluginContext) HasTargetedProfile() bool {
 	ret, specificReturn := fake.hasTargetedProfileReturnsOnCall[len(fake.hasTargetedProfileArgsForCall)]
 	fake.hasTargetedProfileArgsForCall = append(fake.hasTargetedProfileArgsForCall, struct {
 	}{})
+	stub := fake.HasTargetedProfileStub
+	fakeReturns := fake.hasTargetedProfileReturns
 	fake.recordInvocation("HasTargetedProfile", []interface{}{})
 	fake.hasTargetedProfileMutex.Unlock()
-	if fake.HasTargetedProfileStub != nil {
-		return fake.HasTargetedProfileStub()
+	if stub != nil {
+		return stub()
 	}
 	if specificReturn {
 		return ret.result1
 	}
-	fakeReturns := fake.hasTargetedProfileReturns
 	return fakeReturns.result1
 }
 
@@ -1687,72 +1447,21 @@ func (fake *FakePluginContext) HasTargetedProfileReturnsOnCall(i int, result1 bo
 	}{result1}
 }
 
-func (fake *FakePluginContext) HasTargetedPublicCF() bool {
-	fake.hasTargetedPublicCFMutex.Lock()
-	ret, specificReturn := fake.hasTargetedPublicCFReturnsOnCall[len(fake.hasTargetedPublicCFArgsForCall)]
-	fake.hasTargetedPublicCFArgsForCall = append(fake.hasTargetedPublicCFArgsForCall, struct {
-	}{})
-	fake.recordInvocation("HasTargetedPublicCF", []interface{}{})
-	fake.hasTargetedPublicCFMutex.Unlock()
-	if fake.HasTargetedPublicCFStub != nil {
-		return fake.HasTargetedPublicCFStub()
-	}
-	if specificReturn {
-		return ret.result1
-	}
-	fakeReturns := fake.hasTargetedPublicCFReturns
-	return fakeReturns.result1
-}
-
-func (fake *FakePluginContext) HasTargetedPublicCFCallCount() int {
-	fake.hasTargetedPublicCFMutex.RLock()
-	defer fake.hasTargetedPublicCFMutex.RUnlock()
-	return len(fake.hasTargetedPublicCFArgsForCall)
-}
-
-func (fake *FakePluginContext) HasTargetedPublicCFCalls(stub func() bool) {
-	fake.hasTargetedPublicCFMutex.Lock()
-	defer fake.hasTargetedPublicCFMutex.Unlock()
-	fake.HasTargetedPublicCFStub = stub
-}
-
-func (fake *FakePluginContext) HasTargetedPublicCFReturns(result1 bool) {
-	fake.hasTargetedPublicCFMutex.Lock()
-	defer fake.hasTargetedPublicCFMutex.Unlock()
-	fake.HasTargetedPublicCFStub = nil
-	fake.hasTargetedPublicCFReturns = struct {
-		result1 bool
-	}{result1}
-}
-
-func (fake *FakePluginContext) HasTargetedPublicCFReturnsOnCall(i int, result1 bool) {
-	fake.hasTargetedPublicCFMutex.Lock()
-	defer fake.hasTargetedPublicCFMutex.Unlock()
-	fake.HasTargetedPublicCFStub = nil
-	if fake.hasTargetedPublicCFReturnsOnCall == nil {
-		fake.hasTargetedPublicCFReturnsOnCall = make(map[int]struct {
-			result1 bool
-		})
-	}
-	fake.hasTargetedPublicCFReturnsOnCall[i] = struct {
-		result1 bool
-	}{result1}
-}
-
 func (fake *FakePluginContext) HasTargetedRegion() bool {
 	fake.hasTargetedRegionMutex.Lock()
 	ret, specificReturn := fake.hasTargetedRegionReturnsOnCall[len(fake.hasTargetedRegionArgsForCall)]
 	fake.hasTargetedRegionArgsForCall = append(fake.hasTargetedRegionArgsForCall, struct {
 	}{})
+	stub := fake.HasTargetedRegionStub
+	fakeReturns := fake.hasTargetedRegionReturns
 	fake.recordInvocation("HasTargetedRegion", []interface{}{})
 	fake.hasTargetedRegionMutex.Unlock()
-	if fake.HasTargetedRegionStub != nil {
-		return fake.HasTargetedRegionStub()
+	if stub != nil {
+		return stub()
 	}
 	if specificReturn {
 		return ret.result1
 	}
-	fakeReturns := fake.hasTargetedRegionReturns
 	return fakeReturns.result1
 }
 
@@ -1796,15 +1505,16 @@ func (fake *FakePluginContext) HasTargetedResourceGroup() bool {
 	ret, specificReturn := fake.hasTargetedResourceGroupReturnsOnCall[len(fake.hasTargetedResourceGroupArgsForCall)]
 	fake.hasTargetedResourceGroupArgsForCall = append(fake.hasTargetedResourceGroupArgsForCall, struct {
 	}{})
+	stub := fake.HasTargetedResourceGroupStub
+	fakeReturns := fake.hasTargetedResourceGroupReturns
 	fake.recordInvocation("HasTargetedResourceGroup", []interface{}{})
 	fake.hasTargetedResourceGroupMutex.Unlock()
-	if fake.HasTargetedResourceGroupStub != nil {
-		return fake.HasTargetedResourceGroupStub()
+	if stub != nil {
+		return stub()
 	}
 	if specificReturn {
 		return ret.result1
 	}
-	fakeReturns := fake.hasTargetedResourceGroupReturns
 	return fakeReturns.result1
 }
 
@@ -1848,15 +1558,16 @@ func (fake *FakePluginContext) IAMEndpoint() string {
 	ret, specificReturn := fake.iAMEndpointReturnsOnCall[len(fake.iAMEndpointArgsForCall)]
 	fake.iAMEndpointArgsForCall = append(fake.iAMEndpointArgsForCall, struct {
 	}{})
+	stub := fake.IAMEndpointStub
+	fakeReturns := fake.iAMEndpointReturns
 	fake.recordInvocation("IAMEndpoint", []interface{}{})
 	fake.iAMEndpointMutex.Unlock()
-	if fake.IAMEndpointStub != nil {
-		return fake.IAMEndpointStub()
+	if stub != nil {
+		return stub()
 	}
 	if specificReturn {
 		return ret.result1
 	}
-	fakeReturns := fake.iAMEndpointReturns
 	return fakeReturns.result1
 }
 
@@ -1900,15 +1611,16 @@ func (fake *FakePluginContext) IAMEndpoints() models.Endpoints {
 	ret, specificReturn := fake.iAMEndpointsReturnsOnCall[len(fake.iAMEndpointsArgsForCall)]
 	fake.iAMEndpointsArgsForCall = append(fake.iAMEndpointsArgsForCall, struct {
 	}{})
+	stub := fake.IAMEndpointsStub
+	fakeReturns := fake.iAMEndpointsReturns
 	fake.recordInvocation("IAMEndpoints", []interface{}{})
 	fake.iAMEndpointsMutex.Unlock()
-	if fake.IAMEndpointsStub != nil {
-		return fake.IAMEndpointsStub()
+	if stub != nil {
+		return stub()
 	}
 	if specificReturn {
 		return ret.result1
 	}
-	fakeReturns := fake.iAMEndpointsReturns
 	return fakeReturns.result1
 }
 
@@ -1952,15 +1664,16 @@ func (fake *FakePluginContext) IAMRefreshToken() string {
 	ret, specificReturn := fake.iAMRefreshTokenReturnsOnCall[len(fake.iAMRefreshTokenArgsForCall)]
 	fake.iAMRefreshTokenArgsForCall = append(fake.iAMRefreshTokenArgsForCall, struct {
 	}{})
+	stub := fake.IAMRefreshTokenStub
+	fakeReturns := fake.iAMRefreshTokenReturns
 	fake.recordInvocation("IAMRefreshToken", []interface{}{})
 	fake.iAMRefreshTokenMutex.Unlock()
-	if fake.IAMRefreshTokenStub != nil {
-		return fake.IAMRefreshTokenStub()
+	if stub != nil {
+		return stub()
 	}
 	if specificReturn {
 		return ret.result1
 	}
-	fakeReturns := fake.iAMRefreshTokenReturns
 	return fakeReturns.result1
 }
 
@@ -2004,15 +1717,16 @@ func (fake *FakePluginContext) IAMToken() string {
 	ret, specificReturn := fake.iAMTokenReturnsOnCall[len(fake.iAMTokenArgsForCall)]
 	fake.iAMTokenArgsForCall = append(fake.iAMTokenArgsForCall, struct {
 	}{})
+	stub := fake.IAMTokenStub
+	fakeReturns := fake.iAMTokenReturns
 	fake.recordInvocation("IAMToken", []interface{}{})
 	fake.iAMTokenMutex.Unlock()
-	if fake.IAMTokenStub != nil {
-		return fake.IAMTokenStub()
+	if stub != nil {
+		return stub()
 	}
 	if specificReturn {
 		return ret.result1
 	}
-	fakeReturns := fake.iAMTokenReturns
 	return fakeReturns.result1
 }
 
@@ -2056,15 +1770,16 @@ func (fake *FakePluginContext) IMSAccountID() string {
 	ret, specificReturn := fake.iMSAccountIDReturnsOnCall[len(fake.iMSAccountIDArgsForCall)]
 	fake.iMSAccountIDArgsForCall = append(fake.iMSAccountIDArgsForCall, struct {
 	}{})
+	stub := fake.IMSAccountIDStub
+	fakeReturns := fake.iMSAccountIDReturns
 	fake.recordInvocation("IMSAccountID", []interface{}{})
 	fake.iMSAccountIDMutex.Unlock()
-	if fake.IMSAccountIDStub != nil {
-		return fake.IMSAccountIDStub()
+	if stub != nil {
+		return stub()
 	}
 	if specificReturn {
 		return ret.result1
 	}
-	fakeReturns := fake.iMSAccountIDReturns
 	return fakeReturns.result1
 }
 
@@ -2108,15 +1823,16 @@ func (fake *FakePluginContext) IsAccessFromVPC() bool {
 	ret, specificReturn := fake.isAccessFromVPCReturnsOnCall[len(fake.isAccessFromVPCArgsForCall)]
 	fake.isAccessFromVPCArgsForCall = append(fake.isAccessFromVPCArgsForCall, struct {
 	}{})
+	stub := fake.IsAccessFromVPCStub
+	fakeReturns := fake.isAccessFromVPCReturns
 	fake.recordInvocation("IsAccessFromVPC", []interface{}{})
 	fake.isAccessFromVPCMutex.Unlock()
-	if fake.IsAccessFromVPCStub != nil {
-		return fake.IsAccessFromVPCStub()
+	if stub != nil {
+		return stub()
 	}
 	if specificReturn {
 		return ret.result1
 	}
-	fakeReturns := fake.isAccessFromVPCReturns
 	return fakeReturns.result1
 }
 
@@ -2160,15 +1876,16 @@ func (fake *FakePluginContext) IsLoggedIn() bool {
 	ret, specificReturn := fake.isLoggedInReturnsOnCall[len(fake.isLoggedInArgsForCall)]
 	fake.isLoggedInArgsForCall = append(fake.isLoggedInArgsForCall, struct {
 	}{})
+	stub := fake.IsLoggedInStub
+	fakeReturns := fake.isLoggedInReturns
 	fake.recordInvocation("IsLoggedIn", []interface{}{})
 	fake.isLoggedInMutex.Unlock()
-	if fake.IsLoggedInStub != nil {
-		return fake.IsLoggedInStub()
+	if stub != nil {
+		return stub()
 	}
 	if specificReturn {
 		return ret.result1
 	}
-	fakeReturns := fake.isLoggedInReturns
 	return fakeReturns.result1
 }
 
@@ -2265,15 +1982,16 @@ func (fake *FakePluginContext) IsLoggedInAsProfile() bool {
 	ret, specificReturn := fake.isLoggedInAsProfileReturnsOnCall[len(fake.isLoggedInAsProfileArgsForCall)]
 	fake.isLoggedInAsProfileArgsForCall = append(fake.isLoggedInAsProfileArgsForCall, struct {
 	}{})
+	stub := fake.IsLoggedInAsProfileStub
+	fakeReturns := fake.isLoggedInAsProfileReturns
 	fake.recordInvocation("IsLoggedInAsProfile", []interface{}{})
 	fake.isLoggedInAsProfileMutex.Unlock()
-	if fake.IsLoggedInAsProfileStub != nil {
-		return fake.IsLoggedInAsProfileStub()
+	if stub != nil {
+		return stub()
 	}
 	if specificReturn {
 		return ret.result1
 	}
-	fakeReturns := fake.isLoggedInAsProfileReturns
 	return fakeReturns.result1
 }
 
@@ -2317,15 +2035,16 @@ func (fake *FakePluginContext) IsLoggedInWithServiceID() bool {
 	ret, specificReturn := fake.isLoggedInWithServiceIDReturnsOnCall[len(fake.isLoggedInWithServiceIDArgsForCall)]
 	fake.isLoggedInWithServiceIDArgsForCall = append(fake.isLoggedInWithServiceIDArgsForCall, struct {
 	}{})
+	stub := fake.IsLoggedInWithServiceIDStub
+	fakeReturns := fake.isLoggedInWithServiceIDReturns
 	fake.recordInvocation("IsLoggedInWithServiceID", []interface{}{})
 	fake.isLoggedInWithServiceIDMutex.Unlock()
-	if fake.IsLoggedInWithServiceIDStub != nil {
-		return fake.IsLoggedInWithServiceIDStub()
+	if stub != nil {
+		return stub()
 	}
 	if specificReturn {
 		return ret.result1
 	}
-	fakeReturns := fake.isLoggedInWithServiceIDReturns
 	return fakeReturns.result1
 }
 
@@ -2369,15 +2088,16 @@ func (fake *FakePluginContext) IsPrivateEndpointEnabled() bool {
 	ret, specificReturn := fake.isPrivateEndpointEnabledReturnsOnCall[len(fake.isPrivateEndpointEnabledArgsForCall)]
 	fake.isPrivateEndpointEnabledArgsForCall = append(fake.isPrivateEndpointEnabledArgsForCall, struct {
 	}{})
+	stub := fake.IsPrivateEndpointEnabledStub
+	fakeReturns := fake.isPrivateEndpointEnabledReturns
 	fake.recordInvocation("IsPrivateEndpointEnabled", []interface{}{})
 	fake.isPrivateEndpointEnabledMutex.Unlock()
-	if fake.IsPrivateEndpointEnabledStub != nil {
-		return fake.IsPrivateEndpointEnabledStub()
+	if stub != nil {
+		return stub()
 	}
 	if specificReturn {
 		return ret.result1
 	}
-	fakeReturns := fake.isPrivateEndpointEnabledReturns
 	return fakeReturns.result1
 }
 
@@ -2421,15 +2141,16 @@ func (fake *FakePluginContext) IsSSLDisabled() bool {
 	ret, specificReturn := fake.isSSLDisabledReturnsOnCall[len(fake.isSSLDisabledArgsForCall)]
 	fake.isSSLDisabledArgsForCall = append(fake.isSSLDisabledArgsForCall, struct {
 	}{})
+	stub := fake.IsSSLDisabledStub
+	fakeReturns := fake.isSSLDisabledReturns
 	fake.recordInvocation("IsSSLDisabled", []interface{}{})
 	fake.isSSLDisabledMutex.Unlock()
-	if fake.IsSSLDisabledStub != nil {
-		return fake.IsSSLDisabledStub()
+	if stub != nil {
+		return stub()
 	}
 	if specificReturn {
 		return ret.result1
 	}
-	fakeReturns := fake.isSSLDisabledReturns
 	return fakeReturns.result1
 }
 
@@ -2473,15 +2194,16 @@ func (fake *FakePluginContext) Locale() string {
 	ret, specificReturn := fake.localeReturnsOnCall[len(fake.localeArgsForCall)]
 	fake.localeArgsForCall = append(fake.localeArgsForCall, struct {
 	}{})
+	stub := fake.LocaleStub
+	fakeReturns := fake.localeReturns
 	fake.recordInvocation("Locale", []interface{}{})
 	fake.localeMutex.Unlock()
-	if fake.LocaleStub != nil {
-		return fake.LocaleStub()
+	if stub != nil {
+		return stub()
 	}
 	if specificReturn {
 		return ret.result1
 	}
-	fakeReturns := fake.localeReturns
 	return fakeReturns.result1
 }
 
@@ -2525,15 +2247,16 @@ func (fake *FakePluginContext) PluginConfig() plugin.PluginConfig {
 	ret, specificReturn := fake.pluginConfigReturnsOnCall[len(fake.pluginConfigArgsForCall)]
 	fake.pluginConfigArgsForCall = append(fake.pluginConfigArgsForCall, struct {
 	}{})
+	stub := fake.PluginConfigStub
+	fakeReturns := fake.pluginConfigReturns
 	fake.recordInvocation("PluginConfig", []interface{}{})
 	fake.pluginConfigMutex.Unlock()
-	if fake.PluginConfigStub != nil {
-		return fake.PluginConfigStub()
+	if stub != nil {
+		return stub()
 	}
 	if specificReturn {
 		return ret.result1
 	}
-	fakeReturns := fake.pluginConfigReturns
 	return fakeReturns.result1
 }
 
@@ -2577,15 +2300,16 @@ func (fake *FakePluginContext) PluginDirectory() string {
 	ret, specificReturn := fake.pluginDirectoryReturnsOnCall[len(fake.pluginDirectoryArgsForCall)]
 	fake.pluginDirectoryArgsForCall = append(fake.pluginDirectoryArgsForCall, struct {
 	}{})
+	stub := fake.PluginDirectoryStub
+	fakeReturns := fake.pluginDirectoryReturns
 	fake.recordInvocation("PluginDirectory", []interface{}{})
 	fake.pluginDirectoryMutex.Unlock()
-	if fake.PluginDirectoryStub != nil {
-		return fake.PluginDirectoryStub()
+	if stub != nil {
+		return stub()
 	}
 	if specificReturn {
 		return ret.result1
 	}
-	fakeReturns := fake.pluginDirectoryReturns
 	return fakeReturns.result1
 }
 
@@ -2629,15 +2353,16 @@ func (fake *FakePluginContext) RefreshIAMToken() (string, error) {
 	ret, specificReturn := fake.refreshIAMTokenReturnsOnCall[len(fake.refreshIAMTokenArgsForCall)]
 	fake.refreshIAMTokenArgsForCall = append(fake.refreshIAMTokenArgsForCall, struct {
 	}{})
+	stub := fake.RefreshIAMTokenStub
+	fakeReturns := fake.refreshIAMTokenReturns
 	fake.recordInvocation("RefreshIAMToken", []interface{}{})
 	fake.refreshIAMTokenMutex.Unlock()
-	if fake.RefreshIAMTokenStub != nil {
-		return fake.RefreshIAMTokenStub()
+	if stub != nil {
+		return stub()
 	}
 	if specificReturn {
 		return ret.result1, ret.result2
 	}
-	fakeReturns := fake.refreshIAMTokenReturns
 	return fakeReturns.result1, fakeReturns.result2
 }
 
@@ -2684,15 +2409,16 @@ func (fake *FakePluginContext) Trace() string {
 	ret, specificReturn := fake.traceReturnsOnCall[len(fake.traceArgsForCall)]
 	fake.traceArgsForCall = append(fake.traceArgsForCall, struct {
 	}{})
+	stub := fake.TraceStub
+	fakeReturns := fake.traceReturns
 	fake.recordInvocation("Trace", []interface{}{})
 	fake.traceMutex.Unlock()
-	if fake.TraceStub != nil {
-		return fake.TraceStub()
+	if stub != nil {
+		return stub()
 	}
 	if specificReturn {
 		return ret.result1
 	}
-	fakeReturns := fake.traceReturns
 	return fakeReturns.result1
 }
 
@@ -2736,15 +2462,16 @@ func (fake *FakePluginContext) UserEmail() string {
 	ret, specificReturn := fake.userEmailReturnsOnCall[len(fake.userEmailArgsForCall)]
 	fake.userEmailArgsForCall = append(fake.userEmailArgsForCall, struct {
 	}{})
+	stub := fake.UserEmailStub
+	fakeReturns := fake.userEmailReturns
 	fake.recordInvocation("UserEmail", []interface{}{})
 	fake.userEmailMutex.Unlock()
-	if fake.UserEmailStub != nil {
-		return fake.UserEmailStub()
+	if stub != nil {
+		return stub()
 	}
 	if specificReturn {
 		return ret.result1
 	}
-	fakeReturns := fake.userEmailReturns
 	return fakeReturns.result1
 }
 
@@ -2841,15 +2568,16 @@ func (fake *FakePluginContext) VersionCheckEnabled() bool {
 	ret, specificReturn := fake.versionCheckEnabledReturnsOnCall[len(fake.versionCheckEnabledArgsForCall)]
 	fake.versionCheckEnabledArgsForCall = append(fake.versionCheckEnabledArgsForCall, struct {
 	}{})
+	stub := fake.VersionCheckEnabledStub
+	fakeReturns := fake.versionCheckEnabledReturns
 	fake.recordInvocation("VersionCheckEnabled", []interface{}{})
 	fake.versionCheckEnabledMutex.Unlock()
-	if fake.VersionCheckEnabledStub != nil {
-		return fake.VersionCheckEnabledStub()
+	if stub != nil {
+		return stub()
 	}
 	if specificReturn {
 		return ret.result1
 	}
-	fakeReturns := fake.versionCheckEnabledReturns
 	return fakeReturns.result1
 }
 
@@ -2893,10 +2621,6 @@ func (fake *FakePluginContext) Invocations() map[string][][]interface{} {
 	defer fake.invocationsMutex.RUnlock()
 	fake.aPIEndpointMutex.RLock()
 	defer fake.aPIEndpointMutex.RUnlock()
-	fake.cFMutex.RLock()
-	defer fake.cFMutex.RUnlock()
-	fake.cFEEEnvIDMutex.RLock()
-	defer fake.cFEEEnvIDMutex.RUnlock()
 	fake.cLINameMutex.RLock()
 	defer fake.cLINameMutex.RUnlock()
 	fake.cRITypeMutex.RLock()
@@ -2929,16 +2653,10 @@ func (fake *FakePluginContext) Invocations() map[string][][]interface{} {
 	defer fake.hasAPIEndpointMutex.RUnlock()
 	fake.hasTargetedAccountMutex.RLock()
 	defer fake.hasTargetedAccountMutex.RUnlock()
-	fake.hasTargetedCFMutex.RLock()
-	defer fake.hasTargetedCFMutex.RUnlock()
-	fake.hasTargetedCFEEMutex.RLock()
-	defer fake.hasTargetedCFEEMutex.RUnlock()
 	fake.hasTargetedComputeResourceMutex.RLock()
 	defer fake.hasTargetedComputeResourceMutex.RUnlock()
 	fake.hasTargetedProfileMutex.RLock()
 	defer fake.hasTargetedProfileMutex.RUnlock()
-	fake.hasTargetedPublicCFMutex.RLock()
-	defer fake.hasTargetedPublicCFMutex.RUnlock()
 	fake.hasTargetedRegionMutex.RLock()
 	defer fake.hasTargetedRegionMutex.RUnlock()
 	fake.hasTargetedResourceGroupMutex.RLock()
