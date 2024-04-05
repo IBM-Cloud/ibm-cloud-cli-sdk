@@ -212,8 +212,7 @@ func (c *bxConfig) ConsoleEndpoints() (endpoints models.Endpoints) {
 func (c *bxConfig) CurrentRegion() (region models.Region) {
 	c.read(func() {
 		region = models.Region{
-			MCCPID: c.data.RegionID,
-			Name:   c.data.Region,
+			Name: c.data.Region,
 		}
 	})
 	return
@@ -553,7 +552,6 @@ func (c *bxConfig) SetConsoleEndpoints(endpoint models.Endpoints) {
 func (c *bxConfig) SetRegion(region models.Region) {
 	c.write(func() {
 		c.data.Region = region.Name
-		c.data.RegionID = region.MCCPID
 	})
 }
 
