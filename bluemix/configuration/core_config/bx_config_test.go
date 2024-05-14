@@ -534,13 +534,11 @@ func checkUsageStats(enabled bool, timeStampExist bool, config core_config.Repos
 
 func prepareConfigForCLI(cliConfigContent string, t *testing.T) core_config.Repository {
 	ioutil.WriteFile("config.json", []byte(cliConfigContent), 0644)
-	ioutil.WriteFile("cf_config.json", []byte(""), 0644)
-	return core_config.NewCoreConfigFromPath("cf_config.json", "config.json", func(err error) {
+	return core_config.NewCoreConfigFromPath("config.json", func(err error) {
 		t.Fatal(err.Error())
 	})
 }
 
 func cleanupConfigFiles() {
 	os.Remove("config.json")
-	os.Remove("cf_config.json")
 }

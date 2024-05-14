@@ -45,8 +45,6 @@ type BXConfigData struct {
 	Profile                     models.Profile
 	ResourceGroup               models.ResourceGroup
 	LoginAt                     time.Time
-	CFEETargeted                bool
-	CFEEEnvID                   string
 	PluginRepos                 []models.PluginRepo
 	SSLDisabled                 bool
 	Locale                      string
@@ -212,8 +210,7 @@ func (c *bxConfig) ConsoleEndpoints() (endpoints models.Endpoints) {
 func (c *bxConfig) CurrentRegion() (region models.Region) {
 	c.read(func() {
 		region = models.Region{
-			MCCPID: c.data.RegionID,
-			Name:   c.data.Region,
+			Name: c.data.Region,
 		}
 	})
 	return
@@ -311,7 +308,7 @@ func (c *bxConfig) IsLoggedIn() bool {
 	if token, refresh := c.IAMToken(), c.IAMRefreshToken(); token != "" || refresh != "" {
 		iamTokenInfo := NewIAMTokenInfo(token)
 		if iamTokenInfo.hasExpired() && refresh != "" {
-			repo := newRepository(c, nil)
+			repo := newRepository(c)
 			if _, err := repo.RefreshIAMToken(); err != nil {
 				return false
 			}
@@ -510,20 +507,6 @@ func (c *bxConfig) SDKVersion() (version string) {
 	return
 }
 
-func (c *bxConfig) HasTargetedCFEE() (targeted bool) {
-	c.read(func() {
-		targeted = c.data.CFEETargeted
-	})
-	return
-}
-
-func (c *bxConfig) CFEEEnvID() (envID string) {
-	c.read(func() {
-		envID = c.data.CFEEEnvID
-	})
-	return
-}
-
 func (c *bxConfig) SetAPIEndpoint(endpoint string) {
 	c.write(func() {
 		c.data.APIEndpoint = endpoint
@@ -553,7 +536,6 @@ func (c *bxConfig) SetConsoleEndpoints(endpoint models.Endpoints) {
 func (c *bxConfig) SetRegion(region models.Region) {
 	c.write(func() {
 		c.data.Region = region.Name
-		c.data.RegionID = region.MCCPID
 	})
 }
 
@@ -711,18 +693,6 @@ func (c *bxConfig) SetLocale(locale string) {
 func (c *bxConfig) SetTrace(trace string) {
 	c.write(func() {
 		c.data.Trace = trace
-	})
-}
-
-func (c *bxConfig) SetCFEETargeted(targeted bool) {
-	c.write(func() {
-		c.data.CFEETargeted = targeted
-	})
-}
-
-func (c *bxConfig) SetCFEEEnvID(envID string) {
-	c.write(func() {
-		c.data.CFEEEnvID = envID
 	})
 }
 

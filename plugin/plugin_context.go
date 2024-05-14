@@ -7,38 +7,14 @@ import (
 	"strings"
 
 	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix"
-	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/authentication/uaa"
 	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/configuration/core_config"
 	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/endpoints"
-	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/common/rest"
 )
 
 type pluginContext struct {
 	core_config.ReadWriter
-	cfConfig     cfConfigWrapper
 	pluginConfig PluginConfig
 	pluginPath   string
-}
-
-type cfConfigWrapper struct {
-	core_config.CFConfig
-}
-
-func (c cfConfigWrapper) RefreshUAAToken() (string, error) {
-	if !c.HasAPIEndpoint() {
-		return "", fmt.Errorf("CloudFoundry API endpoint is not set")
-	}
-
-	auth := uaa.NewClient(uaa.DefaultConfig(c.AuthenticationEndpoint()), rest.NewClient())
-	token, err := auth.GetToken(uaa.RefreshTokenRequest(c.UAARefreshToken()))
-	if err != nil {
-		return "", err
-	}
-
-	ret := fmt.Sprintf("%s %s", token.TokenType, token.AccessToken)
-	c.SetUAAToken(ret)
-	c.SetUAARefreshToken(token.RefreshToken)
-	return ret, nil
 }
 
 func createPluginContext(pluginPath string, coreConfig core_config.ReadWriter) *pluginContext {
@@ -46,14 +22,10 @@ func createPluginContext(pluginPath string, coreConfig core_config.ReadWriter) *
 		pluginPath:   pluginPath,
 		pluginConfig: loadPluginConfigFromPath(filepath.Join(pluginPath, "config.json")),
 		ReadWriter:   coreConfig,
-		cfConfig:     cfConfigWrapper{coreConfig.CFConfig()},
 	}
 }
 
 func (c *pluginContext) APIEndpoint() string {
-	if compareVersion(c.SDKVersion(), "0.1.1") < 0 {
-		return c.ReadWriter.CFConfig().APIEndpoint()
-	}
 	return c.ReadWriter.APIEndpoint()
 }
 
@@ -142,10 +114,6 @@ func (c *pluginContext) ColorEnabled() string {
 
 func (c *pluginContext) VersionCheckEnabled() bool {
 	return !c.CheckCLIVersionDisabled()
-}
-
-func (c *pluginContext) CF() CFContext {
-	return c.cfConfig
 }
 
 func envOrConfig(env bluemix.Env, config string) string {

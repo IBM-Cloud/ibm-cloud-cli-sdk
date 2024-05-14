@@ -67,18 +67,18 @@ You are not logged in. Log in by running 'ibmcloud login'.
 
 ### Entity formatting in output messages: ([reference](https://github.com/IBM-Cloud/ibm-cloud-cli-sdk/blob/master/docs/plugin_developer_guide.md#23-entity-name))
 
-Add single quotation marks (') around entity names and keep the entity names in cyan with **bold**. For example:
+Keep the entity names in cyan with **bold**. For example:
 
 ```
-Mapping route 'my-app.us-south.cf.cloud.ibm.com' to CF application 'my-app'...
+Deleting service instance test in resource group GroupA under account TestAccount as user@ibm.com
 ```
 
 
 ### Command Help ([reference](https://github.com/IBM-Cloud/ibm-cloud-cli-sdk/blob/master/docs/plugin_developer_guide.md#24-help-of-command))
 
 - Use "-" for single letter flags, and "--" for multiple letter flags, e.g. `-c ACCOUNT_ID` and `--guid`.
-- All user input values should be shown as capital letters, e.g. `ibmcloud scale RESOURCE_NAME`
-- For optional parameters and flags, surround them with "[...]", e.g. `ibmcloud account orgs [--guid]`.
+- All user input values should be shown as capital letters, e.g. `ibmcloud resource service-instance SERVICE_INSTANCE_NAME`
+- For optional parameters and flags, surround them with "[...]", e.g. `ibmcloud iam service-id [--uuid]`.
 - For exclusive parameters and flags, group them together by "(...)" and separate by "|".
   - Example: `ibmcloud test create (NAME | --uuid ID)`
 - "[...]" and "(...)" can be nested.
@@ -95,15 +95,16 @@ The following gives an example of the output of the `help` command:
 
 ```
 NAME:
-   scale - Change the instance count for an app or container group.
+  group-update - Update an existing resource group
+
 USAGE:
-   ibmcloud scale RESOURCE_NAME [-i INSTANCES] [-k DISK] [-m MEMORY] [-f]
-   RESOURCE_NAME is the name of the app or container group to be scaled.
+  icd resource group-update NAME [-n, --name NEW_NAME] [-f, --force] [--output FORMAT] [-q, --quiet]
+
 OPTIONS:
-   -i value  Number of instances.
-   -k value  Disk limit (e.g. 256M, 1024M, 1G). Valid only for scaling an app, not a container group.
-   -m value  Memory limit (e.g. 256M, 1024M, 1G). Valid only for scaling an app, not a container group.
-   -f        Force restart of CF application without prompt. Valid only for scaling an app, not a container group.
+  -n value, --name value  New name of the resource group
+  -f, --force             Force update without confirmation
+  --output value          Specify output format, only JSON is supported now.
+  -q, --quiet             Suppress verbose output
 ```
 
 ### Common options ([reference](https://github.com/IBM-Cloud/ibm-cloud-cli-sdk/blob/master/docs/plugin_developer_guide.md#212-common-options))
@@ -125,17 +126,20 @@ OPTIONS:
 When the user runs a command with the wrong usage (e.g. incorrect number of arguments, invalid option value, required options not specified, etc.), the message should be displayed and include help for the user for the command as below:
 
 ```
-Incorrect usage.
+FAILED
+Incorrect Usage.
+
 NAME:
-   scale - Change the instance count for an app or container group.
+  group-update - Update an existing resource group
+
 USAGE:
-   ibmcloud scale RESOURCE_NAME [-i INSTANCES] [-k DISK] [-m MEMORY] [-f]
-   RESOURCE_NAME is the name of the app or container group to be scaled.
+  icd resource group-update NAME [-n, --name NEW_NAME] [-f, --force] [--output FORMAT] [-q, --quiet]
+
 OPTIONS:
-   -i value  Number of instances.
-   -k value  Disk limit (e.g. 256M, 1024M, 1G). Valid only for scaling an app, not a container group.
-   -m value  Memory limit (e.g. 256M, 1024M, 1G). Valid only for scaling an app, not a container group.
-   -f        Force restart of CF application without prompt. Valid only for scaling an app, not a container group.
+  -n value, --name value  New name of the resource group
+  -f, --force             Force update without confirmation
+  --output value          Specify output format, only JSON is supported now.
+  -q, --quiet             Suppress verbose output
 ```
 
 Provide any details possible to guide and inform the users. For example:
@@ -151,10 +155,11 @@ The failure message must start with "FAILED" in red with **bold**, followed by t
 In the message, explain the error and provide guidance on how to resolve the issue such as shown in the following output:
 
 ```
-Creating application 'my-app'...
+Creating access policy role Editor under current account for service role as user@ibm.com...
 FAILED
-An application with name 'my-app' already exists.
-Use another name and try again.
+Following errors returned from server:
+Code           Message                                                                             Details
+invalid_body   The role name is conflicting with system define role, please choose another name.
 ```
 
 #### Command Success ([reference](https://github.com/IBM-Cloud/ibm-cloud-cli-sdk/blob/master/docs/plugin_developer_guide.md#27-command-success))
@@ -162,9 +167,9 @@ Use another name and try again.
 When a command is successful, the success message should start with "OK" in green with **bold** and followed by the optional details in new line like the following example:
 
 ```
-Creating application 'my-app'...
+Creating resource group Test under account TestAccount as user@ibm.com...
 OK
-Application 'my-app' was created.
+Resource group Test was created.
 ```
 
 #### Warning Message ([reference](https://github.com/IBM-Cloud/ibm-cloud-cli-sdk/blob/master/docs/plugin_developer_guide.md#28-warning-message))
@@ -279,5 +284,5 @@ Service ID '15a15a0f-725e-453a-b3ac-755280ad7300' was not found.
 
 ### Globalization ([reference](https://github.com/IBM-Cloud/ibm-cloud-cli-sdk/blob/master/docs/plugin_developer_guide.md#7-globalization))
 
-IBM Cloud CLI tends to be used globally. Both IBM Cloud CLI and its plug-ins should support globalization. 
+IBM Cloud CLI tends to be used globally. Both IBM Cloud CLI and its plug-ins should support globalization.
 

@@ -96,7 +96,7 @@ IBM Cloud CLI SDK provides a set of APIs to register and manage plug-ins. It als
     }
     ```
 
-`PluginContext` provides the most useful methods which allow you to get command line properties from CF configuration as well as IBM Cloud  specific properties.
+`PluginContext` provides the most useful methods which allow you to get command line properties from IBM Cloud specific properties.
 
 ### 1.2. Namespace
 
@@ -110,11 +110,9 @@ The following are shared namespaces are currently predefined in IBM Cloud  CLI a
 | account | Manage accounts, orgs, spaces and users |
 | iam | Manage identities and accesses |
 | catalog | Manage IBM Cloud catalog |
-| app | Manage IBM Cloud applications |
 | service | Manage IBM Cloud services |
 | resource | Manage the IBM cloud resources |
 | billing | Retrieve usage and billing information |
-| cf | Run Cloud Foundry CLI with IBM Cloud context |
 | plugin | Manage plug-in repositories and plug-ins |
 
 For shared namespace, refer to the namespace in the plug-in:
@@ -432,18 +430,20 @@ Incorrect description:
 
 ### 2.3. Entity Name
 
-Add single quotation marks (') around entity names and keep the entity names in cyan with **bold**. For example:
+Keep the entity names in cyan with **bold**. For example:
 
 ```
-Mapping route 'my-app.us-south.cf.cloud.ibm.com' to CF application 'my-app'...
+Deleting service instance test in resource group Editors under account TestAccount as user@ibm.com...
 ```
 
 The IBM Cloud CLI SDK also provides API to help you print the previous example message:
 
 ```go
-ui.Say("Mapping route '%s' to CF application '%s'...",
-    terminal.EntityNameColor("my-app.cloud.ibm.com"),
-    terminal.EntityNameColor("my-app"),
+ui.Say("Deleting service instance %s in resource group %s under account %s as %s...",
+    terminal.EntityNameColor("test"),
+    terminal.EntityNameColor("Editors"),
+    terminal.EntityNameColor("TestAccount"),
+    terminal.EntityNameColor("user@ibm.com"),
 )
 ```
 
@@ -451,8 +451,8 @@ ui.Say("Mapping route '%s' to CF application '%s'...",
 
 Use the guidelines below to compose command help.
 - Use "-" for single letter flags, and "--" for multiple letter flags, e.g. `-c ACCOUNT_ID` and `--guid`.
-- All user input values should be capital letters, e.g. `ibmcloud scale RESOURCE_NAME`
-- For optional parameters and flags, surround them with "[...]", e.g. `ibmcloud account orgs [--guid]`.
+- All user input values should be shown as capital letters, e.g. `ibmcloud resource service-instance SERVICE_INSTANCE_NAME`
+- For optional parameters and flags, surround them with "[...]", e.g. `ibmcloud iam service-id [--uuid]`.
 - For exclusive parameters and flags, group them together by "(...)" and separate by "|".
   - Example: `ibmcloud test create (NAME | --uuid ID)`
 - "[...]" and "(...)" can be nested.
@@ -469,40 +469,43 @@ The following gives an example of the output of the `help` command:
 
 ```
 NAME:
-   scale - Change the instance count for an app or container group.
-USAGE:
-   ibmcloud scale RESOURCE_NAME [-i INSTANCES] [-k DISK] [-m MEMORY] [-f]
-   RESOURCE_NAME is the name of the app or container group to be scaled.
-OPTIONS:
-   -i value  Number of instances.
-   -k value  Disk limit (e.g. 256M, 1024M, 1G). Valid only for scaling an app, not a container group.
-   -m value  Memory limit (e.g. 256M, 1024M, 1G). Valid only for scaling an app, not a container group.
-   -f        Force restart of CF application without prompt. Valid only for scaling an app, not a container group.
-```
+  group-update - Update an existing resource group
 
+USAGE:
+  icd resource group-update NAME [-n, --name NEW_NAME] [-f, --force] [--output FORMAT] [-q, --quiet]
+
+OPTIONS:
+  -n value, --name value  New name of the resource group
+  -f, --force             Force update without confirmation
+  --output value          Specify output format, only JSON is supported now.
+  -q, --quiet             Suppress verbose output
+```
 
 ### 2.5. Incorrect Usage
 
 When users run a command with wrong usage (e.g. incorrect number of arguments, invalid option value, required options not specified and etc.), the message should be displayed in the following format:
 
 ```
-Incorrect usage.
+FAILED
+Incorrect Usage.
+
 NAME:
-   scale - Change the instance count for an app or container group.
+  group-update - Update an existing resource group
+
 USAGE:
-   ibmcloud scale RESOURCE_NAME [-i INSTANCES] [-k DISK] [-m MEMORY] [-f]
-   RESOURCE_NAME is the name of the app or container group to be scaled.
+  icd resource group-update NAME [-n, --name NEW_NAME] [-f, --force] [--output FORMAT] [-q, --quiet]
+
 OPTIONS:
-   -i value  Number of instances.
-   -k value  Disk limit (e.g. 256M, 1024M, 1G). Valid only for scaling an app, not a container group.
-   -m value  Memory limit (e.g. 256M, 1024M, 1G). Valid only for scaling an app, not a container group.
-   -f        Force restart of CF application without prompt. Valid only for scaling an app, not a container group.
+  -n value, --name value  New name of the resource group
+  -f, --force             Force update without confirmation
+  --output value          Specify output format, only JSON is supported now.
+  -q, --quiet             Suppress verbose output
 ```
 
 If possible, provide details to help the users figure out what was wrong with their usage. For example:
 
 ```
-Incorrect usage. The '-k' option is not valid for a container group.
+Incorrect Usage: '--source-service-name' is only optional when '--source-resource-group-id' is specified
 ```
 
 ### 2.6. Command Failure
@@ -510,17 +513,17 @@ Incorrect usage. The '-k' option is not valid for a container group.
 If a command failed due to the client-side or server-side error, explain the error and provide guidance on how to resolve the issue, such as shown in the following output:
 
 ```
-Creating application 'my-app'...
+Creating access policy role Editor under current account for service role as user@ibm.com...
 FAILED
-An application with name 'my-app' already exists.
-Use another name and try again.
+Following errors returned from server:
+Code           Message                                                                             Details
+invalid_body   The role name is conflicting with system define role, please choose another name.
 ```
 
 ```
-Scaling container group 'xxx'...
+Submitting request to delete resource reclamation d3a3941f-6582-4e1d-b156-694fe6169b66 under account b72850272cec44bfb139667342acb9f as user@ibm.com...
 FAILED
-A server error occurred while scaling the container group.
-Try again later. If the problem continues, contact IBM Cloud Support.
+Cannot reclaim reclamation d3a3941f-6582-4e1d-b156-694fe6169b66 whose state is RECLAIMED
 ```
 
 To summarize, the failure message must start with "FAILED" in red with **bold** and followed by the detailed error message in a new line as previously shown. A recovery solution must be provided, such as "Use another name and try again." or "Try again later."
@@ -544,18 +547,21 @@ func Run() error {
 When command was successful, the success message should start with "OK" in green with **bold** and followed by the optional details in new line like the following examples:
 
 ```
-Creating application 'my-app'...
+Creating resource group Test under account TestAccount as user@ibm.com...
 OK
-Application 'my-app' was created.
+Resource group Test was created.
+Creating application 'my-app'...
 ```
 
 The following code snippet can help you print the above message:
 
 ```go
-ui.Say("Creating application '%s'...",terminal.EntityNameColor("my-app"))
+ui.Say("Creating service ID %s bound to current account as %s...",
+  terminal.EntityNameColor("cloudant-user"),
+  terminal.EntityNameColor("user@ibm.com"))
 ...
 ui.Ok()
-ui.Say("Application '%s' was created.", terminal.EntityNameColor("my-app"))
+ui.Say("Service ID %s is created successfully", terminal.EntityNameColor("cloudant-user"))
 ```
 
 ### 2.8. Warning Message
@@ -906,7 +912,7 @@ if errorV != nil || err != nil {
 
 ### 5.1 Get Access Token
 
-To access IBM Cloud back-end API, normally a token is required. You can get the IAM access token and UAA access token from  IBM CLoud SDK as follows:
+To access IBM Cloud back-end API, normally a token is required. You can get the IAM access token from IBM Cloud SDK as follows:
 
 ```go
 func (demo *DemoPlugin) Run(context plugin.PluginContext, args []string){
@@ -916,13 +922,6 @@ func (demo *DemoPlugin) Run(context plugin.PluginContext, args []string){
     iamToken := config.IAMToken()
     if iamToken == "" {
         ui.Say("IAM token is not available. Have you logged in?")
-        return
-    }
-
-    // get UAA access token
-    uaaToken := config.CFConfig().UAAToken()
-    if iamToken == "" {
-        ui.Say("UAA token is not available. Have you logged into Cloud Foundry?")
         return
     }
     ...
@@ -938,7 +937,7 @@ h.Set("Authorization", token)
 
 For more details of the API, refer to docs of [core_config](https://godoc.org/github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/configuration/core_config).
 
-If you want to fetch the token by yourselve, refer to API docs for [iam](https://godoc.org/github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/authentication/iam) and [uaa](https://godoc.org/github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/authentication/uaa).
+If you want to fetch the token by yourself, refer to API docs for [iam](https://godoc.org/github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/authentication/iam)
 
 ### 5.2 Refresh Access Token on Expiry
 
