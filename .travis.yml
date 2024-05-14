@@ -1,7 +1,7 @@
 language: go
 dist: focal
 go:
-- '1.21.x'
+- '1.22.x'
 addons:
   apt:
     packages:
