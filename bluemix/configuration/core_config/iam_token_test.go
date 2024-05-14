@@ -94,14 +94,6 @@ func TestIATandEXP(t *testing.T) {
 	assert.Equal(t, tokenInfo.Expiry.Unix(), int64(1516178203))
 }
 
-func TestUAATokenInfo(t *testing.T) {
-	for _, token := range TestUAATokenData {
-		tokenInfo := NewUAATokenInfo(token)
-		assert.Equal(t, tokenInfo.Username, "wangjunl@cn.ibm.com")
-		assert.Equal(t, tokenInfo.UserGUID, "6787b336-0075-4f0c-affb-e29fc2eaeb88")
-	}
-}
-
 func TestIAMTokenHasExpired(t *testing.T) {
 	for _, testCase := range TestIAMTokenHasExpiredTestCases {
 		t.Run(testCase.name, func(t *testing.T) {

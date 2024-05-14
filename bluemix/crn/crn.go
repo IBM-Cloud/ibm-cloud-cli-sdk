@@ -24,10 +24,6 @@ var (
 const (
 	ServiceBluemix = "bluemix"
 	ServiceIAM     = "iam"
-	// ServiceCF is the service name for public Cloudfoundry
-	ServiceCF = "cf"
-	// ServiceCFEE is the service name for CFEE Cloudfoundry
-	ServiceCFEE = "cfaas"
 	// more services ...
 
 	ScopeAccount      = "a"
@@ -35,9 +31,6 @@ const (
 	ScopeSpace        = "s"
 	ScopeProject      = "p"
 
-	ResourceTypeCFSpace    = "cf-space"
-	ResourceTypeCFApp      = "cf-application"
-	ResourceTypeCFService  = "cf-service-instance"
 	ResourceTypeRole       = "role"
 	ResourceTypeDeployment = "deployment"
 	// more resources ...
