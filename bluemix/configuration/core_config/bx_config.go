@@ -24,36 +24,41 @@ func (r raw) Unmarshal(bytes []byte) error {
 }
 
 type BXConfigData struct {
-	APIEndpoint                 string
-	IsPrivate                   bool
-	IsAccessFromVPC             bool
-	ConsoleEndpoint             string
-	ConsolePrivateEndpoint      string
-	ConsolePrivateVPCEndpoint   string
-	CloudType                   string
-	CloudName                   string
-	CRIType                     string
-	Region                      string
-	RegionID                    string
-	IAMEndpoint                 string
-	IAMPrivateEndpoint          string
-	IAMPrivateVPCEndpoint       string
-	IAMToken                    string
-	IAMRefreshToken             string
-	IsLoggedInAsCRI             bool
-	Account                     models.Account
-	Profile                     models.Profile
-	ResourceGroup               models.ResourceGroup
-	LoginAt                     time.Time
-	PluginRepos                 []models.PluginRepo
-	SSLDisabled                 bool
-	Locale                      string
-	MessageOfTheDayTime         int64
-	LastSessionUpdateTime       int64
-	Trace                       string
-	ColorEnabled                string
-	HTTPTimeout                 int
-	TypeOfSSO                   string
+	APIEndpoint               string
+	IsPrivate                 bool
+	IsAccessFromVPC           bool
+	ConsoleEndpoint           string
+	ConsolePrivateEndpoint    string
+	ConsolePrivateVPCEndpoint string
+	CloudType                 string
+	CloudName                 string
+	CRIType                   string
+	Region                    string
+	RegionID                  string
+	IAMEndpoint               string
+	IAMPrivateEndpoint        string
+	IAMPrivateVPCEndpoint     string
+	IAMToken                  string
+	IAMRefreshToken           string
+	IsLoggedInAsCRI           bool
+	Account                   models.Account
+	Profile                   models.Profile
+	ResourceGroup             models.ResourceGroup
+	LoginAt                   time.Time
+	PluginRepos               []models.PluginRepo
+	SSLDisabled               bool
+	Locale                    string
+	MessageOfTheDayTime       int64
+	LastSessionUpdateTime     int64
+	Trace                     string
+	ColorEnabled              string
+	HTTPTimeout               int
+	TypeOfSSO                 string
+	FallbackIAMTokens         struct {
+		IAMToken        string
+		IAMRefreshToken string
+	}
+	AssumedTrustedProfileId     string
 	CLIInfoEndpoint             string // overwrite the cli info endpoint
 	CheckCLIVersionDisabled     bool
 	UsageStatsDisabled          bool // deprecated: use UsageStatsEnabled
@@ -417,6 +422,27 @@ func (c *bxConfig) TypeOfSSO() (style string) {
 	return
 }
 
+func (c *bxConfig) FallbackIAMToken() (t string) {
+	c.read(func() {
+		t = c.data.FallbackIAMTokens.IAMToken
+	})
+	return
+}
+
+func (c *bxConfig) FallbackIAMRefreshToken() (t string) {
+	c.read(func() {
+		t = c.data.FallbackIAMTokens.IAMRefreshToken
+	})
+	return
+}
+
+func (c *bxConfig) AssumedTrustedProfileId() (id string) {
+	c.read(func() {
+		id = c.data.AssumedTrustedProfileId
+	})
+	return
+}
+
 func (c *bxConfig) HTTPTimeout() (timeout int) {
 	c.read(func() {
 		timeout = c.data.HTTPTimeout
@@ -632,6 +658,19 @@ func (c *bxConfig) SetHTTPTimeout(timeout int) {
 func (c *bxConfig) SetTypeOfSSO(style string) {
 	c.write(func() {
 		c.data.TypeOfSSO = style
+	})
+}
+
+func (c *bxConfig) SetFallbackIAMTokens(token, refreshToken string) {
+	c.write(func() {
+		c.data.FallbackIAMTokens.IAMToken = token
+		c.data.FallbackIAMTokens.IAMRefreshToken = refreshToken
+	})
+}
+
+func (c *bxConfig) SetAssumedTrustedProfileId(id string) {
+	c.write(func() {
+		c.data.AssumedTrustedProfileId = id
 	})
 }
 
