@@ -58,7 +58,7 @@ type BXConfigData struct {
 		IAMToken        string
 		IAMRefreshToken string
 	}
-	AssumedTrustedProfileId     string
+	AssumedTrustedProfile       string
 	CLIInfoEndpoint             string // overwrite the cli info endpoint
 	CheckCLIVersionDisabled     bool
 	UsageStatsDisabled          bool // deprecated: use UsageStatsEnabled
@@ -436,9 +436,9 @@ func (c *bxConfig) FallbackIAMRefreshToken() (t string) {
 	return
 }
 
-func (c *bxConfig) AssumedTrustedProfileId() (id string) {
+func (c *bxConfig) AssumedTrustedProfile() (id string) {
 	c.read(func() {
-		id = c.data.AssumedTrustedProfileId
+		id = c.data.AssumedTrustedProfile
 	})
 	return
 }
@@ -668,9 +668,9 @@ func (c *bxConfig) SetFallbackIAMTokens(token, refreshToken string) {
 	})
 }
 
-func (c *bxConfig) SetAssumedTrustedProfileId(id string) {
+func (c *bxConfig) SetAssumedTrustedProfile(id string) {
 	c.write(func() {
-		c.data.AssumedTrustedProfileId = id
+		c.data.AssumedTrustedProfile = id
 	})
 }
 
