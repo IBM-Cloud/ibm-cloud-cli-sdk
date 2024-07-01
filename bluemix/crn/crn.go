@@ -127,9 +127,9 @@ func (c CRN) String() string {
 		c.Resource,
 	}, crnSeparator)
 	if joinedValue == ":::::::::" {
-		return ""
+		return "" // do not return a CRN that is just a series of separators, with no string content
 	}
-	return joinedValue // do not return a CRN that is just a series of separators, with no string content
+	return joinedValue
 }
 
 func (c CRN) ScopeSegment() string {
