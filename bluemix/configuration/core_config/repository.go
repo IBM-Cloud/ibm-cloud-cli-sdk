@@ -52,6 +52,9 @@ type Repository interface {
 	PluginRepo(string) (models.PluginRepo, bool)
 	IsSSLDisabled() bool
 	TypeOfSSO() string
+	AssumedTrustedProfileId() string
+	FallbackIAMToken() string
+	FallbackIAMRefreshToken() string
 	HTTPTimeout() int
 	CLIInfoEndpoint() string
 	CheckCLIVersionDisabled() bool
@@ -90,6 +93,8 @@ type Repository interface {
 	SetRegion(models.Region)
 	SetIAMToken(string)
 	SetIAMRefreshToken(string)
+	SetFallbackIAMTokens(string, string)
+	SetAssumedTrustedProfileId(string)
 	ClearSession()
 	SetAccount(models.Account)
 	SetProfile(models.Profile)

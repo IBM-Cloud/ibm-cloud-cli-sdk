@@ -114,7 +114,7 @@ func Parse(s string) (CRN, error) {
 }
 
 func (c CRN) String() string {
-	return strings.Join([]string{
+	joinedValue := strings.Join([]string{
 		c.Scheme,
 		c.Version,
 		c.CName,
@@ -126,6 +126,10 @@ func (c CRN) String() string {
 		c.ResourceType,
 		c.Resource,
 	}, crnSeparator)
+	if joinedValue == ":::::::::" {
+		return "" // do not return a CRN that is just a series of separators, with no string content
+	}
+	return joinedValue
 }
 
 func (c CRN) ScopeSegment() string {
