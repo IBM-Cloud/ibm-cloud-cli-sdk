@@ -25,6 +25,8 @@ func (e PluginConfigInvalidTypeError) Error() string {
 
 // PluginConfig defines methods to access plug-in's private configuration stored
 // in a JSON format.
+//
+//go:generate counterfeiter . PluginConfig
 type PluginConfig interface {
 	// Get returns the value for a given key.
 	// The value can be float64, bool, string, []interface{},
