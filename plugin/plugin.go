@@ -143,6 +143,8 @@ type Flag struct {
 }
 
 // Plugin is an interface for Bluemix CLI plugins.
+//
+//go:generate counterfeiter . Plugin
 type Plugin interface {
 	// GetMetadata returns the metadata of the plugin.
 	GetMetadata() PluginMetadata
