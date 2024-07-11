@@ -1,44 +1,45 @@
 // Request examples:
-//   // create a simple GET request
-//   req := GetRequest("http://www.example.com")
 //
-//   // set header
-//   req.Set("Accept", "application/json")
+//	// create a simple GET request
+//	req := GetRequest("http://www.example.com")
 //
-//   // set query parameters
-//   req.Query("foo1", "bar1")
-//   req.Query("foo2", "bar2")
+//	// set header
+//	req.Set("Accept", "application/json")
 //
-//   // Build to a HTTP request
-//   req.Build()
+//	// set query parameters
+//	req.Query("foo1", "bar1")
+//	req.Query("foo2", "bar2")
 //
-//   // method chaining is also supported
-//   // the above is equal to:
-//   GetRequest("http://www.example.com").
-//       Set("Accept", "application/json").
-//       Query("foo1", "bar1").
-//       Query("foo2", "bar2").
-//       Build()
+//	// Build to a HTTP request
+//	req.Build()
 //
-//   // struct body
-//   foo = Foo{Bar: "val"}
-//   PostRequest("http://www.example.com").
-//       Body(foo)
+//	// method chaining is also supported
+//	// the above is equal to:
+//	GetRequest("http://www.example.com").
+//	    Set("Accept", "application/json").
+//	    Query("foo1", "bar1").
+//	    Query("foo2", "bar2").
+//	    Build()
 //
-//   // String body
-//   PostRequest("http://www.example.com").
-//       Body("{\"bar\": \"val\"}")
+//	// struct body
+//	foo = Foo{Bar: "val"}
+//	PostRequest("http://www.example.com").
+//	    Body(foo)
 //
-//   // Stream body
-//   PostRequest("http://www.example.com").
-//       Body(strings.NewReader("abcde"))
+//	// String body
+//	PostRequest("http://www.example.com").
+//	    Body("{\"bar\": \"val\"}")
 //
-//   // Multipart POST request
-//   var f *os.File
-//   PostRequest("http://www.example.com").
-//       Field("foo", "bar").
-//       File("file1", File{Name: f.Name(), Content: f}).
-//       File("file2", File{Name: "1.txt", Content: []byte("abcde"), Type: "text/plain"})
+//	// Stream body
+//	PostRequest("http://www.example.com").
+//	    Body(strings.NewReader("abcde"))
+//
+//	// Multipart POST request
+//	var f *os.File
+//	PostRequest("http://www.example.com").
+//	    Field("foo", "bar").
+//	    File("file1", File{Name: f.Name(), Content: f}).
+//	    File("file2", File{Name: "1.txt", Content: []byte("abcde"), Type: "text/plain"})
 package rest
 
 import (
@@ -51,12 +52,14 @@ import (
 	"net/textproto"
 	"net/url"
 	"strings"
+
+	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/models"
 )
 
 const (
-	contentType               = "Content-Type"
-	jsonContentType           = "application/json"
-	formUrlEncodedContentType = "application/x-www-form-urlencoded"
+	ContentType               = "Content-Type"
+	JSONContentType           = "application/json"
+	FormUrlEncodedContentType = "application/x-www-form-urlencoded"
 )
 
 // File represents a file upload in HTTP request
@@ -77,11 +80,18 @@ type Request struct {
 	queryParams url.Values
 	formParams  url.Values
 
+	basicAuthn *BasicAuthInfo
+
 	// files to upload
 	files map[string][]File
 
 	// custom request body
 	body interface{}
+}
+
+type BasicAuthInfo struct {
+	user string
+	pass string
 }
 
 // NewRequest creates a new request with a given rawUrl.
@@ -138,6 +148,17 @@ func OptionsRequest(rawUrl string) *Request {
 	return NewRequest(rawUrl).Method("OPTIONS")
 }
 
+// CachedPaginationNextURL will attempt to return a cached URL with last index
+// if there exists a URL with a last index smaller than the offset provided
+func CachedPaginationNextURL(paginationURLs []models.PaginationURL, offset int) models.PaginationURL {
+	for _, p := range paginationURLs {
+		if p.LastIndex < offset {
+			return p
+		}
+	}
+	return models.PaginationURL{}
+}
+
 // Add adds the key, value pair to the request header. It appends to any
 // existing values associated with key.
 func (r *Request) Add(key string, value string) *Request {
@@ -149,6 +170,14 @@ func (r *Request) Add(key string, value string) *Request {
 // It replaces any existing values associated with key.
 func (r *Request) Set(key string, value string) *Request {
 	r.header.Set(http.CanonicalHeaderKey(key), value)
+	return r
+}
+
+func (r *Request) SetBasicAuth(user string, pass string) *Request {
+	r.basicAuthn = &BasicAuthInfo{
+		user: user,
+		pass: pass,
+	}
 	return r
 }
 
@@ -195,6 +224,10 @@ func (r *Request) Build() (*http.Request, error) {
 	req, err := http.NewRequest(r.method, url, body)
 	if err != nil {
 		return req, err
+	}
+
+	if r.basicAuthn != nil {
+		req.SetBasicAuth(r.basicAuthn.user, r.basicAuthn.pass)
 	}
 
 	for k, vs := range r.header {
@@ -272,7 +305,7 @@ func (r *Request) buildFormMultipart() (io.Reader, error) {
 		}
 	}
 
-	r.header.Set(contentType, w.FormDataContentType())
+	r.header.Set(ContentType, w.FormDataContentType())
 	return b, nil
 }
 
@@ -296,7 +329,7 @@ func escapeQuotes(s string) string {
 }
 
 func (r *Request) buildFormFields() (io.Reader, error) {
-	r.header.Set(contentType, formUrlEncodedContentType)
+	r.header.Set(ContentType, FormUrlEncodedContentType)
 	return strings.NewReader(r.formParams.Encode()), nil
 }
 

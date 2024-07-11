@@ -469,6 +469,64 @@ func TestLastUpdateSessionTime(t *testing.T) {
 
 }
 
+func TestPaginationURLs(t *testing.T) {
+	config := prepareConfigForCLI(`{}`, t)
+
+	// check initial state
+	paginationURLs := config.PaginationURLs()
+	assert.Empty(t, paginationURLs)
+
+	expected := []models.PaginationURL{
+		{
+			NextURL:   "https://api.example.com?token=dd3784000d9744acb2a23ad121a7bb4b",
+			LastIndex: 50,
+		},
+	}
+	config.SetPaginationURLs(expected)
+
+	paginationURLs = config.PaginationURLs()
+	assert.Equal(t, 1, len(paginationURLs))
+	assert.Equal(t, expected[0].LastIndex, paginationURLs[0].LastIndex)
+	assert.Equal(t, expected[0].NextURL, paginationURLs[0].NextURL)
+
+	t.Cleanup(cleanupConfigFiles)
+
+}
+
+func TestAddPaginationURL(t *testing.T) {
+	config := prepareConfigForCLI(`{}`, t)
+	assert := assert.New(t)
+	unsortedUrls := []models.PaginationURL{
+		{
+			NextURL:   "/v2/example.com/stuff?limit=200",
+			LastIndex: 200,
+		},
+		{
+			NextURL:   "/v2/example.com/stuff?limit=100",
+			LastIndex: 50,
+		},
+		{
+			NextURL:   "/v2/example.com/stuff?limit=100",
+			LastIndex: 100,
+		},
+	}
+
+	for _, p := range unsortedUrls {
+		config.AddPaginationURL(p.LastIndex, p.NextURL)
+	}
+
+	// expect url to be sorted in ascending order by LastIndex
+	sortedUrls := config.PaginationURLs()
+
+	assert.Equal(3, len(sortedUrls))
+	assert.Equal(sortedUrls[0].LastIndex, unsortedUrls[1].LastIndex)
+	assert.Equal(sortedUrls[0].NextURL, unsortedUrls[1].NextURL)
+	assert.Equal(sortedUrls[1].LastIndex, unsortedUrls[2].LastIndex)
+	assert.Equal(sortedUrls[1].NextURL, unsortedUrls[2].NextURL)
+	assert.Equal(sortedUrls[2].LastIndex, unsortedUrls[0].LastIndex)
+	assert.Equal(sortedUrls[2].NextURL, unsortedUrls[0].NextURL)
+}
+
 func checkUsageStats(enabled bool, timeStampExist bool, config core_config.Repository, t *testing.T) {
 	assert.Equal(t, config.UsageStatsEnabled(), enabled)
 	assert.Equal(t, config.UsageStatsEnabledLastUpdate().IsZero(), !timeStampExist)
@@ -476,13 +534,11 @@ func checkUsageStats(enabled bool, timeStampExist bool, config core_config.Repos
 
 func prepareConfigForCLI(cliConfigContent string, t *testing.T) core_config.Repository {
 	ioutil.WriteFile("config.json", []byte(cliConfigContent), 0644)
-	ioutil.WriteFile("cf_config.json", []byte(""), 0644)
-	return core_config.NewCoreConfigFromPath("cf_config.json", "config.json", func(err error) {
+	return core_config.NewCoreConfigFromPath("config.json", func(err error) {
 		t.Fatal(err.Error())
 	})
 }
 
 func cleanupConfigFiles() {
 	os.Remove("config.json")
-	os.Remove("cf_config.json")
 }

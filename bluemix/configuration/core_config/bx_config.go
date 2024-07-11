@@ -2,6 +2,7 @@ package core_config
 
 import (
 	"encoding/json"
+	"sort"
 	"strings"
 	"sync"
 	"time"
@@ -24,37 +25,41 @@ func (r raw) Unmarshal(bytes []byte) error {
 }
 
 type BXConfigData struct {
-	APIEndpoint                 string
-	IsPrivate                   bool
-	IsAccessFromVPC             bool
-	ConsoleEndpoint             string
-	ConsolePrivateEndpoint      string
-	ConsolePrivateVPCEndpoint   string
-	CloudType                   string
-	CloudName                   string
-	CRIType                     string
-	Region                      string
-	RegionID                    string
-	IAMEndpoint                 string
-	IAMPrivateEndpoint          string
-	IAMPrivateVPCEndpoint       string
-	IAMToken                    string
-	IAMRefreshToken             string
-	IsLoggedInAsCRI             bool
-	Account                     models.Account
-	Profile                     models.Profile
-	ResourceGroup               models.ResourceGroup
-	LoginAt                     time.Time
-	CFEETargeted                bool
-	CFEEEnvID                   string
-	PluginRepos                 []models.PluginRepo
-	SSLDisabled                 bool
-	Locale                      string
-	MessageOfTheDayTime         int64
-	LastSessionUpdateTime       int64
-	Trace                       string
-	ColorEnabled                string
-	HTTPTimeout                 int
+	APIEndpoint               string
+	IsPrivate                 bool
+	IsAccessFromVPC           bool
+	ConsoleEndpoint           string
+	ConsolePrivateEndpoint    string
+	ConsolePrivateVPCEndpoint string
+	CloudType                 string
+	CloudName                 string
+	CRIType                   string
+	Region                    string
+	RegionID                  string
+	IAMEndpoint               string
+	IAMPrivateEndpoint        string
+	IAMPrivateVPCEndpoint     string
+	IAMToken                  string
+	IAMRefreshToken           string
+	IsLoggedInAsCRI           bool
+	Account                   models.Account
+	Profile                   models.Profile
+	ResourceGroup             models.ResourceGroup
+	LoginAt                   time.Time
+	PluginRepos               []models.PluginRepo
+	SSLDisabled               bool
+	Locale                    string
+	MessageOfTheDayTime       int64
+	LastSessionUpdateTime     int64
+	Trace                     string
+	ColorEnabled              string
+	HTTPTimeout               int
+	TypeOfSSO                 string
+	FallbackIAMTokens         struct {
+		IAMToken        string
+		IAMRefreshToken string
+	}
+	AssumedTrustedProfileId     string
 	CLIInfoEndpoint             string // overwrite the cli info endpoint
 	CheckCLIVersionDisabled     bool
 	UsageStatsDisabled          bool // deprecated: use UsageStatsEnabled
@@ -64,6 +69,7 @@ type BXConfigData struct {
 	UpdateCheckInterval         time.Duration
 	UpdateRetryCheckInterval    time.Duration
 	UpdateNotificationInterval  time.Duration
+	PaginationURLs              []models.PaginationURL
 	raw                         raw
 }
 
@@ -210,8 +216,7 @@ func (c *bxConfig) ConsoleEndpoints() (endpoints models.Endpoints) {
 func (c *bxConfig) CurrentRegion() (region models.Region) {
 	c.read(func() {
 		region = models.Region{
-			MCCPID: c.data.RegionID,
-			Name:   c.data.Region,
+			Name: c.data.Region,
 		}
 	})
 	return
@@ -309,7 +314,7 @@ func (c *bxConfig) IsLoggedIn() bool {
 	if token, refresh := c.IAMToken(), c.IAMRefreshToken(); token != "" || refresh != "" {
 		iamTokenInfo := NewIAMTokenInfo(token)
 		if iamTokenInfo.hasExpired() && refresh != "" {
-			repo := newRepository(c, nil)
+			repo := newRepository(c)
 			if _, err := repo.RefreshIAMToken(); err != nil {
 				return false
 			}
@@ -411,6 +416,34 @@ func (c *bxConfig) ColorEnabled() (enabled string) {
 	return
 }
 
+func (c *bxConfig) TypeOfSSO() (style string) {
+	c.read(func() {
+		style = c.data.TypeOfSSO
+	})
+	return
+}
+
+func (c *bxConfig) FallbackIAMToken() (t string) {
+	c.read(func() {
+		t = c.data.FallbackIAMTokens.IAMToken
+	})
+	return
+}
+
+func (c *bxConfig) FallbackIAMRefreshToken() (t string) {
+	c.read(func() {
+		t = c.data.FallbackIAMTokens.IAMRefreshToken
+	})
+	return
+}
+
+func (c *bxConfig) AssumedTrustedProfileId() (id string) {
+	c.read(func() {
+		id = c.data.AssumedTrustedProfileId
+	})
+	return
+}
+
 func (c *bxConfig) HTTPTimeout() (timeout int) {
 	c.read(func() {
 		timeout = c.data.HTTPTimeout
@@ -501,20 +534,6 @@ func (c *bxConfig) SDKVersion() (version string) {
 	return
 }
 
-func (c *bxConfig) HasTargetedCFEE() (targeted bool) {
-	c.read(func() {
-		targeted = c.data.CFEETargeted
-	})
-	return
-}
-
-func (c *bxConfig) CFEEEnvID() (envID string) {
-	c.read(func() {
-		envID = c.data.CFEEEnvID
-	})
-	return
-}
-
 func (c *bxConfig) SetAPIEndpoint(endpoint string) {
 	c.write(func() {
 		c.data.APIEndpoint = endpoint
@@ -544,7 +563,6 @@ func (c *bxConfig) SetConsoleEndpoints(endpoint models.Endpoints) {
 func (c *bxConfig) SetRegion(region models.Region) {
 	c.write(func() {
 		c.data.Region = region.Name
-		c.data.RegionID = region.MCCPID
 	})
 }
 
@@ -638,6 +656,25 @@ func (c *bxConfig) SetHTTPTimeout(timeout int) {
 	})
 }
 
+func (c *bxConfig) SetTypeOfSSO(style string) {
+	c.write(func() {
+		c.data.TypeOfSSO = style
+	})
+}
+
+func (c *bxConfig) SetFallbackIAMTokens(token, refreshToken string) {
+	c.write(func() {
+		c.data.FallbackIAMTokens.IAMToken = token
+		c.data.FallbackIAMTokens.IAMRefreshToken = refreshToken
+	})
+}
+
+func (c *bxConfig) SetAssumedTrustedProfileId(id string) {
+	c.write(func() {
+		c.data.AssumedTrustedProfileId = id
+	})
+}
+
 func (c *bxConfig) SetCheckCLIVersionDisabled(disabled bool) {
 	c.write(func() {
 		c.data.CheckCLIVersionDisabled = disabled
@@ -699,18 +736,6 @@ func (c *bxConfig) SetTrace(trace string) {
 	})
 }
 
-func (c *bxConfig) SetCFEETargeted(targeted bool) {
-	c.write(func() {
-		c.data.CFEETargeted = targeted
-	})
-}
-
-func (c *bxConfig) SetCFEEEnvID(envID string) {
-	c.write(func() {
-		c.data.CFEEEnvID = envID
-	})
-}
-
 func (c *bxConfig) SetCloudType(ctype string) {
 	c.write(func() {
 		c.data.CloudType = ctype
@@ -753,7 +778,41 @@ func (c *bxConfig) ClearSession() {
 		c.data.IsLoggedInAsCRI = false
 		c.data.ResourceGroup = models.ResourceGroup{}
 		c.data.LoginAt = time.Time{}
+		c.data.PaginationURLs = []models.PaginationURL{}
 	})
+}
+
+func (c *bxConfig) SetPaginationURLs(paginationURLs []models.PaginationURL) {
+	c.write(func() {
+		c.data.PaginationURLs = paginationURLs
+	})
+}
+
+func (c *bxConfig) ClearPaginationURLs() {
+	c.write(func() {
+		c.data.PaginationURLs = []models.PaginationURL{}
+	})
+}
+
+func (c *bxConfig) AddPaginationURL(index int, url string) {
+	urls := c.PaginationURLs()
+
+	urls = append(urls, models.PaginationURL{
+		LastIndex: index,
+		NextURL:   url,
+	})
+
+	// sort by last index for easier retrieval
+	sort.Sort(models.ByLastIndex(urls))
+	c.SetPaginationURLs(urls)
+}
+
+func (c *bxConfig) PaginationURLs() (paginationURLs []models.PaginationURL) {
+	c.read(func() {
+		paginationURLs = c.data.PaginationURLs
+	})
+
+	return
 }
 
 func (c *bxConfig) UnsetAPI() {

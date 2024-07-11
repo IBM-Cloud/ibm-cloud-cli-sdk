@@ -248,15 +248,16 @@ func (fake *FakePluginConfig) Erase(arg1 string) error {
 	fake.eraseArgsForCall = append(fake.eraseArgsForCall, struct {
 		arg1 string
 	}{arg1})
+	stub := fake.EraseStub
+	fakeReturns := fake.eraseReturns
 	fake.recordInvocation("Erase", []interface{}{arg1})
 	fake.eraseMutex.Unlock()
-	if fake.EraseStub != nil {
-		return fake.EraseStub(arg1)
+	if stub != nil {
+		return stub(arg1)
 	}
 	if specificReturn {
 		return ret.result1
 	}
-	fakeReturns := fake.eraseReturns
 	return fakeReturns.result1
 }
 
@@ -308,15 +309,16 @@ func (fake *FakePluginConfig) Exists(arg1 string) bool {
 	fake.existsArgsForCall = append(fake.existsArgsForCall, struct {
 		arg1 string
 	}{arg1})
+	stub := fake.ExistsStub
+	fakeReturns := fake.existsReturns
 	fake.recordInvocation("Exists", []interface{}{arg1})
 	fake.existsMutex.Unlock()
-	if fake.ExistsStub != nil {
-		return fake.ExistsStub(arg1)
+	if stub != nil {
+		return stub(arg1)
 	}
 	if specificReturn {
 		return ret.result1
 	}
-	fakeReturns := fake.existsReturns
 	return fakeReturns.result1
 }
 
@@ -368,15 +370,16 @@ func (fake *FakePluginConfig) Get(arg1 string) interface{} {
 	fake.getArgsForCall = append(fake.getArgsForCall, struct {
 		arg1 string
 	}{arg1})
+	stub := fake.GetStub
+	fakeReturns := fake.getReturns
 	fake.recordInvocation("Get", []interface{}{arg1})
 	fake.getMutex.Unlock()
-	if fake.GetStub != nil {
-		return fake.GetStub(arg1)
+	if stub != nil {
+		return stub(arg1)
 	}
 	if specificReturn {
 		return ret.result1
 	}
-	fakeReturns := fake.getReturns
 	return fakeReturns.result1
 }
 
@@ -428,15 +431,16 @@ func (fake *FakePluginConfig) GetBool(arg1 string) (bool, error) {
 	fake.getBoolArgsForCall = append(fake.getBoolArgsForCall, struct {
 		arg1 string
 	}{arg1})
+	stub := fake.GetBoolStub
+	fakeReturns := fake.getBoolReturns
 	fake.recordInvocation("GetBool", []interface{}{arg1})
 	fake.getBoolMutex.Unlock()
-	if fake.GetBoolStub != nil {
-		return fake.GetBoolStub(arg1)
+	if stub != nil {
+		return stub(arg1)
 	}
 	if specificReturn {
 		return ret.result1, ret.result2
 	}
-	fakeReturns := fake.getBoolReturns
 	return fakeReturns.result1, fakeReturns.result2
 }
 
@@ -492,15 +496,16 @@ func (fake *FakePluginConfig) GetBoolWithDefault(arg1 string, arg2 bool) (bool, 
 		arg1 string
 		arg2 bool
 	}{arg1, arg2})
+	stub := fake.GetBoolWithDefaultStub
+	fakeReturns := fake.getBoolWithDefaultReturns
 	fake.recordInvocation("GetBoolWithDefault", []interface{}{arg1, arg2})
 	fake.getBoolWithDefaultMutex.Unlock()
-	if fake.GetBoolWithDefaultStub != nil {
-		return fake.GetBoolWithDefaultStub(arg1, arg2)
+	if stub != nil {
+		return stub(arg1, arg2)
 	}
 	if specificReturn {
 		return ret.result1, ret.result2
 	}
-	fakeReturns := fake.getBoolWithDefaultReturns
 	return fakeReturns.result1, fakeReturns.result2
 }
 
@@ -555,15 +560,16 @@ func (fake *FakePluginConfig) GetFloat(arg1 string) (float64, error) {
 	fake.getFloatArgsForCall = append(fake.getFloatArgsForCall, struct {
 		arg1 string
 	}{arg1})
+	stub := fake.GetFloatStub
+	fakeReturns := fake.getFloatReturns
 	fake.recordInvocation("GetFloat", []interface{}{arg1})
 	fake.getFloatMutex.Unlock()
-	if fake.GetFloatStub != nil {
-		return fake.GetFloatStub(arg1)
+	if stub != nil {
+		return stub(arg1)
 	}
 	if specificReturn {
 		return ret.result1, ret.result2
 	}
-	fakeReturns := fake.getFloatReturns
 	return fakeReturns.result1, fakeReturns.result2
 }
 
@@ -618,15 +624,16 @@ func (fake *FakePluginConfig) GetFloatSlice(arg1 string) ([]float64, error) {
 	fake.getFloatSliceArgsForCall = append(fake.getFloatSliceArgsForCall, struct {
 		arg1 string
 	}{arg1})
+	stub := fake.GetFloatSliceStub
+	fakeReturns := fake.getFloatSliceReturns
 	fake.recordInvocation("GetFloatSlice", []interface{}{arg1})
 	fake.getFloatSliceMutex.Unlock()
-	if fake.GetFloatSliceStub != nil {
-		return fake.GetFloatSliceStub(arg1)
+	if stub != nil {
+		return stub(arg1)
 	}
 	if specificReturn {
 		return ret.result1, ret.result2
 	}
-	fakeReturns := fake.getFloatSliceReturns
 	return fakeReturns.result1, fakeReturns.result2
 }
 
@@ -682,15 +689,16 @@ func (fake *FakePluginConfig) GetFloatWithDefault(arg1 string, arg2 float64) (fl
 		arg1 string
 		arg2 float64
 	}{arg1, arg2})
+	stub := fake.GetFloatWithDefaultStub
+	fakeReturns := fake.getFloatWithDefaultReturns
 	fake.recordInvocation("GetFloatWithDefault", []interface{}{arg1, arg2})
 	fake.getFloatWithDefaultMutex.Unlock()
-	if fake.GetFloatWithDefaultStub != nil {
-		return fake.GetFloatWithDefaultStub(arg1, arg2)
+	if stub != nil {
+		return stub(arg1, arg2)
 	}
 	if specificReturn {
 		return ret.result1, ret.result2
 	}
-	fakeReturns := fake.getFloatWithDefaultReturns
 	return fakeReturns.result1, fakeReturns.result2
 }
 
@@ -745,15 +753,16 @@ func (fake *FakePluginConfig) GetInt(arg1 string) (int, error) {
 	fake.getIntArgsForCall = append(fake.getIntArgsForCall, struct {
 		arg1 string
 	}{arg1})
+	stub := fake.GetIntStub
+	fakeReturns := fake.getIntReturns
 	fake.recordInvocation("GetInt", []interface{}{arg1})
 	fake.getIntMutex.Unlock()
-	if fake.GetIntStub != nil {
-		return fake.GetIntStub(arg1)
+	if stub != nil {
+		return stub(arg1)
 	}
 	if specificReturn {
 		return ret.result1, ret.result2
 	}
-	fakeReturns := fake.getIntReturns
 	return fakeReturns.result1, fakeReturns.result2
 }
 
@@ -808,15 +817,16 @@ func (fake *FakePluginConfig) GetIntSlice(arg1 string) ([]int, error) {
 	fake.getIntSliceArgsForCall = append(fake.getIntSliceArgsForCall, struct {
 		arg1 string
 	}{arg1})
+	stub := fake.GetIntSliceStub
+	fakeReturns := fake.getIntSliceReturns
 	fake.recordInvocation("GetIntSlice", []interface{}{arg1})
 	fake.getIntSliceMutex.Unlock()
-	if fake.GetIntSliceStub != nil {
-		return fake.GetIntSliceStub(arg1)
+	if stub != nil {
+		return stub(arg1)
 	}
 	if specificReturn {
 		return ret.result1, ret.result2
 	}
-	fakeReturns := fake.getIntSliceReturns
 	return fakeReturns.result1, fakeReturns.result2
 }
 
@@ -872,15 +882,16 @@ func (fake *FakePluginConfig) GetIntWithDefault(arg1 string, arg2 int) (int, err
 		arg1 string
 		arg2 int
 	}{arg1, arg2})
+	stub := fake.GetIntWithDefaultStub
+	fakeReturns := fake.getIntWithDefaultReturns
 	fake.recordInvocation("GetIntWithDefault", []interface{}{arg1, arg2})
 	fake.getIntWithDefaultMutex.Unlock()
-	if fake.GetIntWithDefaultStub != nil {
-		return fake.GetIntWithDefaultStub(arg1, arg2)
+	if stub != nil {
+		return stub(arg1, arg2)
 	}
 	if specificReturn {
 		return ret.result1, ret.result2
 	}
-	fakeReturns := fake.getIntWithDefaultReturns
 	return fakeReturns.result1, fakeReturns.result2
 }
 
@@ -935,15 +946,16 @@ func (fake *FakePluginConfig) GetString(arg1 string) (string, error) {
 	fake.getStringArgsForCall = append(fake.getStringArgsForCall, struct {
 		arg1 string
 	}{arg1})
+	stub := fake.GetStringStub
+	fakeReturns := fake.getStringReturns
 	fake.recordInvocation("GetString", []interface{}{arg1})
 	fake.getStringMutex.Unlock()
-	if fake.GetStringStub != nil {
-		return fake.GetStringStub(arg1)
+	if stub != nil {
+		return stub(arg1)
 	}
 	if specificReturn {
 		return ret.result1, ret.result2
 	}
-	fakeReturns := fake.getStringReturns
 	return fakeReturns.result1, fakeReturns.result2
 }
 
@@ -998,15 +1010,16 @@ func (fake *FakePluginConfig) GetStringMap(arg1 string) (map[string]interface{},
 	fake.getStringMapArgsForCall = append(fake.getStringMapArgsForCall, struct {
 		arg1 string
 	}{arg1})
+	stub := fake.GetStringMapStub
+	fakeReturns := fake.getStringMapReturns
 	fake.recordInvocation("GetStringMap", []interface{}{arg1})
 	fake.getStringMapMutex.Unlock()
-	if fake.GetStringMapStub != nil {
-		return fake.GetStringMapStub(arg1)
+	if stub != nil {
+		return stub(arg1)
 	}
 	if specificReturn {
 		return ret.result1, ret.result2
 	}
-	fakeReturns := fake.getStringMapReturns
 	return fakeReturns.result1, fakeReturns.result2
 }
 
@@ -1061,15 +1074,16 @@ func (fake *FakePluginConfig) GetStringMapString(arg1 string) (map[string]string
 	fake.getStringMapStringArgsForCall = append(fake.getStringMapStringArgsForCall, struct {
 		arg1 string
 	}{arg1})
+	stub := fake.GetStringMapStringStub
+	fakeReturns := fake.getStringMapStringReturns
 	fake.recordInvocation("GetStringMapString", []interface{}{arg1})
 	fake.getStringMapStringMutex.Unlock()
-	if fake.GetStringMapStringStub != nil {
-		return fake.GetStringMapStringStub(arg1)
+	if stub != nil {
+		return stub(arg1)
 	}
 	if specificReturn {
 		return ret.result1, ret.result2
 	}
-	fakeReturns := fake.getStringMapStringReturns
 	return fakeReturns.result1, fakeReturns.result2
 }
 
@@ -1124,15 +1138,16 @@ func (fake *FakePluginConfig) GetStringSlice(arg1 string) ([]string, error) {
 	fake.getStringSliceArgsForCall = append(fake.getStringSliceArgsForCall, struct {
 		arg1 string
 	}{arg1})
+	stub := fake.GetStringSliceStub
+	fakeReturns := fake.getStringSliceReturns
 	fake.recordInvocation("GetStringSlice", []interface{}{arg1})
 	fake.getStringSliceMutex.Unlock()
-	if fake.GetStringSliceStub != nil {
-		return fake.GetStringSliceStub(arg1)
+	if stub != nil {
+		return stub(arg1)
 	}
 	if specificReturn {
 		return ret.result1, ret.result2
 	}
-	fakeReturns := fake.getStringSliceReturns
 	return fakeReturns.result1, fakeReturns.result2
 }
 
@@ -1188,15 +1203,16 @@ func (fake *FakePluginConfig) GetStringWithDefault(arg1 string, arg2 string) (st
 		arg1 string
 		arg2 string
 	}{arg1, arg2})
+	stub := fake.GetStringWithDefaultStub
+	fakeReturns := fake.getStringWithDefaultReturns
 	fake.recordInvocation("GetStringWithDefault", []interface{}{arg1, arg2})
 	fake.getStringWithDefaultMutex.Unlock()
-	if fake.GetStringWithDefaultStub != nil {
-		return fake.GetStringWithDefaultStub(arg1, arg2)
+	if stub != nil {
+		return stub(arg1, arg2)
 	}
 	if specificReturn {
 		return ret.result1, ret.result2
 	}
-	fakeReturns := fake.getStringWithDefaultReturns
 	return fakeReturns.result1, fakeReturns.result2
 }
 
@@ -1252,15 +1268,16 @@ func (fake *FakePluginConfig) GetWithDefault(arg1 string, arg2 interface{}) inte
 		arg1 string
 		arg2 interface{}
 	}{arg1, arg2})
+	stub := fake.GetWithDefaultStub
+	fakeReturns := fake.getWithDefaultReturns
 	fake.recordInvocation("GetWithDefault", []interface{}{arg1, arg2})
 	fake.getWithDefaultMutex.Unlock()
-	if fake.GetWithDefaultStub != nil {
-		return fake.GetWithDefaultStub(arg1, arg2)
+	if stub != nil {
+		return stub(arg1, arg2)
 	}
 	if specificReturn {
 		return ret.result1
 	}
-	fakeReturns := fake.getWithDefaultReturns
 	return fakeReturns.result1
 }
 
@@ -1313,15 +1330,16 @@ func (fake *FakePluginConfig) Set(arg1 string, arg2 interface{}) error {
 		arg1 string
 		arg2 interface{}
 	}{arg1, arg2})
+	stub := fake.SetStub
+	fakeReturns := fake.setReturns
 	fake.recordInvocation("Set", []interface{}{arg1, arg2})
 	fake.setMutex.Unlock()
-	if fake.SetStub != nil {
-		return fake.SetStub(arg1, arg2)
+	if stub != nil {
+		return stub(arg1, arg2)
 	}
 	if specificReturn {
 		return ret.result1
 	}
-	fakeReturns := fake.setReturns
 	return fakeReturns.result1
 }
 

@@ -12,7 +12,6 @@ func (f *FakePersistor) Load(configuration.DataInterface) error { return nil }
 func (f *FakePersistor) Exists() bool                           { return true }
 
 func NewFakeCoreConfig() core_config.ReadWriter {
-	config := core_config.NewCoreConfigFromPersistor(new(FakePersistor), new(FakePersistor), func(err error) { panic(err) })
-	config.CFConfig().SetAPIVersion("3")
+	config := core_config.NewCoreConfigFromPersistor(new(FakePersistor), func(err error) { panic(err) })
 	return config
 }

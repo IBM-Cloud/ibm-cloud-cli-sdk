@@ -1,12 +1,14 @@
-package rest
+package rest_test
 
 import (
 	"bytes"
 	"io"
-	"io/ioutil"
 	"os"
 	"strings"
 	"testing"
+
+	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/models"
+	. "github.com/IBM-Cloud/ibm-cloud-cli-sdk/common/rest"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -49,7 +51,7 @@ func TestRequestFormText(t *testing.T) {
 	assert.NoError(err)
 	err = req.ParseForm()
 	assert.NoError(err)
-	assert.Equal(formUrlEncodedContentType, req.Header.Get(contentType))
+	assert.Equal(FormUrlEncodedContentType, req.Header.Get(ContentType))
 	assert.Equal("bar", req.FormValue("foo"))
 }
 
@@ -57,7 +59,7 @@ func TestRequestFormMultipart(t *testing.T) {
 	assert := assert.New(t)
 
 	var prepareFileWithContent = func(text string) (*os.File, error) {
-		f, err := ioutil.TempFile("", "BluemixCliRestTest")
+		f, err := os.CreateTemp("", "BluemixCliRestTest")
 		if err != nil {
 			return nil, err
 		}
@@ -84,7 +86,7 @@ func TestRequestFormMultipart(t *testing.T) {
 		Build()
 
 	assert.NoError(err)
-	assert.Contains(req.Header.Get(contentType), "multipart/form-data")
+	assert.Contains(req.Header.Get(ContentType), "multipart/form-data")
 
 	err = req.ParseMultipartForm(int64(5000))
 	assert.NoError(err)
@@ -125,7 +127,54 @@ func TestRequestJSON(t *testing.T) {
 
 	req, err := PostRequest("http://www.example.com").Body(&foo).Build()
 	assert.NoError(err)
-	body, err := ioutil.ReadAll(req.Body)
+	body, err := io.ReadAll(req.Body)
 	assert.NoError(err)
 	assert.Equal("{\"Name\":\"bar\"}", string(body))
+}
+
+func TestCachedPaginationNextURL(t *testing.T) {
+	testCases := []struct {
+		name            string
+		paginationURLs  []models.PaginationURL
+		offset          int
+		expectedNextURL string
+	}{
+		{
+			name:   "return cached next URL",
+			offset: 200,
+			paginationURLs: []models.PaginationURL{
+				{
+					NextURL:   "/v2/example.com/stuff?limit=100",
+					LastIndex: 100,
+				},
+			},
+			expectedNextURL: "/v2/example.com/stuff?limit=100",
+		},
+		{
+			name:   "return empty string if cache URL cannot be determined",
+			offset: 40,
+			paginationURLs: []models.PaginationURL{
+				{
+					NextURL:   "/v2/example.com/stuff?limit=100",
+					LastIndex: 60,
+				},
+			},
+			expectedNextURL: "",
+		},
+		{
+			name:            "return empty string if no cache available",
+			offset:          40,
+			paginationURLs:  []models.PaginationURL{},
+			expectedNextURL: "",
+		},
+	}
+
+	assert := assert.New(t)
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(_ *testing.T) {
+			p := CachedPaginationNextURL(tc.paginationURLs, tc.offset)
+			assert.Equal(tc.expectedNextURL, p.NextURL)
+		})
+	}
 }

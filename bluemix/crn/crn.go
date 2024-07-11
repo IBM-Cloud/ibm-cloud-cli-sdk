@@ -24,10 +24,6 @@ var (
 const (
 	ServiceBluemix = "bluemix"
 	ServiceIAM     = "iam"
-	// ServiceCF is the service name for public Cloudfoundry
-	ServiceCF = "cf"
-	// ServiceCFEE is the service name for CFEE Cloudfoundry
-	ServiceCFEE = "cfaas"
 	// more services ...
 
 	ScopeAccount      = "a"
@@ -35,9 +31,6 @@ const (
 	ScopeSpace        = "s"
 	ScopeProject      = "p"
 
-	ResourceTypeCFSpace    = "cf-space"
-	ResourceTypeCFApp      = "cf-application"
-	ResourceTypeCFService  = "cf-service-instance"
 	ResourceTypeRole       = "role"
 	ResourceTypeDeployment = "deployment"
 	// more resources ...
@@ -121,7 +114,7 @@ func Parse(s string) (CRN, error) {
 }
 
 func (c CRN) String() string {
-	return strings.Join([]string{
+	joinedValue := strings.Join([]string{
 		c.Scheme,
 		c.Version,
 		c.CName,
@@ -133,6 +126,10 @@ func (c CRN) String() string {
 		c.ResourceType,
 		c.Resource,
 	}, crnSeparator)
+	if joinedValue == ":::::::::" {
+		return "" // do not return a CRN that is just a series of separators, with no string content
+	}
+	return joinedValue
 }
 
 func (c CRN) ScopeSegment() string {

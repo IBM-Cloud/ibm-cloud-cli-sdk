@@ -33,15 +33,16 @@ func (fake *FakePlugin) GetMetadata() plugin.PluginMetadata {
 	ret, specificReturn := fake.getMetadataReturnsOnCall[len(fake.getMetadataArgsForCall)]
 	fake.getMetadataArgsForCall = append(fake.getMetadataArgsForCall, struct {
 	}{})
+	stub := fake.GetMetadataStub
+	fakeReturns := fake.getMetadataReturns
 	fake.recordInvocation("GetMetadata", []interface{}{})
 	fake.getMetadataMutex.Unlock()
-	if fake.GetMetadataStub != nil {
-		return fake.GetMetadataStub()
+	if stub != nil {
+		return stub()
 	}
 	if specificReturn {
 		return ret.result1
 	}
-	fakeReturns := fake.getMetadataReturns
 	return fakeReturns.result1
 }
 
@@ -91,9 +92,10 @@ func (fake *FakePlugin) Run(arg1 plugin.PluginContext, arg2 []string) {
 		arg1 plugin.PluginContext
 		arg2 []string
 	}{arg1, arg2Copy})
+	stub := fake.RunStub
 	fake.recordInvocation("Run", []interface{}{arg1, arg2Copy})
 	fake.runMutex.Unlock()
-	if fake.RunStub != nil {
+	if stub != nil {
 		fake.RunStub(arg1, arg2)
 	}
 }

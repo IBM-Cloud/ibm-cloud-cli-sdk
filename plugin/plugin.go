@@ -143,6 +143,8 @@ type Flag struct {
 }
 
 // Plugin is an interface for Bluemix CLI plugins.
+//
+//go:generate counterfeiter . Plugin
 type Plugin interface {
 	// GetMetadata returns the metadata of the plugin.
 	GetMetadata() PluginMetadata
@@ -158,14 +160,13 @@ type Plugin interface {
 // PluginContext is a Bluemix CLI context passed to plugin's Run method. It
 // carries service endpoints info, login session, user configuration, plugin
 // configuration and provides utility methods.
+//
 //go:generate counterfeiter . PluginContext
 type PluginContext interface {
 	// APIEndpoint returns the targeted API endpoint of IBM Cloud
 	APIEndpoint() string
 
-	// HasAPIEndpoint() returns whether an IBM Cloud has been targeted, does not
-	// necessarily mean the user has targeted a CF environment.
-	// Call HasTargetedCF() to return whether a CF environment has been targeted.
+	// HasAPIEndpoint() returns whether an IBM Cloud has been targeted
 	HasAPIEndpoint() bool
 
 	// IsPrivateEndpointEnabled returns whether use of the private endpoint has been chosen
@@ -224,12 +225,10 @@ type PluginContext interface {
 	// UserEmail returns the Email of the logged in user
 	UserEmail() string
 
-	// IsLoggedIn returns if a user has logged into IBM cloud, does not
-	// necessarily mean the user has logged in a CF environment.
-	// Call CF().IsLoggedIn() to return whether user has been logged into the CF environment.
+	// IsLoggedIn returns if a user has logged into IBM Cloud
 	IsLoggedIn() bool
 
-	// IsLoggedInWithServiceID returns if a user has logged into IBM cloud using service ID.
+	// IsLoggedInWithServiceID returns if a user has logged into IBM Cloud using service ID.
 	IsLoggedInWithServiceID() bool
 
 	// IsLoggedInAsProfile returns true if a user logged into IBM Cloud using an IAM token pertaining to a trusted profile
@@ -263,21 +262,6 @@ type PluginContext interface {
 	// HasTargetedResourceGroup returns whether a resource group has been targeted
 	HasTargetedResourceGroup() bool
 
-	// CF returns the context of the targeted CloudFoundry environment
-	CF() CFContext
-
-	// HasTargetedCF returns whether a CloudFoundry environment has been targeted
-	HasTargetedCF() bool
-
-	// HasTargetedCF returns whether a enterprise CloudFoundry instance has been targeted
-	HasTargetedCFEE() bool
-
-	// CFEEEnvID returns ID of targeted CFEE environment
-	CFEEEnvID() string
-
-	// HasTargetedCF returns whether a public CloudFoundry instance has been targeted
-	HasTargetedPublicCF() bool
-
 	// Locale returns user specified locale
 	Locale() string
 
@@ -308,56 +292,4 @@ type PluginContext interface {
 
 	// CLIName returns binary name of the Bluemix CLI that is invoking the plugin
 	CLIName() string
-}
-
-// CFContext is a context of the targeted CloudFoundry environment into plugin
-type CFContext interface {
-	// APIVersion returns the cloud controller API version
-	APIVersion() string
-
-	// APIEndpoint returns the Cloud Foundry API endpoint
-	APIEndpoint() string
-
-	// HasAPIEndpoint returns whether a Cloud Foundry API endpoint is set
-	HasAPIEndpoint() bool
-
-	//DopplerEndpoint returns the Doppler endpoint
-	DopplerEndpoint() string
-
-	// UAAEndpoint returns endpoint of UAA token service
-	UAAEndpoint() string
-
-	// ISLoggedIn returns if a user has logged into the cloudfoundry instance
-	IsLoggedIn() bool
-
-	// Username returns the name of the logged in user
-	Username() string
-
-	// UserEmail returns the Email of the logged in user
-	UserEmail() string
-
-	// UserGUID returns the GUID of the logged in user
-	UserGUID() string
-
-	// UAAToken returns the UAA access token
-	// If the token is outdated, call RefreshUAAToken to refresh it
-	UAAToken() string
-
-	// UAARefreshToken return the UAA refreshed token
-	UAARefreshToken() string
-
-	// RefreshUAAToken refreshes and returns the UAA access token
-	RefreshUAAToken() (string, error)
-
-	// CurrentOrganization returns the targeted organization
-	CurrentOrganization() models.OrganizationFields
-
-	// HasTargetedOrganization returns if an organization has been targeted
-	HasTargetedOrganization() bool
-
-	// CurrentSpace returns the targeted space
-	CurrentSpace() models.SpaceFields
-
-	// HasTargetedSpace returns if a space has been targeted
-	HasTargetedSpace() bool
 }
