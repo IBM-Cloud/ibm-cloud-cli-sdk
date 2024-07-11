@@ -10,7 +10,6 @@ import (
 	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/configuration"
 	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/models"
 
-	// "github.com/IBM-Cloud/ibm-cloud-cli-sdk/plugin"
 	"github.com/fatih/structs"
 )
 

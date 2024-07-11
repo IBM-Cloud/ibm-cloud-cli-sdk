@@ -1,6 +1,6 @@
 module github.com/IBM-Cloud/ibm-cloud-cli-sdk
 
-go 1.19
+go 1.22.4
 
 require (
 	github.com/Masterminds/semver v1.5.0
@@ -26,7 +26,6 @@ require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/fsnotify/fsnotify v1.4.9 // indirect
 	github.com/golang/protobuf v1.5.3 // indirect
-	github.com/hpcloud/tail v1.0.0 // indirect
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
 	github.com/mattn/go-isatty v0.0.5-0.20180830101745-3fb116b82035 // indirect
 	github.com/nxadm/tail v1.4.8 // indirect
@@ -36,6 +35,5 @@ require (
 	golang.org/x/term v0.11.0 // indirect
 	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 // indirect
 	google.golang.org/protobuf v1.30.0 // indirect
-	gopkg.in/fsnotify.v1 v1.4.7 // indirect
 	gopkg.in/tomb.v1 v1.0.0-20141024135613-dd632973f1e7 // indirect
 )

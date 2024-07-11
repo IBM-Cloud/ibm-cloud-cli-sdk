@@ -39,7 +39,7 @@ func CheckMessageOftheDayForPlugin(pluginConfig plugin.PluginConfig) bool {
 	return false
 }
 
-func CheckMessageOfTheDay(client *rest.Client, config core_config.ReadWriter, pluginConfig plugin.PluginConfig, modURL string, ui terminal.UI, version string) {
+func CheckMessageOfTheDay(client *rest.Client, config core_config.ReadWriter, pluginConfig plugin.PluginConfig, modURL string, ui terminal.UI) {
 	// the pluginConfig variable will be cast-able to a pointer to a plugin config type if the display is for a plugin
 
 	if config != nil {
