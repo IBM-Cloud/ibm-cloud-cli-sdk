@@ -1,20 +1,22 @@
 module github.com/IBM-Cloud/ibm-cloud-cli-sdk
 
-go 1.22.3
+go 1.22.4
 
 require (
+	github.com/Masterminds/semver v1.5.0
 	github.com/fatih/color v1.7.1-0.20180516100307-2d684516a886
 	github.com/fatih/structs v1.0.1-0.20171020064819-f5faa72e7309
 	github.com/gofrs/flock v0.8.1
 	github.com/mattn/go-colorable v0.0.0-20160210001857-9fdad7c47650
 	github.com/mattn/go-runewidth v0.0.0-20151118072159-d96d1bd051f2
 	github.com/nicksnyder/go-i18n/v2 v2.2.0
-	github.com/onsi/gomega v1.33.0
-	github.com/spf13/cobra v1.6.1
-	github.com/spf13/pflag v1.0.5
-	github.com/stretchr/testify v1.2.2
-	golang.org/x/crypto v0.21.0
-	golang.org/x/text v0.14.0
+	github.com/onsi/ginkgo v1.16.5
+	github.com/onsi/gomega v1.10.1
+	github.com/spf13/cobra v1.0.0
+	github.com/spf13/pflag v1.0.3
+	github.com/stretchr/testify v1.5.1
+	golang.org/x/crypto v0.12.0
+	golang.org/x/text v0.12.0
 	gopkg.in/cheggaaa/pb.v1 v1.0.15
 	gopkg.in/yaml.v2 v2.4.0
 )
@@ -22,12 +24,16 @@ require (
 require (
 	github.com/BurntSushi/toml v1.1.0 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
-	github.com/google/go-cmp v0.6.0 // indirect
-	github.com/inconshreveable/mousetrap v1.0.1 // indirect
+	github.com/fsnotify/fsnotify v1.4.9 // indirect
+	github.com/golang/protobuf v1.5.3 // indirect
+	github.com/inconshreveable/mousetrap v1.0.0 // indirect
 	github.com/mattn/go-isatty v0.0.5-0.20180830101745-3fb116b82035 // indirect
+	github.com/nxadm/tail v1.4.8 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
-	golang.org/x/net v0.23.0 // indirect
-	golang.org/x/sys v0.18.0 // indirect
-	golang.org/x/term v0.18.0 // indirect
-	gopkg.in/yaml.v3 v3.0.1 // indirect
+	golang.org/x/net v0.14.0 // indirect
+	golang.org/x/sys v0.11.0 // indirect
+	golang.org/x/term v0.11.0 // indirect
+	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 // indirect
+	google.golang.org/protobuf v1.30.0 // indirect
+	gopkg.in/tomb.v1 v1.0.0-20141024135613-dd632973f1e7 // indirect
 )
