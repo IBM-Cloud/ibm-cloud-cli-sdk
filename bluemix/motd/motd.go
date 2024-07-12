@@ -51,7 +51,12 @@ func CheckMessageOfTheDay(client *rest.Client, config core_config.ReadWriter, pl
 		if !CheckMessageOftheDayForPlugin(pluginConfig) {
 			return
 		}
-		defer pluginConfig.Set("MessageOfTheDayTime", time.Now().Unix())
+		defer func() error {
+		   if err := pluginConfig.Set("MessageOfTheDayTime", time.Now().Unix()); err != nil {
+		       return err
+		   }
+		   return nil
+	}()
 	}
 
 	var mod MODResponse
