@@ -48,7 +48,7 @@ type Prompt struct {
 // NewPrompt returns a single prompt
 func NewPrompt(message string, options *PromptOptions) *Prompt {
 	p := &Prompt{
-		message: message,
+		message: FormatWidth(message, 0),
 		Reader:  os.Stdin,
 		Writer:  os.Stdout,
 	}

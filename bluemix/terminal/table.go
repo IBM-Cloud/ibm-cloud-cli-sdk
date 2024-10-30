@@ -110,7 +110,7 @@ func (t *PrintableTable) printRow(row []string) {
 			value = TableContentHeaderColor(value)
 		}
 
-		output = output + t.cellValue(columnIndex, value)
+		output = FormatWidth(output+t.cellValue(columnIndex, value), 0)
 	}
 	fmt.Fprintln(t.writer, output)
 }

@@ -137,3 +137,14 @@ func TestEmptyTable(t *testing.T) {
 	assert.Equal(t, err, nil)
 	assert.Equal(t, len(strings.TrimSpace(buf.String())), 0)
 }
+
+// Text wrapping
+func TestTableWrapRows(t *testing.T) {
+	buf := bytes.Buffer{}
+	testTable := NewTable(&buf, []string{"col1"})
+	longString := " 2. Reserved Enterprise : Enterprise plan for this offering has been deprecated. Please see the announcement here: https://www-01.ibm.com/common/ssi/ShowDoc.wss?docURL=/common/ssi/rep_ca/3/897/ENUS918-103/index.html&request_locale=en. Analytics Engine provides the ability to spin up and manage Spark clusters. We recommend using this for any production Spark workloads."
+	testTable.Add(longString)
+	testTable.Print()
+	formattedString := "2. Reserved Enterprise : Enterprise plan for this offering has been \ndeprecated. Please see the announcement here: \nhttps://www-01.ibm.com/common/ssi/ShowDoc.wss?docURL=/common/ssi/rep_ca/3/897/ENUS918-103/index.html&request_locale=en.\nAnalytics Engine provides the ability to spin up and manage Spark clusters. We \nrecommend using this for any production Spark workloads."
+	assert.Contains(t, buf.String(), formattedString)
+}
