@@ -38,7 +38,7 @@ func TestEmptyHeaderTable(t *testing.T) {
 	testTable.Add("row1", "row2")
 	testTable.Print()
 	assert.Contains(t, buf.String(), "row1")
-	assert.Equal(t, "       \nrow1   row2\n", buf.String())
+	assert.Equal(t, "\nrow1   row2\n", buf.String())
 }
 
 func TestEmptyHeaderTableJson(t *testing.T) {
@@ -79,7 +79,7 @@ func TestNotEnoughRowEntires(t *testing.T) {
 	testTable.Add("", "row2")
 	testTable.Print()
 	assert.Contains(t, buf.String(), "row1")
-	assert.Equal(t, "col1   col2\nrow1   \n       row2\n", buf.String())
+	assert.Equal(t, "col1   col2\nrow1\n       row2\n", buf.String())
 }
 
 func TestNotEnoughRowEntiresJson(t *testing.T) {
