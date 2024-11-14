@@ -52,6 +52,7 @@ type BXConfigData struct {
 	LastSessionUpdateTime     int64
 	Trace                     string
 	ColorEnabled              string
+	AlphaCommandsEnabled      string
 	HTTPTimeout               int
 	TypeOfSSO                 string
 	FallbackIAMTokens         struct {
@@ -415,6 +416,13 @@ func (c *bxConfig) ColorEnabled() (enabled string) {
 	return
 }
 
+func (c *bxConfig) AlphaCommandsEnabled() (enabled string) {
+	c.read(func() {
+		enabled = c.data.AlphaCommandsEnabled
+	})
+	return
+}
+
 func (c *bxConfig) TypeOfSSO() (style string) {
 	c.read(func() {
 		style = c.data.TypeOfSSO
@@ -720,6 +728,12 @@ func (c *bxConfig) SetUsageStatsEnabled(enabled bool) {
 func (c *bxConfig) SetColorEnabled(enabled string) {
 	c.write(func() {
 		c.data.ColorEnabled = enabled
+	})
+}
+
+func (c *bxConfig) SetAlphaCommandsEnabled(enabled string) {
+	c.write(func() {
+		c.data.AlphaCommandsEnabled = enabled
 	})
 }
 
