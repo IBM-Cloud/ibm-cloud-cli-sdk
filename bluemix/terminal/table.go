@@ -4,6 +4,7 @@ import (
 	"encoding/csv"
 	"fmt"
 	"os"
+	"strconv"
 	"strings"
 
 	"golang.org/x/term"
@@ -97,6 +98,14 @@ func terminalWidth() int {
 		// Assume normal 80 char width line
 		terminalWidth = 80
 	}
+
+	testTerminalWidth, envSet := os.LookupEnv("TEST_TERMINAL_WIDTH")
+	if envSet {
+		envWidth, err := strconv.Atoi(testTerminalWidth)
+		if err == nil {
+			terminalWidth = envWidth
+		}
+	}
 	return terminalWidth
 }
 
@@ -140,11 +149,11 @@ func (t *PrintableTable) createColumnConfigs() []table.ColumnConfig {
 		terminalWidth     = terminalWidth()
 		// total amount padding space that a row will take up
 		totalPaddingSpace = (colCount - 1) * minSpace
-		remainingSpace    = terminalWidth - totalPaddingSpace
+		remainingSpace    = max(0, terminalWidth-totalPaddingSpace)
 		// the estimated max column width by dividing the remaining space evenly across the columns
-		maxColWidth = (terminalWidth - totalPaddingSpace) / colCount
+		maxColWidth = remainingSpace / colCount
 	)
-	columnConfig := make([]table.ColumnConfig, len(t.maxSizes))
+	columnConfig := make([]table.ColumnConfig, colCount)
 
 	for i := range columnConfig {
 		columnConfig[i] = table.ColumnConfig{
@@ -156,7 +165,7 @@ func (t *PrintableTable) createColumnConfigs() []table.ColumnConfig {
 
 		// assuming the table has headers: store columns with wide content where the max width may need to be adjusted
 		// using the remaining space
-		if t.maxSizes[i] > maxColWidth && (len(t.headers) > 0 && isWideColumn(t.headers[i])) {
+		if t.maxSizes[i] > maxColWidth && (i < len(t.headers) && isWideColumn(t.headers[i])) {
 			widestColIndicies = append(widestColIndicies, i)
 		} else if t.maxSizes[i] < maxColWidth {
 			// use the max column width instead of the estimated max column width
@@ -198,8 +207,8 @@ func (t *PrintableTable) createPrettyRowsAndHeaders() (headerRow table.Row, rows
 
 	for i := range t.rows {
 		var row, emptyRow table.Row
-		for i, cell := range t.rows[i] {
-			if i == 0 {
+		for j, cell := range t.rows[i] {
+			if j == 0 {
 				cell = TableContentHeaderColor(cell)
 			}
 			row = append(row, cell)

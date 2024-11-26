@@ -2,6 +2,7 @@ package terminal_test
 
 import (
 	"bytes"
+	"os"
 	"strings"
 	"testing"
 
@@ -80,6 +81,48 @@ func TestNotEnoughRowEntires(t *testing.T) {
 	testTable.Print()
 	assert.Contains(t, buf.String(), "row1")
 	assert.Equal(t, "col1   col2\nrow1\n       row2\n", buf.String())
+}
+
+func TestMoreColThanTerminalWidth(t *testing.T) {
+	os.Setenv("TEST_TERMINAL_WIDTH", "1")
+	buf := bytes.Buffer{}
+	testTable := NewTable(&buf, []string{"col1"})
+	testTable.Add("row1", "row2")
+	testTable.Print()
+	assert.Contains(t, buf.String(), "row1")
+	assert.Equal(t, "col1\nrow1   row2\n", buf.String())
+	os.Unsetenv("TEST_TERMINAL_WIDTH")
+}
+
+func TestWideHeaderNames(t *testing.T) {
+	buf := bytes.Buffer{}
+	testTable := NewTable(&buf, []string{"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt u", "NAME"})
+	testTable.Add("col1", "col2")
+	testTable.Print()
+	assert.Contains(t, buf.String(), "Lorem ipsum dolor sit amet, consectetu")
+	assert.Equal(t, "Lorem ipsum dolor sit amet, consectetu   NAME\nr adipiscing elit, sed do eiusmod temp\nor incididunt u\ncol1                                     col2\n", buf.String())
+}
+
+func TestWidestColumn(t *testing.T) {
+	buf := bytes.Buffer{}
+	id := "ABCDEFG-9b8babbd-f2ed-4371-b817-a839e4130332"
+	testTable := NewTable(&buf, []string{"ID", "Name"})
+	testTable.Add(id, "row2")
+	testTable.Print()
+	assert.Contains(t, buf.String(), id)
+	assert.Equal(t, buf.String(), "ID                                             Name\nABCDEFG-9b8babbd-f2ed-4371-b817-a839e4130332   row2\n")
+}
+
+func TestMultiWideColumns(t *testing.T) {
+	buf := bytes.Buffer{}
+	id := "ABCDEFG-9b8babbd-f2ed-4371-b817-a839e4130332"
+	desc := "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut"
+	testTable := NewTable(&buf, []string{"ID", "Description", "Name"})
+	testTable.Add(id, desc, "col3")
+	testTable.Print()
+	assert.Contains(t, buf.String(), "ABCDEFG-9b8babbd-f2ed-4371-b817-a839")
+	assert.Contains(t, buf.String(), "e4130332")
+	assert.Equal(t, buf.String(), "ID                                     Description                           Name\nABCDEFG-9b8babbd-f2ed-4371-b817-a839   Lorem ipsum dolor sit amet, consect   col3\ne4130332                               etur adipiscing elit, sed do eiusmo\n                                       d tempor incididunt ut\n")
 }
 
 func TestNotEnoughRowEntiresJson(t *testing.T) {
