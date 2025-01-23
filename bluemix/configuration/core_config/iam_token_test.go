@@ -98,7 +98,7 @@ func TestIAMTokenHasExpired(t *testing.T) {
 	for _, testCase := range TestIAMTokenHasExpiredTestCases {
 		t.Run(testCase.name, func(t *testing.T) {
 			tokenInfo := NewIAMTokenInfo(testCase.token)
-			assert.Equal(t, testCase.isExpired, tokenInfo.hasExpired())
+			assert.Equal(t, testCase.isExpired, tokenInfo.HasExpired())
 		})
 	}
 }

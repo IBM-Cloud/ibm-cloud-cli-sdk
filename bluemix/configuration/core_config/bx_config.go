@@ -313,18 +313,18 @@ func (c *bxConfig) IAMID() (guid string) {
 func (c *bxConfig) IsLoggedIn() bool {
 	if token, refresh := c.IAMToken(), c.IAMRefreshToken(); token != "" || refresh != "" {
 		iamTokenInfo := NewIAMTokenInfo(token)
-		if iamTokenInfo.hasExpired() && refresh != "" {
+		if iamTokenInfo.HasExpired() && refresh != "" {
 			repo := newRepository(c)
 			if _, err := repo.RefreshIAMToken(); err != nil {
 				return false
 			}
 			// Check again to make sure that the new token has not expired
-			if iamTokenInfo = NewIAMTokenInfo(c.IAMToken()); iamTokenInfo.hasExpired() {
+			if iamTokenInfo = NewIAMTokenInfo(c.IAMToken()); iamTokenInfo.HasExpired() {
 				return false
 			}
 
 			return true
-		} else if iamTokenInfo.hasExpired() && refresh == "" {
+		} else if iamTokenInfo.HasExpired() && refresh == "" {
 			return false
 		} else {
 			return true
