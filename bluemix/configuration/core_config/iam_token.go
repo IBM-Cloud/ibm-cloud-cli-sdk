@@ -93,7 +93,7 @@ func (t IAMTokenInfo) exists() bool {
 	return t.ID != ""
 }
 
-func (t IAMTokenInfo) hasExpired() bool {
+func (t IAMTokenInfo) HasExpired() bool {
 	if !t.exists() {
 		return true
 	}
