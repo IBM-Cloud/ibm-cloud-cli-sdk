@@ -155,23 +155,23 @@ func (t *PrintableTable) createColumnConfigs() []table.ColumnConfig {
 	)
 	columnConfig := make([]table.ColumnConfig, colCount)
 
-	for i := range columnConfig {
-		columnConfig[i] = table.ColumnConfig{
+	for colIndex := range columnConfig {
+		columnConfig[colIndex] = table.ColumnConfig{
 			AlignHeader: text.AlignLeft,
 			Align:       text.AlignLeft,
 			WidthMax:    maxColWidth,
-			Number:      i + 1,
+			Number:      colIndex + 1,
 		}
 
 		// assuming the table has headers: store columns with wide content where the max width may need to be adjusted
 		// using the remaining space
-		if t.maxSizes[i] > maxColWidth && (i < len(t.headers) && isWideColumn(t.headers[i])) {
-			widestColIndicies = append(widestColIndicies, i)
-		} else if t.maxSizes[i] < maxColWidth {
+		if t.maxSizes[colIndex] > maxColWidth && (colIndex < len(t.headers) && isWideColumn(t.headers[colIndex])) {
+			widestColIndicies = append(widestColIndicies, colIndex)
+		} else if t.maxSizes[colIndex] < maxColWidth {
 			// use the max column width instead of the estimated max column width
 			// if it is shorter
-			columnConfig[i].WidthMax = t.maxSizes[i]
-			remainingSpace -= t.maxSizes[i]
+			columnConfig[colIndex].WidthMax = t.maxSizes[colIndex]
+			remainingSpace -= t.maxSizes[colIndex]
 		} else {
 			remainingSpace -= maxColWidth
 		}
@@ -179,8 +179,8 @@ func (t *PrintableTable) createColumnConfigs() []table.ColumnConfig {
 
 	// if only one wide column use the remaining space as the max column width
 	if len(widestColIndicies) == 1 {
-		idx := widestColIndicies[0]
-		columnConfig[idx].WidthMax = remainingSpace
+		widestColIndx := widestColIndicies[0]
+		columnConfig[widestColIndx].WidthMax = remainingSpace
 	}
 
 	// if more than one wide column, spread the remaining space between the columns
