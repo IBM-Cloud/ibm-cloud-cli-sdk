@@ -52,6 +52,7 @@ type Repository interface {
 	PluginRepo(string) (models.PluginRepo, bool)
 	IsSSLDisabled() bool
 	TypeOfSSO() string
+	AlphaCommandsEnabled() string
 	AssumedTrustedProfileId() string
 	FallbackIAMToken() string
 	FallbackIAMRefreshToken() string
@@ -118,6 +119,7 @@ type Repository interface {
 	SetLocale(string)
 	SetTrace(string)
 	SetColorEnabled(string)
+	SetAlphaCommandsEnabled(string)
 
 	CheckMessageOfTheDay() bool
 	SetMessageOfTheDayTime()
