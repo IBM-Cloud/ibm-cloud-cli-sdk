@@ -52,6 +52,7 @@ type BXConfigData struct {
 	LastSessionUpdateTime     int64
 	Trace                     string
 	ColorEnabled              string
+	AlphaCommandsEnabled      string
 	HTTPTimeout               int
 	TypeOfSSO                 string
 	FallbackIAMTokens         struct {
@@ -312,18 +313,18 @@ func (c *bxConfig) IAMID() (guid string) {
 func (c *bxConfig) IsLoggedIn() bool {
 	if token, refresh := c.IAMToken(), c.IAMRefreshToken(); token != "" || refresh != "" {
 		iamTokenInfo := NewIAMTokenInfo(token)
-		if iamTokenInfo.hasExpired() && refresh != "" {
+		if iamTokenInfo.HasExpired() && refresh != "" {
 			repo := newRepository(c)
 			if _, err := repo.RefreshIAMToken(); err != nil {
 				return false
 			}
 			// Check again to make sure that the new token has not expired
-			if iamTokenInfo = NewIAMTokenInfo(c.IAMToken()); iamTokenInfo.hasExpired() {
+			if iamTokenInfo = NewIAMTokenInfo(c.IAMToken()); iamTokenInfo.HasExpired() {
 				return false
 			}
 
 			return true
-		} else if iamTokenInfo.hasExpired() && refresh == "" {
+		} else if iamTokenInfo.HasExpired() && refresh == "" {
 			return false
 		} else {
 			return true
@@ -411,6 +412,13 @@ func (c *bxConfig) Trace() (trace string) {
 func (c *bxConfig) ColorEnabled() (enabled string) {
 	c.read(func() {
 		enabled = c.data.ColorEnabled
+	})
+	return
+}
+
+func (c *bxConfig) AlphaCommandsEnabled() (enabled string) {
+	c.read(func() {
+		enabled = c.data.AlphaCommandsEnabled
 	})
 	return
 }
@@ -720,6 +728,12 @@ func (c *bxConfig) SetUsageStatsEnabled(enabled bool) {
 func (c *bxConfig) SetColorEnabled(enabled string) {
 	c.write(func() {
 		c.data.ColorEnabled = enabled
+	})
+}
+
+func (c *bxConfig) SetAlphaCommandsEnabled(enabled string) {
+	c.write(func() {
+		c.data.AlphaCommandsEnabled = enabled
 	})
 }
 

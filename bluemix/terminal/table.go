@@ -3,10 +3,18 @@ package terminal
 import (
 	"encoding/csv"
 	"fmt"
-	"io"
+	"os"
+	"strconv"
 	"strings"
 
+	"golang.org/x/term"
+
 	. "github.com/IBM-Cloud/ibm-cloud-cli-sdk/i18n"
+
+	"io"
+
+	"github.com/jedib0t/go-pretty/v6/table"
+	"github.com/jedib0t/go-pretty/v6/text"
 	"github.com/mattn/go-runewidth"
 )
 
@@ -24,11 +32,10 @@ type Table interface {
 }
 
 type PrintableTable struct {
-	writer        io.Writer
-	headers       []string
-	headerPrinted bool
-	maxSizes      []int
-	rows          [][]string //each row is single line
+	writer   io.Writer
+	headers  []string
+	maxSizes []int
+	rows     [][]string //each row is single line
 }
 
 func NewTable(w io.Writer, headers []string) Table {
@@ -69,21 +76,151 @@ func (t *PrintableTable) Add(row ...string) {
 	}
 }
 
+func isWideColumn(col string) bool {
+	// list of common columns that are usually wide
+	largeColumnTypes := []string{T("ID"), T("Description")}
+
+	for _, largeColn := range largeColumnTypes {
+		if strings.Contains(largeColn, col) {
+			return true
+		}
+	}
+
+	return false
+
+}
+
+func terminalWidth() int {
+	var err error
+	terminalWidth, _, err := term.GetSize(int(os.Stdin.Fd()))
+
+	if err != nil {
+		// Assume normal 80 char width line
+		terminalWidth = 80
+	}
+
+	testTerminalWidth, envSet := os.LookupEnv("TEST_TERMINAL_WIDTH")
+	if envSet {
+		envWidth, err := strconv.Atoi(testTerminalWidth)
+		if err == nil {
+			terminalWidth = envWidth
+		}
+	}
+	return terminalWidth
+}
+
 func (t *PrintableTable) Print() {
 	for _, row := range append(t.rows, t.headers) {
 		t.calculateMaxSize(row)
 	}
 
-	if t.headerPrinted == false {
-		t.printHeader()
-		t.headerPrinted = true
+	tbl := table.NewWriter()
+	tbl.SetOutputMirror(t.writer)
+	tbl.SuppressTrailingSpaces()
+	// remove padding from the left to keep the table aligned to the left
+	tbl.Style().Box.PaddingLeft = ""
+	tbl.Style().Box.PaddingRight = strings.Repeat(" ", minSpace)
+	// remove all border and column and row separators
+	tbl.Style().Options.DrawBorder = false
+	tbl.Style().Options.SeparateColumns = false
+	tbl.Style().Options.SeparateFooter = false
+	tbl.Style().Options.SeparateHeader = false
+	tbl.Style().Options.SeparateRows = false
+	tbl.Style().Format.Header = text.FormatDefault
+
+	headerRow, rows := t.createPrettyRowsAndHeaders()
+	columnConfig := t.createColumnConfigs()
+
+	tbl.SetColumnConfigs(columnConfig)
+	tbl.AppendHeader(headerRow)
+	tbl.AppendRows(rows)
+	tbl.Render()
+}
+
+func (t *PrintableTable) createColumnConfigs() []table.ColumnConfig {
+	// there must be at row in order to configure column
+	if len(t.rows) == 0 {
+		return []table.ColumnConfig{}
 	}
 
-	for _, line := range t.rows {
-		t.printRow(line)
+	colCount := len(t.rows[0])
+	var (
+		widestColIndicies []int
+		terminalWidth     = terminalWidth()
+		// total amount padding space that a row will take up
+		totalPaddingSpace = (colCount - 1) * minSpace
+		remainingSpace    = max(0, terminalWidth-totalPaddingSpace)
+		// the estimated max column width by dividing the remaining space evenly across the columns
+		maxColWidth = remainingSpace / colCount
+	)
+	columnConfig := make([]table.ColumnConfig, colCount)
+
+	for colIndex := range columnConfig {
+		columnConfig[colIndex] = table.ColumnConfig{
+			AlignHeader: text.AlignLeft,
+			Align:       text.AlignLeft,
+			WidthMax:    maxColWidth,
+			Number:      colIndex + 1,
+		}
+
+		// assuming the table has headers: store columns with wide content where the max width may need to be adjusted
+		// using the remaining space
+		if t.maxSizes[colIndex] > maxColWidth && (colIndex < len(t.headers) && isWideColumn(t.headers[colIndex])) {
+			widestColIndicies = append(widestColIndicies, colIndex)
+		} else if t.maxSizes[colIndex] < maxColWidth {
+			// use the max column width instead of the estimated max column width
+			// if it is shorter
+			columnConfig[colIndex].WidthMax = t.maxSizes[colIndex]
+			remainingSpace -= t.maxSizes[colIndex]
+		} else {
+			remainingSpace -= maxColWidth
+		}
 	}
 
-	t.rows = [][]string{}
+	// if only one wide column use the remaining space as the max column width
+	if len(widestColIndicies) == 1 {
+		widestColIndx := widestColIndicies[0]
+		columnConfig[widestColIndx].WidthMax = remainingSpace
+	}
+
+	// if more than one wide column, spread the remaining space between the columns
+	if len(widestColIndicies) > 1 {
+		remainingSpace /= len(widestColIndicies)
+		for _, columnCfgIdx := range widestColIndicies {
+			columnConfig[columnCfgIdx].WidthMax = remainingSpace
+		}
+
+		origRemainingSpace := remainingSpace
+		moreRemainingSpace := origRemainingSpace % len(widestColIndicies)
+		if moreRemainingSpace != 0 {
+			columnConfig[0].WidthMax += moreRemainingSpace
+		}
+	}
+
+	return columnConfig
+}
+
+func (t *PrintableTable) createPrettyRowsAndHeaders() (headerRow table.Row, rows []table.Row) {
+	for _, header := range t.headers {
+		headerRow = append(headerRow, header)
+	}
+
+	for i := range t.rows {
+		var row, emptyRow table.Row
+		for j, cell := range t.rows[i] {
+			if j == 0 {
+				cell = TableContentHeaderColor(cell)
+			}
+			row = append(row, cell)
+			emptyRow = append(emptyRow, "")
+		}
+		if i == 0 && len(t.headers) == 0 {
+			rows = append(rows, emptyRow)
+		}
+		rows = append(rows, row)
+	}
+
+	return
 }
 
 func (t *PrintableTable) calculateMaxSize(row []string) {
@@ -93,34 +230,6 @@ func (t *PrintableTable) calculateMaxSize(row []string) {
 			t.maxSizes[index] = cellLength
 		}
 	}
-}
-
-func (t *PrintableTable) printHeader() {
-	output := ""
-	for col, value := range t.headers {
-		output = output + t.cellValue(col, HeaderColor(value))
-	}
-	fmt.Fprintln(t.writer, output)
-}
-
-func (t *PrintableTable) printRow(row []string) {
-	output := ""
-	for columnIndex, value := range row {
-		if columnIndex == 0 {
-			value = TableContentHeaderColor(value)
-		}
-
-		output = output + t.cellValue(columnIndex, value)
-	}
-	fmt.Fprintln(t.writer, output)
-}
-
-func (t *PrintableTable) cellValue(col int, value string) string {
-	padding := ""
-	if col < len(t.maxSizes)-1 {
-		padding = strings.Repeat(" ", t.maxSizes[col]-runewidth.StringWidth(Decolorize(value))+minSpace)
-	}
-	return fmt.Sprintf("%s%s", value, padding)
 }
 
 // Prints out a nicely/human formatted Json string instead of a table structure
