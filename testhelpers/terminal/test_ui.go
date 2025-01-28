@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"io"
+	"os"
 	"strings"
 
 	term "github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/terminal"
@@ -35,6 +36,9 @@ type FakeUI struct {
 }
 
 func NewFakeUI() *FakeUI {
+	// NOTE: when mocking the UI we would like to have a large
+	/// terminal width to start with
+	os.Setenv("TEST_TERMINAL_WIDTH", "300")
 	return &FakeUI{}
 }
 
