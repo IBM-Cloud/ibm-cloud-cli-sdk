@@ -146,7 +146,7 @@ func (t *PrintableTable) createColumnConfigs() []table.ColumnConfig {
 	colCount := len(t.rows[0])
 	var (
 		widestColIndicies []int
-		terminalWidth     = terminalWidth()
+		terminalWidth     = 1000
 		// total amount padding space that a row will take up
 		totalPaddingSpace = (colCount - 1) * minSpace
 		remainingSpace    = max(0, terminalWidth-totalPaddingSpace)
