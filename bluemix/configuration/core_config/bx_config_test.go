@@ -454,6 +454,28 @@ func TestMOD(t *testing.T) {
 	t.Cleanup(cleanupConfigFiles)
 }
 
+func TestFallback(t *testing.T) {
+
+	config := prepareConfigForCLI(`{}`, t)
+
+	// check initial state
+	assert.Empty(t, config.FallbackAccount().GUID)
+	assert.Empty(t, config.FallbackIAMToken())
+	assert.Empty(t, config.FallbackIAMRefreshToken())
+
+	// update mod time and check that mod should not be checked again
+	config.SetFallbackAccount("value1", "value2", "value3")
+	assert.True(t, config.FallbackAccount().GUID == "value1")
+	assert.True(t, config.FallbackAccount().Name == "value2")
+	assert.True(t, config.FallbackAccount().Owner == "value3")
+
+	config.SetFallbackIAMTokens("value1", "value2")
+	assert.True(t, config.FallbackIAMToken() == "value1")
+	assert.True(t, config.FallbackIAMRefreshToken() == "value2")
+
+	t.Cleanup(cleanupConfigFiles)
+}
+
 func TestLastUpdateSessionTime(t *testing.T) {
 
 	config := prepareConfigForCLI(`{}`, t)
