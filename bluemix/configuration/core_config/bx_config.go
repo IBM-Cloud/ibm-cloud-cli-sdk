@@ -55,6 +55,7 @@ type BXConfigData struct {
 	AlphaCommandsEnabled      string
 	HTTPTimeout               int
 	TypeOfSSO                 string
+	FallbackAccount           models.Account
 	FallbackIAMTokens         struct {
 		IAMToken        string
 		IAMRefreshToken string
@@ -430,6 +431,13 @@ func (c *bxConfig) TypeOfSSO() (style string) {
 	return
 }
 
+func (c *bxConfig) FallbackAccount() (a models.Account) {
+	c.read(func() {
+		a = c.data.FallbackAccount
+	})
+	return
+}
+
 func (c *bxConfig) FallbackIAMToken() (t string) {
 	c.read(func() {
 		t = c.data.FallbackIAMTokens.IAMToken
@@ -666,6 +674,14 @@ func (c *bxConfig) SetHTTPTimeout(timeout int) {
 func (c *bxConfig) SetTypeOfSSO(style string) {
 	c.write(func() {
 		c.data.TypeOfSSO = style
+	})
+}
+
+func (c *bxConfig) SetFallbackAccount(guid, name, owner string) {
+	c.write(func() {
+		c.data.FallbackAccount.GUID = guid
+		c.data.FallbackAccount.Name = name
+		c.data.FallbackAccount.Owner = owner
 	})
 }
 
