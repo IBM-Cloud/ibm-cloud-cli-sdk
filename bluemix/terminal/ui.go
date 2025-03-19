@@ -70,6 +70,9 @@ type UI interface {
 	// SetWriter sets the writer of the terminal UI
 	SetWriter(buf io.Writer)
 
+	// SetErrWriter sets the error writer of the terminal UI
+	SetErrWriter(buf io.Writer)
+
 	// Enable or disable quiet mode. Contents passed to Verbose(), Warn(), OK() will be ignored if under quiet mode.
 	SetQuiet(bool)
 
@@ -222,6 +225,10 @@ func (ui *terminalUI) Writer() io.Writer {
 
 func (ui *terminalUI) SetWriter(buf io.Writer) {
 	ui.Out = buf
+}
+
+func (ui *terminalUI) SetErrWriter(buf io.Writer) {
+	ui.ErrOut = buf
 }
 
 func (ui *terminalUI) SetQuiet(quiet bool) {
