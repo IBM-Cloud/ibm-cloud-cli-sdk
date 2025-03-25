@@ -64,11 +64,14 @@ type UI interface {
 	// Table creates a table with the given headers
 	Table(headers []string) Table
 
-	// Writer returns writer of the terminal UI
+	// Writer returns output writer of the terminal UI
 	Writer() io.Writer
 
 	// SetWriter sets the writer of the terminal UI
 	SetWriter(buf io.Writer)
+
+	// ErrWriter returns the erroro writer of the terminal UI
+	ErrWriter() io.Writer
 
 	// SetErrWriter sets the error writer of the terminal UI
 	SetErrWriter(buf io.Writer)
@@ -221,6 +224,10 @@ func (ui *terminalUI) Table(headers []string) Table {
 
 func (ui *terminalUI) Writer() io.Writer {
 	return ui.Out
+}
+
+func (ui *terminalUI) ErrWriter() io.Writer {
+	return ui.ErrOut
 }
 
 func (ui *terminalUI) SetWriter(buf io.Writer) {
