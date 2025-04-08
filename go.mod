@@ -1,7 +1,6 @@
 module github.com/IBM-Cloud/ibm-cloud-cli-sdk
 
-go 1.22.11
-toolchain go1.23.7
+go 1.22.12
 
 require (
 	github.com/fatih/color v1.7.1-0.20180516100307-2d684516a886
