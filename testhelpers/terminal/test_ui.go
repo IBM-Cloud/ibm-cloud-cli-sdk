@@ -228,11 +228,17 @@ func (ui *FakeUI) ErrWriter() io.Writer {
 	return &ui.stdErr
 }
 
-// NOTE: Adding method to satisfy go
-func (ui *FakeUI) SetErrWriter(buf io.Writer) {}
+// NOTE: SetErrWriter is added here since the method is part of the UI type Interface interface
+// the method is not needed for testing
+func (ui *FakeUI) SetErrWriter(buf io.Writer) {
+	panic("unimplemented")
+}
 
-// NOTE: not needed since we write directly using the bytes.Buffer
-func (ui *FakeUI) SetWriter(buf io.Writer) {}
+// NOTE: SetErrWriter is added here since the method is part of the UI type Interface interface
+// the method is not needed for testing
+func (ui *FakeUI) SetWriter(buf io.Writer) {
+	panic("unimplemented")
+}
 
 func (ui *FakeUI) SetQuiet(quiet bool) {
 	ui.quiet = quiet
