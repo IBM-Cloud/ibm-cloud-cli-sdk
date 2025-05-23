@@ -27,6 +27,9 @@ type FakeUI struct {
 	PasswordPrompts []string
 	ChoicesPrompts  []choicesPrompt
 	WarnOutputs     []string
+	stdoutWriter    io.Writer
+	stdErrWriter    io.Writer
+	stdInWriter     io.Reader
 
 	inputs bytes.Buffer
 	stdOut bytes.Buffer
@@ -224,6 +227,12 @@ func (ui *FakeUI) Writer() io.Writer {
 func (ui *FakeUI) ErrWriter() io.Writer {
 	return &ui.stdErr
 }
+
+// NOTE: Adding method to satisfy go
+func (ui *FakeUI) SetErrWriter(buf io.Writer) {}
+
+// NOTE: not needed since we write directly using the bytes.Buffer
+func (ui *FakeUI) SetWriter(buf io.Writer) {}
 
 func (ui *FakeUI) SetQuiet(quiet bool) {
 	ui.quiet = quiet
