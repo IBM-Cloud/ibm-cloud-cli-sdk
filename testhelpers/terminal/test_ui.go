@@ -221,6 +221,10 @@ func (ui *FakeUI) Writer() io.Writer {
 	return &ui.stdOut
 }
 
+func (ui *FakeUI) ErrWriter() io.Writer {
+	return &ui.stdErr
+}
+
 func (ui *FakeUI) SetQuiet(quiet bool) {
 	ui.quiet = quiet
 }
