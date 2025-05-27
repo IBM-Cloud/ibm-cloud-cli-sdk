@@ -111,6 +111,12 @@ func (c Command) NameAndAliases() []string {
 // Method is used when defining the Flags in command metadata. @see Plugin#GetMetadata() for use case
 func ConvertCobraFlagsToPluginFlags(cmd *cobra.Command) []Flag {
 	var flags []Flag
+	// NOTE: there is a strange behavior in Cobra where you need to call
+	// either `InheritedFlags` or `LocalFlags` in order to include global
+	// flags when calling `VisitAll`
+	// see https://github.com/spf13/cobra/issues/412
+	cmd.InheritedFlags()
+
 	cmd.Flags().VisitAll(func(f *pflag.Flag) {
 		var name string
 		if f.Shorthand != "" {
