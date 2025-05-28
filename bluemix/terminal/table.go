@@ -127,6 +127,7 @@ func (t *PrintableTable) Print() {
 	tbl.Style().Options.SeparateHeader = false
 	tbl.Style().Options.SeparateRows = false
 	tbl.Style().Format.Header = text.FormatDefault
+	tbl.Style().Color.Header = text.Colors{text.Bold}
 
 	headerRow, rows := t.createPrettyRowsAndHeaders()
 	columnConfig := t.createColumnConfigs()
