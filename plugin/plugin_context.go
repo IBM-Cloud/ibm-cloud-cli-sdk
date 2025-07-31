@@ -116,10 +116,6 @@ func (c *pluginContext) VersionCheckEnabled() bool {
 	return !c.CheckCLIVersionDisabled()
 }
 
-func (c *pluginContext) MCPEnabled() bool {
-	return bluemix.EnvMCP.Get() != ""
-}
-
 func envOrConfig(env bluemix.Env, config string) string {
 	if v := env.Get(); v != "" {
 		return v
