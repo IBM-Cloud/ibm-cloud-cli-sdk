@@ -298,4 +298,7 @@ type PluginContext interface {
 
 	// CLIName returns binary name of the Bluemix CLI that is invoking the plugin
 	CLIName() string
+
+	// MCPEnabled returns true if the CLI is functioning as an MCP server
+	MCPEnabled() bool
 }
