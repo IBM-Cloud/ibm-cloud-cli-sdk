@@ -33,7 +33,6 @@ var (
 	// for internal use
 	EnvCLIName         = newEnv("IBMCLOUD_CLI", "BLUEMIX_CLI")
 	EnvPluginNamespace = newEnv("IBMCLOUD_PLUGIN_NAMESPACE", "BLUEMIX_PLUGIN_NAMESPACE")
-	EnvMCP             = newEnv("IBMCLOUD_MCP_ENABLED")
 )
 
 // Env is an environment variable supported by IBM Cloud CLI for specific purpose
