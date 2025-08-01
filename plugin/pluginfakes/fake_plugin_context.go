@@ -353,6 +353,16 @@ type FakePluginContext struct {
 	localeReturnsOnCall map[int]struct {
 		result1 string
 	}
+	MCPEnabledStub        func() bool
+	mCPEnabledMutex       sync.RWMutex
+	mCPEnabledArgsForCall []struct {
+	}
+	mCPEnabledReturns struct {
+		result1 bool
+	}
+	mCPEnabledReturnsOnCall map[int]struct {
+		result1 bool
+	}
 	PluginConfigStub        func() plugin.PluginConfig
 	pluginConfigMutex       sync.RWMutex
 	pluginConfigArgsForCall []struct {
@@ -2242,6 +2252,59 @@ func (fake *FakePluginContext) LocaleReturnsOnCall(i int, result1 string) {
 	}{result1}
 }
 
+func (fake *FakePluginContext) MCPEnabled() bool {
+	fake.mCPEnabledMutex.Lock()
+	ret, specificReturn := fake.mCPEnabledReturnsOnCall[len(fake.mCPEnabledArgsForCall)]
+	fake.mCPEnabledArgsForCall = append(fake.mCPEnabledArgsForCall, struct {
+	}{})
+	stub := fake.MCPEnabledStub
+	fakeReturns := fake.mCPEnabledReturns
+	fake.recordInvocation("MCPEnabled", []interface{}{})
+	fake.mCPEnabledMutex.Unlock()
+	if stub != nil {
+		return stub()
+	}
+	if specificReturn {
+		return ret.result1
+	}
+	return fakeReturns.result1
+}
+
+func (fake *FakePluginContext) MCPEnabledCallCount() int {
+	fake.mCPEnabledMutex.RLock()
+	defer fake.mCPEnabledMutex.RUnlock()
+	return len(fake.mCPEnabledArgsForCall)
+}
+
+func (fake *FakePluginContext) MCPEnabledCalls(stub func() bool) {
+	fake.mCPEnabledMutex.Lock()
+	defer fake.mCPEnabledMutex.Unlock()
+	fake.MCPEnabledStub = stub
+}
+
+func (fake *FakePluginContext) MCPEnabledReturns(result1 bool) {
+	fake.mCPEnabledMutex.Lock()
+	defer fake.mCPEnabledMutex.Unlock()
+	fake.MCPEnabledStub = nil
+	fake.mCPEnabledReturns = struct {
+		result1 bool
+	}{result1}
+}
+
+func (fake *FakePluginContext) MCPEnabledReturnsOnCall(i int, result1 bool) {
+	fake.mCPEnabledMutex.Lock()
+	defer fake.mCPEnabledMutex.Unlock()
+	fake.MCPEnabledStub = nil
+	if fake.mCPEnabledReturnsOnCall == nil {
+		fake.mCPEnabledReturnsOnCall = make(map[int]struct {
+			result1 bool
+		})
+	}
+	fake.mCPEnabledReturnsOnCall[i] = struct {
+		result1 bool
+	}{result1}
+}
+
 func (fake *FakePluginContext) PluginConfig() plugin.PluginConfig {
 	fake.pluginConfigMutex.Lock()
 	ret, specificReturn := fake.pluginConfigReturnsOnCall[len(fake.pluginConfigArgsForCall)]
@@ -2687,6 +2750,8 @@ func (fake *FakePluginContext) Invocations() map[string][][]interface{} {
 	defer fake.isSSLDisabledMutex.RUnlock()
 	fake.localeMutex.RLock()
 	defer fake.localeMutex.RUnlock()
+	fake.mCPEnabledMutex.RLock()
+	defer fake.mCPEnabledMutex.RUnlock()
 	fake.pluginConfigMutex.RLock()
 	defer fake.pluginConfigMutex.RUnlock()
 	fake.pluginDirectoryMutex.RLock()
