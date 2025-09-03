@@ -11,6 +11,7 @@ import (
 	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/authentication"
 	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/common/rest"
 	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/common/types"
+	"github.com/google/uuid"
 )
 
 const (
@@ -352,9 +353,23 @@ func (c *client) GetEndpoint() (*Endpoint, error) {
 }
 
 func (c *client) doRequest(r *rest.Request, respV interface{}) error {
-	_, err := c.client.Do(r, respV, nil)
+
+	var err error
+	var uuidBytes uuid.UUID
+	var correlationBytes uuid.UUID
+
+	if uuidBytes, err = uuid.NewRandom(); err == nil {
+		r.Set("X-Request-ID", uuidBytes.String())
+	}
+
+	if correlationBytes, err = uuid.NewRandom(); err == nil {
+		r.Set("X-Correlation-ID", correlationBytes.String())
+	}
+
+	_, err = c.client.Do(r, respV, nil)
 	switch err := err.(type) {
 	case *rest.ErrorResponse:
+		fmt.Println("Correlation-ID: " + correlationBytes.String())
 		var apiErr APIError
 		if jsonErr := json.Unmarshal([]byte(err.Message), &apiErr); jsonErr == nil {
 			switch apiErr.ErrorCode {
