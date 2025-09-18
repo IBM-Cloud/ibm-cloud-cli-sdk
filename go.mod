@@ -2,12 +2,13 @@ module github.com/IBM-Cloud/ibm-cloud-cli-sdk
 
 go 1.23.0
 
-toolchain go1.23.6
+toolchain go1.24.4
 
 require (
 	github.com/fatih/color v1.7.1-0.20180516100307-2d684516a886
 	github.com/fatih/structs v1.0.1-0.20171020064819-f5faa72e7309
 	github.com/gofrs/flock v0.8.1
+	github.com/google/uuid v1.6.0
 	github.com/jedib0t/go-pretty/v6 v6.6.1
 	github.com/mattn/go-colorable v0.0.0-20160210001857-9fdad7c47650
 	github.com/mattn/go-runewidth v0.0.15
