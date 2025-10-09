@@ -17,7 +17,7 @@
   },
   {
     "id": "Could not read from input: ",
-    "translation": "Could not read from input: "
+    "translation": "입력에서 읽지 못함: "
   },
   {
     "id": "Elapsed:",
@@ -25,7 +25,7 @@
   },
   {
     "id": "External authentication failed. Error code: {{.ErrorCode}}, message: {{.Message}}",
-    "translation": "External authentication failed. Error code: {{.ErrorCode}}, message: {{.Message}}"
+    "translation": "외부 인증에 실패했습니다. 오류 코드: {{.ErrorCode}}, 메시지: {{.Message}}"
   },
   {
     "id": "FAILED",
@@ -33,19 +33,23 @@
   },
   {
     "id": "Failed, header could not convert to csv format",
-    "translation": "Failed, header could not convert to csv format"
+    "translation": "실패, 헤더를 CSV 형식으로 변환할 수 없습니다"
   },
   {
     "id": "Failed, rows could not convert to csv format",
-    "translation": "Failed, rows could not convert to csv format"
+    "translation": "실패, 행을 CSV 형식으로 변환할 수 없음"
   },
   {
     "id": "Invalid grant type: ",
-    "translation": "Invalid grant type: "
+    "translation": "잘못된 보조금 유형입니다: "
   },
   {
     "id": "Invalid token: ",
     "translation": "올바르지 않은 토큰: "
+  },
+  {
+    "id": "MinCliVersion ({{.ProvidedMinVersion}}) is lower than the allowed minimum {{.AllowedMinimum}}",
+    "translation": "MinCliVersion ( {{.ProvidedMinVersion}} )가 허용된 최소값보다 낮습니다 {{.AllowedMinimum}}"
   },
   {
     "id": "OK",
@@ -84,11 +88,35 @@
     "translation": "원격 서버 오류가 발생했습니다. 상태 코드: {{.StatusCode}}, 오류 코드: {{.ErrorCode}}, 메시지: {{.Message}}"
   },
   {
+    "id": "Session inactive: ",
+    "translation": "세션이 비활성 상태입니다: "
+  },
+  {
     "id": "Unable to save plugin config: ",
     "translation": "플러그인 구성을 저장할 수 없음:"
   },
   {
-    "id": "Session inactive: ",
-    "translation": "Session inactive: "
+    "id": "Usage contains placeholder arguments/flags",
+    "translation": "사용법에는 자리 표시자 인수/플래그가 포함됩니다"
+  },
+  {
+    "id": "Usage contains unclosed {{.UnclosedGroup}} between indicies {{.Indicies}}",
+    "translation": "사용법에는 표시 사이에 닫히지 않은 {{.UnclosedGroup}} {{.Indicies}}"
+  },
+  {
+    "id": "{{.Field}} contains the following forbidden characters: {{.Chars}}",
+    "translation": "{{.Field}} 에는 다음과 같은 금지 문자가 포함되어 있습니다: {{.Chars}}"
+  },
+  {
+    "id": "{{.Field}} is required",
+    "translation": "{{.Field}} 필수"
+  },
+  {
+    "id": "{{.Field}} must contain at least {{.Param}} element",
+    "translation": "{{.Field}} 최소 {{.Param}} 요소를 포함해야 합니다"
+  },
+  {
+    "id": "{{.Field}} must not equal '{{.Param}}'",
+    "translation": "{{.Field}} ' {{.Param}} '"
   }
 ]

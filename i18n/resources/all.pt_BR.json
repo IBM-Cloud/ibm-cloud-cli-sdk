@@ -17,7 +17,7 @@
   },
   {
     "id": "Could not read from input: ",
-    "translation": "Could not read from input: "
+    "translation": "Não foi possível ler a apartir da entrada: "
   },
   {
     "id": "Elapsed:",
@@ -25,7 +25,7 @@
   },
   {
     "id": "External authentication failed. Error code: {{.ErrorCode}}, message: {{.Message}}",
-    "translation": "External authentication failed. Error code: {{.ErrorCode}}, message: {{.Message}}"
+    "translation": "Falha na autenticação externa. Código de erro: {{.ErrorCode}}, mensagem: {{.Message}}"
   },
   {
     "id": "FAILED",
@@ -33,19 +33,23 @@
   },
   {
     "id": "Failed, header could not convert to csv format",
-    "translation": "Failed, header could not convert to csv format"
+    "translation": "Falha, o cabeçalho não pôde ser convertido para o formato csv"
   },
   {
     "id": "Failed, rows could not convert to csv format",
-    "translation": "Failed, rows could not convert to csv format"
+    "translation": "Falha, não foi possível converter as linhas para o formato csv"
   },
   {
     "id": "Invalid grant type: ",
-    "translation": "Invalid grant type: "
+    "translation": "Tipo de concessão inválido: "
   },
   {
     "id": "Invalid token: ",
     "translation": "Token inválido: "
+  },
+  {
+    "id": "MinCliVersion ({{.ProvidedMinVersion}}) is lower than the allowed minimum {{.AllowedMinimum}}",
+    "translation": "MinCliVersion ( {{.ProvidedMinVersion}} ) é menor do que o mínimo permitido {{.AllowedMinimum}}"
   },
   {
     "id": "OK",
@@ -84,11 +88,35 @@
     "translation": "Erro do servidor remoto. Código de status: {{.StatusCode}}, código de erro: {{.ErrorCode}}, mensagem: {{.Message}}"
   },
   {
+    "id": "Session inactive: ",
+    "translation": "Sessão inativa: "
+  },
+  {
     "id": "Unable to save plugin config: ",
     "translation": "Não é possível salvar a configuração do plug-in: "
   },
   {
-    "id": "Session inactive: ",
-    "translation": "Session inactive: "
+    "id": "Usage contains placeholder arguments/flags",
+    "translation": "O uso contém argumentos/flags de espaço reservado"
+  },
+  {
+    "id": "Usage contains unclosed {{.UnclosedGroup}} between indicies {{.Indicies}}",
+    "translation": "O uso contém {{.UnclosedGroup}} não fechado entre os índices {{.Indicies}}"
+  },
+  {
+    "id": "{{.Field}} contains the following forbidden characters: {{.Chars}}",
+    "translation": "{{.Field}} contém os seguintes caracteres proibidos: {{.Chars}}"
+  },
+  {
+    "id": "{{.Field}} is required",
+    "translation": "{{.Field}} é necessário"
+  },
+  {
+    "id": "{{.Field}} must contain at least {{.Param}} element",
+    "translation": "{{.Field}} deve conter pelo menos {{.Param}} elemento"
+  },
+  {
+    "id": "{{.Field}} must not equal '{{.Param}}'",
+    "translation": "{{.Field}} não deve ser igual a ' {{.Param}} '"
   }
 ]

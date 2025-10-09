@@ -17,7 +17,7 @@
   },
   {
     "id": "Could not read from input: ",
-    "translation": "Could not read from input: "
+    "translation": "無法從輸入讀取： "
   },
   {
     "id": "Elapsed:",
@@ -25,7 +25,7 @@
   },
   {
     "id": "External authentication failed. Error code: {{.ErrorCode}}, message: {{.Message}}",
-    "translation": "External authentication failed. Error code: {{.ErrorCode}}, message: {{.Message}}"
+    "translation": "外部鑑別失敗。 錯誤代碼： {{.ErrorCode}}, 訊息： {{.Message}}"
   },
   {
     "id": "FAILED",
@@ -33,19 +33,23 @@
   },
   {
     "id": "Failed, header could not convert to csv format",
-    "translation": "Failed, header could not convert to csv format"
+    "translation": "失敗，標頭無法轉換為 csv 格式"
   },
   {
     "id": "Failed, rows could not convert to csv format",
-    "translation": "Failed, rows could not convert to csv format"
+    "translation": "失敗，資料無法轉換成 csv 格式"
   },
   {
     "id": "Invalid grant type: ",
-    "translation": "Invalid grant type: "
+    "translation": "無效的授予類型： "
   },
   {
     "id": "Invalid token: ",
     "translation": "無效的記號："
+  },
+  {
+    "id": "MinCliVersion ({{.ProvidedMinVersion}}) is lower than the allowed minimum {{.AllowedMinimum}}",
+    "translation": "MinCliVersion ( {{.ProvidedMinVersion}} ) 低於允許的最小值。 {{.AllowedMinimum}}"
   },
   {
     "id": "OK",
@@ -84,11 +88,35 @@
     "translation": "遠端伺服器錯誤。狀態碼：{{.StatusCode}}，錯誤碼：{{.ErrorCode}}，訊息：{{.Message}}"
   },
   {
+    "id": "Session inactive: ",
+    "translation": "會議非主動： "
+  },
+  {
     "id": "Unable to save plugin config: ",
     "translation": "無法儲存外掛程式配置："
   },
   {
-    "id": "Session inactive: ",
-    "translation": "Session inactive: "
+    "id": "Usage contains placeholder arguments/flags",
+    "translation": "用法包含占位符參數/旗標"
+  },
+  {
+    "id": "Usage contains unclosed {{.UnclosedGroup}} between indicies {{.Indicies}}",
+    "translation": "使用方式包含指標之間未封閉的 {{.UnclosedGroup}} {{.Indicies}}"
+  },
+  {
+    "id": "{{.Field}} contains the following forbidden characters: {{.Chars}}",
+    "translation": "{{.Field}} 包含下列禁止使用的字元： {{.Chars}}"
+  },
+  {
+    "id": "{{.Field}} is required",
+    "translation": "{{.Field}} 需要"
+  },
+  {
+    "id": "{{.Field}} must contain at least {{.Param}} element",
+    "translation": "{{.Field}} 必須至少包含 {{.Param}} 元素"
+  },
+  {
+    "id": "{{.Field}} must not equal '{{.Param}}'",
+    "translation": "{{.Field}} 不得等於 ' {{.Param}} '"
   }
 ]

@@ -17,7 +17,7 @@
   },
   {
     "id": "Could not read from input: ",
-    "translation": "Could not read from input: "
+    "translation": "无法从输入进行读取： "
   },
   {
     "id": "Elapsed:",
@@ -25,7 +25,7 @@
   },
   {
     "id": "External authentication failed. Error code: {{.ErrorCode}}, message: {{.Message}}",
-    "translation": "External authentication failed. Error code: {{.ErrorCode}}, message: {{.Message}}"
+    "translation": "外部认证失败。 错误代码： {{.ErrorCode}} 信息： {{.Message}}"
   },
   {
     "id": "FAILED",
@@ -33,19 +33,23 @@
   },
   {
     "id": "Failed, header could not convert to csv format",
-    "translation": "Failed, header could not convert to csv format"
+    "translation": "失败，标头无法转换为 csv 格式"
   },
   {
     "id": "Failed, rows could not convert to csv format",
-    "translation": "Failed, rows could not convert to csv format"
+    "translation": "失败，数据行无法转换为 csv 格式"
   },
   {
     "id": "Invalid grant type: ",
-    "translation": "Invalid grant type: "
+    "translation": "授予类型无效： "
   },
   {
     "id": "Invalid token: ",
     "translation": "令牌无效："
+  },
+  {
+    "id": "MinCliVersion ({{.ProvidedMinVersion}}) is lower than the allowed minimum {{.AllowedMinimum}}",
+    "translation": "MinCliVersion ( {{.ProvidedMinVersion}} ) 低于允许的最小值。 {{.AllowedMinimum}}"
   },
   {
     "id": "OK",
@@ -84,11 +88,35 @@
     "translation": "远程服务器错误。状态码：{{.StatusCode}}，错误代码：{{.ErrorCode}}，消息：{{.Message}}"
   },
   {
+    "id": "Session inactive: ",
+    "translation": "会议非活动： "
+  },
+  {
     "id": "Unable to save plugin config: ",
     "translation": "无法保存插件配置："
   },
   {
-    "id": "Session inactive: ",
-    "translation": "Session inactive: "
+    "id": "Usage contains placeholder arguments/flags",
+    "translation": "用法包含占位参数/标志"
+  },
+  {
+    "id": "Usage contains unclosed {{.UnclosedGroup}} between indicies {{.Indicies}}",
+    "translation": "用法中包含指示符之间未封闭的 {{.UnclosedGroup}} {{.Indicies}}"
+  },
+  {
+    "id": "{{.Field}} contains the following forbidden characters: {{.Chars}}",
+    "translation": "{{.Field}} 包含以下禁用字符： {{.Chars}}"
+  },
+  {
+    "id": "{{.Field}} is required",
+    "translation": "{{.Field}} 需要"
+  },
+  {
+    "id": "{{.Field}} must contain at least {{.Param}} element",
+    "translation": "{{.Field}} 必须至少包含 {{.Param}} 元素"
+  },
+  {
+    "id": "{{.Field}} must not equal '{{.Param}}'",
+    "translation": "{{.Field}} 不得等于 ' {{.Param}} '"
   }
 ]

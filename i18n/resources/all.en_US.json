@@ -48,6 +48,10 @@
     "translation": "Invalid token: "
   },
   {
+    "id": "MinCliVersion ({{.ProvidedMinVersion}}) is lower than the allowed minimum {{.AllowedMinimum}}",
+    "translation": "MinCliVersion ({{.ProvidedMinVersion}}) is lower than the allowed minimum {{.AllowedMinimum}}"
+  },
+  {
     "id": "OK",
     "translation": "OK"
   },
@@ -84,11 +88,35 @@
     "translation": "Remote server error. Status code: {{.StatusCode}}, error code: {{.ErrorCode}}, message: {{.Message}}"
   },
   {
+    "id": "Session inactive: ",
+    "translation": "Session inactive: "
+  },
+  {
     "id": "Unable to save plugin config: ",
     "translation": "Unable to save plugin config: "
   },
   {
-    "id": "Session inactive: ",
-    "translation": "Session inactive: "
+    "id": "Usage contains placeholder arguments/flags",
+    "translation": "Usage contains placeholder arguments/flags"
+  },
+  {
+    "id": "Usage contains unclosed {{.UnclosedGroup}} between indicies {{.Indicies}}",
+    "translation": "Usage contains unclosed {{.UnclosedGroup}} between indicies {{.Indicies}}"
+  },
+  {
+    "id": "{{.Field}} contains the following forbidden characters: {{.Chars}}",
+    "translation": "{{.Field}} contains the following forbidden characters: {{.Chars}}"
+  },
+  {
+    "id": "{{.Field}} is required",
+    "translation": "{{.Field}} is required"
+  },
+  {
+    "id": "{{.Field}} must contain at least {{.Param}} element",
+    "translation": "{{.Field}} must contain at least {{.Param}} element"
+  },
+  {
+    "id": "{{.Field}} must not equal '{{.Param}}'",
+    "translation": "{{.Field}} must not equal '{{.Param}}'"
   }
 ]

@@ -44,21 +44,28 @@ IBM Cloud CLI SDK provides a set of APIs to register and manage plug-ins. It als
                 Build: 0,
             },
             MinCliVersion: plugin.VersionType{
-                Major: 0,
+                Major: 2,
                 Minor: 0,
-                Build: 1,
+                Build: 0,
             },
 
             PrivateEndpointSupported: true,
 
             IsCobraPlugin: true,
 
+            Namespaces: []plugin.Namespace{
+                {
+                    Name: "demo-plugin",
+                }
+            },
+
             Commands: []plugin.Command{
                 {
+                    Namespace:   "demo-plugin",
                     Name:        "echo",
-                    Alias:       "ec",
+                    Aliases:       []{"ec"},
                     Description: "Echo a message on terminal.",
-                    Usage:       "ibmcloud echo MESSAGE [-u]",
+                    Usage:       "ibmcloud demo-plugin echo MESSAGE [-u]",
                     Flags: []plugin.Flag{
                         {
                             Name: "u",
@@ -73,18 +80,37 @@ IBM Cloud CLI SDK provides a set of APIs to register and manage plug-ins. It als
     ```
 
     **Understanding the fields in this `plugin.PluginMetadata` struct:**
-    - _Name_: The name of plug-in. It will be displayed when using `ibmcloud plugin list` command or can be used to uninstall the plug-in through `ibmcloud plugin uninstall` command.
+    - _Name_ (**required**): The name of plug-in. It will be displayed when using `ibmcloud plugin list` command or can be used to uninstall the plug-in through `ibmcloud plugin uninstall` command.
       - It is **strongly** encouraged to use a name that best describes the service the plug-in provides.
-    - _Aliases_: A list of short names of the plug-in that can be used as a stand-in for installing, updating, uninstalling and using the plug-in.
+    - _Aliases_ (*optional*): A list of short names of the plug-in that can be used as a stand-in for installing, updating, uninstalling and using the plug-in.
       - It is strongly recommended that you have at least one alias to improve the usability of the plug-in.
-    - _Version_: The version of plug-in.
-    - _MinCliVersion_: The minimal version of IBM Cloud CLI required by the plug-in.
-    - _PrivateEndpointSupported_: Indicates if the plug-in is designed to also be used over the private network.
-    - _IsCobraPlugin_: Indicates if the plug-in is built using the Cobra framework.
+    - _Version_ (**required**): The version of plug-in.
+    - _MinCliVersion_ (**required**): The minimal version of IBM Cloud CLI required by the plug-in.
+    - _PrivateEndpointSupported_ (*optional*): Indicates if the plug-in is designed to also be used over the private network.
+    - _IsCobraPlugin_ (*optional*): Indicates if the plug-in is built using the Cobra framework.
       - It is **strongly** recommended that you use this framework to build your plug-in.
-    - _Commands_: The array of `plugin.Commands` to register the plug-in commands.
-    - _Alias_: Alias of the Alias usually is a short name of the command.
-    - _Command.Flags_: The command flags (options) which will be displayed as a part of help output of the command.
+    - _Alias_ (*optional*): Alias of the Alias usually is a short name of the command.
+    - _Namespaces[]_ (**required**): The list of namespaces / categories that group commands of similar functionality. A command under a namespace is run using `ibmcloud [namespace] [command]`. Visit [1.2 Namespaces](#12-namespace) for more information.
+        - _Namespaces[].ParentName_ (*optional*): The fully qualified name of the parent namespace
+        - _Namespaces[].Name_ (**required**): The base name of the namespace
+        - _Namespaces[].Aliases_ (*optional*): A list of aliases for the namespace
+        - _Namespaces[].Description_ (*optional*): The description of the namespace
+        - _Namespaces[].Stage_ (*optional*): The stage of the commands in the namespace
+    - _Commands[]_ (**required**): The array of `plugin.Commands` to register the plug-in commands. At least one command must be registered.
+        - _Commands[].Name_ (**required**): The name of the command
+        - _Commands[].Aliases[]_ (*optional*): A list of short names to be used as a stand-in for calling the command.
+        - _Commands[].Description_ (**required**): A short description of the command. Details on flags and arguments should be placed in **Usage** below.
+        - _Commands[].Usage_ (**required**): The usage text to be displayed in the command help
+        - _Commands[].Flags_(*optional*): The command flags (options) which will be displayed as a part of help output of the command.
+            - _Commands[].Flags[].Name_ (**required**): The name of the optional flag
+            - _Commands[].Flags[].Description_ (**required**): The description of the optional flag
+            - _Commands[].Flags[].HasValue_ (*optional*): True, if the optional flag requires a value (eg.`--description "foobar"`)
+            - _Commands[].Flags[].Hidden_ (optional): True, to hide the optional flag should be hidden in the command help
+        - _Commands[].Hidden_ (*optional*): True, to hide the command in the root namespace help command
+        - _Commands[].Stage_ (*optional*): The stage of the command
+
+
+        
 
 4.  Add the logic of plug-in command process in `Run` method, for example:
 
