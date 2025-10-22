@@ -4,10 +4,8 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
-	"net/http"
 	"net/url"
 	"strconv"
-	"strings"
 	"time"
 
 	"github.com/IBM-Cloud/ibm-cloud-cli-sdk/bluemix/authentication"
@@ -52,9 +50,6 @@ const (
 	SessionInactiveErrorCode        = "BXNIM0439E"
 )
 
-// list of request paths that will not print the correlation IDs
-var RequestPathsIgnoreCorrelationID = []string{"/v1/sessions"}
-
 type MFAVendor string
 
 func (m MFAVendor) String() string {
@@ -67,15 +62,6 @@ const (
 	MFAVendorTOTP        MFAVendor = "TOTP"
 	MFAVendorPhoneFactor MFAVendor = "PHONE_FACTOR"
 )
-
-func AllowPrintCorrelationID(path string) bool {
-	for _, urlPath := range RequestPathsIgnoreCorrelationID {
-		if strings.Contains(path, urlPath) {
-			return false
-		}
-	}
-	return true
-}
 
 func PasswordTokenRequest(username, password string, opts ...authentication.TokenOption) *authentication.TokenRequest {
 	r := authentication.NewTokenRequest(GrantTypePassword)
@@ -369,7 +355,6 @@ func (c *client) GetEndpoint() (*Endpoint, error) {
 func (c *client) doRequest(r *rest.Request, respV interface{}) error {
 
 	var err error
-	var res *http.Response
 	var uuidBytes uuid.UUID
 	var correlationBytes uuid.UUID
 
@@ -381,12 +366,9 @@ func (c *client) doRequest(r *rest.Request, respV interface{}) error {
 		r.Set("X-Correlation-ID", correlationBytes.String())
 	}
 
-	res, err = c.client.Do(r, respV, nil)
+	_, err = c.client.Do(r, respV, nil)
 	switch err := err.(type) {
 	case *rest.ErrorResponse:
-		if AllowPrintCorrelationID(res.Request.URL.Path) {
-			fmt.Println("Correlation-ID: " + correlationBytes.String())
-		}
 		var apiErr APIError
 		if jsonErr := json.Unmarshal([]byte(err.Message), &apiErr); jsonErr == nil {
 			switch apiErr.ErrorCode {

@@ -1,4 +1,5 @@
-[ {
+[
+  {
     "id": "\nEnter a number",
     "translation": "\nEscriba un número"
   },
@@ -16,7 +17,7 @@
   },
   {
     "id": "Could not read from input: ",
-    "translation": "Could not read from input: "
+    "translation": "No se ha podido leer la entrada: "
   },
   {
     "id": "Elapsed:",
@@ -24,7 +25,7 @@
   },
   {
     "id": "External authentication failed. Error code: {{.ErrorCode}}, message: {{.Message}}",
-    "translation": "External authentication failed. Error code: {{.ErrorCode}}, message: {{.Message}}"
+    "translation": "Ha fallado la autenticación externa. Código de error: {{.ErrorCode}} mensaje: {{.Message}}"
   },
   {
     "id": "FAILED",
@@ -32,19 +33,23 @@
   },
   {
     "id": "Failed, header could not convert to csv format",
-    "translation": "Failed, header could not convert to csv format"
+    "translation": "Fallido, la cabecera no se ha podido convertir a formato csv"
   },
   {
     "id": "Failed, rows could not convert to csv format",
-    "translation": "Failed, rows could not convert to csv format"
+    "translation": "Fallo, las filas no se han podido convertir a formato csv"
   },
   {
     "id": "Invalid grant type: ",
-    "translation": "Invalid grant type: "
+    "translation": "Tipo de subvención no válido: "
   },
   {
     "id": "Invalid token: ",
     "translation": "Señal no válida: "
+  },
+  {
+    "id": "MinCliVersion ({{.ProvidedMinVersion}}) is lower than the allowed minimum {{.AllowedMinimum}}",
+    "translation": "MinCliVersion ( {{.ProvidedMinVersion}} ) es inferior al mínimo permitido {{.AllowedMinimum}}"
   },
   {
     "id": "OK",
@@ -83,11 +88,35 @@
     "translation": "Error del servidor remoto. Código de estado: {{.StatusCode}}, código de error: {{.ErrorCode}}, mensaje: {{.Message}}"
   },
   {
+    "id": "Session inactive: ",
+    "translation": "Sesión inactiva: "
+  },
+  {
     "id": "Unable to save plugin config: ",
     "translation": "No se ha podido guardar la configuración del plugin:"
   },
   {
-    "id": "Session inactive: ",
-    "translation": "Session inactive: "
+    "id": "Usage contains placeholder arguments/flags",
+    "translation": "El uso contiene argumentos/flags"
+  },
+  {
+    "id": "Usage contains unclosed {{.UnclosedGroup}} between indicies {{.Indicies}}",
+    "translation": "El uso contiene {{.UnclosedGroup}} sin cerrar entre indicies {{.Indicies}}"
+  },
+  {
+    "id": "{{.Field}} contains the following forbidden characters: {{.Chars}}",
+    "translation": "{{.Field}} contiene los siguientes caracteres prohibidos: {{.Chars}}"
+  },
+  {
+    "id": "{{.Field}} is required",
+    "translation": "{{.Field}} es necesario"
+  },
+  {
+    "id": "{{.Field}} must contain at least {{.Param}} element",
+    "translation": "{{.Field}} debe contener al menos {{.Param}} elemento"
+  },
+  {
+    "id": "{{.Field}} must not equal '{{.Param}}'",
+    "translation": "{{.Field}} no debe ser igual a ' {{.Param}} '"
   }
 ]
