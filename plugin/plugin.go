@@ -1,6 +1,7 @@
 // Package plugin provides types and functions common among plugins.
 //
 // See examples in "github.com/IBM-Cloud/ibm-cloud-cli-sdk/plugin_examples".
+
 package plugin
 
 import (
@@ -14,12 +15,12 @@ import (
 
 // PluginMetadata describes metadata of a plugin.
 type PluginMetadata struct {
-	Name          string      // name of the plugin
+	Name          string      `validate:"required"` // name of the plugin
 	Aliases       []string    // aliases of the plugin
-	Version       VersionType // version of the plugin
-	MinCliVersion VersionType // minimal version of CLI required by the plugin
-	Namespaces    []Namespace // list of namespaces provided by the plugin
-	Commands      []Command   // list of commands provided by the plugin
+	Version       VersionType `validate:"required"`                     // version of the plugin
+	MinCliVersion VersionType `validate:"required,mincliversion=2.0.0"` // minimal version of CLI required by the plugin
+	Namespaces    []Namespace `validate:"required,min=1,dive"`          // list of namespaces provided by the plugin
+	Commands      []Command   `validate:"required,min=1,dive"`          // list of commands provided by the plugin
 
 	// SDKVersion is SDK version used by the plugin.
 	// It is set by the plugin framework to check SDK compatibility with the CLI.
@@ -76,7 +77,7 @@ const (
 // namespace 'B'. And the full qualified name of namespace B is 'A B'.
 type Namespace struct {
 	ParentName  string   // full qualified name of the parent namespace
-	Name        string   // base name
+	Name        string   `validate:"required"` // base name
 	Aliases     []string // aliases
 	Description string   // description of the namespace
 	Stage       Stage    // stage of the commands in the namespace
@@ -88,13 +89,13 @@ func (n Namespace) NameAndAliases() []string {
 
 // Command describes the metadata of a plugin command
 type Command struct {
-	Namespace   string   // full qualified name of the command's namespace
-	Name        string   // name of the command
+	Namespace   string   `validate:"required"`              // full qualified name of the command's namespace
+	Name        string   `validate:"required,ne=--version"` // name of the command
 	Alias       string   // Deprecated: use Aliases instead.
 	Aliases     []string // command aliases
-	Description string   // short description of the command
-	Usage       string   // usage detail to be displayed in command help
-	Flags       []Flag   // command options
+	Description string   `validate:"required"`       // short description of the command
+	Usage       string   `validate:"required,usage"` // usage detail to be displayed in command help
+	Flags       []Flag   `validate:"dive"`           // command options
 	Hidden      bool     // true to hide the command in help text
 	Stage       Stage    // stage of the command
 }
@@ -142,8 +143,8 @@ func ConvertCobraFlagsToPluginFlags(cmd *cobra.Command) []Flag {
 
 // Flag describes a command option
 type Flag struct {
-	Name        string // name of the option
-	Description string // description of the option
+	Name        string `validate:"required,excludesall=<>"` // name of the option (excludes names like <invalidValue>)
+	Description string `validate:"required"`                // description of the option
 	HasValue    bool   // whether the option requires a value or not
 	Hidden      bool   // true to hide the option in command help
 }
