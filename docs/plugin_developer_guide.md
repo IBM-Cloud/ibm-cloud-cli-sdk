@@ -89,7 +89,7 @@ IBM Cloud CLI SDK provides a set of APIs to register and manage plug-ins. It als
     - _PrivateEndpointSupported_ (*optional*): Indicates if the plug-in is designed to also be used over the private network.
     - _IsCobraPlugin_ (*optional*): Indicates if the plug-in is built using the Cobra framework.
       - It is **strongly** recommended that you use this framework to build your plug-in.
-    - _Alias_ (*optional*): Alias of the Alias usually is a short name of the command.
+    - _Alias_ (*optional*): An alias is a short name of the command.
     - _Namespaces[]_ (**required**): The list of namespaces / categories that group commands of similar functionality. A command under a namespace is run using `ibmcloud [namespace] [command]`. Visit [1.2 Namespaces](#12-namespace) for more information.
         - _Namespaces[].ParentName_ (*optional*): The fully qualified name of the parent namespace
         - _Namespaces[].Name_ (**required**): The base name of the namespace

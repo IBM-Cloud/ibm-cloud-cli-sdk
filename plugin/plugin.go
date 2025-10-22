@@ -143,7 +143,7 @@ func ConvertCobraFlagsToPluginFlags(cmd *cobra.Command) []Flag {
 
 // Flag describes a command option
 type Flag struct {
-	Name        string `validate:"required,excludesall=<>"` // name of the option
+	Name        string `validate:"required,excludesall=<>"` // name of the option (excludes names like <invalidValue>)
 	Description string `validate:"required"`                // description of the option
 	HasValue    bool   // whether the option requires a value or not
 	Hidden      bool   // true to hide the option in command help
