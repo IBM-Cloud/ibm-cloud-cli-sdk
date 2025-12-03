@@ -372,7 +372,7 @@ To keep user experience consistent, developers of IBM Cloud CLI plug-in should a
 
 4. Use "plug-in" instead of "plugin" in all places.
 
-### 2.2. Name and Decription of Plug-in, Namespace and Command
+### 2.2. Name and Description of Plug-in, Namespace and Command
 
 **To name the plug-in for a service**:
 
@@ -384,8 +384,8 @@ To keep user experience consistent, developers of IBM Cloud CLI plug-in should a
 - Use lower case words and hyphen
 - Names should be at least 2 characters in length
 - Follow a “noun-verb” sequence
-- For commands that list objects, use the plural of the object name, e.g. `ibmcloud iam api-keys`. If a plural will not work, or it is already described in namespace, use `list`, such as `ibmcloud app list`.
-- For commands that retrieve the details of an object, use the object name, e.g. `ibmcloud iam api-key`. If it does not work, use `show`, e.g. `ibmcloud app show`
+- For commands that list objects, use the plural of the object name, e.g. `ibmcloud iam api-keys`. If a plural will not work, or it is already described in namespace, use `list`, such as `ibmcloud account list`.
+- For commands that retrieve the details of an object, use the object name, e.g. `ibmcloud iam api-key`. If it does not work, use `show`, e.g. `ibmcloud account show`
 - Use common verbs such as add, create, bind, update, delete …
 - Use `remove` to remove an object from a collection or another object it associated with. Use `delete` to erase an object.
 
@@ -413,7 +413,7 @@ The following command names are invalid:
 
 - `route map`: Uses a space instead of a hyphen.
 
-- `route\_map`: Uses unallowed characters (`\_`) instead of a hyphen.
+- `route\_map`: Uses prohibited characters (`\_`) instead of a hyphen.
 
 - `add-plugin-repo`: Does not follow "noun-verb" word order. The verb "add" should be the last part of the command name.
 
@@ -576,7 +576,6 @@ When command was successful, the success message should start with "OK" in green
 Creating resource group Test under account TestAccount as user@ibm.com...
 OK
 Resource group Test was created.
-Creating application 'my-app'...
 ```
 
 The following code snippet can help you print the above message:
@@ -711,7 +710,7 @@ ui.Say("upgrading '%s'...", terminal.EntityNameColor(selected))
 #### Prompt override
 There must be a way to override the prompt from a command line switch to allow the execution of non interactive scripts.
 
-For the configrmation [y/N] prompt use the -f force option.
+For the confirmation [y/N] prompt use the -f force option.
 
 
 ### 2.11. Table Output
@@ -1192,7 +1191,7 @@ Here's the workflow:
 
     set -e
 
-    go get github.com/jteeuwen/go-bindata/...
+    go install github.com/go-bindata/go-bindata/...@latest
 
     echo "Generating i18n resource file ..."
     $GOPATH/bin/go-bindata -pkg resources -o bluemix/resources/i18n\_resources.go bluemix/i18n/resources
@@ -1202,42 +1201,100 @@ Here's the workflow:
 
 4.  Initialize i18n
 
-    `T()` must be initialized before use. During i18n initialization in IBM Cloud CLI, user locale is used if it's set in `~/.bluemix/config.json` (plug-in can get user locale via `PluginContext.Locale()`). Otherwise, system locale is auto discovered (see [jibber\_jabber](https://github.com/cloudfoundry/jibber_jabber)) and used. If system locale is not detected or supported, default locale `en\_US` is then used. Next, we initialize the translate function with the locale. Sample code:
+    `T()` must be initialized before use. During i18n initialization in IBM Cloud CLI, user locale is used if it's set in `~/.bluemix/config.json` (plug-in can get user locale via `PluginContext.Locale()`). Otherwise, system locale is auto discovered (see [go-locale](https://github.com/Xuanwo/go-locale)) and used. If system locale is not detected or supported, default locale `en\_US` is then used. Next, we initialize the translate function with the locale. Sample code:
+
+    **detection.go**
+    ```go
+
+    package detection
+
+    import (
+        "github.com/Xuanwo/go-locale"
+    )
+
+    //go:generate counterfeiter . Detector
+    type Detector interface {
+        DetectLocale() string
+        DetectLanguage() string
+    }
+
+    type GoLocaleDetector struct{}
+
+    // DetectLocale will return the current locale as a string.
+    // The format of the locale will be the ISO 639 two-letter language code, a DASH, then an ISO 3166 two-letter country code.
+    func (d *GoLocaleDetector) DetectLocale() string {
+        userLocaleTag, err := locale.Detect()
+        if err != nil {
+            return ""
+        }
+        return userLocaleTag.String()
+    }
+
+    // DetectLanguage will return the current locale territory as a string.
+    // The format will be the ISO 3166 two-letter country code.
+    func (d *GoLocaleDetector) DetectLanguage() string {
+        langTag, err := locale.Detect()
+        if err != nil {
+            return ""
+        }
+        base, _ := langTag.Base()
+        // ISO3 => ISO 31666
+        return base.ISO3()
+    }
+    ````
 
     ```go
     import (
       "fmt"
       "github.com/IBM-Cloud/ibm-cloud-cli-sdk/i18n"
+      goi18n "github.com/nicksnyder/go-i18n/v2/i18n"
     )
 
-    var T i18n.TranslateFunc = Init(core_config.NewCoreConfig(func(e error) {}), new(JibberJabberDetector))
+
+    var T i18n.TranslateFunc = initWithLocale(DetermineLocale(core_config.NewCoreConfig(func(error) {}), new(GoLocaleDetector)))
+    var bundle *goi18n.Bundle
 
     func Init(coreConfig core_config.Repository, detector Detector) i18n.TranslateFunc {
-	    bundle = i18n.Bundle()
-	    userLocale := coreConfig.Locale()
-	    if userLocale != "" {
-		    return initWithLocale(userLocale)
-      }
-		}
+        return initWithLocale(DetermineLocale(config, detector))
+	}
 
     func initWithLocale(locale string) i18n.TranslateFunc {
+        bundle = i18n.Bundle()
         err := loadFromAsset(locale)
         if err != nil {
             panic(err)
         }
-        return i18n.MustTfunc(locale, DEFAULT_LOCALE)
+        return i18n.MustTfunc(locale)
+    }
+
+    func DetermineLocale(config core_config.Repository, detector Detector) string {
+        if config.Locale() != "" {
+            return config.Locale()
+        }
+
+        sysLocale := normalize(DetectLocale())
+        if isSupported(sysLocale) {
+            return sysLocale
+        }
+
+        locale := defaultLocaleForLang(detector.DetectLanguage())
+        if locale != "" {
+            return locale
+        }
+
+        return DEFAULT_LOCALE
     }
 
     // load translation asset for the given locale
     func loadFromAsset(locale string) (err error) {
-        assetName := fmt.Sprintf("all.%s.json", locale)
-        assetKey := filepath.Join(resourcePath, assetName)
+    assetName := "all." + locale + ".json"
+        assetKey := filepath.Join(RESOURCE_PATH, assetName)
         bytes, err := resources.Asset(assetKey)
         if err != nil {
-           return
+            return
         }
-        _, err = bundle.ParseMessageFileBytes(bytes, resourceKey)
-        return
+        _, err = bundle.ParseMessageFileBytes(bytes, assetName)
+        return    
     }
     ```
 
