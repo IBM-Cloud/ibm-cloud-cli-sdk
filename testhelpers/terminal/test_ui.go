@@ -70,7 +70,7 @@ func (ui *FakeUI) Ok() {
 	if ui.quiet {
 		return
 	}
-	ui.Say(term.SuccessColor("OK"))
+	ui.Say("%s", term.SuccessColor("OK"))
 }
 
 func (ui *FakeUI) Info(template string, args ...interface{}) {
@@ -82,8 +82,8 @@ func (ui *FakeUI) Info(template string, args ...interface{}) {
 
 func (ui *FakeUI) Failed(template string, args ...interface{}) {
 	message := fmt.Sprintf(template, args...)
-	ui.Info(term.FailureColor("FAILED"))
-	ui.error(message)
+	ui.Info("%s", term.FailureColor("FAILED"))
+	ui.error("%s", message)
 	ui.Info("")
 }
 
