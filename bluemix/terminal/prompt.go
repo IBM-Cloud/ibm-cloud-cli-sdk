@@ -82,7 +82,7 @@ func (p *Prompt) resolveSingle(dest interface{}) error {
 	for {
 		input, readErr := p.read(prompt)
 		if readErr != nil {
-			return fmt.Errorf(T("Could not read from input: ") + readErr.Error())
+			return fmt.Errorf("%s", T("Could not read from input: ") + readErr.Error())
 		}
 
 		var err error
@@ -224,7 +224,7 @@ func (p *Prompt) resolveChoices(dest interface{}) error {
 	for {
 		input, readErr := p.read(prompt)
 		if readErr != nil {
-			return fmt.Errorf(T("Could not read from input: ") + readErr.Error())
+			return fmt.Errorf("%s", T("Could not read from input: ") + readErr.Error())
 		}
 
 		var selectedNum int
