@@ -2,7 +2,7 @@ package rest
 
 import (
 	"bytes"
-	"io/ioutil"
+	"io"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -26,7 +26,7 @@ func TestIsJSONStreamWithJSON(t *testing.T) {
 
 	assert.NotNil(r)
 
-	raw, _ := ioutil.ReadAll(r)
+	raw, _ := io.ReadAll(r)
 
 	assert.NotNil(raw)
 	assert.True(isJSON)
@@ -57,7 +57,7 @@ func TestIsJSONStreamWithJSONArray(t *testing.T) {
 
 	assert.NotNil(r)
 
-	raw, _ := ioutil.ReadAll(r)
+	raw, _ := io.ReadAll(r)
 
 	assert.NotNil(raw)
 	assert.True(isJSON)
@@ -80,7 +80,7 @@ func TestIsJSONStreamWithSpaceJSON(t *testing.T) {
 
 	assert.NotNil(r)
 
-	raw, _ := ioutil.ReadAll(r)
+	raw, _ := io.ReadAll(r)
 
 	assert.NotNil(raw)
 	assert.True(isJSON)
@@ -103,7 +103,7 @@ func TestIsJSONStreamWithInvalidJSON(t *testing.T) {
 
 	assert.NotNil(r)
 
-	raw, _ := ioutil.ReadAll(r)
+	raw, _ := io.ReadAll(r)
 
 	assert.NotNil(raw)
 	assert.False(isJSON)
@@ -121,7 +121,7 @@ func TestIsJSONStreamWithString(t *testing.T) {
 
 	assert.NotNil(r)
 
-	raw, _ := ioutil.ReadAll(r)
+	raw, _ := io.ReadAll(r)
 
 	assert.NotNil(raw)
 	assert.False(isJSON)
@@ -146,7 +146,7 @@ func TestIsJSONStreamWithYAML(t *testing.T) {
 
 	assert.NotNil(r)
 
-	raw, _ := ioutil.ReadAll(r)
+	raw, _ := io.ReadAll(r)
 
 	assert.NotNil(raw)
 	assert.False(isJSON)
@@ -172,7 +172,7 @@ func TestIsJSONStreamWithYamlArray(t *testing.T) {
 
 	assert.NotNil(r)
 
-	raw, _ := ioutil.ReadAll(r)
+	raw, _ := io.ReadAll(r)
 
 	assert.NotNil(raw)
 	assert.False(isJSON)
@@ -190,7 +190,7 @@ func TestIsJSONStreamWithEmptyString(t *testing.T) {
 
 	assert.NotNil(r)
 
-	raw, _ := ioutil.ReadAll(r)
+	raw, _ := io.ReadAll(r)
 
 	assert.NotNil(raw)
 	assert.False(isJSON)

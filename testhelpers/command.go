@@ -2,7 +2,6 @@ package testhelpers
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 
 	"github.com/spf13/cobra"
@@ -40,7 +39,7 @@ func CreateMockStdout() *mockStdoutFile {
 
 // Read will open the temp mock stdout file and return contents as a string
 func (m *mockStdoutFile) Read() string {
-	out, err := ioutil.ReadFile(m.File.Name())
+	out, err := os.ReadFile(m.File.Name())
 	if err != nil {
 		panic(fmt.Errorf("failed to read stdout file: %v", err.Error()))
 	}

@@ -2,7 +2,6 @@ package core_config_test
 
 import (
 	"fmt"
-	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -555,7 +554,7 @@ func checkUsageStats(enabled bool, timeStampExist bool, config core_config.Repos
 }
 
 func prepareConfigForCLI(cliConfigContent string, t *testing.T) core_config.Repository {
-	ioutil.WriteFile("config.json", []byte(cliConfigContent), 0644)
+	os.WriteFile("config.json", []byte(cliConfigContent), 0644)
 	return core_config.NewCoreConfigFromPath("config.json", func(err error) {
 		t.Fatal(err.Error())
 	})
