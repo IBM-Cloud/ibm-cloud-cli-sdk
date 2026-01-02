@@ -10,7 +10,7 @@ import (
 	"io/ioutil"
 	"net/http"
 
-	"gopkg.in/yaml.v2"
+	"go.yaml.in/yaml/v3"
 
 	. "github.com/IBM-Cloud/ibm-cloud-cli-sdk/common/rest/helpers"
 )
