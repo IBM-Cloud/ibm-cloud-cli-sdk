@@ -10,7 +10,7 @@ The following is a set of guidelines for` contributing to IBM Cloud CLI SDK. If 
 
 #### Code Style
 
-We follow the offical [CodeReviewComments](https://github.com/golang/go/wiki/CodeReviewComments). Make sure you run [gofmt](https://golang.org/cmd/gofmt/) and [go vet](https://golang.org/cmd/vet/) to fix any major changes.
+We follow the official [CodeReviewComments](https://github.com/golang/go/wiki/CodeReviewComments). Make sure you run [gofmt](https://golang.org/cmd/gofmt/) and [go vet](https://golang.org/cmd/vet/) to fix any major changes.
 
 #### Unit Test
 
