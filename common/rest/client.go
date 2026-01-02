@@ -9,7 +9,7 @@ import (
 	"io"
 	"net/http"
 
-	"gopkg.in/yaml.v2"
+	"go.yaml.in/yaml/v2"
 
 	. "github.com/IBM-Cloud/ibm-cloud-cli-sdk/common/rest/helpers"
 )
