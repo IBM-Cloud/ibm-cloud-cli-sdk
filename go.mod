@@ -12,25 +12,24 @@ require (
 	github.com/jedib0t/go-pretty/v6 v6.6.1
 	github.com/mattn/go-colorable v0.0.0-20160210001857-9fdad7c47650
 	github.com/mattn/go-runewidth v0.0.15
-	github.com/nicksnyder/go-i18n/v2 v2.2.0
-	github.com/onsi/gomega v1.33.0
+	github.com/nicksnyder/go-i18n/v2 v2.6.1
+	github.com/onsi/gomega v1.38.3
 	github.com/spf13/cobra v1.6.1
 	github.com/spf13/pflag v1.0.5
 	github.com/stretchr/testify v1.8.4
+	go.yaml.in/yaml/v3 v3.0.4
 	golang.org/x/crypto v0.46.0
 	golang.org/x/term v0.38.0
 	golang.org/x/text v0.32.0
 	gopkg.in/cheggaaa/pb.v1 v1.0.15
-	gopkg.in/yaml.v2 v2.4.0
 )
 
 require (
-	github.com/BurntSushi/toml v1.1.0 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/gabriel-vasile/mimetype v1.4.10 // indirect
 	github.com/go-playground/locales v0.14.1 // indirect
 	github.com/go-playground/universal-translator v0.18.1 // indirect
-	github.com/google/go-cmp v0.6.0 // indirect
+	github.com/google/go-cmp v0.7.0 // indirect
 	github.com/inconshreveable/mousetrap v1.0.1 // indirect
 	github.com/leodido/go-urn v1.4.0 // indirect
 	github.com/mattn/go-isatty v0.0.5-0.20180830101745-3fb116b82035 // indirect
