@@ -4,7 +4,6 @@ package file_helpers
 import (
 	"fmt"
 	"io"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 )
@@ -90,7 +89,7 @@ func CopyDir(src string, dest string) (err error) {
 		return
 	}
 
-	entries, err := ioutil.ReadDir(src)
+	entries, err := os.ReadDir(src)
 	if err != nil {
 		return
 	}
@@ -99,7 +98,7 @@ func CopyDir(src string, dest string) (err error) {
 		srcPath := filepath.Join(src, entry.Name())
 		destPath := filepath.Join(dest, entry.Name())
 
-		if entry.Mode().IsDir() {
+		if entry.IsDir() {
 			err = CopyDir(srcPath, destPath)
 		} else {
 			err = CopyFile(srcPath, destPath)

@@ -2,7 +2,6 @@ package configuration
 
 import (
 	"context"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -137,7 +136,7 @@ func (dp DiskPersistor) read(data DataInterface) error {
 		return err
 	}
 
-	bytes, err := ioutil.ReadFile(dp.filePath)
+	bytes, err := os.ReadFile(dp.filePath)
 	if err != nil {
 		return err
 	}
@@ -152,6 +151,6 @@ func (dp DiskPersistor) write(data DataInterface) error {
 		return err
 	}
 
-	err = ioutil.WriteFile(dp.filePath, bytes, filePermissions)
+	err = os.WriteFile(dp.filePath, bytes, filePermissions)
 	return err
 }

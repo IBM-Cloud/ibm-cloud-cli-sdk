@@ -2,7 +2,6 @@ package downloader
 
 import (
 	"fmt"
-	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -25,7 +24,7 @@ func TestDownloadTestSuite(t *testing.T) {
 }
 
 func (suite *DownloadTestSuite) SetupTest() {
-	tmpDir, err := ioutil.TempDir("", "testfiledownload")
+	tmpDir, err := os.MkdirTemp("", "testfiledownload")
 	suite.NoError(err)
 	suite.downloader = New(tmpDir)
 }

@@ -3,7 +3,6 @@ package trace_test
 import (
 	"bytes"
 	"io"
-	"io/ioutil"
 	"os"
 	"testing"
 
@@ -100,7 +99,7 @@ func TestStdLogger(t *testing.T) {
 }
 
 func TestFileLogger(t *testing.T) {
-	f, err := ioutil.TempFile("", "")
+	f, err := os.CreateTemp("", "")
 	assert.NoError(t, err)
 
 	defer f.Close()
@@ -111,14 +110,14 @@ func TestFileLogger(t *testing.T) {
 	logger.Printf("test %d", 100)
 	logger.Println("testln")
 
-	buf, err := ioutil.ReadAll(f)
+	buf, err := io.ReadAll(f)
 	assert.NoError(t, err)
 
 	assert.Equal(t, "test\ntest 100\ntestln\n", string(buf))
 }
 
 func TestPrinterCloser(t *testing.T) {
-	f, err := ioutil.TempFile("", "")
+	f, err := os.CreateTemp("", "")
 	assert.NoError(t, err)
 
 	defer os.RemoveAll(f.Name())
@@ -128,7 +127,7 @@ func TestPrinterCloser(t *testing.T) {
 	logger.Printf("test %d", 100)
 	logger.Println("testln")
 
-	buf, err := ioutil.ReadAll(f)
+	buf, err := io.ReadAll(f)
 	assert.NoError(t, err)
 
 	assert.Equal(t, "test\ntest 100\ntestln\n", string(buf))
