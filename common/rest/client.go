@@ -7,7 +7,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net/http"
 
 	"gopkg.in/yaml.v2"
@@ -76,7 +75,7 @@ func (c *Client) DoWithContext(ctx context.Context, r *Request, respV interface{
 	}()
 
 	if resp.StatusCode < 200 || resp.StatusCode > 299 {
-		raw, err := ioutil.ReadAll(resp.Body)
+		raw, err := io.ReadAll(resp.Body)
 		if err != nil {
 			return resp, fmt.Errorf("Error reading response: %v", err)
 		}

@@ -1,7 +1,6 @@
 package plugin
 
 import (
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"testing"
@@ -30,7 +29,7 @@ var (
 func TestPluginConfig_FileNotExist(t *testing.T) {
 	assert := assert.New(t)
 
-	tmpDir, err := ioutil.TempDir("", "plugin_config_test")
+	tmpDir, err := os.MkdirTemp("", "plugin_config_test")
 	assert.NoError(err)
 
 	assert.NotPanics(func() {
@@ -330,13 +329,13 @@ func TestPluginConfigSet_AddNewKey(t *testing.T) {
 }
 
 func prepareConfigFile() string {
-	tmpDir, err := ioutil.TempDir("", "plugin_config_test")
+	tmpDir, err := os.MkdirTemp("", "plugin_config_test")
 	if err != nil {
 		panic("Failed to create temp dir:" + err.Error())
 	}
 
 	configFile := filepath.Join(tmpDir, "testConfig")
-	err = ioutil.WriteFile(configFile, []byte(config_string), 0600)
+	err = os.WriteFile(configFile, []byte(config_string), 0600)
 	if err != nil {
 		panic(err)
 	}
