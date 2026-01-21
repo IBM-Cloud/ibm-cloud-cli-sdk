@@ -8,6 +8,10 @@ The following is a set of guidelines for` contributing to IBM Cloud CLI SDK. If 
 
 ### Before You Submit PR
 
+#### Base branch
+
+This repository's default branch is master as that is from where we release. However, we develop in the **dev** branch. Make sure to create your feature branch from **dev** and also choose this as base for opening pull requests.
+
 #### Code Style
 
 We follow the official [CodeReviewComments](https://github.com/golang/go/wiki/CodeReviewComments). Make sure you run [gofmt](https://golang.org/cmd/gofmt/) and [go vet](https://golang.org/cmd/vet/) to fix any major changes.
