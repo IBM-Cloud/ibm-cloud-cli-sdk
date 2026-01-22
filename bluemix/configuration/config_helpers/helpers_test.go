@@ -2,7 +2,6 @@ package config_helpers
 
 import (
 	"encoding/base64"
-	"io/ioutil"
 	gourl "net/url"
 	"os"
 	"path/filepath"
@@ -15,7 +14,7 @@ import (
 func captureAndPrepareEnv(a *assert.Assertions) ([]string, string) {
 	env := os.Environ()
 
-	userHome, err := ioutil.TempDir("", "config_dir_test")
+	userHome, err := os.MkdirTemp("", "config_dir_test")
 	a.NoError(err)
 
 	os.Unsetenv("IBMCLOUD_CONFIG_HOME")

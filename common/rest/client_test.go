@@ -3,9 +3,9 @@ package rest
 import (
 	"context"
 	"fmt"
-	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -205,12 +205,12 @@ func TestDownloadFile(t *testing.T) {
 	ts := httptest.NewServer(serveHandler(200, "abcedefg"))
 	defer ts.Close()
 
-	f, err := ioutil.TempFile("", "BluemixCliRestTest")
+	f, err := os.CreateTemp("", "BluemixCliRestTest")
 	assert.NoError(err)
 	defer f.Close()
 
 	_, err = NewClient().Do(GetRequest(ts.URL), f, nil)
 	assert.NoError(err)
-	bytes, _ := ioutil.ReadFile(f.Name())
+	bytes, _ := os.ReadFile(f.Name())
 	assert.Equal("abcedefg", string(bytes))
 }
