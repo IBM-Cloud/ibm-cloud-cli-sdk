@@ -162,6 +162,11 @@ func (t *PrintableTable) createColumnConfigs() []table.ColumnConfig {
 			Align:       text.AlignLeft,
 			WidthMax:    maxColWidth,
 			Number:      colIndex + 1,
+			WidthMaxEnforcer: func(str string, warpLen int) string {
+				// This effectively disables wrapping.
+				// https://github.com/jedib0t/go-pretty/blob/main/table/config.go#L68C2-L68C18
+				return str
+			},
 		}
 
 		// assuming the table has headers: store columns with wide content where the max width may need to be adjusted

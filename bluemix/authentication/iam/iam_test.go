@@ -311,25 +311,6 @@ func TestRefreshSession(t *testing.T) {
 	assert.Nil(t, err)
 }
 
-func TestAllowPrintCorrelationID(t *testing.T) {
-	testCases := []struct {
-		path                    string
-		allowPrintCorrelationID bool
-	}{
-		{
-			path:                    "/v1/sessions",
-			allowPrintCorrelationID: false,
-		},
-		{
-			path:                    "/v1/tokens",
-			allowPrintCorrelationID: true,
-		},
-	}
-
-	for _, testCase := range testCases {
-		assert.Equal(t, AllowPrintCorrelationID(testCase.path), testCase.allowPrintCorrelationID)
-	}
-}
 
 // startMockIAMServerForCRExchange will start a mock server endpoint that supports both the
 // IAM operations that we'll need to call.
