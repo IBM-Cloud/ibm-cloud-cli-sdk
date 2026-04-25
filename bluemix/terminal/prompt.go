@@ -43,6 +43,8 @@ type Prompt struct {
 
 	Reader io.Reader
 	Writer io.Writer
+
+	ValueProvided bool
 }
 
 // NewPrompt returns a single prompt
@@ -67,6 +69,8 @@ func NewChoicesPrompt(message string, choices []string, options *PromptOptions) 
 
 // Resolve reads user input and resolves it to the destination value
 func (p *Prompt) Resolve(dest interface{}) error {
+	p.ValueProvided = false
+
 	if len(p.choices) > 0 {
 		return p.resolveChoices(dest)
 	}
@@ -92,6 +96,8 @@ func (p *Prompt) resolveSingle(dest interface{}) error {
 				err = ErrInputEmpty
 			}
 		} else {
+			p.ValueProvided = true
+
 			if p.options.ValidateFunc != nil {
 				err = p.options.ValidateFunc(input)
 			}
@@ -235,6 +241,8 @@ func (p *Prompt) resolveChoices(dest interface{}) error {
 				err = ErrInputEmpty
 			}
 		} else {
+			p.ValueProvided = true
+
 			selectedNum, err = strconv.Atoi(input)
 			if err != nil {
 				err = ErrInputNotNumber
