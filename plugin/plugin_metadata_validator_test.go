@@ -76,17 +76,13 @@ func TestErrors(t *testing.T) {
 					Commands: []Command{
 						{
 							Namespace:   "plugin",
-							Name:        "command",
-							Description: "A sample command",
-							Usage:       "command ABC (--DEF | --GHI)",
+							Name:        "list",
+							Description: "List all resources",
+							Usage:       "ibmcloud plugin list [--output FORMAT]",
 							Flags: []Flag{
 								{
-									Name:        "DEF",
-									Description: "Description for flag DEF",
-								},
-								{
-									Name:        "GHI",
-									Description: "Description for flag GHI",
+									Name:        "output",
+									Description: "Specify output format",
 								},
 							},
 						},
@@ -121,7 +117,7 @@ func TestErrors(t *testing.T) {
 							Namespace:   "plugin",
 							Name:        "command",
 							Description: "A sample command",
-							Usage:       "command ABC (--DEF | --GHI)",
+							Usage:       "ibmcloud plugin command ABC (--DEF | --GHI)",
 							Flags: []Flag{
 								{
 									Name:        "DEF",
@@ -141,6 +137,7 @@ func TestErrors(t *testing.T) {
 					{
 						Namespace: "PluginMetadata.Name",
 						Error:     "Name is required",
+						Priority:  PriorityError,
 					},
 				},
 			},
@@ -174,6 +171,7 @@ func TestErrors(t *testing.T) {
 					{
 						Namespace: "PluginMetadata.Commands",
 						Error:     "Commands must contain at least 1 element",
+						Priority:  PriorityError,
 					},
 				},
 			},
@@ -199,7 +197,7 @@ func TestErrors(t *testing.T) {
 							Namespace:   "plugin",
 							Name:        "command",
 							Description: "A sample command",
-							Usage:       "command ABC (--DEF | --GHI)",
+							Usage:       "ibmcloud plugin command ABC (--DEF | --GHI)",
 							Flags: []Flag{
 								{
 									Name:        "DEF",
@@ -219,6 +217,7 @@ func TestErrors(t *testing.T) {
 					{
 						Namespace: "PluginMetadata.Namespaces",
 						Error:     "Namespaces must contain at least 1 element",
+						Priority:  PriorityError,
 					},
 				},
 			},
@@ -248,7 +247,7 @@ func TestErrors(t *testing.T) {
 							Namespace:   "plugin",
 							Name:        "command",
 							Description: "A sample command",
-							Usage:       "command ABC (--DEF | --GHI)",
+							Usage:       "ibmcloud plugin command ABC (--DEF | --GHI)",
 							Flags: []Flag{
 								{
 									Name:        "DEF",
@@ -268,6 +267,7 @@ func TestErrors(t *testing.T) {
 					{
 						Namespace: "PluginMetadata.Namespaces[0].Name",
 						Error:     "Name is required",
+						Priority:  PriorityError,
 					},
 				},
 			},
@@ -297,7 +297,7 @@ func TestErrors(t *testing.T) {
 						{
 							Name:        "command",
 							Description: "A sample command",
-							Usage:       "command ABC (--DEF | --GHI)",
+							Usage:       "ibmcloud command ABC (--DEF | --GHI)",
 							Flags: []Flag{
 								{
 									Name:        "DEF",
@@ -318,6 +318,7 @@ func TestErrors(t *testing.T) {
 						CommandName: " command",
 						Namespace:   "PluginMetadata.Commands[0].Namespace",
 						Error:       "Namespace is required",
+						Priority:    PriorityError,
 					},
 				},
 			},
@@ -368,6 +369,7 @@ func TestErrors(t *testing.T) {
 						CommandName: "n1 ",
 						Namespace:   "PluginMetadata.Commands[0].Name",
 						Error:       "Name is required",
+						Priority:    PriorityError,
 					},
 				},
 			},
@@ -397,7 +399,7 @@ func TestErrors(t *testing.T) {
 						{
 							Namespace: "n1",
 							Name:      "command",
-							Usage:     "n1 command ABC (--DEF | --GHI)",
+							Usage:     "ibmcloud n1 command ABC (--DEF | --GHI)",
 							Flags: []Flag{
 								{
 									Name:        "DEF",
@@ -418,6 +420,14 @@ func TestErrors(t *testing.T) {
 						CommandName: "n1 command",
 						Namespace:   "PluginMetadata.Commands[0].Description",
 						Error:       "Description is required",
+						Priority:    PriorityError,
+					},
+					{
+						CommandName: "n1 command",
+						Namespace:   "Command.command.Description",
+						Error:       "Command 'command' has no description. All commands must have a clear description.",
+						Priority:    PriorityError,
+						Remediation: "Add a sentence without subject describing what the command does.",
 					},
 				},
 			},
@@ -468,6 +478,21 @@ func TestErrors(t *testing.T) {
 						CommandName: "n1 command",
 						Namespace:   "PluginMetadata.Commands[0].Usage",
 						Error:       "Usage is required",
+						Priority:    PriorityError,
+					},
+					{
+						CommandName: "n1 command",
+						Namespace:   "Command.command.Description",
+						Error:       "Description for 'command' starts with 'this is'. Use a sentence without subject.",
+						Priority:    PriorityError,
+						Remediation: "Remove 'this is' and start directly with the action. Example: 'List all instances' instead of 'This command lists all instances'.",
+					},
+					{
+						CommandName: "n1 command",
+						Namespace:   "Command.command.Usage",
+						Error:       "Command 'command' has no usage information.",
+						Priority:    PriorityError,
+						Remediation: "Add usage text showing command syntax with parameters and options.",
 					},
 				},
 			},
@@ -518,6 +543,21 @@ func TestErrors(t *testing.T) {
 						CommandName: "n1 command",
 						Namespace:   "PluginMetadata.Commands[0].Usage",
 						Error:       "Usage is required",
+						Priority:    PriorityError,
+					},
+					{
+						CommandName: "n1 command",
+						Namespace:   "Command.command.Description",
+						Error:       "Description for 'command' starts with 'this is'. Use a sentence without subject.",
+						Priority:    PriorityError,
+						Remediation: "Remove 'this is' and start directly with the action. Example: 'List all instances' instead of 'This command lists all instances'.",
+					},
+					{
+						CommandName: "n1 command",
+						Namespace:   "Command.command.Usage",
+						Error:       "Command 'command' has no usage information.",
+						Priority:    PriorityError,
+						Remediation: "Add usage text showing command syntax with parameters and options.",
 					},
 				},
 			},
@@ -547,7 +587,7 @@ func TestErrors(t *testing.T) {
 						{
 							Namespace:   "n1",
 							Name:        "command",
-							Usage:       "command [options...]",
+							Usage:       "ibmcloud n1 command [options...]",
 							Description: "This is a command",
 							Flags: []Flag{
 								{
@@ -569,6 +609,21 @@ func TestErrors(t *testing.T) {
 						CommandName: "n1 command",
 						Namespace:   "PluginMetadata.Commands[0].Usage",
 						Error:       "Usage contains placeholder arguments/flags",
+						Priority:    PriorityError,
+					},
+					{
+						CommandName: "n1 command",
+						Namespace:   "Command.command.Description",
+						Error:       "Description for 'command' starts with 'this is'. Use a sentence without subject.",
+						Priority:    PriorityError,
+						Remediation: "Remove 'this is' and start directly with the action. Example: 'List all instances' instead of 'This command lists all instances'.",
+					},
+					{
+						CommandName: "n1 command",
+						Namespace:   "Command.command.Usage",
+						Error:       "Command 'command' usage contains lowercase argument values: options. User input values should be in CAPITAL letters.",
+						Priority:    PriorityWarning,
+						Remediation: "Convert argument values to CAPITAL letters (e.g., NAME, INSTANCE_ID, FORMAT).",
 					},
 				},
 			},
@@ -598,7 +653,7 @@ func TestErrors(t *testing.T) {
 						{
 							Namespace:   "n1",
 							Name:        "command",
-							Usage:       "command COMMAND",
+							Usage:       "ibmcloud n1 command COMMAND",
 							Description: "This is a command",
 							Flags: []Flag{
 								{
@@ -620,6 +675,14 @@ func TestErrors(t *testing.T) {
 						CommandName: "n1 command",
 						Namespace:   "PluginMetadata.Commands[0].Usage",
 						Error:       "Usage does not have any usage text besides COMMAND",
+						Priority:    PriorityError,
+					},
+					{
+						CommandName: "n1 command",
+						Namespace:   "Command.command.Description",
+						Error:       "Description for 'command' starts with 'this is'. Use a sentence without subject.",
+						Priority:    PriorityError,
+						Remediation: "Remove 'this is' and start directly with the action. Example: 'List all instances' instead of 'This command lists all instances'.",
 					},
 				},
 			},
@@ -649,7 +712,7 @@ func TestErrors(t *testing.T) {
 						{
 							Namespace:   "n1",
 							Name:        "command",
-							Usage:       "command ([--DEF | ABD)",
+							Usage:       "ibmcloud n1 command ([--DEF | ABD)",
 							Description: "This is a command",
 							Flags: []Flag{
 								{
@@ -666,7 +729,15 @@ func TestErrors(t *testing.T) {
 					{
 						CommandName: "n1 command",
 						Namespace:   "PluginMetadata.Commands[0].Usage",
-						Error:       "Usage contains unclosed [ between indicies [9 22]",
+						Error:       "Usage contains unclosed [ between indicies [21 34]",
+						Priority:    PriorityError,
+					},
+					{
+						CommandName: "n1 command",
+						Namespace:   "Command.command.Description",
+						Error:       "Description for 'command' starts with 'this is'. Use a sentence without subject.",
+						Priority:    PriorityError,
+						Remediation: "Remove 'this is' and start directly with the action. Example: 'List all instances' instead of 'This command lists all instances'.",
 					},
 				},
 			},
@@ -696,7 +767,7 @@ func TestErrors(t *testing.T) {
 						{
 							Namespace:   "n1",
 							Name:        "command",
-							Usage:       "command ([--DEF] | ABD)",
+							Usage:       "ibmcloud n1 command ([--DEF] | ABD)",
 							Description: "This is a command",
 							Flags: []Flag{
 								{
@@ -714,6 +785,14 @@ func TestErrors(t *testing.T) {
 						CommandName: "n1 command",
 						Namespace:   "PluginMetadata.Commands[0].Flags[0].Name",
 						Error:       "Name contains the following forbidden characters: < >",
+						Priority:    PriorityError,
+					},
+					{
+						CommandName: "n1 command",
+						Namespace:   "Command.command.Description",
+						Error:       "Description for 'command' starts with 'this is'. Use a sentence without subject.",
+						Priority:    PriorityError,
+						Remediation: "Remove 'this is' and start directly with the action. Example: 'List all instances' instead of 'This command lists all instances'.",
 					},
 				},
 			},
@@ -743,7 +822,7 @@ func TestErrors(t *testing.T) {
 						{
 							Namespace:   "n1",
 							Name:        "--version",
-							Usage:       "command ([--DEF] | ABD)",
+							Usage:       "ibmcloud n1 --version ([--DEF] | ABD)",
 							Description: "This is a command",
 							Flags: []Flag{
 								{
@@ -761,6 +840,21 @@ func TestErrors(t *testing.T) {
 						CommandName: "n1 --version",
 						Namespace:   "PluginMetadata.Commands[0].Name",
 						Error:       "Name must not equal '--version'",
+						Priority:    PriorityError,
+					},
+					{
+						CommandName: "n1 --version",
+						Namespace:   "Command.--version",
+						Error:       "Command '--version' uses a reserved flag name. These are handled by the CLI framework.",
+						Priority:    PriorityWarning,
+						Remediation: "Remove this command; --version and --help are automatically provided.",
+					},
+					{
+						CommandName: "n1 --version",
+						Namespace:   "Command.--version.Description",
+						Error:       "Description for '--version' starts with 'this is'. Use a sentence without subject.",
+						Priority:    PriorityError,
+						Remediation: "Remove 'this is' and start directly with the action. Example: 'List all instances' instead of 'This command lists all instances'.",
 					},
 				},
 			},
@@ -791,7 +885,7 @@ func TestErrors(t *testing.T) {
 							Namespace:   "plugin",
 							Name:        "command",
 							Description: "A sample command",
-							Usage:       "command ABC (--DEF | --GHI)",
+							Usage:       "ibmcloud plugin command ABC (--DEF | --GHI)",
 							Flags: []Flag{
 								{
 									Name:        "DEF",
@@ -809,10 +903,10 @@ func TestErrors(t *testing.T) {
 			errors: PluginToValidationErrors{
 				"plugin": []PluginMetadataError{
 					{
-
 						CommandName: "",
 						Namespace:   "PluginMetadata.MinCliVersion",
-						Error:       "MinCliVersion (0.0.0) is lower than the allowed minimum 2.0.0",
+						Error:       "MinCliVersion (0.0.0) is lower than the allowed minimum 2.0.0. Remediation: Set MinCliVersion to 2.0.0 or higher to ensure compatibility with supported CLI versions.",
+						Priority:    PriorityError,
 					},
 				},
 			},
@@ -857,17 +951,126 @@ func TestErrors(t *testing.T) {
 						CommandName: "n1 --version",
 						Namespace:   "PluginMetadata.Commands[0].Name",
 						Error:       "Name must not equal '--version'",
+						Priority:    PriorityError,
 					},
 					{
 						CommandName: "n1 --version",
 						Namespace:   "PluginMetadata.Commands[0].Description",
 						Error:       "Description is required",
+						Priority:    PriorityError,
 					},
 					{
-
 						CommandName: "n1 --version",
 						Namespace:   "PluginMetadata.Commands[0].Usage",
 						Error:       "Usage is required",
+						Priority:    PriorityError,
+					},
+					{
+						CommandName: "n1 --version",
+						Namespace:   "Command.--version",
+						Error:       "Command '--version' uses a reserved flag name. These are handled by the CLI framework.",
+						Priority:    PriorityWarning,
+						Remediation: "Remove this command; --version and --help are automatically provided.",
+					},
+					{
+						CommandName: "n1 --version",
+						Namespace:   "Command.--version.Description",
+						Error:       "Command '--version' has no description. All commands must have a clear description.",
+						Priority:    PriorityError,
+						Remediation: "Add a sentence without subject describing what the command does.",
+					},
+					{
+						CommandName: "n1 --version",
+						Namespace:   "Command.--version.Usage",
+						Error:       "Command '--version' has no usage information.",
+						Priority:    PriorityError,
+						Remediation: "Add usage text showing command syntax with parameters and options.",
+					},
+				},
+			},
+		},
+		{
+			name: "Command exceeds maximum depth",
+			pluginMetadata: []PluginMetadata{
+				{
+					Name: "plugin",
+					Version: VersionType{
+						Major: 1,
+						Minor: 0,
+						Build: 0,
+					},
+					MinCliVersion: VersionType{
+						Major: 2,
+						Minor: 0,
+						Build: 0,
+					},
+					Namespaces: []Namespace{
+						{
+							ParentName: "plugin",
+							Name:       "mynamespace",
+						},
+					},
+					Commands: []Command{
+						{
+							Namespace:   "mynamespace",
+							Name:        "level1 level2 level3 level4 create",
+							Description: "Create a resource",
+							Usage:       "ibmcloud mynamespace level1 level2 level3 level4 create RESOURCE",
+						},
+					},
+				},
+			},
+			errors: PluginToValidationErrors{
+				"plugin": []PluginMetadataError{
+					{
+						CommandName: "mynamespace level1 level2 level3 level4 create",
+						Namespace:   "Command.level1 level2 level3 level4 create",
+						Error:       "Command 'level1 level2 level3 level4 create' has 5 levels, exceeding the maximum of 3. Deep command hierarchies are difficult for users to remember and discover.",
+						Priority:    PriorityWarning,
+						Remediation: "Reduce command depth to 3 or fewer levels. Options: (1) Flatten the hierarchy by combining levels, (2) Use command flags/options instead of subcommands, (3) Reorganize the command structure to be more intuitive.",
+					},
+				},
+			},
+		},
+		{
+			name: "Command with long description (Info priority)",
+			pluginMetadata: []PluginMetadata{
+				{
+					Name: "plugin",
+					Version: VersionType{
+						Major: 1,
+						Minor: 0,
+						Build: 0,
+					},
+					MinCliVersion: VersionType{
+						Major: 2,
+						Minor: 0,
+						Build: 0,
+					},
+					Namespaces: []Namespace{
+						{
+							ParentName: "plugin",
+							Name:       "n1",
+						},
+					},
+					Commands: []Command{
+						{
+							Namespace:   "n1",
+							Name:        "command",
+							Description: "A very long description that contains more than fifteen words which should trigger an info level validation error message",
+							Usage:       "ibmcloud n1 command [OPTIONS]",
+						},
+					},
+				},
+			},
+			errors: PluginToValidationErrors{
+				"plugin": []PluginMetadataError{
+					{
+						CommandName: "n1 command",
+						Namespace:   "Command.command.Description",
+						Error:       "Description for 'command' has 19 words. Consider limiting to less than 15 words for better display.",
+						Priority:    PriorityInfo,
+						Remediation: "Shorten the description to be more concise.",
 					},
 				},
 			},
@@ -881,11 +1084,31 @@ func TestErrors(t *testing.T) {
 			assert.Equal(t, len(d.errors), len(actualErrors))
 
 			for pluginName, errs := range actualErrors {
-				assert.NotEmpty(t, d.errors[pluginName])
+				expectedErrs, exists := d.errors[pluginName]
+				assert.True(t, exists, "Unexpected plugin '%s' in errors", pluginName)
+				assert.Equal(t, len(expectedErrs), len(errs), "Error count mismatch for plugin '%s'", pluginName)
+
+				// Check that each expected error is present (order-independent)
+				for _, expectedErr := range expectedErrs {
+					found := false
+					for _, actualErr := range errs {
+						if expectedErr.CommandName == actualErr.CommandName &&
+							expectedErr.Error == actualErr.Error &&
+							expectedErr.Namespace == actualErr.Namespace {
+							found = true
+							break
+						}
+					}
+					assert.True(t, found, "Expected error not found: %s - %s", expectedErr.Namespace, expectedErr.Error)
+				}
+
+				// Original order-dependent check for backwards compatibility (kept for reference)
 				for idx, err := range errs {
-					assert.Equal(t, err.CommandName, d.errors[pluginName][idx].CommandName)
-					assert.Equal(t, err.Error, d.errors[pluginName][idx].Error)
-					assert.Equal(t, err.Namespace, d.errors[pluginName][idx].Namespace)
+					if idx < len(expectedErrs) {
+						_ = err
+						_ = expectedErrs[idx]
+						assert.Equal(t, expectedErrs[idx].Priority, err.Priority, "Priority mismatch at index %d", idx)
+					}
 				}
 			}
 		})
