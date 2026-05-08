@@ -89,8 +89,8 @@ func (n Namespace) NameAndAliases() []string {
 
 // Command describes the metadata of a plugin command
 type Command struct {
-	Namespace   string   `validate:"required"`              // full qualified name of the command's namespace
-	Name        string   `validate:"required,ne=--version"` // name of the command
+	Namespace   string   `validate:"required"` // full qualified name of the command's namespace
+	Name        string   `validate:"required`  // name of the command
 	Alias       string   // Deprecated: use Aliases instead.
 	Aliases     []string // command aliases
 	Description string   `validate:"required"`       // short description of the command

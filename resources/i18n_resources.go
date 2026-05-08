@@ -14,12 +14,12 @@ package resources
 
 import (
 	"fmt"
+	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
 	"time"
 )
-
 type asset struct {
 	bytes []byte
 	info  os.FileInfo
@@ -80,8 +80,44 @@ var _i18nResourcesAllDe_deJson = []byte(`[
     "translation": "Bei der Antwort bezüglich der Erstellung eines Speicherauszugs ist ein Fehler aufgetreten:\n{{.Error}}\n"
   },
   {
+    "id": "Command '{{.Name}}' contains a segment '{{.Segment}}' that is less than {{.Count}} characters. Each word in a command should be at least {{.Count}} characters.",
+    "translation": "Command '{{.Name}}' contains a segment '{{.Segment}}' that is less than {{.Count}} characters. Each word in a command should be at least {{.Count}} characters."
+  },
+  {
+    "id": "Command '{{.Name}}' does not use a common verb or plural form. Consider using verbs like: list, create, update, delete, show, get, set... or plural nouns like 'instances', 'services'",
+    "translation": "Command '{{.Name}}' does not use a common verb or plural form. Consider using verbs like: list, create, update, delete, show, get, set... or plural nouns like 'instances', 'services'"
+  },
+  {
+    "id": "Command '{{.Name}}' has no description. All commands must have a clear description.",
+    "translation": "Command '{{.Name}}' has no description. All commands must have a clear description."
+  },
+  {
+    "id": "Command '{{.Name}}' has no usage information.",
+    "translation": "Command '{{.Name}}' has no usage information."
+  },
+  {
+    "id": "Command '{{.Name}}' has {{.Level}} levels, exceeding the maximum of {{.Level}}. Deep command hierarchies are difficult for users to remember and discover.",
+    "translation": "Command '{{.Name}}' has {{.Level}} levels, exceeding the maximum of {{.Level}}. Deep command hierarchies are difficult for users to remember and discover."
+  },
+  {
+    "id": "Command '{{.Name}}' usage contains lowercase argument values: {{.Args}}. User input values should be in CAPITAL letters.",
+    "translation": "Command '{{.Name}}' usage contains lowercase argument values: {{.Args}}. User input values should be in CAPITAL letters."
+  },
+  {
+    "id": "Command '{{.Name}}' uses a reserved flag name. These are handled by the CLI framework.",
+    "translation": "Command '{{.Name}}' uses a reserved flag name. These are handled by the CLI framework."
+  },
+  {
     "id": "Could not read from input: ",
     "translation": "Lesen der Eingabedaten nicht möglich: "
+  },
+  {
+    "id": "Description for '{{.Name}}' has {{.WordCount}} words. Consider limiting to less than {{.MaxWordCount}} words for better display.",
+    "translation": "Description for '{{.Name}}' has {{.WordCount}} words. Consider limiting to less than {{.MaxWordCount}} words for better display."
+  },
+  {
+    "id": "Description for '{{.Name}}' starts with '{{.Bad}}'. Use a sentence without subject.",
+    "translation": "Description for '{{.Name}}' starts with '{{.Bad}}'. Use a sentence without subject."
   },
   {
     "id": "Elapsed:",
@@ -148,12 +184,20 @@ var _i18nResourcesAllDe_deJson = []byte(`[
     "translation": "ANTWORT:"
   },
   {
+    "id": "Reduce command depth to {{.Level}} or fewer levels. Options: (1) Flatten the hierarchy by combining levels, (2) Use command flags/options instead of subcommands, (3) Reorganize the command structure to be more intuitive.",
+    "translation": "Reduce command depth to {{.Level}} or fewer levels. Options: (1) Flatten the hierarchy by combining levels, (2) Use command flags/options instead of subcommands, (3) Reorganize the command structure to be more intuitive."
+  },
+  {
     "id": "Remote server error. Status code: {{.StatusCode}}, error code: {{.ErrorCode}}, message: {{.Message}}",
     "translation": "Fehler auf dem fernen Server. Statuscode: {{.StatusCode}}, Fehlercode: {{.ErrorCode}}, Nachricht: {{.Message}}"
   },
   {
     "id": "Session inactive: ",
     "translation": "Sitzung inaktiv: "
+  },
+  {
+    "id": "Start usage examples with '{{.Command}}' in lowercase (e.g., '{{.CommandPlugin}}...').",
+    "translation": "Start usage examples with '{{.Command}}' in lowercase (e.g., '{{.CommandPlugin}}...')."
   },
   {
     "id": "Unable to save plugin config: ",
@@ -166,6 +210,14 @@ var _i18nResourcesAllDe_deJson = []byte(`[
   {
     "id": "Usage contains unclosed {{.UnclosedGroup}} between indicies {{.Indicies}}",
     "translation": "Die Verwendung enthält nicht geschlossene {{.UnclosedGroup}} zwischen den Indikatoren {{.Indicies}}"
+  },
+  {
+    "id": "Usage should start with '{{.Command}}' (lowercase) or the full path to the {{.Command}} binary.",
+    "translation": "Usage should start with '{{.Command}}' (lowercase) or the full path to the {{.Command}} binary."
+  },
+  {
+    "id": "Use common verbs in command names such as list, create, update, delete, or use plural forms to indicate listing operations.",
+    "translation": "Use common verbs in command names such as list, create, update, delete, or use plural forms to indicate listing operations."
   },
   {
     "id": "{{.Field}} contains the following forbidden characters: {{.Chars}}",
@@ -195,7 +247,7 @@ func i18nResourcesAllDe_deJson() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "i18n/resources/all.de_DE.json", size: 0, mode: os.FileMode(0), modTime: time.Unix(0, 0)}
+	info := bindataFileInfo{name: "i18n/resources/all.de_DE.json", size: 7732, mode: os.FileMode(420), modTime: time.Unix(1778259724, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -218,8 +270,44 @@ var _i18nResourcesAllEn_usJson = []byte(`[
     "translation": "An error occurred while dumping response:\n{{.Error}}\n"
   },
   {
+    "id": "Command '{{.Name}}' contains a segment '{{.Segment}}' that is less than {{.Count}} characters. Each word in a command should be at least {{.Count}} characters.",
+    "translation": "Command '{{.Name}}' contains a segment '{{.Segment}}' that is less than {{.Count}} characters. Each word in a command should be at least {{.Count}} characters."
+  },
+  {
+    "id": "Command '{{.Name}}' does not use a common verb or plural form. Consider using verbs like: list, create, update, delete, show, get, set... or plural nouns like 'instances', 'services'",
+    "translation": "Command '{{.Name}}' does not use a common verb or plural form. Consider using verbs like: list, create, update, delete, show, get, set... or plural nouns like 'instances', 'services'"
+  },
+  {
+    "id": "Command '{{.Name}}' has no description. All commands must have a clear description.",
+    "translation": "Command '{{.Name}}' has no description. All commands must have a clear description."
+  },
+  {
+    "id": "Command '{{.Name}}' has no usage information.",
+    "translation": "Command '{{.Name}}' has no usage information."
+  },
+  {
+    "id": "Command '{{.Name}}' has {{.Level}} levels, exceeding the maximum of {{.Level}}. Deep command hierarchies are difficult for users to remember and discover.",
+    "translation": "Command '{{.Name}}' has {{.Level}} levels, exceeding the maximum of {{.Level}}. Deep command hierarchies are difficult for users to remember and discover."
+  },
+  {
+    "id": "Command '{{.Name}}' usage contains lowercase argument values: {{.Args}}. User input values should be in CAPITAL letters.",
+    "translation": "Command '{{.Name}}' usage contains lowercase argument values: {{.Args}}. User input values should be in CAPITAL letters."
+  },
+  {
+    "id": "Command '{{.Name}}' uses a reserved flag name. These are handled by the CLI framework.",
+    "translation": "Command '{{.Name}}' uses a reserved flag name. These are handled by the CLI framework."
+  },
+  {
     "id": "Could not read from input: ",
     "translation": "Could not read from input: "
+  },
+  {
+    "id": "Description for '{{.Name}}' has {{.WordCount}} words. Consider limiting to less than {{.MaxWordCount}} words for better display.",
+    "translation": "Description for '{{.Name}}' has {{.WordCount}} words. Consider limiting to less than {{.MaxWordCount}} words for better display."
+  },
+  {
+    "id": "Description for '{{.Name}}' starts with '{{.Bad}}'. Use a sentence without subject.",
+    "translation": "Description for '{{.Name}}' starts with '{{.Bad}}'. Use a sentence without subject."
   },
   {
     "id": "Elapsed:",
@@ -286,12 +374,20 @@ var _i18nResourcesAllEn_usJson = []byte(`[
     "translation": "RESPONSE:"
   },
   {
+    "id": "Reduce command depth to {{.Level}} or fewer levels. Options: (1) Flatten the hierarchy by combining levels, (2) Use command flags/options instead of subcommands, (3) Reorganize the command structure to be more intuitive.",
+    "translation": "Reduce command depth to {{.Level}} or fewer levels. Options: (1) Flatten the hierarchy by combining levels, (2) Use command flags/options instead of subcommands, (3) Reorganize the command structure to be more intuitive."
+  },
+  {
     "id": "Remote server error. Status code: {{.StatusCode}}, error code: {{.ErrorCode}}, message: {{.Message}}",
     "translation": "Remote server error. Status code: {{.StatusCode}}, error code: {{.ErrorCode}}, message: {{.Message}}"
   },
   {
     "id": "Session inactive: ",
     "translation": "Session inactive: "
+  },
+  {
+    "id": "Start usage examples with '{{.Command}}' in lowercase (e.g., '{{.CommandPlugin}}...').",
+    "translation": "Start usage examples with '{{.Command}}' in lowercase (e.g., '{{.CommandPlugin}}...')."
   },
   {
     "id": "Unable to save plugin config: ",
@@ -304,6 +400,14 @@ var _i18nResourcesAllEn_usJson = []byte(`[
   {
     "id": "Usage contains unclosed {{.UnclosedGroup}} between indicies {{.Indicies}}",
     "translation": "Usage contains unclosed {{.UnclosedGroup}} between indicies {{.Indicies}}"
+  },
+  {
+    "id": "Usage should start with '{{.Command}}' (lowercase) or the full path to the {{.Command}} binary.",
+    "translation": "Usage should start with '{{.Command}}' (lowercase) or the full path to the {{.Command}} binary."
+  },
+  {
+    "id": "Use common verbs in command names such as list, create, update, delete, or use plural forms to indicate listing operations.",
+    "translation": "Use common verbs in command names such as list, create, update, delete, or use plural forms to indicate listing operations."
   },
   {
     "id": "{{.Field}} contains the following forbidden characters: {{.Chars}}",
@@ -333,7 +437,7 @@ func i18nResourcesAllEn_usJson() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "i18n/resources/all.en_US.json", size: 0, mode: os.FileMode(0), modTime: time.Unix(0, 0)}
+	info := bindataFileInfo{name: "i18n/resources/all.en_US.json", size: 7385, mode: os.FileMode(420), modTime: time.Unix(1778259724, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -356,8 +460,44 @@ var _i18nResourcesAllEs_esJson = []byte(`[
     "translation": "Se ha producido un error al volcar la respuesta:\n{{.Error}}\n"
   },
   {
+    "id": "Command '{{.Name}}' contains a segment '{{.Segment}}' that is less than {{.Count}} characters. Each word in a command should be at least {{.Count}} characters.",
+    "translation": "Command '{{.Name}}' contains a segment '{{.Segment}}' that is less than {{.Count}} characters. Each word in a command should be at least {{.Count}} characters."
+  },
+  {
+    "id": "Command '{{.Name}}' does not use a common verb or plural form. Consider using verbs like: list, create, update, delete, show, get, set... or plural nouns like 'instances', 'services'",
+    "translation": "Command '{{.Name}}' does not use a common verb or plural form. Consider using verbs like: list, create, update, delete, show, get, set... or plural nouns like 'instances', 'services'"
+  },
+  {
+    "id": "Command '{{.Name}}' has no description. All commands must have a clear description.",
+    "translation": "Command '{{.Name}}' has no description. All commands must have a clear description."
+  },
+  {
+    "id": "Command '{{.Name}}' has no usage information.",
+    "translation": "Command '{{.Name}}' has no usage information."
+  },
+  {
+    "id": "Command '{{.Name}}' has {{.Level}} levels, exceeding the maximum of {{.Level}}. Deep command hierarchies are difficult for users to remember and discover.",
+    "translation": "Command '{{.Name}}' has {{.Level}} levels, exceeding the maximum of {{.Level}}. Deep command hierarchies are difficult for users to remember and discover."
+  },
+  {
+    "id": "Command '{{.Name}}' usage contains lowercase argument values: {{.Args}}. User input values should be in CAPITAL letters.",
+    "translation": "Command '{{.Name}}' usage contains lowercase argument values: {{.Args}}. User input values should be in CAPITAL letters."
+  },
+  {
+    "id": "Command '{{.Name}}' uses a reserved flag name. These are handled by the CLI framework.",
+    "translation": "Command '{{.Name}}' uses a reserved flag name. These are handled by the CLI framework."
+  },
+  {
     "id": "Could not read from input: ",
     "translation": "No se ha podido leer la entrada: "
+  },
+  {
+    "id": "Description for '{{.Name}}' has {{.WordCount}} words. Consider limiting to less than {{.MaxWordCount}} words for better display.",
+    "translation": "Description for '{{.Name}}' has {{.WordCount}} words. Consider limiting to less than {{.MaxWordCount}} words for better display."
+  },
+  {
+    "id": "Description for '{{.Name}}' starts with '{{.Bad}}'. Use a sentence without subject.",
+    "translation": "Description for '{{.Name}}' starts with '{{.Bad}}'. Use a sentence without subject."
   },
   {
     "id": "Elapsed:",
@@ -424,12 +564,20 @@ var _i18nResourcesAllEs_esJson = []byte(`[
     "translation": "RESPUESTA:"
   },
   {
+    "id": "Reduce command depth to {{.Level}} or fewer levels. Options: (1) Flatten the hierarchy by combining levels, (2) Use command flags/options instead of subcommands, (3) Reorganize the command structure to be more intuitive.",
+    "translation": "Reduce command depth to {{.Level}} or fewer levels. Options: (1) Flatten the hierarchy by combining levels, (2) Use command flags/options instead of subcommands, (3) Reorganize the command structure to be more intuitive."
+  },
+  {
     "id": "Remote server error. Status code: {{.StatusCode}}, error code: {{.ErrorCode}}, message: {{.Message}}",
     "translation": "Error del servidor remoto. Código de estado: {{.StatusCode}}, código de error: {{.ErrorCode}}, mensaje: {{.Message}}"
   },
   {
     "id": "Session inactive: ",
     "translation": "Sesión inactiva: "
+  },
+  {
+    "id": "Start usage examples with '{{.Command}}' in lowercase (e.g., '{{.CommandPlugin}}...').",
+    "translation": "Start usage examples with '{{.Command}}' in lowercase (e.g., '{{.CommandPlugin}}...')."
   },
   {
     "id": "Unable to save plugin config: ",
@@ -442,6 +590,14 @@ var _i18nResourcesAllEs_esJson = []byte(`[
   {
     "id": "Usage contains unclosed {{.UnclosedGroup}} between indicies {{.Indicies}}",
     "translation": "El uso contiene {{.UnclosedGroup}} sin cerrar entre indicies {{.Indicies}}"
+  },
+  {
+    "id": "Usage should start with '{{.Command}}' (lowercase) or the full path to the {{.Command}} binary.",
+    "translation": "Usage should start with '{{.Command}}' (lowercase) or the full path to the {{.Command}} binary."
+  },
+  {
+    "id": "Use common verbs in command names such as list, create, update, delete, or use plural forms to indicate listing operations.",
+    "translation": "Use common verbs in command names such as list, create, update, delete, or use plural forms to indicate listing operations."
   },
   {
     "id": "{{.Field}} contains the following forbidden characters: {{.Chars}}",
@@ -471,7 +627,7 @@ func i18nResourcesAllEs_esJson() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "i18n/resources/all.es_ES.json", size: 0, mode: os.FileMode(0), modTime: time.Unix(0, 0)}
+	info := bindataFileInfo{name: "i18n/resources/all.es_ES.json", size: 7542, mode: os.FileMode(420), modTime: time.Unix(1778259724, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -494,8 +650,44 @@ var _i18nResourcesAllFr_frJson = []byte(`[
     "translation": "Erreur lors de la réponse de vidage :\n{{.Error}}\n"
   },
   {
+    "id": "Command '{{.Name}}' contains a segment '{{.Segment}}' that is less than {{.Count}} characters. Each word in a command should be at least {{.Count}} characters.",
+    "translation": "Command '{{.Name}}' contains a segment '{{.Segment}}' that is less than {{.Count}} characters. Each word in a command should be at least {{.Count}} characters."
+  },
+  {
+    "id": "Command '{{.Name}}' does not use a common verb or plural form. Consider using verbs like: list, create, update, delete, show, get, set... or plural nouns like 'instances', 'services'",
+    "translation": "Command '{{.Name}}' does not use a common verb or plural form. Consider using verbs like: list, create, update, delete, show, get, set... or plural nouns like 'instances', 'services'"
+  },
+  {
+    "id": "Command '{{.Name}}' has no description. All commands must have a clear description.",
+    "translation": "Command '{{.Name}}' has no description. All commands must have a clear description."
+  },
+  {
+    "id": "Command '{{.Name}}' has no usage information.",
+    "translation": "Command '{{.Name}}' has no usage information."
+  },
+  {
+    "id": "Command '{{.Name}}' has {{.Level}} levels, exceeding the maximum of {{.Level}}. Deep command hierarchies are difficult for users to remember and discover.",
+    "translation": "Command '{{.Name}}' has {{.Level}} levels, exceeding the maximum of {{.Level}}. Deep command hierarchies are difficult for users to remember and discover."
+  },
+  {
+    "id": "Command '{{.Name}}' usage contains lowercase argument values: {{.Args}}. User input values should be in CAPITAL letters.",
+    "translation": "Command '{{.Name}}' usage contains lowercase argument values: {{.Args}}. User input values should be in CAPITAL letters."
+  },
+  {
+    "id": "Command '{{.Name}}' uses a reserved flag name. These are handled by the CLI framework.",
+    "translation": "Command '{{.Name}}' uses a reserved flag name. These are handled by the CLI framework."
+  },
+  {
     "id": "Could not read from input: ",
     "translation": "Lecture impossible à partir de l'entrée : "
+  },
+  {
+    "id": "Description for '{{.Name}}' has {{.WordCount}} words. Consider limiting to less than {{.MaxWordCount}} words for better display.",
+    "translation": "Description for '{{.Name}}' has {{.WordCount}} words. Consider limiting to less than {{.MaxWordCount}} words for better display."
+  },
+  {
+    "id": "Description for '{{.Name}}' starts with '{{.Bad}}'. Use a sentence without subject.",
+    "translation": "Description for '{{.Name}}' starts with '{{.Bad}}'. Use a sentence without subject."
   },
   {
     "id": "Elapsed:",
@@ -562,12 +754,20 @@ var _i18nResourcesAllFr_frJson = []byte(`[
     "translation": "REPONSE :"
   },
   {
+    "id": "Reduce command depth to {{.Level}} or fewer levels. Options: (1) Flatten the hierarchy by combining levels, (2) Use command flags/options instead of subcommands, (3) Reorganize the command structure to be more intuitive.",
+    "translation": "Reduce command depth to {{.Level}} or fewer levels. Options: (1) Flatten the hierarchy by combining levels, (2) Use command flags/options instead of subcommands, (3) Reorganize the command structure to be more intuitive."
+  },
+  {
     "id": "Remote server error. Status code: {{.StatusCode}}, error code: {{.ErrorCode}}, message: {{.Message}}",
     "translation": "Erreur du serveur distant. Code de statut : {{.StatusCode}}, code d'erreur : {{.ErrorCode}}, message : {{.Message}}"
   },
   {
     "id": "Session inactive: ",
     "translation": "Session inactive : "
+  },
+  {
+    "id": "Start usage examples with '{{.Command}}' in lowercase (e.g., '{{.CommandPlugin}}...').",
+    "translation": "Start usage examples with '{{.Command}}' in lowercase (e.g., '{{.CommandPlugin}}...')."
   },
   {
     "id": "Unable to save plugin config: ",
@@ -580,6 +780,14 @@ var _i18nResourcesAllFr_frJson = []byte(`[
   {
     "id": "Usage contains unclosed {{.UnclosedGroup}} between indicies {{.Indicies}}",
     "translation": "L'utilisation contient des {{.UnclosedGroup}} non fermés entre les indicateurs {{.Indicies}}"
+  },
+  {
+    "id": "Usage should start with '{{.Command}}' (lowercase) or the full path to the {{.Command}} binary.",
+    "translation": "Usage should start with '{{.Command}}' (lowercase) or the full path to the {{.Command}} binary."
+  },
+  {
+    "id": "Use common verbs in command names such as list, create, update, delete, or use plural forms to indicate listing operations.",
+    "translation": "Use common verbs in command names such as list, create, update, delete, or use plural forms to indicate listing operations."
   },
   {
     "id": "{{.Field}} contains the following forbidden characters: {{.Chars}}",
@@ -609,7 +817,7 @@ func i18nResourcesAllFr_frJson() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "i18n/resources/all.fr_FR.json", size: 0, mode: os.FileMode(0), modTime: time.Unix(0, 0)}
+	info := bindataFileInfo{name: "i18n/resources/all.fr_FR.json", size: 7564, mode: os.FileMode(420), modTime: time.Unix(1778259724, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -632,8 +840,44 @@ var _i18nResourcesAllIt_itJson = []byte(`[
     "translation": "Si è verificato un errore durante il dump della risposta:\n{{.Error}}\n"
   },
   {
+    "id": "Command '{{.Name}}' contains a segment '{{.Segment}}' that is less than {{.Count}} characters. Each word in a command should be at least {{.Count}} characters.",
+    "translation": "Command '{{.Name}}' contains a segment '{{.Segment}}' that is less than {{.Count}} characters. Each word in a command should be at least {{.Count}} characters."
+  },
+  {
+    "id": "Command '{{.Name}}' does not use a common verb or plural form. Consider using verbs like: list, create, update, delete, show, get, set... or plural nouns like 'instances', 'services'",
+    "translation": "Command '{{.Name}}' does not use a common verb or plural form. Consider using verbs like: list, create, update, delete, show, get, set... or plural nouns like 'instances', 'services'"
+  },
+  {
+    "id": "Command '{{.Name}}' has no description. All commands must have a clear description.",
+    "translation": "Command '{{.Name}}' has no description. All commands must have a clear description."
+  },
+  {
+    "id": "Command '{{.Name}}' has no usage information.",
+    "translation": "Command '{{.Name}}' has no usage information."
+  },
+  {
+    "id": "Command '{{.Name}}' has {{.Level}} levels, exceeding the maximum of {{.Level}}. Deep command hierarchies are difficult for users to remember and discover.",
+    "translation": "Command '{{.Name}}' has {{.Level}} levels, exceeding the maximum of {{.Level}}. Deep command hierarchies are difficult for users to remember and discover."
+  },
+  {
+    "id": "Command '{{.Name}}' usage contains lowercase argument values: {{.Args}}. User input values should be in CAPITAL letters.",
+    "translation": "Command '{{.Name}}' usage contains lowercase argument values: {{.Args}}. User input values should be in CAPITAL letters."
+  },
+  {
+    "id": "Command '{{.Name}}' uses a reserved flag name. These are handled by the CLI framework.",
+    "translation": "Command '{{.Name}}' uses a reserved flag name. These are handled by the CLI framework."
+  },
+  {
     "id": "Could not read from input: ",
     "translation": "Impossibile leggere dall'input: "
+  },
+  {
+    "id": "Description for '{{.Name}}' has {{.WordCount}} words. Consider limiting to less than {{.MaxWordCount}} words for better display.",
+    "translation": "Description for '{{.Name}}' has {{.WordCount}} words. Consider limiting to less than {{.MaxWordCount}} words for better display."
+  },
+  {
+    "id": "Description for '{{.Name}}' starts with '{{.Bad}}'. Use a sentence without subject.",
+    "translation": "Description for '{{.Name}}' starts with '{{.Bad}}'. Use a sentence without subject."
   },
   {
     "id": "Elapsed:",
@@ -700,12 +944,20 @@ var _i18nResourcesAllIt_itJson = []byte(`[
     "translation": "RISPOSTA:"
   },
   {
+    "id": "Reduce command depth to {{.Level}} or fewer levels. Options: (1) Flatten the hierarchy by combining levels, (2) Use command flags/options instead of subcommands, (3) Reorganize the command structure to be more intuitive.",
+    "translation": "Reduce command depth to {{.Level}} or fewer levels. Options: (1) Flatten the hierarchy by combining levels, (2) Use command flags/options instead of subcommands, (3) Reorganize the command structure to be more intuitive."
+  },
+  {
     "id": "Remote server error. Status code: {{.StatusCode}}, error code: {{.ErrorCode}}, message: {{.Message}}",
     "translation": "Errore server remoto. Codice di stato: {{.StatusCode}}, codice di errore: {{.ErrorCode}}, messaggio: {{.Message}}"
   },
   {
     "id": "Session inactive: ",
     "translation": "Sessione inattiva: "
+  },
+  {
+    "id": "Start usage examples with '{{.Command}}' in lowercase (e.g., '{{.CommandPlugin}}...').",
+    "translation": "Start usage examples with '{{.Command}}' in lowercase (e.g., '{{.CommandPlugin}}...')."
   },
   {
     "id": "Unable to save plugin config: ",
@@ -718,6 +970,14 @@ var _i18nResourcesAllIt_itJson = []byte(`[
   {
     "id": "Usage contains unclosed {{.UnclosedGroup}} between indicies {{.Indicies}}",
     "translation": "L'uso contiene {{.UnclosedGroup}} non chiuso tra gli indici {{.Indicies}}"
+  },
+  {
+    "id": "Usage should start with '{{.Command}}' (lowercase) or the full path to the {{.Command}} binary.",
+    "translation": "Usage should start with '{{.Command}}' (lowercase) or the full path to the {{.Command}} binary."
+  },
+  {
+    "id": "Use common verbs in command names such as list, create, update, delete, or use plural forms to indicate listing operations.",
+    "translation": "Use common verbs in command names such as list, create, update, delete, or use plural forms to indicate listing operations."
   },
   {
     "id": "{{.Field}} contains the following forbidden characters: {{.Chars}}",
@@ -747,7 +1007,7 @@ func i18nResourcesAllIt_itJson() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "i18n/resources/all.it_IT.json", size: 0, mode: os.FileMode(0), modTime: time.Unix(0, 0)}
+	info := bindataFileInfo{name: "i18n/resources/all.it_IT.json", size: 7563, mode: os.FileMode(420), modTime: time.Unix(1778259724, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -770,8 +1030,44 @@ var _i18nResourcesAllJa_jpJson = []byte(`[
     "translation": "応答のダンプ中にエラーが発生しました:\n{{.Error}}\n"
   },
   {
+    "id": "Command '{{.Name}}' contains a segment '{{.Segment}}' that is less than {{.Count}} characters. Each word in a command should be at least {{.Count}} characters.",
+    "translation": "Command '{{.Name}}' contains a segment '{{.Segment}}' that is less than {{.Count}} characters. Each word in a command should be at least {{.Count}} characters."
+  },
+  {
+    "id": "Command '{{.Name}}' does not use a common verb or plural form. Consider using verbs like: list, create, update, delete, show, get, set... or plural nouns like 'instances', 'services'",
+    "translation": "Command '{{.Name}}' does not use a common verb or plural form. Consider using verbs like: list, create, update, delete, show, get, set... or plural nouns like 'instances', 'services'"
+  },
+  {
+    "id": "Command '{{.Name}}' has no description. All commands must have a clear description.",
+    "translation": "Command '{{.Name}}' has no description. All commands must have a clear description."
+  },
+  {
+    "id": "Command '{{.Name}}' has no usage information.",
+    "translation": "Command '{{.Name}}' has no usage information."
+  },
+  {
+    "id": "Command '{{.Name}}' has {{.Level}} levels, exceeding the maximum of {{.Level}}. Deep command hierarchies are difficult for users to remember and discover.",
+    "translation": "Command '{{.Name}}' has {{.Level}} levels, exceeding the maximum of {{.Level}}. Deep command hierarchies are difficult for users to remember and discover."
+  },
+  {
+    "id": "Command '{{.Name}}' usage contains lowercase argument values: {{.Args}}. User input values should be in CAPITAL letters.",
+    "translation": "Command '{{.Name}}' usage contains lowercase argument values: {{.Args}}. User input values should be in CAPITAL letters."
+  },
+  {
+    "id": "Command '{{.Name}}' uses a reserved flag name. These are handled by the CLI framework.",
+    "translation": "Command '{{.Name}}' uses a reserved flag name. These are handled by the CLI framework."
+  },
+  {
     "id": "Could not read from input: ",
     "translation": "入力から読み取れませんでした。 "
+  },
+  {
+    "id": "Description for '{{.Name}}' has {{.WordCount}} words. Consider limiting to less than {{.MaxWordCount}} words for better display.",
+    "translation": "Description for '{{.Name}}' has {{.WordCount}} words. Consider limiting to less than {{.MaxWordCount}} words for better display."
+  },
+  {
+    "id": "Description for '{{.Name}}' starts with '{{.Bad}}'. Use a sentence without subject.",
+    "translation": "Description for '{{.Name}}' starts with '{{.Bad}}'. Use a sentence without subject."
   },
   {
     "id": "Elapsed:",
@@ -838,12 +1134,20 @@ var _i18nResourcesAllJa_jpJson = []byte(`[
     "translation": "応答:"
   },
   {
+    "id": "Reduce command depth to {{.Level}} or fewer levels. Options: (1) Flatten the hierarchy by combining levels, (2) Use command flags/options instead of subcommands, (3) Reorganize the command structure to be more intuitive.",
+    "translation": "Reduce command depth to {{.Level}} or fewer levels. Options: (1) Flatten the hierarchy by combining levels, (2) Use command flags/options instead of subcommands, (3) Reorganize the command structure to be more intuitive."
+  },
+  {
     "id": "Remote server error. Status code: {{.StatusCode}}, error code: {{.ErrorCode}}, message: {{.Message}}",
     "translation": "リモート・サーバー・エラー。 状況コード: {{.StatusCode}}、エラー・コード: {{.ErrorCode}}、メッセージ: {{.Message}}"
   },
   {
     "id": "Session inactive: ",
     "translation": "セッションは不活発： "
+  },
+  {
+    "id": "Start usage examples with '{{.Command}}' in lowercase (e.g., '{{.CommandPlugin}}...').",
+    "translation": "Start usage examples with '{{.Command}}' in lowercase (e.g., '{{.CommandPlugin}}...')."
   },
   {
     "id": "Unable to save plugin config: ",
@@ -856,6 +1160,14 @@ var _i18nResourcesAllJa_jpJson = []byte(`[
   {
     "id": "Usage contains unclosed {{.UnclosedGroup}} between indicies {{.Indicies}}",
     "translation": "使用法には、インジケーターの間に閉じていない {{.UnclosedGroup}} が含まれる。 {{.Indicies}}"
+  },
+  {
+    "id": "Usage should start with '{{.Command}}' (lowercase) or the full path to the {{.Command}} binary.",
+    "translation": "Usage should start with '{{.Command}}' (lowercase) or the full path to the {{.Command}} binary."
+  },
+  {
+    "id": "Use common verbs in command names such as list, create, update, delete, or use plural forms to indicate listing operations.",
+    "translation": "Use common verbs in command names such as list, create, update, delete, or use plural forms to indicate listing operations."
   },
   {
     "id": "{{.Field}} contains the following forbidden characters: {{.Chars}}",
@@ -885,7 +1197,7 @@ func i18nResourcesAllJa_jpJson() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "i18n/resources/all.ja_JP.json", size: 0, mode: os.FileMode(0), modTime: time.Unix(0, 0)}
+	info := bindataFileInfo{name: "i18n/resources/all.ja_JP.json", size: 7877, mode: os.FileMode(420), modTime: time.Unix(1778259724, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -908,8 +1220,44 @@ var _i18nResourcesAllKo_krJson = []byte(`[
     "translation": "응답을 덤프할 때 다음 오류가 발생했습니다. \n{{.Error}}\n"
   },
   {
+    "id": "Command '{{.Name}}' contains a segment '{{.Segment}}' that is less than {{.Count}} characters. Each word in a command should be at least {{.Count}} characters.",
+    "translation": "Command '{{.Name}}' contains a segment '{{.Segment}}' that is less than {{.Count}} characters. Each word in a command should be at least {{.Count}} characters."
+  },
+  {
+    "id": "Command '{{.Name}}' does not use a common verb or plural form. Consider using verbs like: list, create, update, delete, show, get, set... or plural nouns like 'instances', 'services'",
+    "translation": "Command '{{.Name}}' does not use a common verb or plural form. Consider using verbs like: list, create, update, delete, show, get, set... or plural nouns like 'instances', 'services'"
+  },
+  {
+    "id": "Command '{{.Name}}' has no description. All commands must have a clear description.",
+    "translation": "Command '{{.Name}}' has no description. All commands must have a clear description."
+  },
+  {
+    "id": "Command '{{.Name}}' has no usage information.",
+    "translation": "Command '{{.Name}}' has no usage information."
+  },
+  {
+    "id": "Command '{{.Name}}' has {{.Level}} levels, exceeding the maximum of {{.Level}}. Deep command hierarchies are difficult for users to remember and discover.",
+    "translation": "Command '{{.Name}}' has {{.Level}} levels, exceeding the maximum of {{.Level}}. Deep command hierarchies are difficult for users to remember and discover."
+  },
+  {
+    "id": "Command '{{.Name}}' usage contains lowercase argument values: {{.Args}}. User input values should be in CAPITAL letters.",
+    "translation": "Command '{{.Name}}' usage contains lowercase argument values: {{.Args}}. User input values should be in CAPITAL letters."
+  },
+  {
+    "id": "Command '{{.Name}}' uses a reserved flag name. These are handled by the CLI framework.",
+    "translation": "Command '{{.Name}}' uses a reserved flag name. These are handled by the CLI framework."
+  },
+  {
     "id": "Could not read from input: ",
     "translation": "입력에서 읽지 못함: "
+  },
+  {
+    "id": "Description for '{{.Name}}' has {{.WordCount}} words. Consider limiting to less than {{.MaxWordCount}} words for better display.",
+    "translation": "Description for '{{.Name}}' has {{.WordCount}} words. Consider limiting to less than {{.MaxWordCount}} words for better display."
+  },
+  {
+    "id": "Description for '{{.Name}}' starts with '{{.Bad}}'. Use a sentence without subject.",
+    "translation": "Description for '{{.Name}}' starts with '{{.Bad}}'. Use a sentence without subject."
   },
   {
     "id": "Elapsed:",
@@ -976,12 +1324,20 @@ var _i18nResourcesAllKo_krJson = []byte(`[
     "translation": "응답:"
   },
   {
+    "id": "Reduce command depth to {{.Level}} or fewer levels. Options: (1) Flatten the hierarchy by combining levels, (2) Use command flags/options instead of subcommands, (3) Reorganize the command structure to be more intuitive.",
+    "translation": "Reduce command depth to {{.Level}} or fewer levels. Options: (1) Flatten the hierarchy by combining levels, (2) Use command flags/options instead of subcommands, (3) Reorganize the command structure to be more intuitive."
+  },
+  {
     "id": "Remote server error. Status code: {{.StatusCode}}, error code: {{.ErrorCode}}, message: {{.Message}}",
     "translation": "원격 서버 오류가 발생했습니다. 상태 코드: {{.StatusCode}}, 오류 코드: {{.ErrorCode}}, 메시지: {{.Message}}"
   },
   {
     "id": "Session inactive: ",
     "translation": "세션이 비활성 상태입니다: "
+  },
+  {
+    "id": "Start usage examples with '{{.Command}}' in lowercase (e.g., '{{.CommandPlugin}}...').",
+    "translation": "Start usage examples with '{{.Command}}' in lowercase (e.g., '{{.CommandPlugin}}...')."
   },
   {
     "id": "Unable to save plugin config: ",
@@ -994,6 +1350,14 @@ var _i18nResourcesAllKo_krJson = []byte(`[
   {
     "id": "Usage contains unclosed {{.UnclosedGroup}} between indicies {{.Indicies}}",
     "translation": "사용법에는 표시 사이에 닫히지 않은 {{.UnclosedGroup}} {{.Indicies}}"
+  },
+  {
+    "id": "Usage should start with '{{.Command}}' (lowercase) or the full path to the {{.Command}} binary.",
+    "translation": "Usage should start with '{{.Command}}' (lowercase) or the full path to the {{.Command}} binary."
+  },
+  {
+    "id": "Use common verbs in command names such as list, create, update, delete, or use plural forms to indicate listing operations.",
+    "translation": "Use common verbs in command names such as list, create, update, delete, or use plural forms to indicate listing operations."
   },
   {
     "id": "{{.Field}} contains the following forbidden characters: {{.Chars}}",
@@ -1023,7 +1387,7 @@ func i18nResourcesAllKo_krJson() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "i18n/resources/all.ko_KR.json", size: 0, mode: os.FileMode(0), modTime: time.Unix(0, 0)}
+	info := bindataFileInfo{name: "i18n/resources/all.ko_KR.json", size: 7691, mode: os.FileMode(420), modTime: time.Unix(1778259724, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -1046,8 +1410,44 @@ var _i18nResourcesAllPt_brJson = []byte(`[
     "translation": "Ocorreu um erro ao fazer dump da resposta:\n{{.Error}}\n"
   },
   {
+    "id": "Command '{{.Name}}' contains a segment '{{.Segment}}' that is less than {{.Count}} characters. Each word in a command should be at least {{.Count}} characters.",
+    "translation": "Command '{{.Name}}' contains a segment '{{.Segment}}' that is less than {{.Count}} characters. Each word in a command should be at least {{.Count}} characters."
+  },
+  {
+    "id": "Command '{{.Name}}' does not use a common verb or plural form. Consider using verbs like: list, create, update, delete, show, get, set... or plural nouns like 'instances', 'services'",
+    "translation": "Command '{{.Name}}' does not use a common verb or plural form. Consider using verbs like: list, create, update, delete, show, get, set... or plural nouns like 'instances', 'services'"
+  },
+  {
+    "id": "Command '{{.Name}}' has no description. All commands must have a clear description.",
+    "translation": "Command '{{.Name}}' has no description. All commands must have a clear description."
+  },
+  {
+    "id": "Command '{{.Name}}' has no usage information.",
+    "translation": "Command '{{.Name}}' has no usage information."
+  },
+  {
+    "id": "Command '{{.Name}}' has {{.Level}} levels, exceeding the maximum of {{.Level}}. Deep command hierarchies are difficult for users to remember and discover.",
+    "translation": "Command '{{.Name}}' has {{.Level}} levels, exceeding the maximum of {{.Level}}. Deep command hierarchies are difficult for users to remember and discover."
+  },
+  {
+    "id": "Command '{{.Name}}' usage contains lowercase argument values: {{.Args}}. User input values should be in CAPITAL letters.",
+    "translation": "Command '{{.Name}}' usage contains lowercase argument values: {{.Args}}. User input values should be in CAPITAL letters."
+  },
+  {
+    "id": "Command '{{.Name}}' uses a reserved flag name. These are handled by the CLI framework.",
+    "translation": "Command '{{.Name}}' uses a reserved flag name. These are handled by the CLI framework."
+  },
+  {
     "id": "Could not read from input: ",
     "translation": "Não foi possível ler a apartir da entrada: "
+  },
+  {
+    "id": "Description for '{{.Name}}' has {{.WordCount}} words. Consider limiting to less than {{.MaxWordCount}} words for better display.",
+    "translation": "Description for '{{.Name}}' has {{.WordCount}} words. Consider limiting to less than {{.MaxWordCount}} words for better display."
+  },
+  {
+    "id": "Description for '{{.Name}}' starts with '{{.Bad}}'. Use a sentence without subject.",
+    "translation": "Description for '{{.Name}}' starts with '{{.Bad}}'. Use a sentence without subject."
   },
   {
     "id": "Elapsed:",
@@ -1114,12 +1514,20 @@ var _i18nResourcesAllPt_brJson = []byte(`[
     "translation": "RESPOSTA:"
   },
   {
+    "id": "Reduce command depth to {{.Level}} or fewer levels. Options: (1) Flatten the hierarchy by combining levels, (2) Use command flags/options instead of subcommands, (3) Reorganize the command structure to be more intuitive.",
+    "translation": "Reduce command depth to {{.Level}} or fewer levels. Options: (1) Flatten the hierarchy by combining levels, (2) Use command flags/options instead of subcommands, (3) Reorganize the command structure to be more intuitive."
+  },
+  {
     "id": "Remote server error. Status code: {{.StatusCode}}, error code: {{.ErrorCode}}, message: {{.Message}}",
     "translation": "Erro do servidor remoto. Código de status: {{.StatusCode}}, código de erro: {{.ErrorCode}}, mensagem: {{.Message}}"
   },
   {
     "id": "Session inactive: ",
     "translation": "Sessão inativa: "
+  },
+  {
+    "id": "Start usage examples with '{{.Command}}' in lowercase (e.g., '{{.CommandPlugin}}...').",
+    "translation": "Start usage examples with '{{.Command}}' in lowercase (e.g., '{{.CommandPlugin}}...')."
   },
   {
     "id": "Unable to save plugin config: ",
@@ -1132,6 +1540,14 @@ var _i18nResourcesAllPt_brJson = []byte(`[
   {
     "id": "Usage contains unclosed {{.UnclosedGroup}} between indicies {{.Indicies}}",
     "translation": "O uso contém {{.UnclosedGroup}} não fechado entre os índices {{.Indicies}}"
+  },
+  {
+    "id": "Usage should start with '{{.Command}}' (lowercase) or the full path to the {{.Command}} binary.",
+    "translation": "Usage should start with '{{.Command}}' (lowercase) or the full path to the {{.Command}} binary."
+  },
+  {
+    "id": "Use common verbs in command names such as list, create, update, delete, or use plural forms to indicate listing operations.",
+    "translation": "Use common verbs in command names such as list, create, update, delete, or use plural forms to indicate listing operations."
   },
   {
     "id": "{{.Field}} contains the following forbidden characters: {{.Chars}}",
@@ -1161,7 +1577,7 @@ func i18nResourcesAllPt_brJson() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "i18n/resources/all.pt_BR.json", size: 0, mode: os.FileMode(0), modTime: time.Unix(0, 0)}
+	info := bindataFileInfo{name: "i18n/resources/all.pt_BR.json", size: 7532, mode: os.FileMode(420), modTime: time.Unix(1778259724, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -1184,8 +1600,44 @@ var _i18nResourcesAllZh_hansJson = []byte(`[
     "translation": "转储响应时发生错误：\n{{.Error}}\n"
   },
   {
+    "id": "Command '{{.Name}}' contains a segment '{{.Segment}}' that is less than {{.Count}} characters. Each word in a command should be at least {{.Count}} characters.",
+    "translation": "Command '{{.Name}}' contains a segment '{{.Segment}}' that is less than {{.Count}} characters. Each word in a command should be at least {{.Count}} characters."
+  },
+  {
+    "id": "Command '{{.Name}}' does not use a common verb or plural form. Consider using verbs like: list, create, update, delete, show, get, set... or plural nouns like 'instances', 'services'",
+    "translation": "Command '{{.Name}}' does not use a common verb or plural form. Consider using verbs like: list, create, update, delete, show, get, set... or plural nouns like 'instances', 'services'"
+  },
+  {
+    "id": "Command '{{.Name}}' has no description. All commands must have a clear description.",
+    "translation": "Command '{{.Name}}' has no description. All commands must have a clear description."
+  },
+  {
+    "id": "Command '{{.Name}}' has no usage information.",
+    "translation": "Command '{{.Name}}' has no usage information."
+  },
+  {
+    "id": "Command '{{.Name}}' has {{.Level}} levels, exceeding the maximum of {{.Level}}. Deep command hierarchies are difficult for users to remember and discover.",
+    "translation": "Command '{{.Name}}' has {{.Level}} levels, exceeding the maximum of {{.Level}}. Deep command hierarchies are difficult for users to remember and discover."
+  },
+  {
+    "id": "Command '{{.Name}}' usage contains lowercase argument values: {{.Args}}. User input values should be in CAPITAL letters.",
+    "translation": "Command '{{.Name}}' usage contains lowercase argument values: {{.Args}}. User input values should be in CAPITAL letters."
+  },
+  {
+    "id": "Command '{{.Name}}' uses a reserved flag name. These are handled by the CLI framework.",
+    "translation": "Command '{{.Name}}' uses a reserved flag name. These are handled by the CLI framework."
+  },
+  {
     "id": "Could not read from input: ",
     "translation": "无法从输入进行读取： "
+  },
+  {
+    "id": "Description for '{{.Name}}' has {{.WordCount}} words. Consider limiting to less than {{.MaxWordCount}} words for better display.",
+    "translation": "Description for '{{.Name}}' has {{.WordCount}} words. Consider limiting to less than {{.MaxWordCount}} words for better display."
+  },
+  {
+    "id": "Description for '{{.Name}}' starts with '{{.Bad}}'. Use a sentence without subject.",
+    "translation": "Description for '{{.Name}}' starts with '{{.Bad}}'. Use a sentence without subject."
   },
   {
     "id": "Elapsed:",
@@ -1252,12 +1704,20 @@ var _i18nResourcesAllZh_hansJson = []byte(`[
     "translation": "响应: "
   },
   {
+    "id": "Reduce command depth to {{.Level}} or fewer levels. Options: (1) Flatten the hierarchy by combining levels, (2) Use command flags/options instead of subcommands, (3) Reorganize the command structure to be more intuitive.",
+    "translation": "Reduce command depth to {{.Level}} or fewer levels. Options: (1) Flatten the hierarchy by combining levels, (2) Use command flags/options instead of subcommands, (3) Reorganize the command structure to be more intuitive."
+  },
+  {
     "id": "Remote server error. Status code: {{.StatusCode}}, error code: {{.ErrorCode}}, message: {{.Message}}",
     "translation": "远程服务器错误。状态码：{{.StatusCode}}，错误代码：{{.ErrorCode}}，消息：{{.Message}}"
   },
   {
     "id": "Session inactive: ",
     "translation": "会议非活动： "
+  },
+  {
+    "id": "Start usage examples with '{{.Command}}' in lowercase (e.g., '{{.CommandPlugin}}...').",
+    "translation": "Start usage examples with '{{.Command}}' in lowercase (e.g., '{{.CommandPlugin}}...')."
   },
   {
     "id": "Unable to save plugin config: ",
@@ -1270,6 +1730,14 @@ var _i18nResourcesAllZh_hansJson = []byte(`[
   {
     "id": "Usage contains unclosed {{.UnclosedGroup}} between indicies {{.Indicies}}",
     "translation": "用法中包含指示符之间未封闭的 {{.UnclosedGroup}} {{.Indicies}}"
+  },
+  {
+    "id": "Usage should start with '{{.Command}}' (lowercase) or the full path to the {{.Command}} binary.",
+    "translation": "Usage should start with '{{.Command}}' (lowercase) or the full path to the {{.Command}} binary."
+  },
+  {
+    "id": "Use common verbs in command names such as list, create, update, delete, or use plural forms to indicate listing operations.",
+    "translation": "Use common verbs in command names such as list, create, update, delete, or use plural forms to indicate listing operations."
   },
   {
     "id": "{{.Field}} contains the following forbidden characters: {{.Chars}}",
@@ -1299,7 +1767,7 @@ func i18nResourcesAllZh_hansJson() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "i18n/resources/all.zh_Hans.json", size: 0, mode: os.FileMode(0), modTime: time.Unix(0, 0)}
+	info := bindataFileInfo{name: "i18n/resources/all.zh_Hans.json", size: 7345, mode: os.FileMode(420), modTime: time.Unix(1778259724, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -1322,8 +1790,44 @@ var _i18nResourcesAllZh_hantJson = []byte(`[
     "translation": "傾出回應時發生錯誤：\n{{.Error}}\n"
   },
   {
+    "id": "Command '{{.Name}}' contains a segment '{{.Segment}}' that is less than {{.Count}} characters. Each word in a command should be at least {{.Count}} characters.",
+    "translation": "Command '{{.Name}}' contains a segment '{{.Segment}}' that is less than {{.Count}} characters. Each word in a command should be at least {{.Count}} characters."
+  },
+  {
+    "id": "Command '{{.Name}}' does not use a common verb or plural form. Consider using verbs like: list, create, update, delete, show, get, set... or plural nouns like 'instances', 'services'",
+    "translation": "Command '{{.Name}}' does not use a common verb or plural form. Consider using verbs like: list, create, update, delete, show, get, set... or plural nouns like 'instances', 'services'"
+  },
+  {
+    "id": "Command '{{.Name}}' has no description. All commands must have a clear description.",
+    "translation": "Command '{{.Name}}' has no description. All commands must have a clear description."
+  },
+  {
+    "id": "Command '{{.Name}}' has no usage information.",
+    "translation": "Command '{{.Name}}' has no usage information."
+  },
+  {
+    "id": "Command '{{.Name}}' has {{.Level}} levels, exceeding the maximum of {{.Level}}. Deep command hierarchies are difficult for users to remember and discover.",
+    "translation": "Command '{{.Name}}' has {{.Level}} levels, exceeding the maximum of {{.Level}}. Deep command hierarchies are difficult for users to remember and discover."
+  },
+  {
+    "id": "Command '{{.Name}}' usage contains lowercase argument values: {{.Args}}. User input values should be in CAPITAL letters.",
+    "translation": "Command '{{.Name}}' usage contains lowercase argument values: {{.Args}}. User input values should be in CAPITAL letters."
+  },
+  {
+    "id": "Command '{{.Name}}' uses a reserved flag name. These are handled by the CLI framework.",
+    "translation": "Command '{{.Name}}' uses a reserved flag name. These are handled by the CLI framework."
+  },
+  {
     "id": "Could not read from input: ",
     "translation": "無法從輸入讀取： "
+  },
+  {
+    "id": "Description for '{{.Name}}' has {{.WordCount}} words. Consider limiting to less than {{.MaxWordCount}} words for better display.",
+    "translation": "Description for '{{.Name}}' has {{.WordCount}} words. Consider limiting to less than {{.MaxWordCount}} words for better display."
+  },
+  {
+    "id": "Description for '{{.Name}}' starts with '{{.Bad}}'. Use a sentence without subject.",
+    "translation": "Description for '{{.Name}}' starts with '{{.Bad}}'. Use a sentence without subject."
   },
   {
     "id": "Elapsed:",
@@ -1390,12 +1894,20 @@ var _i18nResourcesAllZh_hantJson = []byte(`[
     "translation": "回應："
   },
   {
+    "id": "Reduce command depth to {{.Level}} or fewer levels. Options: (1) Flatten the hierarchy by combining levels, (2) Use command flags/options instead of subcommands, (3) Reorganize the command structure to be more intuitive.",
+    "translation": "Reduce command depth to {{.Level}} or fewer levels. Options: (1) Flatten the hierarchy by combining levels, (2) Use command flags/options instead of subcommands, (3) Reorganize the command structure to be more intuitive."
+  },
+  {
     "id": "Remote server error. Status code: {{.StatusCode}}, error code: {{.ErrorCode}}, message: {{.Message}}",
     "translation": "遠端伺服器錯誤。狀態碼：{{.StatusCode}}，錯誤碼：{{.ErrorCode}}，訊息：{{.Message}}"
   },
   {
     "id": "Session inactive: ",
     "translation": "會議非主動： "
+  },
+  {
+    "id": "Start usage examples with '{{.Command}}' in lowercase (e.g., '{{.CommandPlugin}}...').",
+    "translation": "Start usage examples with '{{.Command}}' in lowercase (e.g., '{{.CommandPlugin}}...')."
   },
   {
     "id": "Unable to save plugin config: ",
@@ -1408,6 +1920,14 @@ var _i18nResourcesAllZh_hantJson = []byte(`[
   {
     "id": "Usage contains unclosed {{.UnclosedGroup}} between indicies {{.Indicies}}",
     "translation": "使用方式包含指標之間未封閉的 {{.UnclosedGroup}} {{.Indicies}}"
+  },
+  {
+    "id": "Usage should start with '{{.Command}}' (lowercase) or the full path to the {{.Command}} binary.",
+    "translation": "Usage should start with '{{.Command}}' (lowercase) or the full path to the {{.Command}} binary."
+  },
+  {
+    "id": "Use common verbs in command names such as list, create, update, delete, or use plural forms to indicate listing operations.",
+    "translation": "Use common verbs in command names such as list, create, update, delete, or use plural forms to indicate listing operations."
   },
   {
     "id": "{{.Field}} contains the following forbidden characters: {{.Chars}}",
@@ -1437,7 +1957,7 @@ func i18nResourcesAllZh_hantJson() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "i18n/resources/all.zh_Hant.json", size: 0, mode: os.FileMode(0), modTime: time.Unix(0, 0)}
+	info := bindataFileInfo{name: "i18n/resources/all.zh_Hant.json", size: 7333, mode: os.FileMode(420), modTime: time.Unix(1778259724, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -1510,13 +2030,11 @@ var _bindata = map[string]func() (*asset, error){
 // directory embedded in the file by go-bindata.
 // For example if you run go-bindata on data/... and data contains the
 // following hierarchy:
-//
-//	data/
-//	  foo.txt
-//	  img/
-//	    a.png
-//	    b.png
-//
+//     data/
+//       foo.txt
+//       img/
+//         a.png
+//         b.png
 // then AssetDir("data") would return []string{"foo.txt", "img"}
 // AssetDir("data/img") would return []string{"a.png", "b.png"}
 // AssetDir("foo.txt") and AssetDir("notexist") would return an error
@@ -1579,7 +2097,7 @@ func RestoreAsset(dir, name string) error {
 	if err != nil {
 		return err
 	}
-	err = os.WriteFile(_filePath(dir, name), data, info.Mode())
+	err = ioutil.WriteFile(_filePath(dir, name), data, info.Mode())
 	if err != nil {
 		return err
 	}
