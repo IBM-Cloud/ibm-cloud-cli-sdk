@@ -17,31 +17,31 @@
   },
   {
     "id": "Command '{{.Name}}' contains a segment '{{.Segment}}' that is less than {{.Count}} characters. Each word in a command should be at least {{.Count}} characters.",
-    "translation": "Command '{{.Name}}' contains a segment '{{.Segment}}' that is less than {{.Count}} characters. Each word in a command should be at least {{.Count}} characters."
+    "translation": "명령어 ` '{{.Name}}' `에는 ` {{.Count}} `자보다 짧은 ` '{{.Segment}}' ` 세그먼트가 포함되어 있습니다. 명령어의 각 단어는 최소 {{.Count}} 자 이상이어야 합니다."
   },
   {
     "id": "Command '{{.Name}}' does not use a common verb or plural form. Consider using verbs like: list, create, update, delete, show, get, set... or plural nouns like 'instances', 'services'",
-    "translation": "Command '{{.Name}}' does not use a common verb or plural form. Consider using verbs like: list, create, update, delete, show, get, set... or plural nouns like 'instances', 'services'"
+    "translation": "'{{.Name}}' 라는 명령어에는 일반적인 동사나 복수형이 사용되지 않습니다. 다음과 같은 동사를 사용하는 것을 고려해 보세요: 나열하다, 생성하다, 업데이트하다, 삭제하다, 표시하다, 가져오다, 설정하다... 또는 'instances', 'services'와 같은 복수 명사"
   },
   {
     "id": "Command '{{.Name}}' has no description. All commands must have a clear description.",
-    "translation": "Command '{{.Name}}' has no description. All commands must have a clear description."
+    "translation": "명령어 ` '{{.Name}}' `에는 설명이 없습니다. 모든 명령어에는 명확한 설명이 포함되어야 합니다."
   },
   {
     "id": "Command '{{.Name}}' has no usage information.",
-    "translation": "Command '{{.Name}}' has no usage information."
+    "translation": "'{{.Name}}' 명령어에 대한 사용법이 없습니다."
   },
   {
     "id": "Command '{{.Name}}' has {{.Level}} levels, exceeding the maximum of {{.Level}}. Deep command hierarchies are difficult for users to remember and discover.",
-    "translation": "Command '{{.Name}}' has {{.Level}} levels, exceeding the maximum of {{.Level}}. Deep command hierarchies are difficult for users to remember and discover."
+    "translation": "'{{.Name}}' 명령어의 레벨이 {{.Level}} 개이며, 이는 {{.Level}} 의 최대값을 초과합니다. 복잡한 명령 계층 구조는 사용자가 기억하거나 파악하기 어렵습니다."
   },
   {
     "id": "Command '{{.Name}}' usage contains lowercase argument values: {{.Args}}. User input values should be in CAPITAL letters.",
-    "translation": "Command '{{.Name}}' usage contains lowercase argument values: {{.Args}}. User input values should be in CAPITAL letters."
+    "translation": "'{{.Name}}' 명령어의 사용법에 소문자 인수가 포함되어 있습니다: {{.Args}}. 사용자 입력 값은 대문자로 입력해야 합니다."
   },
   {
     "id": "Command '{{.Name}}' uses a reserved flag name. These are handled by the CLI framework.",
-    "translation": "Command '{{.Name}}' uses a reserved flag name. These are handled by the CLI framework."
+    "translation": "'{{.Name}}' 명령어는 예약된 플래그 이름을 사용합니다. 이는 CLI 프레임워크에서 처리합니다."
   },
   {
     "id": "Could not read from input: ",
@@ -49,11 +49,11 @@
   },
   {
     "id": "Description for '{{.Name}}' has {{.WordCount}} words. Consider limiting to less than {{.MaxWordCount}} words for better display.",
-    "translation": "Description for '{{.Name}}' has {{.WordCount}} words. Consider limiting to less than {{.MaxWordCount}} words for better display."
+    "translation": "'{{.Name}}' 에 대한 설명에는 {{.WordCount}} 개의 단어가 포함되어 있습니다. 더 나은 표시를 위해 단어 수를 {{.MaxWordCount}} 자 미만으로 제한하는 것을 고려해 보세요."
   },
   {
     "id": "Description for '{{.Name}}' starts with '{{.Bad}}'. Use a sentence without subject.",
-    "translation": "Description for '{{.Name}}' starts with '{{.Bad}}'. Use a sentence without subject."
+    "translation": "'{{.Name}}' 에 대한 설명은 '{{.Bad}}' 에서 시작됩니다. 주어가 없는 문장을 사용하세요."
   },
   {
     "id": "Elapsed:",
@@ -121,7 +121,7 @@
   },
   {
     "id": "Reduce command depth to {{.Level}} or fewer levels. Options: (1) Flatten the hierarchy by combining levels, (2) Use command flags/options instead of subcommands, (3) Reorganize the command structure to be more intuitive.",
-    "translation": "Reduce command depth to {{.Level}} or fewer levels. Options: (1) Flatten the hierarchy by combining levels, (2) Use command flags/options instead of subcommands, (3) Reorganize the command structure to be more intuitive."
+    "translation": "명령어 중첩 수준을 {{.Level}} 단계 이하로 줄이십시오. 옵션: (1) 레벨을 통합하여 계층 구조를 단순화한다, (2) 하위 명령어 대신 명령어 플래그 /opt ion을 사용한다, (3) 명령어 구조를 더 직관적으로 재구성한다."
   },
   {
     "id": "Remote server error. Status code: {{.StatusCode}}, error code: {{.ErrorCode}}, message: {{.Message}}",
@@ -133,7 +133,7 @@
   },
   {
     "id": "Start usage examples with '{{.Command}}' in lowercase (e.g., '{{.CommandPlugin}}...').",
-    "translation": "Start usage examples with '{{.Command}}' in lowercase (e.g., '{{.CommandPlugin}}...')."
+    "translation": "'{{.Command}}' 를 소문자로 시작하는 사용 예시를 작성하세요(예: ' {{.CommandPlugin}}...')."
   },
   {
     "id": "Unable to save plugin config: ",
@@ -149,11 +149,11 @@
   },
   {
     "id": "Usage should start with '{{.Command}}' (lowercase) or the full path to the {{.Command}} binary.",
-    "translation": "Usage should start with '{{.Command}}' (lowercase) or the full path to the {{.Command}} binary."
+    "translation": "사용 시에는 ` '{{.Command}}' `(소문자) 또는 ` {{.Command}} ` 바이너리의 전체 경로로 시작해야 합니다."
   },
   {
     "id": "Use common verbs in command names such as list, create, update, delete, or use plural forms to indicate listing operations.",
-    "translation": "Use common verbs in command names such as list, create, update, delete, or use plural forms to indicate listing operations."
+    "translation": "명령어 이름에는 list, create, update, delete와 같은 일반적인 동사를 사용하거나, 목록 표시 작업을 나타내기 위해 복수형을 사용하십시오."
   },
   {
     "id": "{{.Field}} contains the following forbidden characters: {{.Chars}}",

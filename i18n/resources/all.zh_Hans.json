@@ -17,31 +17,31 @@
   },
   {
     "id": "Command '{{.Name}}' contains a segment '{{.Segment}}' that is less than {{.Count}} characters. Each word in a command should be at least {{.Count}} characters.",
-    "translation": "Command '{{.Name}}' contains a segment '{{.Segment}}' that is less than {{.Count}} characters. Each word in a command should be at least {{.Count}} characters."
+    "translation": "指令 '{{.Name}}' 包含一个长度小于 {{.Count}} 个字符的片段 '{{.Segment}}'。 命令中的每个单词长度应至少为 {{.Count}} 个字符。"
   },
   {
     "id": "Command '{{.Name}}' does not use a common verb or plural form. Consider using verbs like: list, create, update, delete, show, get, set... or plural nouns like 'instances', 'services'",
-    "translation": "Command '{{.Name}}' does not use a common verb or plural form. Consider using verbs like: list, create, update, delete, show, get, set... or plural nouns like 'instances', 'services'"
+    "translation": "命令“ '{{.Name}}' ”既不使用常见动词，也不采用复数形式。 建议使用以下动词：列出、创建、更新、删除、显示、获取、设置…… 或复数名词，如“实例”、“服务”"
   },
   {
     "id": "Command '{{.Name}}' has no description. All commands must have a clear description.",
-    "translation": "Command '{{.Name}}' has no description. All commands must have a clear description."
+    "translation": "命令 '{{.Name}}' 没有描述。 所有命令都必须有清晰的说明。"
   },
   {
     "id": "Command '{{.Name}}' has no usage information.",
-    "translation": "Command '{{.Name}}' has no usage information."
+    "translation": "命令 '{{.Name}}' 没有用法信息。"
   },
   {
     "id": "Command '{{.Name}}' has {{.Level}} levels, exceeding the maximum of {{.Level}}. Deep command hierarchies are difficult for users to remember and discover.",
-    "translation": "Command '{{.Name}}' has {{.Level}} levels, exceeding the maximum of {{.Level}}. Deep command hierarchies are difficult for users to remember and discover."
+    "translation": "命令 ` '{{.Name}}' ` 包含 ` {{.Level}} ` 个级别，超过了 ` {{.Level}} ` 的最大值。 层级过深的命令结构让用户难以记忆和掌握。"
   },
   {
     "id": "Command '{{.Name}}' usage contains lowercase argument values: {{.Args}}. User input values should be in CAPITAL letters.",
-    "translation": "Command '{{.Name}}' usage contains lowercase argument values: {{.Args}}. User input values should be in CAPITAL letters."
+    "translation": "命令 '{{.Name}}' 的用法中包含小写参数值： {{.Args}}。 用户输入的值应为大写字母。"
   },
   {
     "id": "Command '{{.Name}}' uses a reserved flag name. These are handled by the CLI framework.",
-    "translation": "Command '{{.Name}}' uses a reserved flag name. These are handled by the CLI framework."
+    "translation": "命令 '{{.Name}}' 使用了预留的标志名称。 这些由 CLI 框架负责处理。"
   },
   {
     "id": "Could not read from input: ",
@@ -49,11 +49,11 @@
   },
   {
     "id": "Description for '{{.Name}}' has {{.WordCount}} words. Consider limiting to less than {{.MaxWordCount}} words for better display.",
-    "translation": "Description for '{{.Name}}' has {{.WordCount}} words. Consider limiting to less than {{.MaxWordCount}} words for better display."
+    "translation": "'{{.Name}}' 的描述包含 {{.WordCount}} 个单词。 为获得更好的显示效果，建议将字数控制在 {{.MaxWordCount}} 字以内。"
   },
   {
     "id": "Description for '{{.Name}}' starts with '{{.Bad}}'. Use a sentence without subject.",
-    "translation": "Description for '{{.Name}}' starts with '{{.Bad}}'. Use a sentence without subject."
+    "translation": "'{{.Name}}' 的说明以 '{{.Bad}}' 开头。 请用一个没有主语的句子。"
   },
   {
     "id": "Elapsed:",
@@ -121,7 +121,7 @@
   },
   {
     "id": "Reduce command depth to {{.Level}} or fewer levels. Options: (1) Flatten the hierarchy by combining levels, (2) Use command flags/options instead of subcommands, (3) Reorganize the command structure to be more intuitive.",
-    "translation": "Reduce command depth to {{.Level}} or fewer levels. Options: (1) Flatten the hierarchy by combining levels, (2) Use command flags/options instead of subcommands, (3) Reorganize the command structure to be more intuitive."
+    "translation": "将命令深度缩减至 {{.Level}} 层或更少。 选项：(1) 通过合并层级来简化层次结构，(2) 使用命令标志 /opt ion代替子命令，(3) 重新组织命令结构，使其更加直观。"
   },
   {
     "id": "Remote server error. Status code: {{.StatusCode}}, error code: {{.ErrorCode}}, message: {{.Message}}",
@@ -133,7 +133,7 @@
   },
   {
     "id": "Start usage examples with '{{.Command}}' in lowercase (e.g., '{{.CommandPlugin}}...').",
-    "translation": "Start usage examples with '{{.Command}}' in lowercase (e.g., '{{.CommandPlugin}}...')."
+    "translation": "请以小写的 '{{.Command}}' 开头编写使用示例（例如：' {{.CommandPlugin}}...'）。"
   },
   {
     "id": "Unable to save plugin config: ",
@@ -149,11 +149,11 @@
   },
   {
     "id": "Usage should start with '{{.Command}}' (lowercase) or the full path to the {{.Command}} binary.",
-    "translation": "Usage should start with '{{.Command}}' (lowercase) or the full path to the {{.Command}} binary."
+    "translation": "使用时应以 ` '{{.Command}}' `（小写）或 ` {{.Command}} ` 二进制文件的完整路径开头。"
   },
   {
     "id": "Use common verbs in command names such as list, create, update, delete, or use plural forms to indicate listing operations.",
-    "translation": "Use common verbs in command names such as list, create, update, delete, or use plural forms to indicate listing operations."
+    "translation": "在命令名称中使用常见动词，例如 list、create、update、delete，或使用复数形式来表示列表操作。"
   },
   {
     "id": "{{.Field}} contains the following forbidden characters: {{.Chars}}",

@@ -17,31 +17,31 @@
   },
   {
     "id": "Command '{{.Name}}' contains a segment '{{.Segment}}' that is less than {{.Count}} characters. Each word in a command should be at least {{.Count}} characters.",
-    "translation": "Command '{{.Name}}' contains a segment '{{.Segment}}' that is less than {{.Count}} characters. Each word in a command should be at least {{.Count}} characters."
+    "translation": "Der Befehl „ '{{.Name}}' “ enthält ein Segment „ '{{.Segment}}' “, das weniger als „ {{.Count}} “ Zeichen umfasst. Jedes Wort in einem Befehl sollte mindestens {{.Count}} Zeichen lang sein."
   },
   {
     "id": "Command '{{.Name}}' does not use a common verb or plural form. Consider using verbs like: list, create, update, delete, show, get, set... or plural nouns like 'instances', 'services'",
-    "translation": "Command '{{.Name}}' does not use a common verb or plural form. Consider using verbs like: list, create, update, delete, show, get, set... or plural nouns like 'instances', 'services'"
+    "translation": "Der Befehl „ '{{.Name}}' “ verwendet weder ein gängiges Verb noch eine Pluralform. Verwenden Sie beispielsweise Verben wie: auflisten, erstellen, aktualisieren, löschen, anzeigen, abrufen, festlegen... oder Substantive im Plural wie „Instanzen“, „Dienste“"
   },
   {
     "id": "Command '{{.Name}}' has no description. All commands must have a clear description.",
-    "translation": "Command '{{.Name}}' has no description. All commands must have a clear description."
+    "translation": "Der Befehl „ '{{.Name}}' “ hat keine Beschreibung. Alle Befehle müssen eine klare Beschreibung enthalten."
   },
   {
     "id": "Command '{{.Name}}' has no usage information.",
-    "translation": "Command '{{.Name}}' has no usage information."
+    "translation": "Für den Befehl „ '{{.Name}}' “ liegen keine Verwendungshinweise vor."
   },
   {
     "id": "Command '{{.Name}}' has {{.Level}} levels, exceeding the maximum of {{.Level}}. Deep command hierarchies are difficult for users to remember and discover.",
-    "translation": "Command '{{.Name}}' has {{.Level}} levels, exceeding the maximum of {{.Level}}. Deep command hierarchies are difficult for users to remember and discover."
+    "translation": "Der Befehl „ '{{.Name}}' “ weist {{.Level}} Ebenen auf, was das Maximum von {{.Level}} überschreitet. Tief verschachtelte Befehlshierarchien sind für Benutzer schwer zu merken und zu finden."
   },
   {
     "id": "Command '{{.Name}}' usage contains lowercase argument values: {{.Args}}. User input values should be in CAPITAL letters.",
-    "translation": "Command '{{.Name}}' usage contains lowercase argument values: {{.Args}}. User input values should be in CAPITAL letters."
+    "translation": "Die Verwendung des Befehls „ '{{.Name}}' “ enthält Argumentwerte in Kleinbuchstaben: {{.Args}}. Die vom Benutzer eingegebenen Werte sollten in Großbuchstaben erfolgen."
   },
   {
     "id": "Command '{{.Name}}' uses a reserved flag name. These are handled by the CLI framework.",
-    "translation": "Command '{{.Name}}' uses a reserved flag name. These are handled by the CLI framework."
+    "translation": "Der Befehl „ '{{.Name}}' “ verwendet einen reservierten Flaggennamen. Diese werden vom CLI-Framework verwaltet."
   },
   {
     "id": "Could not read from input: ",
@@ -49,11 +49,11 @@
   },
   {
     "id": "Description for '{{.Name}}' has {{.WordCount}} words. Consider limiting to less than {{.MaxWordCount}} words for better display.",
-    "translation": "Description for '{{.Name}}' has {{.WordCount}} words. Consider limiting to less than {{.MaxWordCount}} words for better display."
+    "translation": "Die Beschreibung zu „ '{{.Name}}' “ umfasst {{.WordCount}} Wörter. Erwägen Sie, den Text auf weniger als {{.MaxWordCount}} Wörter zu beschränken, um eine bessere Darstellung zu erzielen."
   },
   {
     "id": "Description for '{{.Name}}' starts with '{{.Bad}}'. Use a sentence without subject.",
-    "translation": "Description for '{{.Name}}' starts with '{{.Bad}}'. Use a sentence without subject."
+    "translation": "Die Beschreibung für „ '{{.Name}}' “ beginnt mit „ '{{.Bad}}' “. Verwende einen Satz ohne Subjekt."
   },
   {
     "id": "Elapsed:",
@@ -121,7 +121,7 @@
   },
   {
     "id": "Reduce command depth to {{.Level}} or fewer levels. Options: (1) Flatten the hierarchy by combining levels, (2) Use command flags/options instead of subcommands, (3) Reorganize the command structure to be more intuitive.",
-    "translation": "Reduce command depth to {{.Level}} or fewer levels. Options: (1) Flatten the hierarchy by combining levels, (2) Use command flags/options instead of subcommands, (3) Reorganize the command structure to be more intuitive."
+    "translation": "Reduzieren Sie die Befehlstiefe auf maximal {{.Level}}. Optionen: (1) Die Hierarchie durch Zusammenfassen von Ebenen vereinfachen, (2) /opt anstelle von Unterbefehlen verwenden, (3) Die Befehlsstruktur intuitiver gestalten."
   },
   {
     "id": "Remote server error. Status code: {{.StatusCode}}, error code: {{.ErrorCode}}, message: {{.Message}}",
@@ -133,7 +133,7 @@
   },
   {
     "id": "Start usage examples with '{{.Command}}' in lowercase (e.g., '{{.CommandPlugin}}...').",
-    "translation": "Start usage examples with '{{.Command}}' in lowercase (e.g., '{{.CommandPlugin}}...')."
+    "translation": "Beginnen Sie Anwendungsbeispiele mit „ '{{.Command}}' “ in Kleinbuchstaben (z. B. „ {{.CommandPlugin}}...“)."
   },
   {
     "id": "Unable to save plugin config: ",
@@ -149,11 +149,11 @@
   },
   {
     "id": "Usage should start with '{{.Command}}' (lowercase) or the full path to the {{.Command}} binary.",
-    "translation": "Usage should start with '{{.Command}}' (lowercase) or the full path to the {{.Command}} binary."
+    "translation": "Die Verwendung sollte mit „ '{{.Command}}' “ (in Kleinbuchstaben) oder dem vollständigen Pfad zur Binärdatei „ {{.Command}} “ beginnen."
   },
   {
     "id": "Use common verbs in command names such as list, create, update, delete, or use plural forms to indicate listing operations.",
-    "translation": "Use common verbs in command names such as list, create, update, delete, or use plural forms to indicate listing operations."
+    "translation": "Verwenden Sie in Befehlsnamen gängige Verben wie „list“, „create“, „update“ und „delete“ oder verwenden Sie Pluralformen, um Auflistungsvorgänge zu kennzeichnen."
   },
   {
     "id": "{{.Field}} contains the following forbidden characters: {{.Chars}}",

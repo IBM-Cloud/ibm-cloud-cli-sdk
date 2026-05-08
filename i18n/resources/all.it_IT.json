@@ -17,31 +17,31 @@
   },
   {
     "id": "Command '{{.Name}}' contains a segment '{{.Segment}}' that is less than {{.Count}} characters. Each word in a command should be at least {{.Count}} characters.",
-    "translation": "Command '{{.Name}}' contains a segment '{{.Segment}}' that is less than {{.Count}} characters. Each word in a command should be at least {{.Count}} characters."
+    "translation": "Il comando '{{.Name}}' contiene un segmento '{{.Segment}}' che ha una lunghezza inferiore a {{.Count}} caratteri. Ogni parola di un comando deve essere composta da almeno {{.Count}} caratteri."
   },
   {
     "id": "Command '{{.Name}}' does not use a common verb or plural form. Consider using verbs like: list, create, update, delete, show, get, set... or plural nouns like 'instances', 'services'",
-    "translation": "Command '{{.Name}}' does not use a common verb or plural form. Consider using verbs like: list, create, update, delete, show, get, set... or plural nouns like 'instances', 'services'"
+    "translation": "Il comando \" '{{.Name}}' \" non utilizza né un verbo comune né la forma plurale. Si consiglia di utilizzare verbi come: elencare, creare, aggiornare, eliminare, visualizzare, recuperare, impostare... o sostantivi plurali come «istanze», «servizi»"
   },
   {
     "id": "Command '{{.Name}}' has no description. All commands must have a clear description.",
-    "translation": "Command '{{.Name}}' has no description. All commands must have a clear description."
+    "translation": "Il comando \" '{{.Name}}' \" non ha una descrizione. Tutti i comandi devono essere accompagnati da una descrizione chiara."
   },
   {
     "id": "Command '{{.Name}}' has no usage information.",
-    "translation": "Command '{{.Name}}' has no usage information."
+    "translation": "Il comando \" '{{.Name}}' \" non dispone di informazioni sull'utilizzo."
   },
   {
     "id": "Command '{{.Name}}' has {{.Level}} levels, exceeding the maximum of {{.Level}}. Deep command hierarchies are difficult for users to remember and discover.",
-    "translation": "Command '{{.Name}}' has {{.Level}} levels, exceeding the maximum of {{.Level}}. Deep command hierarchies are difficult for users to remember and discover."
+    "translation": "Il comando \" '{{.Name}}' \" presenta livelli di \" {{.Level}} \", superando il limite massimo di \" {{.Level}} \". Le gerarchie di comandi complesse sono difficili da ricordare e da individuare per gli utenti."
   },
   {
     "id": "Command '{{.Name}}' usage contains lowercase argument values: {{.Args}}. User input values should be in CAPITAL letters.",
-    "translation": "Command '{{.Name}}' usage contains lowercase argument values: {{.Args}}. User input values should be in CAPITAL letters."
+    "translation": "L'uso del comando ` '{{.Name}}' ` prevede valori degli argomenti in minuscolo: {{.Args}}. I valori inseriti dall'utente devono essere scritti in MAIUSCOLO."
   },
   {
     "id": "Command '{{.Name}}' uses a reserved flag name. These are handled by the CLI framework.",
-    "translation": "Command '{{.Name}}' uses a reserved flag name. These are handled by the CLI framework."
+    "translation": "Il comando ` '{{.Name}}' ` utilizza un nome di flag riservato. Questi sono gestiti dal framework CLI."
   },
   {
     "id": "Could not read from input: ",
@@ -49,11 +49,11 @@
   },
   {
     "id": "Description for '{{.Name}}' has {{.WordCount}} words. Consider limiting to less than {{.MaxWordCount}} words for better display.",
-    "translation": "Description for '{{.Name}}' has {{.WordCount}} words. Consider limiting to less than {{.MaxWordCount}} words for better display."
+    "translation": "La descrizione di \" '{{.Name}}' \" contiene {{.WordCount}} parole. Si consiglia di limitare il numero di parole a meno di {{.MaxWordCount}} per una migliore visualizzazione."
   },
   {
     "id": "Description for '{{.Name}}' starts with '{{.Bad}}'. Use a sentence without subject.",
-    "translation": "Description for '{{.Name}}' starts with '{{.Bad}}'. Use a sentence without subject."
+    "translation": "La descrizione di \" '{{.Name}}' \" inizia con \" '{{.Bad}}' \". Usa una frase senza soggetto."
   },
   {
     "id": "Elapsed:",
@@ -121,7 +121,7 @@
   },
   {
     "id": "Reduce command depth to {{.Level}} or fewer levels. Options: (1) Flatten the hierarchy by combining levels, (2) Use command flags/options instead of subcommands, (3) Reorganize the command structure to be more intuitive.",
-    "translation": "Reduce command depth to {{.Level}} or fewer levels. Options: (1) Flatten the hierarchy by combining levels, (2) Use command flags/options instead of subcommands, (3) Reorganize the command structure to be more intuitive."
+    "translation": "Ridurre la profondità dei comandi a {{.Level}} o meno. Opzioni: (1) Appiattire la gerarchia unendo i livelli, (2) Utilizzare i flag di comando /opt al posto dei sottocomandi, (3) Riorganizzare la struttura dei comandi per renderla più intuitiva."
   },
   {
     "id": "Remote server error. Status code: {{.StatusCode}}, error code: {{.ErrorCode}}, message: {{.Message}}",
@@ -133,7 +133,7 @@
   },
   {
     "id": "Start usage examples with '{{.Command}}' in lowercase (e.g., '{{.CommandPlugin}}...').",
-    "translation": "Start usage examples with '{{.Command}}' in lowercase (e.g., '{{.CommandPlugin}}...')."
+    "translation": "Inizia gli esempi di utilizzo con '{{.Command}}' in minuscolo (ad es., ' {{.CommandPlugin}}...')."
   },
   {
     "id": "Unable to save plugin config: ",
@@ -149,11 +149,11 @@
   },
   {
     "id": "Usage should start with '{{.Command}}' (lowercase) or the full path to the {{.Command}} binary.",
-    "translation": "Usage should start with '{{.Command}}' (lowercase) or the full path to the {{.Command}} binary."
+    "translation": "Per l'utilizzo, è necessario specificare \" '{{.Command}}' \" (in minuscolo) o il percorso completo del file binario \" {{.Command}} \"."
   },
   {
     "id": "Use common verbs in command names such as list, create, update, delete, or use plural forms to indicate listing operations.",
-    "translation": "Use common verbs in command names such as list, create, update, delete, or use plural forms to indicate listing operations."
+    "translation": "Utilizza verbi comuni nei nomi dei comandi, come \"list\", \"create\", \"update\" e \"delete\", oppure usa la forma plurale per indicare operazioni di elenco."
   },
   {
     "id": "{{.Field}} contains the following forbidden characters: {{.Chars}}",
