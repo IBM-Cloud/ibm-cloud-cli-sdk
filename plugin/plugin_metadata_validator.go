@@ -698,7 +698,7 @@ func validateCommandDepth(sl validator.StructLevel) {
 	// Remove base CLI name if present
 	if len(parts) > 1 {
 		firstPart := strings.ToLower(parts[0])
-		if firstPart == "ibmcloud" || firstPart == "ic" {
+		if firstPart == "ibmcloud" || firstPart == "ic" || firstPart == "bx" {
 			parts = parts[1:]
 		}
 	}
