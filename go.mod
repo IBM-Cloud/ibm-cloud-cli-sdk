@@ -1,6 +1,6 @@
 module github.com/IBM-Cloud/ibm-cloud-cli-sdk
 
-go 1.25.6
+go 1.26.3
 
 require (
 	github.com/Masterminds/semver v1.5.0
