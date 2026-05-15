@@ -3,7 +3,7 @@ package bluemix
 import "fmt"
 
 // Version is the SDK version
-var Version = VersionType{Major: 1, Minor: 10, Build: 4}
+var Version = VersionType{Major: 1, Minor: 10, Build: 5}
 
 // VersionType describe version info
 type VersionType struct {
