@@ -471,8 +471,10 @@ func validateCliVersionMinimum(versionType VersionType, minVersion string) *Plug
 				"ProvidedMinVersion": versionType.String(),
 				"AllowedMinimum":     minVersion,
 			}),
-			Remediation: i18n.T("Set MinCliVersion to {{.Version}} or higher to ensure compatibility with supported CLI versions.", minVersion),
-			Priority:    PriorityError,
+			Remediation: i18n.T("Set MinCliVersion to {{.Version}} or higher to ensure compatibility with supported CLI versions.", map[string]any{
+				"Version": minVersion,
+			}),
+			Priority: PriorityError,
 		}
 	}
 
