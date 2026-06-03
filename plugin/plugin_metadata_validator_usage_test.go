@@ -6,24 +6,6 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-// TestValidateUsageEnhanced_EmptyUsage tests that empty usage is detected
-// func TestValidateUsageEnhanced_EmptyUsage(t *testing.T) {
-// 	validator := NewPluginMetadataValidator()
-//
-// 	cmd := Command{
-// 		Namespace:   "test",
-// 		Name:        "command",
-// 		Description: "Test command",
-// 		Usage:       "",
-// 	}
-//
-// 	errs := validator.validateUsageEnhanced(cmd, "test-plugin")
-//
-// 	assert.Len(t, errs, 1, "Expected 1 error for empty usage")
-// 	assert.Equal(t, PriorityError, errs[0].Priority)
-// 	assert.Contains(t, errs[0].Error, "has no usage information")
-// }
-
 // TestValidateUsageEnhanced_ValidUsage tests valid usage patterns
 func TestValidateUsageEnhanced_ValidUsage(t *testing.T) {
 	validator := NewPluginMetadataValidator()

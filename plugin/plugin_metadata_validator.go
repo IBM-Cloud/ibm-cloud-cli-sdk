@@ -374,7 +374,7 @@ func (p pluginMetadataValidate) ParseValidationTagErrors(fieldErr validator.Fiel
 			})
 
 		priority = PriorityWarning
-		remediationMsg = i18n.T("Convert positional arguments to CAPITAL letters (e.g., NAME, INSTANCE_ID, FORMAT).")
+		remediationMsg = i18n.T("Convert arguments values to CAPITAL letters (e.g., NAME, INSTANCE_ID, FORMAT).")
 	case "noverb":
 		errMsg = i18n.T("Command '{{.Name}}' does not use a common verb or plural form. Consider using verbs like: list, create, update, delete, show, get, set... or plural nouns like 'instances', 'services'", map[string]any{
 			"Name": cmdName,
