@@ -4,6 +4,14 @@
     "translation": "\n请输入数字"
   },
   {
+    "id": "Add a sentence without subject describing what the command does.",
+    "translation": "添加一个省略主语的句子，说明该命令的功能。"
+  },
+  {
+    "id": "Add usage text showing command syntax with parameters and options.",
+    "translation": "添加使用说明，展示包含参数和选项的命令语法。"
+  },
+  {
     "id": "An error occurred when creating log file '{{.Path}}':\n{{.Error}}\n\n",
     "translation": "创建日志文件“{{.Path}}”时发生错误：\n{{.Error}}\n\n"
   },
@@ -16,8 +24,64 @@
     "translation": "转储响应时发生错误：\n{{.Error}}\n"
   },
   {
+    "id": "Capitalize the first letter of the description.",
+    "translation": "描述的首字母应大写。"
+  },
+  {
+    "id": "Command '{{.Name}}' contains a segment '{{.Segment}}' that is less than {{.Count}} characters. Each word in a command should be at least {{.Count}} characters.",
+    "translation": "指令 '{{.Name}}' 包含一个长度小于 {{.Count}} 个字符的片段 '{{.Segment}}'。 命令中的每个单词长度应至少为 {{.Count}} 个字符。"
+  },
+  {
+    "id": "Command '{{.Name}}' does not use a common verb or plural form. Consider using verbs like: list, create, update, delete, show, get, set... or plural nouns like 'instances', 'services'",
+    "translation": "命令“ '{{.Name}}' ”既不使用常见动词，也不采用复数形式。 建议使用以下动词：列出、创建、更新、删除、显示、获取、设置…… 或复数名词，如“实例”、“服务”"
+  },
+  {
+    "id": "Command '{{.Name}}' has no description. All commands must have a clear description.",
+    "translation": "命令 '{{.Name}}' 没有描述。 所有命令都必须有清晰的说明。"
+  },
+  {
+    "id": "Command '{{.Name}}' has no usage information.",
+    "translation": "命令 '{{.Name}}' 没有用法信息。"
+  },
+  {
+    "id": "Command '{{.Name}}' has {{.Level}} levels, exceeding the maximum of {{.Level}}. Deep command hierarchies are difficult for users to remember and discover.",
+    "translation": "命令 ` '{{.Name}}' ` 包含 ` {{.Level}} ` 个级别，超过了 ` {{.Level}} ` 的最大值。 层级过深的命令结构让用户难以记忆和掌握。"
+  },
+  {
+    "id": "Command '{{.Name}}' usage contains lowercase argument values: {{.Args}}. User input values should be in CAPITAL letters.",
+    "translation": "命令 '{{.Name}}' 的用法中包含小写参数值： {{.Args}}。 用户输入的值应为大写字母。"
+  },
+  {
+    "id": "Command '{{.Name}}' uses a reserved flag name. These are handled by the CLI framework.",
+    "translation": "命令 '{{.Name}}' 使用了预留的标志名称。 这些由 CLI 框架负责处理。"
+  },
+  {
+    "id": "Command '{{.Name}}' uses plural form but description doesn't clearly indicate it returns a list or group of items.",
+    "translation": "'{{.Name}}' 命令使用了复数形式，但说明中并未明确指出它会返回一个列表或一组项目。"
+  },
+  {
+    "id": "Convert arguments values to CAPITAL letters (e.g., NAME, INSTANCE_ID, FORMAT).",
+    "translation": "将参数值转换为大写（例如：NAME、INSTANCE_ID、FORMAT）。"
+  },
+  {
     "id": "Could not read from input: ",
     "translation": "无法从输入进行读取： "
+  },
+  {
+    "id": "Description",
+    "translation": "描述"
+  },
+  {
+    "id": "Description for '{{.Name}}' has {{.WordCount}} words. Consider limiting to less than {{.MaxWordCount}} words for better display.",
+    "translation": "'{{.Name}}' 的描述包含 {{.WordCount}} 个单词。 为获得更好的显示效果，建议将字数控制在 {{.MaxWordCount}} 字以内。"
+  },
+  {
+    "id": "Description for '{{.Name}}' should start with a capital letter.",
+    "translation": "'{{.Name}}' 的描述应以大写字母开头。"
+  },
+  {
+    "id": "Description for '{{.Name}}' starts with '{{.Bad}}'. Use a sentence without subject.",
+    "translation": "'{{.Name}}' 的说明以 '{{.Bad}}' 开头。 请用一个没有主语的句子。"
   },
   {
     "id": "Elapsed:",
@@ -38,6 +102,10 @@
   {
     "id": "Failed, rows could not convert to csv format",
     "translation": "失败，数据行无法转换为 csv 格式"
+  },
+  {
+    "id": "ID",
+    "translation": "标识"
   },
   {
     "id": "Invalid grant type: ",
@@ -88,12 +156,32 @@
     "translation": "远程服务器错误。状态码：{{.StatusCode}}，错误代码：{{.ErrorCode}}，消息：{{.Message}}"
   },
   {
+    "id": "Remove '{{.Bad}}' and start directly with the action. Example: 'List all instances' instead of 'This command lists all instances'.",
+    "translation": "删除 '{{.Bad}}' ，直接从该操作开始。 示例：使用“列出所有实例”，而不是“此命令列出所有实例”。"
+  },
+  {
+    "id": "Remove placeholders from command usage text",
+    "translation": "从命令用法说明中删除占位符"
+  },
+  {
     "id": "Session inactive: ",
     "translation": "会议非活动： "
   },
   {
+    "id": "Set MinCliVersion to {{.Version}} or higher to ensure compatibility with supported CLI versions.",
+    "translation": "将 ` MinCliVersion ` 设置为 ` {{.Version}} ` 或更高版本，以确保与受支持的 CLI 版本兼容。"
+  },
+  {
+    "id": "Shorten the description to be more concise.",
+    "translation": "请将描述内容精简，使其更加简洁。"
+  },
+  {
     "id": "Unable to save plugin config: ",
     "translation": "无法保存插件配置："
+  },
+  {
+    "id": "Update description to include words like 'list', 'show', 'display', 'view', 'all', or 'multiple' to clarify it returns multiple items.",
+    "translation": "更新描述，加入“列表”、“显示”、“查看”、“全部”或“多个”等词语，以明确说明该操作会返回多个项目。"
   },
   {
     "id": "Usage contains placeholder arguments/flags",
@@ -102,6 +190,18 @@
   {
     "id": "Usage contains unclosed {{.UnclosedGroup}} between indicies {{.Indicies}}",
     "translation": "用法中包含指示符之间未封闭的 {{.UnclosedGroup}} {{.Indicies}}"
+  },
+  {
+    "id": "Usage does not have any usage text besides COMMAND",
+    "translation": "除 COMMAND 之外，该用法没有其他说明文本"
+  },
+  {
+    "id": "Use common verbs in command names such as list, create, update, delete, or use plural forms to indicate listing operations.",
+    "translation": "在命令名称中使用常见动词，例如 list、create、update、delete，或使用复数形式来表示列表操作。"
+  },
+  {
+    "id": "Use more descriptive words with at least {{.Count}} characters for each segment.",
+    "translation": "请使用更具描述性的词语，每个段落至少包含 {{.Count}} 个字符。"
   },
   {
     "id": "{{.Field}} contains the following forbidden characters: {{.Chars}}",
@@ -114,9 +214,5 @@
   {
     "id": "{{.Field}} must contain at least {{.Param}} element",
     "translation": "{{.Field}} 必须至少包含 {{.Param}} 元素"
-  },
-  {
-    "id": "{{.Field}} must not equal '{{.Param}}'",
-    "translation": "{{.Field}} 不得等于 ' {{.Param}} '"
   }
 ]

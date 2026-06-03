@@ -4,6 +4,14 @@
     "translation": "\nInsira um número"
   },
   {
+    "id": "Add a sentence without subject describing what the command does.",
+    "translation": "Adicione uma frase sem sujeito que descreva o que o comando faz."
+  },
+  {
+    "id": "Add usage text showing command syntax with parameters and options.",
+    "translation": "Adicione um texto de instruções que mostre a sintaxe do comando com parâmetros e opções."
+  },
+  {
     "id": "An error occurred when creating log file '{{.Path}}':\n{{.Error}}\n\n",
     "translation": "Ocorreu um erro ao criar o arquivo de log '{{.Path}}':\n{{.Error}}\n\n"
   },
@@ -16,8 +24,64 @@
     "translation": "Ocorreu um erro ao fazer dump da resposta:\n{{.Error}}\n"
   },
   {
+    "id": "Capitalize the first letter of the description.",
+    "translation": "Escreva a primeira letra da descrição com maiúscula."
+  },
+  {
+    "id": "Command '{{.Name}}' contains a segment '{{.Segment}}' that is less than {{.Count}} characters. Each word in a command should be at least {{.Count}} characters.",
+    "translation": "O comando ` '{{.Name}}' ` contém um segmento ` '{{.Segment}}' ` com menos de ` {{.Count}} ` caracteres. Cada palavra em um comando deve ter pelo menos {{.Count}} es."
+  },
+  {
+    "id": "Command '{{.Name}}' does not use a common verb or plural form. Consider using verbs like: list, create, update, delete, show, get, set... or plural nouns like 'instances', 'services'",
+    "translation": "A expressão \" '{{.Name}}' \" não utiliza um verbo comum nem a forma plural. Considere usar verbos como: listar, criar, atualizar, excluir, exibir, obter, definir... ou substantivos no plural, como \"instâncias\", \"serviços\""
+  },
+  {
+    "id": "Command '{{.Name}}' has no description. All commands must have a clear description.",
+    "translation": "O comando ` '{{.Name}}' ` não possui descrição. Todos os comandos devem ter uma descrição clara."
+  },
+  {
+    "id": "Command '{{.Name}}' has no usage information.",
+    "translation": "O comando ` '{{.Name}}' ` não possui informações de uso."
+  },
+  {
+    "id": "Command '{{.Name}}' has {{.Level}} levels, exceeding the maximum of {{.Level}}. Deep command hierarchies are difficult for users to remember and discover.",
+    "translation": "O comando ` '{{.Name}}' ` possui ` {{.Level}} ` níveis, excedendo o máximo de ` {{.Level}} `. Hierarquias de comandos muito complexas são difíceis de memorizar e de entender para os usuários."
+  },
+  {
+    "id": "Command '{{.Name}}' usage contains lowercase argument values: {{.Args}}. User input values should be in CAPITAL letters.",
+    "translation": "O uso do comando ` '{{.Name}}' ` contém valores de argumentos em minúsculas: {{.Args}}. Os valores inseridos pelo usuário devem estar em MAIÚSCULAS."
+  },
+  {
+    "id": "Command '{{.Name}}' uses a reserved flag name. These are handled by the CLI framework.",
+    "translation": "O comando ` '{{.Name}}' ` utiliza um nome de sinalizador reservado. Isso é feito pela estrutura CLI."
+  },
+  {
+    "id": "Command '{{.Name}}' uses plural form but description doesn't clearly indicate it returns a list or group of items.",
+    "translation": "O comando '{{.Name}}' usa a forma plural, mas a descrição não indica claramente que ele retorna uma lista ou um grupo de itens."
+  },
+  {
+    "id": "Convert arguments values to CAPITAL letters (e.g., NAME, INSTANCE_ID, FORMAT).",
+    "translation": "Converta os valores dos argumentos para letras maiúsculas (por exemplo, NAME, INSTANCE_ID, FORMAT)."
+  },
+  {
     "id": "Could not read from input: ",
     "translation": "Não foi possível ler a apartir da entrada: "
+  },
+  {
+    "id": "Description",
+    "translation": "Descrição"
+  },
+  {
+    "id": "Description for '{{.Name}}' has {{.WordCount}} words. Consider limiting to less than {{.MaxWordCount}} words for better display.",
+    "translation": "A descrição de “ '{{.Name}}' ” tem {{.WordCount}} palavras. Considere limitar o texto a menos de {{.MaxWordCount}} palavras para uma melhor exibição."
+  },
+  {
+    "id": "Description for '{{.Name}}' should start with a capital letter.",
+    "translation": "A descrição de '{{.Name}}' deve começar com letra maiúscula."
+  },
+  {
+    "id": "Description for '{{.Name}}' starts with '{{.Bad}}'. Use a sentence without subject.",
+    "translation": "A descrição de '{{.Name}}' começa com '{{.Bad}}'. Use uma frase sem sujeito."
   },
   {
     "id": "Elapsed:",
@@ -38,6 +102,10 @@
   {
     "id": "Failed, rows could not convert to csv format",
     "translation": "Falha, não foi possível converter as linhas para o formato csv"
+  },
+  {
+    "id": "ID",
+    "translation": "ID"
   },
   {
     "id": "Invalid grant type: ",
@@ -88,12 +156,32 @@
     "translation": "Erro do servidor remoto. Código de status: {{.StatusCode}}, código de erro: {{.ErrorCode}}, mensagem: {{.Message}}"
   },
   {
+    "id": "Remove '{{.Bad}}' and start directly with the action. Example: 'List all instances' instead of 'This command lists all instances'.",
+    "translation": "Remova o \" '{{.Bad}}' \" e vá direto ao ponto. Exemplo: \"Listar todas as instâncias\" em vez de \"Este comando lista todas as instâncias\"."
+  },
+  {
+    "id": "Remove placeholders from command usage text",
+    "translation": "Remover os marcadores de lugar do texto de instruções de uso do comando"
+  },
+  {
     "id": "Session inactive: ",
     "translation": "Sessão inativa: "
   },
   {
+    "id": "Set MinCliVersion to {{.Version}} or higher to ensure compatibility with supported CLI versions.",
+    "translation": "Defina ` MinCliVersion ` como ` {{.Version}} ` ou superior para garantir a compatibilidade com as versões da CLI suportadas."
+  },
+  {
+    "id": "Shorten the description to be more concise.",
+    "translation": "Resuma a descrição para torná-la mais concisa."
+  },
+  {
     "id": "Unable to save plugin config: ",
     "translation": "Não é possível salvar a configuração do plug-in: "
+  },
+  {
+    "id": "Update description to include words like 'list', 'show', 'display', 'view', 'all', or 'multiple' to clarify it returns multiple items.",
+    "translation": "Atualize a descrição para incluir palavras como \"lista\", \"mostrar\", \"exibir\", \"visualizar\", \"todos\" ou \"vários\", a fim de deixar claro que ela retorna vários itens."
   },
   {
     "id": "Usage contains placeholder arguments/flags",
@@ -102,6 +190,18 @@
   {
     "id": "Usage contains unclosed {{.UnclosedGroup}} between indicies {{.Indicies}}",
     "translation": "O uso contém {{.UnclosedGroup}} não fechado entre os índices {{.Indicies}}"
+  },
+  {
+    "id": "Usage does not have any usage text besides COMMAND",
+    "translation": "A sintaxe não possui nenhum texto de instruções além de COMMAND"
+  },
+  {
+    "id": "Use common verbs in command names such as list, create, update, delete, or use plural forms to indicate listing operations.",
+    "translation": "Use verbos comuns nos nomes dos comandos, como listar, criar, atualizar, excluir, ou utilize formas no plural para indicar operações de listagem."
+  },
+  {
+    "id": "Use more descriptive words with at least {{.Count}} characters for each segment.",
+    "translation": "Use palavras mais descritivas, com pelo menos {{.Count}} caracteres em cada segmento."
   },
   {
     "id": "{{.Field}} contains the following forbidden characters: {{.Chars}}",
@@ -114,9 +214,5 @@
   {
     "id": "{{.Field}} must contain at least {{.Param}} element",
     "translation": "{{.Field}} deve conter pelo menos {{.Param}} elemento"
-  },
-  {
-    "id": "{{.Field}} must not equal '{{.Param}}'",
-    "translation": "{{.Field}} não deve ser igual a ' {{.Param}} '"
   }
 ]
