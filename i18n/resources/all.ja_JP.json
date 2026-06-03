@@ -176,10 +176,6 @@
     "translation": "説明文を簡潔にするために、内容を短縮してください。"
   },
   {
-    "id": "Start usage examples with '{{.Command}}' in lowercase (e.g., '{{.CommandPlugin}}...').",
-    "translation": "使用例は、 '{{.Command}}' を小文字で記述して開始してください（例：' {{.CommandPlugin}}...'）。"
-  },
-  {
     "id": "Unable to save plugin config: ",
     "translation": "プラグイン構成を保存できません: "
   },
@@ -198,10 +194,6 @@
   {
     "id": "Usage does not have any usage text besides COMMAND",
     "translation": "このコマンドには、COMMAND 以外の説明文はありません"
-  },
-  {
-    "id": "Usage should start with '{{.Command}}' (lowercase) or the full path to the {{.Command}} binary.",
-    "translation": "使用時は、 '{{.Command}}' （小文字）または {{.Command}} バイナリへのフルパスから開始する必要があります。"
   },
   {
     "id": "Use common verbs in command names such as list, create, update, delete, or use plural forms to indicate listing operations.",

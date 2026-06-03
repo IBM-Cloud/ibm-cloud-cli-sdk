@@ -176,10 +176,6 @@
     "translation": "请将描述内容精简，使其更加简洁。"
   },
   {
-    "id": "Start usage examples with '{{.Command}}' in lowercase (e.g., '{{.CommandPlugin}}...').",
-    "translation": "请以小写的 '{{.Command}}' 开头编写使用示例（例如：' {{.CommandPlugin}}...'）。"
-  },
-  {
     "id": "Unable to save plugin config: ",
     "translation": "无法保存插件配置："
   },
@@ -198,10 +194,6 @@
   {
     "id": "Usage does not have any usage text besides COMMAND",
     "translation": "除 COMMAND 之外，该用法没有其他说明文本"
-  },
-  {
-    "id": "Usage should start with '{{.Command}}' (lowercase) or the full path to the {{.Command}} binary.",
-    "translation": "使用时应以 ` '{{.Command}}' `（小写）或 ` {{.Command}} ` 二进制文件的完整路径开头。"
   },
   {
     "id": "Use common verbs in command names such as list, create, update, delete, or use plural forms to indicate listing operations.",

@@ -240,10 +240,6 @@ var _i18nResourcesAllDe_deJson = []byte(`[
     "translation": "Fassen Sie die Beschreibung prägnanter zusammen."
   },
   {
-    "id": "Start usage examples with '{{.Command}}' in lowercase (e.g., '{{.CommandPlugin}}...').",
-    "translation": "Beginnen Sie Anwendungsbeispiele mit „ '{{.Command}}' “ in Kleinbuchstaben (z. B. „ {{.CommandPlugin}}...“)."
-  },
-  {
     "id": "Unable to save plugin config: ",
     "translation": "Speichern der Plug-in-Konfiguration nicht möglich: "
   },
@@ -262,10 +258,6 @@ var _i18nResourcesAllDe_deJson = []byte(`[
   {
     "id": "Usage does not have any usage text besides COMMAND",
     "translation": "Die Verwendung enthält außer „COMMAND“ keinen weiteren Text"
-  },
-  {
-    "id": "Usage should start with '{{.Command}}' (lowercase) or the full path to the {{.Command}} binary.",
-    "translation": "Die Verwendung sollte mit „ '{{.Command}}' “ (in Kleinbuchstaben) oder dem vollständigen Pfad zur Binärdatei „ {{.Command}} “ beginnen."
   },
   {
     "id": "Use common verbs in command names such as list, create, update, delete, or use plural forms to indicate listing operations.",
@@ -299,7 +291,7 @@ func i18nResourcesAllDe_deJson() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "i18n/resources/all.de_DE.json", size: 10706, mode: os.FileMode(420), modTime: time.Unix(1780504718, 0)}
+	info := bindataFileInfo{name: "i18n/resources/all.de_DE.json", size: 10174, mode: os.FileMode(420), modTime: time.Unix(1780514860, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -482,10 +474,6 @@ var _i18nResourcesAllEn_usJson = []byte(`[
     "translation": "Shorten the description to be more concise."
   },
   {
-    "id": "Start usage examples with '{{.Command}}' in lowercase (e.g., '{{.CommandPlugin}}...').",
-    "translation": "Start usage examples with '{{.Command}}' in lowercase (e.g., '{{.CommandPlugin}}...')."
-  },
-  {
     "id": "Unable to save plugin config: ",
     "translation": "Unable to save plugin config: "
   },
@@ -504,10 +492,6 @@ var _i18nResourcesAllEn_usJson = []byte(`[
   {
     "id": "Usage does not have any usage text besides COMMAND",
     "translation": "Usage does not have any usage text besides COMMAND"
-  },
-  {
-    "id": "Usage should start with '{{.Command}}' (lowercase) or the full path to the {{.Command}} binary.",
-    "translation": "Usage should start with '{{.Command}}' (lowercase) or the full path to the {{.Command}} binary."
   },
   {
     "id": "Use common verbs in command names such as list, create, update, delete, or use plural forms to indicate listing operations.",
@@ -541,7 +525,7 @@ func i18nResourcesAllEn_usJson() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "i18n/resources/all.en_US.json", size: 9496, mode: os.FileMode(420), modTime: time.Unix(1780504718, 0)}
+	info := bindataFileInfo{name: "i18n/resources/all.en_US.json", size: 9044, mode: os.FileMode(420), modTime: time.Unix(1780514860, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -724,10 +708,6 @@ var _i18nResourcesAllEs_esJson = []byte(`[
     "translation": "Acorta la descripción para que sea más concisa."
   },
   {
-    "id": "Start usage examples with '{{.Command}}' in lowercase (e.g., '{{.CommandPlugin}}...').",
-    "translation": "Empieza los ejemplos de uso con « '{{.Command}}' » en minúsculas (p. ej., « {{.CommandPlugin}}...»)."
-  },
-  {
     "id": "Unable to save plugin config: ",
     "translation": "No se ha podido guardar la configuración del plugin:"
   },
@@ -746,10 +726,6 @@ var _i18nResourcesAllEs_esJson = []byte(`[
   {
     "id": "Usage does not have any usage text besides COMMAND",
     "translation": "El uso no tiene ningún texto de ayuda, salvo el comando"
-  },
-  {
-    "id": "Usage should start with '{{.Command}}' (lowercase) or the full path to the {{.Command}} binary.",
-    "translation": "El uso debe comenzar con « '{{.Command}}' » (en minúsculas) o con la ruta completa al archivo binario « {{.Command}} »."
   },
   {
     "id": "Use common verbs in command names such as list, create, update, delete, or use plural forms to indicate listing operations.",
@@ -783,7 +759,7 @@ func i18nResourcesAllEs_esJson() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "i18n/resources/all.es_ES.json", size: 10352, mode: os.FileMode(420), modTime: time.Unix(1780504718, 0)}
+	info := bindataFileInfo{name: "i18n/resources/all.es_ES.json", size: 9852, mode: os.FileMode(420), modTime: time.Unix(1780514860, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -966,10 +942,6 @@ var _i18nResourcesAllFr_frJson = []byte(`[
     "translation": "Raccourcissez la description pour la rendre plus concise."
   },
   {
-    "id": "Start usage examples with '{{.Command}}' in lowercase (e.g., '{{.CommandPlugin}}...').",
-    "translation": "Commencez les exemples d'utilisation par « '{{.Command}}' » en minuscules (par exemple, « {{.CommandPlugin}}... »)."
-  },
-  {
     "id": "Unable to save plugin config: ",
     "translation": "Impossible d'enregistrer la configuration du plug-in : "
   },
@@ -988,10 +960,6 @@ var _i18nResourcesAllFr_frJson = []byte(`[
   {
     "id": "Usage does not have any usage text besides COMMAND",
     "translation": "La commande ne comporte aucun texte d'aide, à l'exception de COMMAND"
-  },
-  {
-    "id": "Usage should start with '{{.Command}}' (lowercase) or the full path to the {{.Command}} binary.",
-    "translation": "L'utilisation doit commencer par « '{{.Command}}' » (en minuscules) ou par le chemin d'accès complet vers le fichier binaire « {{.Command}} »."
   },
   {
     "id": "Use common verbs in command names such as list, create, update, delete, or use plural forms to indicate listing operations.",
@@ -1025,7 +993,7 @@ func i18nResourcesAllFr_frJson() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "i18n/resources/all.fr_FR.json", size: 10556, mode: os.FileMode(420), modTime: time.Unix(1780504718, 0)}
+	info := bindataFileInfo{name: "i18n/resources/all.fr_FR.json", size: 10019, mode: os.FileMode(420), modTime: time.Unix(1780514860, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -1208,10 +1176,6 @@ var _i18nResourcesAllIt_itJson = []byte(`[
     "translation": "Accorcia la descrizione per renderla più concisa."
   },
   {
-    "id": "Start usage examples with '{{.Command}}' in lowercase (e.g., '{{.CommandPlugin}}...').",
-    "translation": "Inizia gli esempi di utilizzo con '{{.Command}}' in minuscolo (ad es., ' {{.CommandPlugin}}...')."
-  },
-  {
     "id": "Unable to save plugin config: ",
     "translation": "Impossibile salvare la configurazione del plug-in: "
   },
@@ -1230,10 +1194,6 @@ var _i18nResourcesAllIt_itJson = []byte(`[
   {
     "id": "Usage does not have any usage text besides COMMAND",
     "translation": "L'uso non prevede alcun testo descrittivo oltre a COMMAND"
-  },
-  {
-    "id": "Usage should start with '{{.Command}}' (lowercase) or the full path to the {{.Command}} binary.",
-    "translation": "Per l'utilizzo, è necessario specificare \" '{{.Command}}' \" (in minuscolo) o il percorso completo del file binario \" {{.Command}} \"."
   },
   {
     "id": "Use common verbs in command names such as list, create, update, delete, or use plural forms to indicate listing operations.",
@@ -1267,7 +1227,7 @@ func i18nResourcesAllIt_itJson() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "i18n/resources/all.it_IT.json", size: 10295, mode: os.FileMode(420), modTime: time.Unix(1780504718, 0)}
+	info := bindataFileInfo{name: "i18n/resources/all.it_IT.json", size: 9790, mode: os.FileMode(420), modTime: time.Unix(1780514860, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -1450,10 +1410,6 @@ var _i18nResourcesAllJa_jpJson = []byte(`[
     "translation": "説明文を簡潔にするために、内容を短縮してください。"
   },
   {
-    "id": "Start usage examples with '{{.Command}}' in lowercase (e.g., '{{.CommandPlugin}}...').",
-    "translation": "使用例は、 '{{.Command}}' を小文字で記述して開始してください（例：' {{.CommandPlugin}}...'）。"
-  },
-  {
     "id": "Unable to save plugin config: ",
     "translation": "プラグイン構成を保存できません: "
   },
@@ -1472,10 +1428,6 @@ var _i18nResourcesAllJa_jpJson = []byte(`[
   {
     "id": "Usage does not have any usage text besides COMMAND",
     "translation": "このコマンドには、COMMAND 以外の説明文はありません"
-  },
-  {
-    "id": "Usage should start with '{{.Command}}' (lowercase) or the full path to the {{.Command}} binary.",
-    "translation": "使用時は、 '{{.Command}}' （小文字）または {{.Command}} バイナリへのフルパスから開始する必要があります。"
   },
   {
     "id": "Use common verbs in command names such as list, create, update, delete, or use plural forms to indicate listing operations.",
@@ -1509,7 +1461,7 @@ func i18nResourcesAllJa_jpJson() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "i18n/resources/all.ja_JP.json", size: 11295, mode: os.FileMode(420), modTime: time.Unix(1780504718, 0)}
+	info := bindataFileInfo{name: "i18n/resources/all.ja_JP.json", size: 10762, mode: os.FileMode(420), modTime: time.Unix(1780514860, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -1692,10 +1644,6 @@ var _i18nResourcesAllKo_krJson = []byte(`[
     "translation": "설명을 더 간결하게 줄이세요."
   },
   {
-    "id": "Start usage examples with '{{.Command}}' in lowercase (e.g., '{{.CommandPlugin}}...').",
-    "translation": "'{{.Command}}' 를 소문자로 시작하는 사용 예시를 작성하세요(예: ' {{.CommandPlugin}}...')."
-  },
-  {
     "id": "Unable to save plugin config: ",
     "translation": "플러그인 구성을 저장할 수 없음:"
   },
@@ -1714,10 +1662,6 @@ var _i18nResourcesAllKo_krJson = []byte(`[
   {
     "id": "Usage does not have any usage text besides COMMAND",
     "translation": "사용법에는 COMMAND 외에 다른 설명이 없습니다"
-  },
-  {
-    "id": "Usage should start with '{{.Command}}' (lowercase) or the full path to the {{.Command}} binary.",
-    "translation": "사용 시에는 `+"`"+` '{{.Command}}' `+"`"+`(소문자) 또는 `+"`"+` {{.Command}} `+"`"+` 바이너리의 전체 경로로 시작해야 합니다."
   },
   {
     "id": "Use common verbs in command names such as list, create, update, delete, or use plural forms to indicate listing operations.",
@@ -1751,7 +1695,7 @@ func i18nResourcesAllKo_krJson() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "i18n/resources/all.ko_KR.json", size: 10680, mode: os.FileMode(420), modTime: time.Unix(1780504718, 0)}
+	info := bindataFileInfo{name: "i18n/resources/all.ko_KR.json", size: 10173, mode: os.FileMode(420), modTime: time.Unix(1780514860, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -1934,10 +1878,6 @@ var _i18nResourcesAllPt_brJson = []byte(`[
     "translation": "Resuma a descrição para torná-la mais concisa."
   },
   {
-    "id": "Start usage examples with '{{.Command}}' in lowercase (e.g., '{{.CommandPlugin}}...').",
-    "translation": "Comece os exemplos de uso com '{{.Command}}' em letras minúsculas (por exemplo, ' {{.CommandPlugin}}...')."
-  },
-  {
     "id": "Unable to save plugin config: ",
     "translation": "Não é possível salvar a configuração do plug-in: "
   },
@@ -1956,10 +1896,6 @@ var _i18nResourcesAllPt_brJson = []byte(`[
   {
     "id": "Usage does not have any usage text besides COMMAND",
     "translation": "A sintaxe não possui nenhum texto de instruções além de COMMAND"
-  },
-  {
-    "id": "Usage should start with '{{.Command}}' (lowercase) or the full path to the {{.Command}} binary.",
-    "translation": "A execução deve começar com `+"`"+` '{{.Command}}' `+"`"+` (em letras minúsculas) ou com o caminho completo para o arquivo binário `+"`"+` {{.Command}} `+"`"+`."
   },
   {
     "id": "Use common verbs in command names such as list, create, update, delete, or use plural forms to indicate listing operations.",
@@ -1993,7 +1929,7 @@ func i18nResourcesAllPt_brJson() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "i18n/resources/all.pt_BR.json", size: 10147, mode: os.FileMode(420), modTime: time.Unix(1780504718, 0)}
+	info := bindataFileInfo{name: "i18n/resources/all.pt_BR.json", size: 9628, mode: os.FileMode(420), modTime: time.Unix(1780514860, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -2176,10 +2112,6 @@ var _i18nResourcesAllZh_hansJson = []byte(`[
     "translation": "请将描述内容精简，使其更加简洁。"
   },
   {
-    "id": "Start usage examples with '{{.Command}}' in lowercase (e.g., '{{.CommandPlugin}}...').",
-    "translation": "请以小写的 '{{.Command}}' 开头编写使用示例（例如：' {{.CommandPlugin}}...'）。"
-  },
-  {
     "id": "Unable to save plugin config: ",
     "translation": "无法保存插件配置："
   },
@@ -2198,10 +2130,6 @@ var _i18nResourcesAllZh_hansJson = []byte(`[
   {
     "id": "Usage does not have any usage text besides COMMAND",
     "translation": "除 COMMAND 之外，该用法没有其他说明文本"
-  },
-  {
-    "id": "Usage should start with '{{.Command}}' (lowercase) or the full path to the {{.Command}} binary.",
-    "translation": "使用时应以 `+"`"+` '{{.Command}}' `+"`"+`（小写）或 `+"`"+` {{.Command}} `+"`"+` 二进制文件的完整路径开头。"
   },
   {
     "id": "Use common verbs in command names such as list, create, update, delete, or use plural forms to indicate listing operations.",
@@ -2235,7 +2163,7 @@ func i18nResourcesAllZh_hansJson() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "i18n/resources/all.zh_Hans.json", size: 9526, mode: os.FileMode(420), modTime: time.Unix(1780504718, 0)}
+	info := bindataFileInfo{name: "i18n/resources/all.zh_Hans.json", size: 9052, mode: os.FileMode(420), modTime: time.Unix(1780514860, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -2418,10 +2346,6 @@ var _i18nResourcesAllZh_hantJson = []byte(`[
     "translation": "請將描述簡化，使其更為簡潔。"
   },
   {
-    "id": "Start usage examples with '{{.Command}}' in lowercase (e.g., '{{.CommandPlugin}}...').",
-    "translation": "請以小寫的 '{{.Command}}' 開頭來提供使用範例（例如：' {{.CommandPlugin}}...'）。"
-  },
-  {
     "id": "Unable to save plugin config: ",
     "translation": "無法儲存外掛程式配置："
   },
@@ -2440,10 +2364,6 @@ var _i18nResourcesAllZh_hantJson = []byte(`[
   {
     "id": "Usage does not have any usage text besides COMMAND",
     "translation": "除了 COMMAND 之外，此指令沒有其他說明文字"
-  },
-  {
-    "id": "Usage should start with '{{.Command}}' (lowercase) or the full path to the {{.Command}} binary.",
-    "translation": "使用時應以 `+"`"+` '{{.Command}}' `+"`"+`（小寫）或 `+"`"+` {{.Command}} `+"`"+` 二進位檔的完整路徑作為開頭。"
   },
   {
     "id": "Use common verbs in command names such as list, create, update, delete, or use plural forms to indicate listing operations.",
@@ -2477,7 +2397,7 @@ func i18nResourcesAllZh_hantJson() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "i18n/resources/all.zh_Hant.json", size: 9594, mode: os.FileMode(420), modTime: time.Unix(1780504718, 0)}
+	info := bindataFileInfo{name: "i18n/resources/all.zh_Hant.json", size: 9114, mode: os.FileMode(420), modTime: time.Unix(1780514860, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }

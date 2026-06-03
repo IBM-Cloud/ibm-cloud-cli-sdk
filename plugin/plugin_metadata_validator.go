@@ -491,21 +491,22 @@ func validatePluginMetadataUsage(usageText string) *PluginMetadataError {
 	}
 
 	// (2) Check that usage starts with 'ibmcloud' or full path
-	usageStripped := strings.TrimSpace(usageText)
-	if !strings.HasPrefix(usageStripped, "ibmcloud") && !strings.Contains(usageStripped[:min(50, len(usageStripped))], "/ibmcloud") {
-		return &PluginMetadataError{
-			Error: i18n.T("Usage should start with '{{.Command}}' (lowercase) or the full path to the {{.Command}} binary.",
-				map[string]any{
-					"Command": "ibmcloud",
-				}),
-			Priority: PriorityError,
-			Remediation: i18n.T("Start usage examples with '{{.Command}}' in lowercase (e.g., '{{.CommandPlugin}}...').",
-				map[string]any{
-					"Command":       "ibmcloud",
-					"CommandPlugin": "ibmcloud plugin-name command",
-				}),
-		}
-	}
+	// NOTE: Renable if we need it
+	// usageStripped := strings.TrimSpace(usageText)
+	// if !strings.HasPrefix(usageStripped, "ibmcloud") && !strings.Contains(usageStripped[:min(50, len(usageStripped))], "/ibmcloud") {
+	// 	return &PluginMetadataError{
+	// 		Error: i18n.T("Usage should start with '{{.Command}}' (lowercase) or the full path to the {{.Command}} binary.",
+	// 			map[string]any{
+	// 				"Command": "ibmcloud",
+	// 			}),
+	// 		Priority: PriorityError,
+	// 		Remediation: i18n.T("Start usage examples with '{{.Command}}' in lowercase (e.g., '{{.CommandPlugin}}...').",
+	// 			map[string]any{
+	// 				"Command":       "ibmcloud",
+	// 				"CommandPlugin": "ibmcloud plugin-name command",
+	// 			}),
+	// 	}
+	// }
 
 	// (3) No basic usage text (Just COMMAND)
 	parts := strings.SplitAfter(usageText, "COMMAND")
