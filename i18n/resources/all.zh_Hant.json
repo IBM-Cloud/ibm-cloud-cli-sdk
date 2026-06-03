@@ -4,6 +4,14 @@
     "translation": "\n請輸入數字"
   },
   {
+    "id": "Add a sentence without subject describing what the command does.",
+    "translation": "請添加一句不帶主語的句子，說明該指令的功能。"
+  },
+  {
+    "id": "Add usage text showing command syntax with parameters and options.",
+    "translation": "新增使用說明，展示包含參數與選項的指令語法。"
+  },
+  {
     "id": "An error occurred when creating log file '{{.Path}}':\n{{.Error}}\n\n",
     "translation": "建立日誌檔 '{{.Path}}' 時發生錯誤：\n{{.Error}}\n\n"
   },
@@ -14,6 +22,10 @@
   {
     "id": "An error occurred while dumping response:\n{{.Error}}\n",
     "translation": "傾出回應時發生錯誤：\n{{.Error}}\n"
+  },
+  {
+    "id": "Capitalize the first letter of the description.",
+    "translation": "描述文字的首字母應大寫。"
   },
   {
     "id": "Command '{{.Name}}' contains a segment '{{.Segment}}' that is less than {{.Count}} characters. Each word in a command should be at least {{.Count}} characters.",
@@ -44,12 +56,28 @@
     "translation": "指令 ` '{{.Name}}' ` 使用了保留的旗標名稱。 這些由 CLI 框架負責處理。"
   },
   {
+    "id": "Command '{{.Name}}' uses plural form but description doesn't clearly indicate it returns a list or group of items.",
+    "translation": "指令 ` '{{.Name}}' ` 使用了複數形式，但說明文字並未明確指出它會傳回一組項目。"
+  },
+  {
+    "id": "Convert arguments values to CAPITAL letters (e.g., NAME, INSTANCE_ID, FORMAT).",
+    "translation": "將參數值轉換為大寫字母（例如：NAME、INSTANCE_ID、FORMAT）。"
+  },
+  {
     "id": "Could not read from input: ",
     "translation": "無法從輸入讀取： "
   },
   {
+    "id": "Description",
+    "translation": "說明"
+  },
+  {
     "id": "Description for '{{.Name}}' has {{.WordCount}} words. Consider limiting to less than {{.MaxWordCount}} words for better display.",
     "translation": "'{{.Name}}' 的說明文字共有 {{.WordCount}} 個字。 為獲得更好的顯示效果，建議將字數限制在 {{.MaxWordCount}} 字以內。"
+  },
+  {
+    "id": "Description for '{{.Name}}' should start with a capital letter.",
+    "translation": "'{{.Name}}' 的描述應以大寫字母開頭。"
   },
   {
     "id": "Description for '{{.Name}}' starts with '{{.Bad}}'. Use a sentence without subject.",
@@ -74,6 +102,10 @@
   {
     "id": "Failed, rows could not convert to csv format",
     "translation": "失敗，資料無法轉換成 csv 格式"
+  },
+  {
+    "id": "ID",
+    "translation": "ID"
   },
   {
     "id": "Invalid grant type: ",
@@ -120,16 +152,28 @@
     "translation": "回應："
   },
   {
-    "id": "Reduce command depth to {{.Level}} or fewer levels. Options: (1) Flatten the hierarchy by combining levels, (2) Use command flags/options instead of subcommands, (3) Reorganize the command structure to be more intuitive.",
-    "translation": "請將指令層級減少至 {{.Level}} 或更少層級。 選項：(1) 透過合併層級來簡化層級結構，(2) 使用命令參數 /opt ion 取代子命令，(3) 重新組織命令結構，使其更直觀。"
-  },
-  {
     "id": "Remote server error. Status code: {{.StatusCode}}, error code: {{.ErrorCode}}, message: {{.Message}}",
     "translation": "遠端伺服器錯誤。狀態碼：{{.StatusCode}}，錯誤碼：{{.ErrorCode}}，訊息：{{.Message}}"
   },
   {
+    "id": "Remove '{{.Bad}}' and start directly with the action. Example: 'List all instances' instead of 'This command lists all instances'.",
+    "translation": "移除 ` '{{.Bad}}' `，並直接從該動作開始。 範例：使用「列出所有執行個體」而非「此指令會列出所有執行個體」。"
+  },
+  {
+    "id": "Remove placeholders from command usage text",
+    "translation": "從命令使用說明中移除佔位符"
+  },
+  {
     "id": "Session inactive: ",
     "translation": "會議非主動： "
+  },
+  {
+    "id": "Set MinCliVersion to {{.Version}} or higher to ensure compatibility with supported CLI versions.",
+    "translation": "請將 ` MinCliVersion ` 設定為 ` {{.Version}} ` 或更高版本，以確保與受支援的 CLI 版本相容。"
+  },
+  {
+    "id": "Shorten the description to be more concise.",
+    "translation": "請將描述簡化，使其更為簡潔。"
   },
   {
     "id": "Start usage examples with '{{.Command}}' in lowercase (e.g., '{{.CommandPlugin}}...').",
@@ -140,6 +184,10 @@
     "translation": "無法儲存外掛程式配置："
   },
   {
+    "id": "Update description to include words like 'list', 'show', 'display', 'view', 'all', or 'multiple' to clarify it returns multiple items.",
+    "translation": "請在描述中加入「清單」、「顯示」、「檢視」、「全部」或「多個」等字詞，以明確指出該功能會返回多個項目。"
+  },
+  {
     "id": "Usage contains placeholder arguments/flags",
     "translation": "用法包含占位符參數/旗標"
   },
@@ -148,12 +196,20 @@
     "translation": "使用方式包含指標之間未封閉的 {{.UnclosedGroup}} {{.Indicies}}"
   },
   {
+    "id": "Usage does not have any usage text besides COMMAND",
+    "translation": "除了 COMMAND 之外，此指令沒有其他說明文字"
+  },
+  {
     "id": "Usage should start with '{{.Command}}' (lowercase) or the full path to the {{.Command}} binary.",
     "translation": "使用時應以 ` '{{.Command}}' `（小寫）或 ` {{.Command}} ` 二進位檔的完整路徑作為開頭。"
   },
   {
     "id": "Use common verbs in command names such as list, create, update, delete, or use plural forms to indicate listing operations.",
     "translation": "請在指令名稱中使用常見動詞，例如 list、create、update、delete，或使用複數形式來表示清單操作。"
+  },
+  {
+    "id": "Use more descriptive words with at least {{.Count}} characters for each segment.",
+    "translation": "請使用更具描述性的詞彙，並確保每個段落至少有 {{.Count}} 個字元。"
   },
   {
     "id": "{{.Field}} contains the following forbidden characters: {{.Chars}}",
@@ -166,9 +222,5 @@
   {
     "id": "{{.Field}} must contain at least {{.Param}} element",
     "translation": "{{.Field}} 必須至少包含 {{.Param}} 元素"
-  },
-  {
-    "id": "{{.Field}} must not equal '{{.Param}}'",
-    "translation": "{{.Field}} 不得等於 ' {{.Param}} '"
   }
 ]

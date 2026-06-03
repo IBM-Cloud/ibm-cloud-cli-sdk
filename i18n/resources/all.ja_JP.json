@@ -4,6 +4,14 @@
     "translation": "\n数値を入力してください"
   },
   {
+    "id": "Add a sentence without subject describing what the command does.",
+    "translation": "そのコマンドが何をするのかを説明する、主語のない文を追加してください。"
+  },
+  {
+    "id": "Add usage text showing command syntax with parameters and options.",
+    "translation": "パラメータやオプションを含むコマンドの構文を示す説明文を追加してください。"
+  },
+  {
     "id": "An error occurred when creating log file '{{.Path}}':\n{{.Error}}\n\n",
     "translation": "ログ・ファイル '{{.Path}}' を作成中にエラーが発生しました:\n{{.Error}}\n\n"
   },
@@ -14,6 +22,10 @@
   {
     "id": "An error occurred while dumping response:\n{{.Error}}\n",
     "translation": "応答のダンプ中にエラーが発生しました:\n{{.Error}}\n"
+  },
+  {
+    "id": "Capitalize the first letter of the description.",
+    "translation": "説明文の最初の文字を大文字にしてください。"
   },
   {
     "id": "Command '{{.Name}}' contains a segment '{{.Segment}}' that is less than {{.Count}} characters. Each word in a command should be at least {{.Count}} characters.",
@@ -44,12 +56,28 @@
     "translation": "コマンド「 '{{.Name}}' 」は、予約済みのフラグ名を使用しています。 これらはCLIフレームワークによって処理されます。"
   },
   {
+    "id": "Command '{{.Name}}' uses plural form but description doesn't clearly indicate it returns a list or group of items.",
+    "translation": "コマンド「 '{{.Name}}' 」は複数形を使用していますが、説明文にはリストや項目のグループが返されることが明確に示されていません。"
+  },
+  {
+    "id": "Convert arguments values to CAPITAL letters (e.g., NAME, INSTANCE_ID, FORMAT).",
+    "translation": "引数の値を大文字に変換します（例：NAME、INSTANCE_ID、FORMAT）。"
+  },
+  {
     "id": "Could not read from input: ",
     "translation": "入力から読み取れませんでした。 "
   },
   {
+    "id": "Description",
+    "translation": "説明"
+  },
+  {
     "id": "Description for '{{.Name}}' has {{.WordCount}} words. Consider limiting to less than {{.MaxWordCount}} words for better display.",
     "translation": "「 '{{.Name}}' 」の説明文には、 {{.WordCount}} 語が含まれています。 表示を最適化するため、文字数を {{.MaxWordCount}} 文字未満に抑えることをご検討ください。"
+  },
+  {
+    "id": "Description for '{{.Name}}' should start with a capital letter.",
+    "translation": "'{{.Name}}' の説明文は、大文字で始める必要があります。"
   },
   {
     "id": "Description for '{{.Name}}' starts with '{{.Bad}}'. Use a sentence without subject.",
@@ -74,6 +102,10 @@
   {
     "id": "Failed, rows could not convert to csv format",
     "translation": "行をcsv形式に変換できませんでした"
+  },
+  {
+    "id": "ID",
+    "translation": "ID"
   },
   {
     "id": "Invalid grant type: ",
@@ -120,16 +152,28 @@
     "translation": "応答:"
   },
   {
-    "id": "Reduce command depth to {{.Level}} or fewer levels. Options: (1) Flatten the hierarchy by combining levels, (2) Use command flags/options instead of subcommands, (3) Reorganize the command structure to be more intuitive.",
-    "translation": "コマンドのネスト階層を {{.Level}} 以下に減らしてください。 選択肢：(1) レベルを統合して階層を平坦化する、(2) サブコマンドの代わりに /opt ionなどのコマンドフラグを使用する、(3) コマンド構造をより直感的なものに見直す。"
-  },
-  {
     "id": "Remote server error. Status code: {{.StatusCode}}, error code: {{.ErrorCode}}, message: {{.Message}}",
     "translation": "リモート・サーバー・エラー。 状況コード: {{.StatusCode}}、エラー・コード: {{.ErrorCode}}、メッセージ: {{.Message}}"
   },
   {
+    "id": "Remove '{{.Bad}}' and start directly with the action. Example: 'List all instances' instead of 'This command lists all instances'.",
+    "translation": "'{{.Bad}}' を削除し、アクションを直接開始してください。 例：「このコマンドはすべてのインスタンスを表示します」ではなく、「すべてのインスタンスを表示」とする。"
+  },
+  {
+    "id": "Remove placeholders from command usage text",
+    "translation": "コマンドの使用方法の説明文からプレースホルダーを削除する"
+  },
+  {
     "id": "Session inactive: ",
     "translation": "セッションは不活発： "
+  },
+  {
+    "id": "Set MinCliVersion to {{.Version}} or higher to ensure compatibility with supported CLI versions.",
+    "translation": "サポートされているCLIバージョンとの互換性を確保するため、 MinCliVersion を {{.Version}} 以上に設定してください。"
+  },
+  {
+    "id": "Shorten the description to be more concise.",
+    "translation": "説明文を簡潔にするために、内容を短縮してください。"
   },
   {
     "id": "Start usage examples with '{{.Command}}' in lowercase (e.g., '{{.CommandPlugin}}...').",
@@ -140,6 +184,10 @@
     "translation": "プラグイン構成を保存できません: "
   },
   {
+    "id": "Update description to include words like 'list', 'show', 'display', 'view', 'all', or 'multiple' to clarify it returns multiple items.",
+    "translation": "説明文に「一覧」、「表示」、「表示する」、「閲覧」、「すべて」、「複数」などの単語を追加し、複数の項目が返されることを明確にしてください。"
+  },
+  {
     "id": "Usage contains placeholder arguments/flags",
     "translation": "使用法にはプレースホルダ引数/フラグが含まれる"
   },
@@ -148,12 +196,20 @@
     "translation": "使用法には、インジケーターの間に閉じていない {{.UnclosedGroup}} が含まれる。 {{.Indicies}}"
   },
   {
+    "id": "Usage does not have any usage text besides COMMAND",
+    "translation": "このコマンドには、COMMAND 以外の説明文はありません"
+  },
+  {
     "id": "Usage should start with '{{.Command}}' (lowercase) or the full path to the {{.Command}} binary.",
     "translation": "使用時は、 '{{.Command}}' （小文字）または {{.Command}} バイナリへのフルパスから開始する必要があります。"
   },
   {
     "id": "Use common verbs in command names such as list, create, update, delete, or use plural forms to indicate listing operations.",
     "translation": "コマンド名には、「list」「create」「update」「delete」などの一般的な動詞を使用するか、一覧表示操作を示すために複数形を使用してください。"
+  },
+  {
+    "id": "Use more descriptive words with at least {{.Count}} characters for each segment.",
+    "translation": "各セグメントには、少なくとも {{.Count}} 文字の、より具体的な言葉を使用してください。"
   },
   {
     "id": "{{.Field}} contains the following forbidden characters: {{.Chars}}",
@@ -166,9 +222,5 @@
   {
     "id": "{{.Field}} must contain at least {{.Param}} element",
     "translation": "{{.Field}} は少なくとも {{.Param}} の要素を含んでいなければならない"
-  },
-  {
-    "id": "{{.Field}} must not equal '{{.Param}}'",
-    "translation": "{{.Field}} は ' {{.Param}} ' と同じであってはならない"
   }
 ]

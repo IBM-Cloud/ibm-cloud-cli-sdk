@@ -68,6 +68,14 @@ var _i18nResourcesAllDe_deJson = []byte(`[
     "translation": "\nGeben Sie eine Zahl ein."
   },
   {
+    "id": "Add a sentence without subject describing what the command does.",
+    "translation": "Füge einen Satz ohne Subjekt hinzu, der beschreibt, was der Befehl bewirkt."
+  },
+  {
+    "id": "Add usage text showing command syntax with parameters and options.",
+    "translation": "Fügen Sie einen Hilfetext hinzu, der die Befehlssyntax mit Parametern und Optionen enthält."
+  },
+  {
     "id": "An error occurred when creating log file '{{.Path}}':\n{{.Error}}\n\n",
     "translation": "Beim Erstellen der Protokolldatei '{{.Path}}' ist ein Fehler aufgetreten:\n{{.Error}}\n\n"
   },
@@ -78,6 +86,10 @@ var _i18nResourcesAllDe_deJson = []byte(`[
   {
     "id": "An error occurred while dumping response:\n{{.Error}}\n",
     "translation": "Bei der Antwort bezüglich der Erstellung eines Speicherauszugs ist ein Fehler aufgetreten:\n{{.Error}}\n"
+  },
+  {
+    "id": "Capitalize the first letter of the description.",
+    "translation": "Schreibe den ersten Buchstaben der Beschreibung groß."
   },
   {
     "id": "Command '{{.Name}}' contains a segment '{{.Segment}}' that is less than {{.Count}} characters. Each word in a command should be at least {{.Count}} characters.",
@@ -108,12 +120,28 @@ var _i18nResourcesAllDe_deJson = []byte(`[
     "translation": "Der Befehl „ '{{.Name}}' “ verwendet einen reservierten Flaggennamen. Diese werden vom CLI-Framework verwaltet."
   },
   {
+    "id": "Command '{{.Name}}' uses plural form but description doesn't clearly indicate it returns a list or group of items.",
+    "translation": "Der Befehl „ '{{.Name}}' “ verwendet die Pluralform, doch aus der Beschreibung geht nicht eindeutig hervor, dass er eine Liste oder eine Gruppe von Elementen zurückgibt."
+  },
+  {
+    "id": "Convert arguments values to CAPITAL letters (e.g., NAME, INSTANCE_ID, FORMAT).",
+    "translation": "Werte der Argumente in Großbuchstaben umwandeln (z. B. NAME, INSTANCE_ID, FORMAT)."
+  },
+  {
     "id": "Could not read from input: ",
     "translation": "Lesen der Eingabedaten nicht möglich: "
   },
   {
+    "id": "Description",
+    "translation": "Beschreibung"
+  },
+  {
     "id": "Description for '{{.Name}}' has {{.WordCount}} words. Consider limiting to less than {{.MaxWordCount}} words for better display.",
     "translation": "Die Beschreibung zu „ '{{.Name}}' “ umfasst {{.WordCount}} Wörter. Erwägen Sie, den Text auf weniger als {{.MaxWordCount}} Wörter zu beschränken, um eine bessere Darstellung zu erzielen."
+  },
+  {
+    "id": "Description for '{{.Name}}' should start with a capital letter.",
+    "translation": "Die Beschreibung für „ '{{.Name}}' “ sollte mit einem Großbuchstaben beginnen."
   },
   {
     "id": "Description for '{{.Name}}' starts with '{{.Bad}}'. Use a sentence without subject.",
@@ -138,6 +166,10 @@ var _i18nResourcesAllDe_deJson = []byte(`[
   {
     "id": "Failed, rows could not convert to csv format",
     "translation": "Fehlgeschlagen, Zeilen konnten nicht in das csv-Format konvertiert werden"
+  },
+  {
+    "id": "ID",
+    "translation": "ID"
   },
   {
     "id": "Invalid grant type: ",
@@ -184,16 +216,28 @@ var _i18nResourcesAllDe_deJson = []byte(`[
     "translation": "ANTWORT:"
   },
   {
-    "id": "Reduce command depth to {{.Level}} or fewer levels. Options: (1) Flatten the hierarchy by combining levels, (2) Use command flags/options instead of subcommands, (3) Reorganize the command structure to be more intuitive.",
-    "translation": "Reduzieren Sie die Befehlstiefe auf maximal {{.Level}}. Optionen: (1) Die Hierarchie durch Zusammenfassen von Ebenen vereinfachen, (2) /opt anstelle von Unterbefehlen verwenden, (3) Die Befehlsstruktur intuitiver gestalten."
-  },
-  {
     "id": "Remote server error. Status code: {{.StatusCode}}, error code: {{.ErrorCode}}, message: {{.Message}}",
     "translation": "Fehler auf dem fernen Server. Statuscode: {{.StatusCode}}, Fehlercode: {{.ErrorCode}}, Nachricht: {{.Message}}"
   },
   {
+    "id": "Remove '{{.Bad}}' and start directly with the action. Example: 'List all instances' instead of 'This command lists all instances'.",
+    "translation": "Entfernen Sie „ '{{.Bad}}' “ und beginnen Sie direkt mit der Aktion. Beispiel: „Alle Instanzen auflisten“ statt „Dieser Befehl listet alle Instanzen auf“."
+  },
+  {
+    "id": "Remove placeholders from command usage text",
+    "translation": "Platzhalter aus dem Text zur Befehlsanwendung entfernen"
+  },
+  {
     "id": "Session inactive: ",
     "translation": "Sitzung inaktiv: "
+  },
+  {
+    "id": "Set MinCliVersion to {{.Version}} or higher to ensure compatibility with supported CLI versions.",
+    "translation": "Setzen Sie „ MinCliVersion “ auf „ {{.Version}} “ oder höher, um die Kompatibilität mit den unterstützten CLI-Versionen sicherzustellen."
+  },
+  {
+    "id": "Shorten the description to be more concise.",
+    "translation": "Fassen Sie die Beschreibung prägnanter zusammen."
   },
   {
     "id": "Start usage examples with '{{.Command}}' in lowercase (e.g., '{{.CommandPlugin}}...').",
@@ -204,6 +248,10 @@ var _i18nResourcesAllDe_deJson = []byte(`[
     "translation": "Speichern der Plug-in-Konfiguration nicht möglich: "
   },
   {
+    "id": "Update description to include words like 'list', 'show', 'display', 'view', 'all', or 'multiple' to clarify it returns multiple items.",
+    "translation": "Ergänze die Beschreibung um Begriffe wie „Liste“, „anzeigen“, „darstellen“, „anzeigen“, „alle“ oder „mehrere“, um deutlich zu machen, dass mehrere Elemente zurückgegeben werden."
+  },
+  {
     "id": "Usage contains placeholder arguments/flags",
     "translation": "Verwendung enthält Platzhalterargumente/Flags"
   },
@@ -212,12 +260,20 @@ var _i18nResourcesAllDe_deJson = []byte(`[
     "translation": "Die Verwendung enthält nicht geschlossene {{.UnclosedGroup}} zwischen den Indikatoren {{.Indicies}}"
   },
   {
+    "id": "Usage does not have any usage text besides COMMAND",
+    "translation": "Die Verwendung enthält außer „COMMAND“ keinen weiteren Text"
+  },
+  {
     "id": "Usage should start with '{{.Command}}' (lowercase) or the full path to the {{.Command}} binary.",
     "translation": "Die Verwendung sollte mit „ '{{.Command}}' “ (in Kleinbuchstaben) oder dem vollständigen Pfad zur Binärdatei „ {{.Command}} “ beginnen."
   },
   {
     "id": "Use common verbs in command names such as list, create, update, delete, or use plural forms to indicate listing operations.",
     "translation": "Verwenden Sie in Befehlsnamen gängige Verben wie „list“, „create“, „update“ und „delete“ oder verwenden Sie Pluralformen, um Auflistungsvorgänge zu kennzeichnen."
+  },
+  {
+    "id": "Use more descriptive words with at least {{.Count}} characters for each segment.",
+    "translation": "Verwenden Sie aussagekräftigere Formulierungen mit mindestens {{.Count}} Zeichen pro Abschnitt."
   },
   {
     "id": "{{.Field}} contains the following forbidden characters: {{.Chars}}",
@@ -230,10 +286,6 @@ var _i18nResourcesAllDe_deJson = []byte(`[
   {
     "id": "{{.Field}} must contain at least {{.Param}} element",
     "translation": "{{.Field}} muss mindestens das Element {{.Param}} enthalten"
-  },
-  {
-    "id": "{{.Field}} must not equal '{{.Param}}'",
-    "translation": "{{.Field}} darf nicht gleich ' {{.Param}} ' sein"
   }
 ]`)
 
@@ -247,7 +299,7 @@ func i18nResourcesAllDe_deJson() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "i18n/resources/all.de_DE.json", size: 8270, mode: os.FileMode(420), modTime: time.Unix(1778267255, 0)}
+	info := bindataFileInfo{name: "i18n/resources/all.de_DE.json", size: 10706, mode: os.FileMode(420), modTime: time.Unix(1780504718, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -256,6 +308,14 @@ var _i18nResourcesAllEn_usJson = []byte(`[
   {
     "id": "\nEnter a number",
     "translation": "\nEnter a number"
+  },
+  {
+    "id": "Add a sentence without subject describing what the command does.",
+    "translation": "Add a sentence without subject describing what the command does."
+  },
+  {
+    "id": "Add usage text showing command syntax with parameters and options.",
+    "translation": "Add usage text showing command syntax with parameters and options."
   },
   {
     "id": "An error occurred when creating log file '{{.Path}}':\n{{.Error}}\n\n",
@@ -268,6 +328,10 @@ var _i18nResourcesAllEn_usJson = []byte(`[
   {
     "id": "An error occurred while dumping response:\n{{.Error}}\n",
     "translation": "An error occurred while dumping response:\n{{.Error}}\n"
+  },
+  {
+    "id": "Capitalize the first letter of the description.",
+    "translation": "Capitalize the first letter of the description."
   },
   {
     "id": "Command '{{.Name}}' contains a segment '{{.Segment}}' that is less than {{.Count}} characters. Each word in a command should be at least {{.Count}} characters.",
@@ -298,12 +362,28 @@ var _i18nResourcesAllEn_usJson = []byte(`[
     "translation": "Command '{{.Name}}' uses a reserved flag name. These are handled by the CLI framework."
   },
   {
+    "id": "Command '{{.Name}}' uses plural form but description doesn't clearly indicate it returns a list or group of items.",
+    "translation": "Command '{{.Name}}' uses plural form but description doesn't clearly indicate it returns a list or group of items."
+  },
+  {
+    "id": "Convert arguments values to CAPITAL letters (e.g., NAME, INSTANCE_ID, FORMAT).",
+    "translation": "Convert arguments values to CAPITAL letters (e.g., NAME, INSTANCE_ID, FORMAT)."
+  },
+  {
     "id": "Could not read from input: ",
     "translation": "Could not read from input: "
   },
   {
+    "id": "Description",
+    "translation": "Description"
+  },
+  {
     "id": "Description for '{{.Name}}' has {{.WordCount}} words. Consider limiting to less than {{.MaxWordCount}} words for better display.",
     "translation": "Description for '{{.Name}}' has {{.WordCount}} words. Consider limiting to less than {{.MaxWordCount}} words for better display."
+  },
+  {
+    "id": "Description for '{{.Name}}' should start with a capital letter.",
+    "translation": "Description for '{{.Name}}' should start with a capital letter."
   },
   {
     "id": "Description for '{{.Name}}' starts with '{{.Bad}}'. Use a sentence without subject.",
@@ -328,6 +408,10 @@ var _i18nResourcesAllEn_usJson = []byte(`[
   {
     "id": "Failed, rows could not convert to csv format",
     "translation": "Failed, rows could not convert to csv format"
+  },
+  {
+    "id": "ID",
+    "translation": "ID"
   },
   {
     "id": "Invalid grant type: ",
@@ -374,16 +458,28 @@ var _i18nResourcesAllEn_usJson = []byte(`[
     "translation": "RESPONSE:"
   },
   {
-    "id": "Reduce command depth to {{.Level}} or fewer levels. Options: (1) Flatten the hierarchy by combining levels, (2) Use command flags/options instead of subcommands, (3) Reorganize the command structure to be more intuitive.",
-    "translation": "Reduce command depth to {{.Level}} or fewer levels. Options: (1) Flatten the hierarchy by combining levels, (2) Use command flags/options instead of subcommands, (3) Reorganize the command structure to be more intuitive."
-  },
-  {
     "id": "Remote server error. Status code: {{.StatusCode}}, error code: {{.ErrorCode}}, message: {{.Message}}",
     "translation": "Remote server error. Status code: {{.StatusCode}}, error code: {{.ErrorCode}}, message: {{.Message}}"
   },
   {
+    "id": "Remove '{{.Bad}}' and start directly with the action. Example: 'List all instances' instead of 'This command lists all instances'.",
+    "translation": "Remove '{{.Bad}}' and start directly with the action. Example: 'List all instances' instead of 'This command lists all instances'."
+  },
+  {
+    "id": "Remove placeholders from command usage text",
+    "translation": "Remove placeholders from command usage text"
+  },
+  {
     "id": "Session inactive: ",
     "translation": "Session inactive: "
+  },
+  {
+    "id": "Set MinCliVersion to {{.Version}} or higher to ensure compatibility with supported CLI versions.",
+    "translation": "Set MinCliVersion to {{.Version}} or higher to ensure compatibility with supported CLI versions."
+  },
+  {
+    "id": "Shorten the description to be more concise.",
+    "translation": "Shorten the description to be more concise."
   },
   {
     "id": "Start usage examples with '{{.Command}}' in lowercase (e.g., '{{.CommandPlugin}}...').",
@@ -394,6 +490,10 @@ var _i18nResourcesAllEn_usJson = []byte(`[
     "translation": "Unable to save plugin config: "
   },
   {
+    "id": "Update description to include words like 'list', 'show', 'display', 'view', 'all', or 'multiple' to clarify it returns multiple items.",
+    "translation": "Update description to include words like 'list', 'show', 'display', 'view', 'all', or 'multiple' to clarify it returns multiple items."
+  },
+  {
     "id": "Usage contains placeholder arguments/flags",
     "translation": "Usage contains placeholder arguments/flags"
   },
@@ -402,12 +502,20 @@ var _i18nResourcesAllEn_usJson = []byte(`[
     "translation": "Usage contains unclosed {{.UnclosedGroup}} between indicies {{.Indicies}}"
   },
   {
+    "id": "Usage does not have any usage text besides COMMAND",
+    "translation": "Usage does not have any usage text besides COMMAND"
+  },
+  {
     "id": "Usage should start with '{{.Command}}' (lowercase) or the full path to the {{.Command}} binary.",
     "translation": "Usage should start with '{{.Command}}' (lowercase) or the full path to the {{.Command}} binary."
   },
   {
     "id": "Use common verbs in command names such as list, create, update, delete, or use plural forms to indicate listing operations.",
     "translation": "Use common verbs in command names such as list, create, update, delete, or use plural forms to indicate listing operations."
+  },
+  {
+    "id": "Use more descriptive words with at least {{.Count}} characters for each segment.",
+    "translation": "Use more descriptive words with at least {{.Count}} characters for each segment."
   },
   {
     "id": "{{.Field}} contains the following forbidden characters: {{.Chars}}",
@@ -420,10 +528,6 @@ var _i18nResourcesAllEn_usJson = []byte(`[
   {
     "id": "{{.Field}} must contain at least {{.Param}} element",
     "translation": "{{.Field}} must contain at least {{.Param}} element"
-  },
-  {
-    "id": "{{.Field}} must not equal '{{.Param}}'",
-    "translation": "{{.Field}} must not equal '{{.Param}}'"
   }
 ]`)
 
@@ -437,7 +541,7 @@ func i18nResourcesAllEn_usJson() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "i18n/resources/all.en_US.json", size: 7385, mode: os.FileMode(420), modTime: time.Unix(1778267255, 0)}
+	info := bindataFileInfo{name: "i18n/resources/all.en_US.json", size: 9496, mode: os.FileMode(420), modTime: time.Unix(1780504718, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -446,6 +550,14 @@ var _i18nResourcesAllEs_esJson = []byte(`[
   {
     "id": "\nEnter a number",
     "translation": "\nEscriba un número"
+  },
+  {
+    "id": "Add a sentence without subject describing what the command does.",
+    "translation": "Añade una frase sin sujeto que describa qué hace el comando."
+  },
+  {
+    "id": "Add usage text showing command syntax with parameters and options.",
+    "translation": "Añade un texto de instrucciones que muestre la sintaxis del comando con los parámetros y las opciones."
   },
   {
     "id": "An error occurred when creating log file '{{.Path}}':\n{{.Error}}\n\n",
@@ -458,6 +570,10 @@ var _i18nResourcesAllEs_esJson = []byte(`[
   {
     "id": "An error occurred while dumping response:\n{{.Error}}\n",
     "translation": "Se ha producido un error al volcar la respuesta:\n{{.Error}}\n"
+  },
+  {
+    "id": "Capitalize the first letter of the description.",
+    "translation": "Escribe con mayúscula la primera letra de la descripción."
   },
   {
     "id": "Command '{{.Name}}' contains a segment '{{.Segment}}' that is less than {{.Count}} characters. Each word in a command should be at least {{.Count}} characters.",
@@ -488,12 +604,28 @@ var _i18nResourcesAllEs_esJson = []byte(`[
     "translation": "El comando « '{{.Name}}' » utiliza un nombre de indicador reservado. De esto se encarga el marco CLI."
   },
   {
+    "id": "Command '{{.Name}}' uses plural form but description doesn't clearly indicate it returns a list or group of items.",
+    "translation": "El comando « '{{.Name}}' » utiliza la forma plural, pero la descripción no indica claramente que devuelva una lista o un conjunto de elementos."
+  },
+  {
+    "id": "Convert arguments values to CAPITAL letters (e.g., NAME, INSTANCE_ID, FORMAT).",
+    "translation": "Convierte los valores de los argumentos a mayúsculas (por ejemplo, NAME, INSTANCE_ID, FORMAT)."
+  },
+  {
     "id": "Could not read from input: ",
     "translation": "No se ha podido leer la entrada: "
   },
   {
+    "id": "Description",
+    "translation": "Descripción"
+  },
+  {
     "id": "Description for '{{.Name}}' has {{.WordCount}} words. Consider limiting to less than {{.MaxWordCount}} words for better display.",
     "translation": "La descripción de « '{{.Name}}' » contiene {{.WordCount}} palabras. Te recomendamos que limites el texto a menos de {{.MaxWordCount}} palabras para que se vea mejor."
+  },
+  {
+    "id": "Description for '{{.Name}}' should start with a capital letter.",
+    "translation": "La descripción de « '{{.Name}}' » debe comenzar con mayúscula."
   },
   {
     "id": "Description for '{{.Name}}' starts with '{{.Bad}}'. Use a sentence without subject.",
@@ -518,6 +650,10 @@ var _i18nResourcesAllEs_esJson = []byte(`[
   {
     "id": "Failed, rows could not convert to csv format",
     "translation": "Fallo, las filas no se han podido convertir a formato csv"
+  },
+  {
+    "id": "ID",
+    "translation": "ID"
   },
   {
     "id": "Invalid grant type: ",
@@ -564,16 +700,28 @@ var _i18nResourcesAllEs_esJson = []byte(`[
     "translation": "RESPUESTA:"
   },
   {
-    "id": "Reduce command depth to {{.Level}} or fewer levels. Options: (1) Flatten the hierarchy by combining levels, (2) Use command flags/options instead of subcommands, (3) Reorganize the command structure to be more intuitive.",
-    "translation": "Reduzca la profundidad de los comandos a un máximo de {{.Level}}. Opciones: (1) Simplificar la jerarquía combinando niveles, (2) Utilizar opciones de comando en lugar de subcomandos, ( /opt ), (3) Reorganizar la estructura de comandos para que resulte más intuitiva."
-  },
-  {
     "id": "Remote server error. Status code: {{.StatusCode}}, error code: {{.ErrorCode}}, message: {{.Message}}",
     "translation": "Error del servidor remoto. Código de estado: {{.StatusCode}}, código de error: {{.ErrorCode}}, mensaje: {{.Message}}"
   },
   {
+    "id": "Remove '{{.Bad}}' and start directly with the action. Example: 'List all instances' instead of 'This command lists all instances'.",
+    "translation": "Elimina « '{{.Bad}}' » y empieza directamente con la acción. Ejemplo: «Mostrar todas las instancias» en lugar de «Este comando muestra todas las instancias»."
+  },
+  {
+    "id": "Remove placeholders from command usage text",
+    "translation": "Eliminar los marcadores de posición del texto de instrucciones de uso"
+  },
+  {
     "id": "Session inactive: ",
     "translation": "Sesión inactiva: "
+  },
+  {
+    "id": "Set MinCliVersion to {{.Version}} or higher to ensure compatibility with supported CLI versions.",
+    "translation": "Establece el parámetro `+"`"+` MinCliVersion `+"`"+` en `+"`"+` {{.Version}} `+"`"+` o superior para garantizar la compatibilidad con las versiones de la CLI compatibles."
+  },
+  {
+    "id": "Shorten the description to be more concise.",
+    "translation": "Acorta la descripción para que sea más concisa."
   },
   {
     "id": "Start usage examples with '{{.Command}}' in lowercase (e.g., '{{.CommandPlugin}}...').",
@@ -584,6 +732,10 @@ var _i18nResourcesAllEs_esJson = []byte(`[
     "translation": "No se ha podido guardar la configuración del plugin:"
   },
   {
+    "id": "Update description to include words like 'list', 'show', 'display', 'view', 'all', or 'multiple' to clarify it returns multiple items.",
+    "translation": "Actualiza la descripción para incluir palabras como «lista», «mostrar», «visualizar», «ver», «todos» o «varios», a fin de aclarar que devuelve varios elementos."
+  },
+  {
     "id": "Usage contains placeholder arguments/flags",
     "translation": "El uso contiene argumentos/flags"
   },
@@ -592,12 +744,20 @@ var _i18nResourcesAllEs_esJson = []byte(`[
     "translation": "El uso contiene {{.UnclosedGroup}} sin cerrar entre indicies {{.Indicies}}"
   },
   {
+    "id": "Usage does not have any usage text besides COMMAND",
+    "translation": "El uso no tiene ningún texto de ayuda, salvo el comando"
+  },
+  {
     "id": "Usage should start with '{{.Command}}' (lowercase) or the full path to the {{.Command}} binary.",
     "translation": "El uso debe comenzar con « '{{.Command}}' » (en minúsculas) o con la ruta completa al archivo binario « {{.Command}} »."
   },
   {
     "id": "Use common verbs in command names such as list, create, update, delete, or use plural forms to indicate listing operations.",
     "translation": "Utiliza verbos comunes en los nombres de los comandos, como «listar», «crear», «actualizar» o «eliminar», o emplea formas en plural para indicar operaciones de listado."
+  },
+  {
+    "id": "Use more descriptive words with at least {{.Count}} characters for each segment.",
+    "translation": "Utiliza palabras más descriptivas, con al menos {{.Count}} caracteres por cada segmento."
   },
   {
     "id": "{{.Field}} contains the following forbidden characters: {{.Chars}}",
@@ -610,10 +770,6 @@ var _i18nResourcesAllEs_esJson = []byte(`[
   {
     "id": "{{.Field}} must contain at least {{.Param}} element",
     "translation": "{{.Field}} debe contener al menos {{.Param}} elemento"
-  },
-  {
-    "id": "{{.Field}} must not equal '{{.Param}}'",
-    "translation": "{{.Field}} no debe ser igual a ' {{.Param}} '"
   }
 ]`)
 
@@ -627,7 +783,7 @@ func i18nResourcesAllEs_esJson() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "i18n/resources/all.es_ES.json", size: 8024, mode: os.FileMode(420), modTime: time.Unix(1778267255, 0)}
+	info := bindataFileInfo{name: "i18n/resources/all.es_ES.json", size: 10352, mode: os.FileMode(420), modTime: time.Unix(1780504718, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -636,6 +792,14 @@ var _i18nResourcesAllFr_frJson = []byte(`[
   {
     "id": "\nEnter a number",
     "translation": "\nEntrez un nombre"
+  },
+  {
+    "id": "Add a sentence without subject describing what the command does.",
+    "translation": "Ajoutez une phrase sans sujet décrivant ce que fait la commande."
+  },
+  {
+    "id": "Add usage text showing command syntax with parameters and options.",
+    "translation": "Ajouter un texte d'aide indiquant la syntaxe de la commande avec ses paramètres et ses options."
   },
   {
     "id": "An error occurred when creating log file '{{.Path}}':\n{{.Error}}\n\n",
@@ -648,6 +812,10 @@ var _i18nResourcesAllFr_frJson = []byte(`[
   {
     "id": "An error occurred while dumping response:\n{{.Error}}\n",
     "translation": "Erreur lors de la réponse de vidage :\n{{.Error}}\n"
+  },
+  {
+    "id": "Capitalize the first letter of the description.",
+    "translation": "Mettez une majuscule à la première lettre de la description."
   },
   {
     "id": "Command '{{.Name}}' contains a segment '{{.Segment}}' that is less than {{.Count}} characters. Each word in a command should be at least {{.Count}} characters.",
@@ -678,12 +846,28 @@ var _i18nResourcesAllFr_frJson = []byte(`[
     "translation": "La commande « '{{.Name}}' » utilise un nom de drapeau réservé. Ces éléments sont gérés par le framework CLI."
   },
   {
+    "id": "Command '{{.Name}}' uses plural form but description doesn't clearly indicate it returns a list or group of items.",
+    "translation": "La commande « '{{.Name}}' » utilise le pluriel, mais la description n'indique pas clairement qu'elle renvoie une liste ou un ensemble d'éléments."
+  },
+  {
+    "id": "Convert arguments values to CAPITAL letters (e.g., NAME, INSTANCE_ID, FORMAT).",
+    "translation": "Convertir les valeurs des arguments en MAJUSCULES (par exemple, NAME, INSTANCE_ID, FORMAT)."
+  },
+  {
     "id": "Could not read from input: ",
     "translation": "Lecture impossible à partir de l'entrée : "
   },
   {
+    "id": "Description",
+    "translation": "Description"
+  },
+  {
     "id": "Description for '{{.Name}}' has {{.WordCount}} words. Consider limiting to less than {{.MaxWordCount}} words for better display.",
     "translation": "La description de « '{{.Name}}' » compte {{.WordCount}} mots. Pour un meilleur affichage, pensez à limiter la longueur de vos phrases à moins d' {{.MaxWordCount}}."
+  },
+  {
+    "id": "Description for '{{.Name}}' should start with a capital letter.",
+    "translation": "La description de '{{.Name}}' doit commencer par une majuscule."
   },
   {
     "id": "Description for '{{.Name}}' starts with '{{.Bad}}'. Use a sentence without subject.",
@@ -708,6 +892,10 @@ var _i18nResourcesAllFr_frJson = []byte(`[
   {
     "id": "Failed, rows could not convert to csv format",
     "translation": "Échec, les lignes n'ont pas pu être converties au format csv"
+  },
+  {
+    "id": "ID",
+    "translation": "ID"
   },
   {
     "id": "Invalid grant type: ",
@@ -754,16 +942,28 @@ var _i18nResourcesAllFr_frJson = []byte(`[
     "translation": "REPONSE :"
   },
   {
-    "id": "Reduce command depth to {{.Level}} or fewer levels. Options: (1) Flatten the hierarchy by combining levels, (2) Use command flags/options instead of subcommands, (3) Reorganize the command structure to be more intuitive.",
-    "translation": "Limitez la profondeur de la chaîne de commandes à {{.Level}} ou moins. Options : (1) Aplatir la hiérarchie en combinant les niveaux, (2) Utiliser des options de commande /opt au lieu de sous-commandes, (3) Réorganiser la structure de commande pour la rendre plus intuitive."
-  },
-  {
     "id": "Remote server error. Status code: {{.StatusCode}}, error code: {{.ErrorCode}}, message: {{.Message}}",
     "translation": "Erreur du serveur distant. Code de statut : {{.StatusCode}}, code d'erreur : {{.ErrorCode}}, message : {{.Message}}"
   },
   {
+    "id": "Remove '{{.Bad}}' and start directly with the action. Example: 'List all instances' instead of 'This command lists all instances'.",
+    "translation": "Supprimez « '{{.Bad}}' » et passez directement à l'action. Exemple : « Lister toutes les instances » au lieu de « Cette commande liste toutes les instances »."
+  },
+  {
+    "id": "Remove placeholders from command usage text",
+    "translation": "Supprimer les espaces réservés du texte d'utilisation de la commande"
+  },
+  {
     "id": "Session inactive: ",
     "translation": "Session inactive : "
+  },
+  {
+    "id": "Set MinCliVersion to {{.Version}} or higher to ensure compatibility with supported CLI versions.",
+    "translation": "Définissez la variable d'environnement `+"`"+` MinCliVersion `+"`"+` sur `+"`"+` {{.Version}} `+"`"+` ou une version supérieure pour garantir la compatibilité avec les versions prises en charge de l'interface CLI."
+  },
+  {
+    "id": "Shorten the description to be more concise.",
+    "translation": "Raccourcissez la description pour la rendre plus concise."
   },
   {
     "id": "Start usage examples with '{{.Command}}' in lowercase (e.g., '{{.CommandPlugin}}...').",
@@ -774,6 +974,10 @@ var _i18nResourcesAllFr_frJson = []byte(`[
     "translation": "Impossible d'enregistrer la configuration du plug-in : "
   },
   {
+    "id": "Update description to include words like 'list', 'show', 'display', 'view', 'all', or 'multiple' to clarify it returns multiple items.",
+    "translation": "Modifiez la description en y ajoutant des mots tels que « liste », « afficher », « visualiser », « tout » ou « plusieurs » afin de préciser qu'elle renvoie plusieurs éléments."
+  },
+  {
     "id": "Usage contains placeholder arguments/flags",
     "translation": "L'utilisation contient des arguments et des drapeaux de substitution"
   },
@@ -782,12 +986,20 @@ var _i18nResourcesAllFr_frJson = []byte(`[
     "translation": "L'utilisation contient des {{.UnclosedGroup}} non fermés entre les indicateurs {{.Indicies}}"
   },
   {
+    "id": "Usage does not have any usage text besides COMMAND",
+    "translation": "La commande ne comporte aucun texte d'aide, à l'exception de COMMAND"
+  },
+  {
     "id": "Usage should start with '{{.Command}}' (lowercase) or the full path to the {{.Command}} binary.",
     "translation": "L'utilisation doit commencer par « '{{.Command}}' » (en minuscules) ou par le chemin d'accès complet vers le fichier binaire « {{.Command}} »."
   },
   {
     "id": "Use common verbs in command names such as list, create, update, delete, or use plural forms to indicate listing operations.",
     "translation": "Utilisez des verbes courants dans les noms de commandes, tels que « list », « create », « update » ou « delete », ou employez le pluriel pour désigner des opérations de liste."
+  },
+  {
+    "id": "Use more descriptive words with at least {{.Count}} characters for each segment.",
+    "translation": "Utilisez des mots plus descriptifs, avec au moins {{.Count}} caractères par segment."
   },
   {
     "id": "{{.Field}} contains the following forbidden characters: {{.Chars}}",
@@ -800,10 +1012,6 @@ var _i18nResourcesAllFr_frJson = []byte(`[
   {
     "id": "{{.Field}} must contain at least {{.Param}} element",
     "translation": "{{.Field}} doit contenir au moins {{.Param}} élément"
-  },
-  {
-    "id": "{{.Field}} must not equal '{{.Param}}'",
-    "translation": "{{.Field}} ne doit pas être égal à ' {{.Param}} '"
   }
 ]`)
 
@@ -817,7 +1025,7 @@ func i18nResourcesAllFr_frJson() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "i18n/resources/all.fr_FR.json", size: 8172, mode: os.FileMode(420), modTime: time.Unix(1778267255, 0)}
+	info := bindataFileInfo{name: "i18n/resources/all.fr_FR.json", size: 10556, mode: os.FileMode(420), modTime: time.Unix(1780504718, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -826,6 +1034,14 @@ var _i18nResourcesAllIt_itJson = []byte(`[
   {
     "id": "\nEnter a number",
     "translation": "\nImmetti un numero"
+  },
+  {
+    "id": "Add a sentence without subject describing what the command does.",
+    "translation": "Aggiungi una frase senza soggetto che descriva cosa fa il comando."
+  },
+  {
+    "id": "Add usage text showing command syntax with parameters and options.",
+    "translation": "Aggiungere un testo descrittivo che illustri la sintassi del comando con i parametri e le opzioni."
   },
   {
     "id": "An error occurred when creating log file '{{.Path}}':\n{{.Error}}\n\n",
@@ -838,6 +1054,10 @@ var _i18nResourcesAllIt_itJson = []byte(`[
   {
     "id": "An error occurred while dumping response:\n{{.Error}}\n",
     "translation": "Si è verificato un errore durante il dump della risposta:\n{{.Error}}\n"
+  },
+  {
+    "id": "Capitalize the first letter of the description.",
+    "translation": "Scrivi la prima lettera della descrizione in maiuscolo."
   },
   {
     "id": "Command '{{.Name}}' contains a segment '{{.Segment}}' that is less than {{.Count}} characters. Each word in a command should be at least {{.Count}} characters.",
@@ -868,12 +1088,28 @@ var _i18nResourcesAllIt_itJson = []byte(`[
     "translation": "Il comando `+"`"+` '{{.Name}}' `+"`"+` utilizza un nome di flag riservato. Questi sono gestiti dal framework CLI."
   },
   {
+    "id": "Command '{{.Name}}' uses plural form but description doesn't clearly indicate it returns a list or group of items.",
+    "translation": "Il comando \" '{{.Name}}' \" utilizza la forma plurale, ma la descrizione non indica chiaramente che restituisce un elenco o un gruppo di elementi."
+  },
+  {
+    "id": "Convert arguments values to CAPITAL letters (e.g., NAME, INSTANCE_ID, FORMAT).",
+    "translation": "Converti i valori degli argomenti in MAIUSCOLO (ad es. NAME, INSTANCE_ID, FORMAT)."
+  },
+  {
     "id": "Could not read from input: ",
     "translation": "Impossibile leggere dall'input: "
   },
   {
+    "id": "Description",
+    "translation": "Descrizione"
+  },
+  {
     "id": "Description for '{{.Name}}' has {{.WordCount}} words. Consider limiting to less than {{.MaxWordCount}} words for better display.",
     "translation": "La descrizione di \" '{{.Name}}' \" contiene {{.WordCount}} parole. Si consiglia di limitare il numero di parole a meno di {{.MaxWordCount}} per una migliore visualizzazione."
+  },
+  {
+    "id": "Description for '{{.Name}}' should start with a capital letter.",
+    "translation": "La descrizione di '{{.Name}}' dovrebbe iniziare con una maiuscola."
   },
   {
     "id": "Description for '{{.Name}}' starts with '{{.Bad}}'. Use a sentence without subject.",
@@ -898,6 +1134,10 @@ var _i18nResourcesAllIt_itJson = []byte(`[
   {
     "id": "Failed, rows could not convert to csv format",
     "translation": "Fallito, non è stato possibile convertire le righe in formato csv"
+  },
+  {
+    "id": "ID",
+    "translation": "ID"
   },
   {
     "id": "Invalid grant type: ",
@@ -944,16 +1184,28 @@ var _i18nResourcesAllIt_itJson = []byte(`[
     "translation": "RISPOSTA:"
   },
   {
-    "id": "Reduce command depth to {{.Level}} or fewer levels. Options: (1) Flatten the hierarchy by combining levels, (2) Use command flags/options instead of subcommands, (3) Reorganize the command structure to be more intuitive.",
-    "translation": "Ridurre la profondità dei comandi a {{.Level}} o meno. Opzioni: (1) Appiattire la gerarchia unendo i livelli, (2) Utilizzare i flag di comando /opt al posto dei sottocomandi, (3) Riorganizzare la struttura dei comandi per renderla più intuitiva."
-  },
-  {
     "id": "Remote server error. Status code: {{.StatusCode}}, error code: {{.ErrorCode}}, message: {{.Message}}",
     "translation": "Errore server remoto. Codice di stato: {{.StatusCode}}, codice di errore: {{.ErrorCode}}, messaggio: {{.Message}}"
   },
   {
+    "id": "Remove '{{.Bad}}' and start directly with the action. Example: 'List all instances' instead of 'This command lists all instances'.",
+    "translation": "Elimina \" '{{.Bad}}' \" e passa direttamente all'azione. Esempio: «Elenca tutte le istanze» invece di «Questo comando elenca tutte le istanze»."
+  },
+  {
+    "id": "Remove placeholders from command usage text",
+    "translation": "Rimuovere i segnaposto dal testo relativo all'uso del comando"
+  },
+  {
     "id": "Session inactive: ",
     "translation": "Sessione inattiva: "
+  },
+  {
+    "id": "Set MinCliVersion to {{.Version}} or higher to ensure compatibility with supported CLI versions.",
+    "translation": "Imposta il parametro `+"`"+` MinCliVersion `+"`"+` su `+"`"+` {{.Version}} `+"`"+` o una versione superiore per garantire la compatibilità con le versioni supportate della CLI."
+  },
+  {
+    "id": "Shorten the description to be more concise.",
+    "translation": "Accorcia la descrizione per renderla più concisa."
   },
   {
     "id": "Start usage examples with '{{.Command}}' in lowercase (e.g., '{{.CommandPlugin}}...').",
@@ -964,6 +1216,10 @@ var _i18nResourcesAllIt_itJson = []byte(`[
     "translation": "Impossibile salvare la configurazione del plug-in: "
   },
   {
+    "id": "Update description to include words like 'list', 'show', 'display', 'view', 'all', or 'multiple' to clarify it returns multiple items.",
+    "translation": "Aggiornare la descrizione includendo termini come \"elenco\", \"mostra\", \"visualizza\", \"tutti\" o \"più\" per chiarire che restituisce più elementi."
+  },
+  {
     "id": "Usage contains placeholder arguments/flags",
     "translation": "L'uso contiene argomenti segnaposto/flags"
   },
@@ -972,12 +1228,20 @@ var _i18nResourcesAllIt_itJson = []byte(`[
     "translation": "L'uso contiene {{.UnclosedGroup}} non chiuso tra gli indici {{.Indicies}}"
   },
   {
+    "id": "Usage does not have any usage text besides COMMAND",
+    "translation": "L'uso non prevede alcun testo descrittivo oltre a COMMAND"
+  },
+  {
     "id": "Usage should start with '{{.Command}}' (lowercase) or the full path to the {{.Command}} binary.",
     "translation": "Per l'utilizzo, è necessario specificare \" '{{.Command}}' \" (in minuscolo) o il percorso completo del file binario \" {{.Command}} \"."
   },
   {
     "id": "Use common verbs in command names such as list, create, update, delete, or use plural forms to indicate listing operations.",
     "translation": "Utilizza verbi comuni nei nomi dei comandi, come \"list\", \"create\", \"update\" e \"delete\", oppure usa la forma plurale per indicare operazioni di elenco."
+  },
+  {
+    "id": "Use more descriptive words with at least {{.Count}} characters for each segment.",
+    "translation": "Utilizza parole più descrittive, con almeno {{.Count}} caratteri per ogni segmento."
   },
   {
     "id": "{{.Field}} contains the following forbidden characters: {{.Chars}}",
@@ -990,10 +1254,6 @@ var _i18nResourcesAllIt_itJson = []byte(`[
   {
     "id": "{{.Field}} must contain at least {{.Param}} element",
     "translation": "{{.Field}} deve contenere almeno {{.Param}} elemento"
-  },
-  {
-    "id": "{{.Field}} must not equal '{{.Param}}'",
-    "translation": "{{.Field}} non deve essere uguale a ' {{.Param}} '"
   }
 ]`)
 
@@ -1007,7 +1267,7 @@ func i18nResourcesAllIt_itJson() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "i18n/resources/all.it_IT.json", size: 8010, mode: os.FileMode(420), modTime: time.Unix(1778267255, 0)}
+	info := bindataFileInfo{name: "i18n/resources/all.it_IT.json", size: 10295, mode: os.FileMode(420), modTime: time.Unix(1780504718, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -1016,6 +1276,14 @@ var _i18nResourcesAllJa_jpJson = []byte(`[
   {
     "id": "\nEnter a number",
     "translation": "\n数値を入力してください"
+  },
+  {
+    "id": "Add a sentence without subject describing what the command does.",
+    "translation": "そのコマンドが何をするのかを説明する、主語のない文を追加してください。"
+  },
+  {
+    "id": "Add usage text showing command syntax with parameters and options.",
+    "translation": "パラメータやオプションを含むコマンドの構文を示す説明文を追加してください。"
   },
   {
     "id": "An error occurred when creating log file '{{.Path}}':\n{{.Error}}\n\n",
@@ -1028,6 +1296,10 @@ var _i18nResourcesAllJa_jpJson = []byte(`[
   {
     "id": "An error occurred while dumping response:\n{{.Error}}\n",
     "translation": "応答のダンプ中にエラーが発生しました:\n{{.Error}}\n"
+  },
+  {
+    "id": "Capitalize the first letter of the description.",
+    "translation": "説明文の最初の文字を大文字にしてください。"
   },
   {
     "id": "Command '{{.Name}}' contains a segment '{{.Segment}}' that is less than {{.Count}} characters. Each word in a command should be at least {{.Count}} characters.",
@@ -1058,12 +1330,28 @@ var _i18nResourcesAllJa_jpJson = []byte(`[
     "translation": "コマンド「 '{{.Name}}' 」は、予約済みのフラグ名を使用しています。 これらはCLIフレームワークによって処理されます。"
   },
   {
+    "id": "Command '{{.Name}}' uses plural form but description doesn't clearly indicate it returns a list or group of items.",
+    "translation": "コマンド「 '{{.Name}}' 」は複数形を使用していますが、説明文にはリストや項目のグループが返されることが明確に示されていません。"
+  },
+  {
+    "id": "Convert arguments values to CAPITAL letters (e.g., NAME, INSTANCE_ID, FORMAT).",
+    "translation": "引数の値を大文字に変換します（例：NAME、INSTANCE_ID、FORMAT）。"
+  },
+  {
     "id": "Could not read from input: ",
     "translation": "入力から読み取れませんでした。 "
   },
   {
+    "id": "Description",
+    "translation": "説明"
+  },
+  {
     "id": "Description for '{{.Name}}' has {{.WordCount}} words. Consider limiting to less than {{.MaxWordCount}} words for better display.",
     "translation": "「 '{{.Name}}' 」の説明文には、 {{.WordCount}} 語が含まれています。 表示を最適化するため、文字数を {{.MaxWordCount}} 文字未満に抑えることをご検討ください。"
+  },
+  {
+    "id": "Description for '{{.Name}}' should start with a capital letter.",
+    "translation": "'{{.Name}}' の説明文は、大文字で始める必要があります。"
   },
   {
     "id": "Description for '{{.Name}}' starts with '{{.Bad}}'. Use a sentence without subject.",
@@ -1088,6 +1376,10 @@ var _i18nResourcesAllJa_jpJson = []byte(`[
   {
     "id": "Failed, rows could not convert to csv format",
     "translation": "行をcsv形式に変換できませんでした"
+  },
+  {
+    "id": "ID",
+    "translation": "ID"
   },
   {
     "id": "Invalid grant type: ",
@@ -1134,16 +1426,28 @@ var _i18nResourcesAllJa_jpJson = []byte(`[
     "translation": "応答:"
   },
   {
-    "id": "Reduce command depth to {{.Level}} or fewer levels. Options: (1) Flatten the hierarchy by combining levels, (2) Use command flags/options instead of subcommands, (3) Reorganize the command structure to be more intuitive.",
-    "translation": "コマンドのネスト階層を {{.Level}} 以下に減らしてください。 選択肢：(1) レベルを統合して階層を平坦化する、(2) サブコマンドの代わりに /opt ionなどのコマンドフラグを使用する、(3) コマンド構造をより直感的なものに見直す。"
-  },
-  {
     "id": "Remote server error. Status code: {{.StatusCode}}, error code: {{.ErrorCode}}, message: {{.Message}}",
     "translation": "リモート・サーバー・エラー。 状況コード: {{.StatusCode}}、エラー・コード: {{.ErrorCode}}、メッセージ: {{.Message}}"
   },
   {
+    "id": "Remove '{{.Bad}}' and start directly with the action. Example: 'List all instances' instead of 'This command lists all instances'.",
+    "translation": "'{{.Bad}}' を削除し、アクションを直接開始してください。 例：「このコマンドはすべてのインスタンスを表示します」ではなく、「すべてのインスタンスを表示」とする。"
+  },
+  {
+    "id": "Remove placeholders from command usage text",
+    "translation": "コマンドの使用方法の説明文からプレースホルダーを削除する"
+  },
+  {
     "id": "Session inactive: ",
     "translation": "セッションは不活発： "
+  },
+  {
+    "id": "Set MinCliVersion to {{.Version}} or higher to ensure compatibility with supported CLI versions.",
+    "translation": "サポートされているCLIバージョンとの互換性を確保するため、 MinCliVersion を {{.Version}} 以上に設定してください。"
+  },
+  {
+    "id": "Shorten the description to be more concise.",
+    "translation": "説明文を簡潔にするために、内容を短縮してください。"
   },
   {
     "id": "Start usage examples with '{{.Command}}' in lowercase (e.g., '{{.CommandPlugin}}...').",
@@ -1154,6 +1458,10 @@ var _i18nResourcesAllJa_jpJson = []byte(`[
     "translation": "プラグイン構成を保存できません: "
   },
   {
+    "id": "Update description to include words like 'list', 'show', 'display', 'view', 'all', or 'multiple' to clarify it returns multiple items.",
+    "translation": "説明文に「一覧」、「表示」、「表示する」、「閲覧」、「すべて」、「複数」などの単語を追加し、複数の項目が返されることを明確にしてください。"
+  },
+  {
     "id": "Usage contains placeholder arguments/flags",
     "translation": "使用法にはプレースホルダ引数/フラグが含まれる"
   },
@@ -1162,12 +1470,20 @@ var _i18nResourcesAllJa_jpJson = []byte(`[
     "translation": "使用法には、インジケーターの間に閉じていない {{.UnclosedGroup}} が含まれる。 {{.Indicies}}"
   },
   {
+    "id": "Usage does not have any usage text besides COMMAND",
+    "translation": "このコマンドには、COMMAND 以外の説明文はありません"
+  },
+  {
     "id": "Usage should start with '{{.Command}}' (lowercase) or the full path to the {{.Command}} binary.",
     "translation": "使用時は、 '{{.Command}}' （小文字）または {{.Command}} バイナリへのフルパスから開始する必要があります。"
   },
   {
     "id": "Use common verbs in command names such as list, create, update, delete, or use plural forms to indicate listing operations.",
     "translation": "コマンド名には、「list」「create」「update」「delete」などの一般的な動詞を使用するか、一覧表示操作を示すために複数形を使用してください。"
+  },
+  {
+    "id": "Use more descriptive words with at least {{.Count}} characters for each segment.",
+    "translation": "各セグメントには、少なくとも {{.Count}} 文字の、より具体的な言葉を使用してください。"
   },
   {
     "id": "{{.Field}} contains the following forbidden characters: {{.Chars}}",
@@ -1180,10 +1496,6 @@ var _i18nResourcesAllJa_jpJson = []byte(`[
   {
     "id": "{{.Field}} must contain at least {{.Param}} element",
     "translation": "{{.Field}} は少なくとも {{.Param}} の要素を含んでいなければならない"
-  },
-  {
-    "id": "{{.Field}} must not equal '{{.Param}}'",
-    "translation": "{{.Field}} は ' {{.Param}} ' と同じであってはならない"
   }
 ]`)
 
@@ -1197,7 +1509,7 @@ func i18nResourcesAllJa_jpJson() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "i18n/resources/all.ja_JP.json", size: 8753, mode: os.FileMode(420), modTime: time.Unix(1778267255, 0)}
+	info := bindataFileInfo{name: "i18n/resources/all.ja_JP.json", size: 11295, mode: os.FileMode(420), modTime: time.Unix(1780504718, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -1206,6 +1518,14 @@ var _i18nResourcesAllKo_krJson = []byte(`[
   {
     "id": "\nEnter a number",
     "translation": "\n번호 입력"
+  },
+  {
+    "id": "Add a sentence without subject describing what the command does.",
+    "translation": "명령어가 무엇을 하는지 설명하는, 주어가 없는 문장을 추가하세요."
+  },
+  {
+    "id": "Add usage text showing command syntax with parameters and options.",
+    "translation": "매개변수와 옵션을 포함한 명령어 구문을 설명하는 사용법을 추가하세요."
   },
   {
     "id": "An error occurred when creating log file '{{.Path}}':\n{{.Error}}\n\n",
@@ -1218,6 +1538,10 @@ var _i18nResourcesAllKo_krJson = []byte(`[
   {
     "id": "An error occurred while dumping response:\n{{.Error}}\n",
     "translation": "응답을 덤프할 때 다음 오류가 발생했습니다. \n{{.Error}}\n"
+  },
+  {
+    "id": "Capitalize the first letter of the description.",
+    "translation": "설명문의 첫 글자를 대문자로 표기하십시오."
   },
   {
     "id": "Command '{{.Name}}' contains a segment '{{.Segment}}' that is less than {{.Count}} characters. Each word in a command should be at least {{.Count}} characters.",
@@ -1248,12 +1572,28 @@ var _i18nResourcesAllKo_krJson = []byte(`[
     "translation": "'{{.Name}}' 명령어는 예약된 플래그 이름을 사용합니다. 이는 CLI 프레임워크에서 처리합니다."
   },
   {
+    "id": "Command '{{.Name}}' uses plural form but description doesn't clearly indicate it returns a list or group of items.",
+    "translation": "'{{.Name}}' 명령어는 복수형을 사용하지만, 설명에는 이 명령어가 항목의 목록이나 그룹을 반환한다는 점이 명확하게 명시되어 있지 않습니다."
+  },
+  {
+    "id": "Convert arguments values to CAPITAL letters (e.g., NAME, INSTANCE_ID, FORMAT).",
+    "translation": "인수의 값을 대문자로 변환합니다(예: NAME, INSTANCE_ID, FORMAT)."
+  },
+  {
     "id": "Could not read from input: ",
     "translation": "입력에서 읽지 못함: "
   },
   {
+    "id": "Description",
+    "translation": "설명"
+  },
+  {
     "id": "Description for '{{.Name}}' has {{.WordCount}} words. Consider limiting to less than {{.MaxWordCount}} words for better display.",
     "translation": "'{{.Name}}' 에 대한 설명에는 {{.WordCount}} 개의 단어가 포함되어 있습니다. 더 나은 표시를 위해 단어 수를 {{.MaxWordCount}} 자 미만으로 제한하는 것을 고려해 보세요."
+  },
+  {
+    "id": "Description for '{{.Name}}' should start with a capital letter.",
+    "translation": "'{{.Name}}' 의 설명은 대문자로 시작해야 합니다."
   },
   {
     "id": "Description for '{{.Name}}' starts with '{{.Bad}}'. Use a sentence without subject.",
@@ -1278,6 +1618,10 @@ var _i18nResourcesAllKo_krJson = []byte(`[
   {
     "id": "Failed, rows could not convert to csv format",
     "translation": "실패, 행을 CSV 형식으로 변환할 수 없음"
+  },
+  {
+    "id": "ID",
+    "translation": "ID"
   },
   {
     "id": "Invalid grant type: ",
@@ -1324,16 +1668,28 @@ var _i18nResourcesAllKo_krJson = []byte(`[
     "translation": "응답:"
   },
   {
-    "id": "Reduce command depth to {{.Level}} or fewer levels. Options: (1) Flatten the hierarchy by combining levels, (2) Use command flags/options instead of subcommands, (3) Reorganize the command structure to be more intuitive.",
-    "translation": "명령어 중첩 수준을 {{.Level}} 단계 이하로 줄이십시오. 옵션: (1) 레벨을 통합하여 계층 구조를 단순화한다, (2) 하위 명령어 대신 명령어 플래그 /opt ion을 사용한다, (3) 명령어 구조를 더 직관적으로 재구성한다."
-  },
-  {
     "id": "Remote server error. Status code: {{.StatusCode}}, error code: {{.ErrorCode}}, message: {{.Message}}",
     "translation": "원격 서버 오류가 발생했습니다. 상태 코드: {{.StatusCode}}, 오류 코드: {{.ErrorCode}}, 메시지: {{.Message}}"
   },
   {
+    "id": "Remove '{{.Bad}}' and start directly with the action. Example: 'List all instances' instead of 'This command lists all instances'.",
+    "translation": "'{{.Bad}}' 를 제거하고 바로 액션으로 넘어가세요. 예: '이 명령은 모든 인스턴스를 나열합니다' 대신 '모든 인스턴스 나열'."
+  },
+  {
+    "id": "Remove placeholders from command usage text",
+    "translation": "명령어 사용법 설명에서 자리 표시자를 제거합니다"
+  },
+  {
     "id": "Session inactive: ",
     "translation": "세션이 비활성 상태입니다: "
+  },
+  {
+    "id": "Set MinCliVersion to {{.Version}} or higher to ensure compatibility with supported CLI versions.",
+    "translation": "지원되는 CLI 버전과의 호환성을 보장하려면 `+"`"+` MinCliVersion `+"`"+`을 `+"`"+` {{.Version}} `+"`"+` 이상으로 설정하십시오."
+  },
+  {
+    "id": "Shorten the description to be more concise.",
+    "translation": "설명을 더 간결하게 줄이세요."
   },
   {
     "id": "Start usage examples with '{{.Command}}' in lowercase (e.g., '{{.CommandPlugin}}...').",
@@ -1344,6 +1700,10 @@ var _i18nResourcesAllKo_krJson = []byte(`[
     "translation": "플러그인 구성을 저장할 수 없음:"
   },
   {
+    "id": "Update description to include words like 'list', 'show', 'display', 'view', 'all', or 'multiple' to clarify it returns multiple items.",
+    "translation": "설명문에 '목록', '표시', '표시하기', '보기', '전체' 또는 '여러 개'와 같은 단어를 추가하여 여러 개의 항목이 반환됨을 명확히 하세요."
+  },
+  {
     "id": "Usage contains placeholder arguments/flags",
     "translation": "사용법에는 자리 표시자 인수/플래그가 포함됩니다"
   },
@@ -1352,12 +1712,20 @@ var _i18nResourcesAllKo_krJson = []byte(`[
     "translation": "사용법에는 표시 사이에 닫히지 않은 {{.UnclosedGroup}} {{.Indicies}}"
   },
   {
+    "id": "Usage does not have any usage text besides COMMAND",
+    "translation": "사용법에는 COMMAND 외에 다른 설명이 없습니다"
+  },
+  {
     "id": "Usage should start with '{{.Command}}' (lowercase) or the full path to the {{.Command}} binary.",
     "translation": "사용 시에는 `+"`"+` '{{.Command}}' `+"`"+`(소문자) 또는 `+"`"+` {{.Command}} `+"`"+` 바이너리의 전체 경로로 시작해야 합니다."
   },
   {
     "id": "Use common verbs in command names such as list, create, update, delete, or use plural forms to indicate listing operations.",
     "translation": "명령어 이름에는 list, create, update, delete와 같은 일반적인 동사를 사용하거나, 목록 표시 작업을 나타내기 위해 복수형을 사용하십시오."
+  },
+  {
+    "id": "Use more descriptive words with at least {{.Count}} characters for each segment.",
+    "translation": "각 문단마다 최소 {{.Count}} 자 이상의 설명적인 단어를 사용하세요."
   },
   {
     "id": "{{.Field}} contains the following forbidden characters: {{.Chars}}",
@@ -1370,10 +1738,6 @@ var _i18nResourcesAllKo_krJson = []byte(`[
   {
     "id": "{{.Field}} must contain at least {{.Param}} element",
     "translation": "{{.Field}} 최소 {{.Param}} 요소를 포함해야 합니다"
-  },
-  {
-    "id": "{{.Field}} must not equal '{{.Param}}'",
-    "translation": "{{.Field}} ' {{.Param}} '"
   }
 ]`)
 
@@ -1387,7 +1751,7 @@ func i18nResourcesAllKo_krJson() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "i18n/resources/all.ko_KR.json", size: 8326, mode: os.FileMode(420), modTime: time.Unix(1778267255, 0)}
+	info := bindataFileInfo{name: "i18n/resources/all.ko_KR.json", size: 10680, mode: os.FileMode(420), modTime: time.Unix(1780504718, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -1396,6 +1760,14 @@ var _i18nResourcesAllPt_brJson = []byte(`[
   {
     "id": "\nEnter a number",
     "translation": "\nInsira um número"
+  },
+  {
+    "id": "Add a sentence without subject describing what the command does.",
+    "translation": "Adicione uma frase sem sujeito que descreva o que o comando faz."
+  },
+  {
+    "id": "Add usage text showing command syntax with parameters and options.",
+    "translation": "Adicione um texto de instruções que mostre a sintaxe do comando com parâmetros e opções."
   },
   {
     "id": "An error occurred when creating log file '{{.Path}}':\n{{.Error}}\n\n",
@@ -1408,6 +1780,10 @@ var _i18nResourcesAllPt_brJson = []byte(`[
   {
     "id": "An error occurred while dumping response:\n{{.Error}}\n",
     "translation": "Ocorreu um erro ao fazer dump da resposta:\n{{.Error}}\n"
+  },
+  {
+    "id": "Capitalize the first letter of the description.",
+    "translation": "Escreva a primeira letra da descrição com maiúscula."
   },
   {
     "id": "Command '{{.Name}}' contains a segment '{{.Segment}}' that is less than {{.Count}} characters. Each word in a command should be at least {{.Count}} characters.",
@@ -1438,12 +1814,28 @@ var _i18nResourcesAllPt_brJson = []byte(`[
     "translation": "O comando `+"`"+` '{{.Name}}' `+"`"+` utiliza um nome de sinalizador reservado. Isso é feito pela estrutura CLI."
   },
   {
+    "id": "Command '{{.Name}}' uses plural form but description doesn't clearly indicate it returns a list or group of items.",
+    "translation": "O comando '{{.Name}}' usa a forma plural, mas a descrição não indica claramente que ele retorna uma lista ou um grupo de itens."
+  },
+  {
+    "id": "Convert arguments values to CAPITAL letters (e.g., NAME, INSTANCE_ID, FORMAT).",
+    "translation": "Converta os valores dos argumentos para letras maiúsculas (por exemplo, NAME, INSTANCE_ID, FORMAT)."
+  },
+  {
     "id": "Could not read from input: ",
     "translation": "Não foi possível ler a apartir da entrada: "
   },
   {
+    "id": "Description",
+    "translation": "Descrição"
+  },
+  {
     "id": "Description for '{{.Name}}' has {{.WordCount}} words. Consider limiting to less than {{.MaxWordCount}} words for better display.",
     "translation": "A descrição de “ '{{.Name}}' ” tem {{.WordCount}} palavras. Considere limitar o texto a menos de {{.MaxWordCount}} palavras para uma melhor exibição."
+  },
+  {
+    "id": "Description for '{{.Name}}' should start with a capital letter.",
+    "translation": "A descrição de '{{.Name}}' deve começar com letra maiúscula."
   },
   {
     "id": "Description for '{{.Name}}' starts with '{{.Bad}}'. Use a sentence without subject.",
@@ -1468,6 +1860,10 @@ var _i18nResourcesAllPt_brJson = []byte(`[
   {
     "id": "Failed, rows could not convert to csv format",
     "translation": "Falha, não foi possível converter as linhas para o formato csv"
+  },
+  {
+    "id": "ID",
+    "translation": "ID"
   },
   {
     "id": "Invalid grant type: ",
@@ -1514,16 +1910,28 @@ var _i18nResourcesAllPt_brJson = []byte(`[
     "translation": "RESPOSTA:"
   },
   {
-    "id": "Reduce command depth to {{.Level}} or fewer levels. Options: (1) Flatten the hierarchy by combining levels, (2) Use command flags/options instead of subcommands, (3) Reorganize the command structure to be more intuitive.",
-    "translation": "Reduza a profundidade da cadeia de comandos para {{.Level}} ou menos níveis. Opções: (1) Simplificar a hierarquia combinando níveis, (2) Utilizar opções de comando em vez de subcomandos, ( /opt ões), (3) Reorganizar a estrutura de comandos para torná-la mais intuitiva."
-  },
-  {
     "id": "Remote server error. Status code: {{.StatusCode}}, error code: {{.ErrorCode}}, message: {{.Message}}",
     "translation": "Erro do servidor remoto. Código de status: {{.StatusCode}}, código de erro: {{.ErrorCode}}, mensagem: {{.Message}}"
   },
   {
+    "id": "Remove '{{.Bad}}' and start directly with the action. Example: 'List all instances' instead of 'This command lists all instances'.",
+    "translation": "Remova o \" '{{.Bad}}' \" e vá direto ao ponto. Exemplo: \"Listar todas as instâncias\" em vez de \"Este comando lista todas as instâncias\"."
+  },
+  {
+    "id": "Remove placeholders from command usage text",
+    "translation": "Remover os marcadores de lugar do texto de instruções de uso do comando"
+  },
+  {
     "id": "Session inactive: ",
     "translation": "Sessão inativa: "
+  },
+  {
+    "id": "Set MinCliVersion to {{.Version}} or higher to ensure compatibility with supported CLI versions.",
+    "translation": "Defina `+"`"+` MinCliVersion `+"`"+` como `+"`"+` {{.Version}} `+"`"+` ou superior para garantir a compatibilidade com as versões da CLI suportadas."
+  },
+  {
+    "id": "Shorten the description to be more concise.",
+    "translation": "Resuma a descrição para torná-la mais concisa."
   },
   {
     "id": "Start usage examples with '{{.Command}}' in lowercase (e.g., '{{.CommandPlugin}}...').",
@@ -1534,6 +1942,10 @@ var _i18nResourcesAllPt_brJson = []byte(`[
     "translation": "Não é possível salvar a configuração do plug-in: "
   },
   {
+    "id": "Update description to include words like 'list', 'show', 'display', 'view', 'all', or 'multiple' to clarify it returns multiple items.",
+    "translation": "Atualize a descrição para incluir palavras como \"lista\", \"mostrar\", \"exibir\", \"visualizar\", \"todos\" ou \"vários\", a fim de deixar claro que ela retorna vários itens."
+  },
+  {
     "id": "Usage contains placeholder arguments/flags",
     "translation": "O uso contém argumentos/flags de espaço reservado"
   },
@@ -1542,12 +1954,20 @@ var _i18nResourcesAllPt_brJson = []byte(`[
     "translation": "O uso contém {{.UnclosedGroup}} não fechado entre os índices {{.Indicies}}"
   },
   {
+    "id": "Usage does not have any usage text besides COMMAND",
+    "translation": "A sintaxe não possui nenhum texto de instruções além de COMMAND"
+  },
+  {
     "id": "Usage should start with '{{.Command}}' (lowercase) or the full path to the {{.Command}} binary.",
     "translation": "A execução deve começar com `+"`"+` '{{.Command}}' `+"`"+` (em letras minúsculas) ou com o caminho completo para o arquivo binário `+"`"+` {{.Command}} `+"`"+`."
   },
   {
     "id": "Use common verbs in command names such as list, create, update, delete, or use plural forms to indicate listing operations.",
     "translation": "Use verbos comuns nos nomes dos comandos, como listar, criar, atualizar, excluir, ou utilize formas no plural para indicar operações de listagem."
+  },
+  {
+    "id": "Use more descriptive words with at least {{.Count}} characters for each segment.",
+    "translation": "Use palavras mais descritivas, com pelo menos {{.Count}} caracteres em cada segmento."
   },
   {
     "id": "{{.Field}} contains the following forbidden characters: {{.Chars}}",
@@ -1560,10 +1980,6 @@ var _i18nResourcesAllPt_brJson = []byte(`[
   {
     "id": "{{.Field}} must contain at least {{.Param}} element",
     "translation": "{{.Field}} deve conter pelo menos {{.Param}} elemento"
-  },
-  {
-    "id": "{{.Field}} must not equal '{{.Param}}'",
-    "translation": "{{.Field}} não deve ser igual a ' {{.Param}} '"
   }
 ]`)
 
@@ -1577,7 +1993,7 @@ func i18nResourcesAllPt_brJson() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "i18n/resources/all.pt_BR.json", size: 7881, mode: os.FileMode(420), modTime: time.Unix(1778267255, 0)}
+	info := bindataFileInfo{name: "i18n/resources/all.pt_BR.json", size: 10147, mode: os.FileMode(420), modTime: time.Unix(1780504718, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -1586,6 +2002,14 @@ var _i18nResourcesAllZh_hansJson = []byte(`[
   {
     "id": "\nEnter a number",
     "translation": "\n请输入数字"
+  },
+  {
+    "id": "Add a sentence without subject describing what the command does.",
+    "translation": "添加一个省略主语的句子，说明该命令的功能。"
+  },
+  {
+    "id": "Add usage text showing command syntax with parameters and options.",
+    "translation": "添加使用说明，展示包含参数和选项的命令语法。"
   },
   {
     "id": "An error occurred when creating log file '{{.Path}}':\n{{.Error}}\n\n",
@@ -1598,6 +2022,10 @@ var _i18nResourcesAllZh_hansJson = []byte(`[
   {
     "id": "An error occurred while dumping response:\n{{.Error}}\n",
     "translation": "转储响应时发生错误：\n{{.Error}}\n"
+  },
+  {
+    "id": "Capitalize the first letter of the description.",
+    "translation": "描述的首字母应大写。"
   },
   {
     "id": "Command '{{.Name}}' contains a segment '{{.Segment}}' that is less than {{.Count}} characters. Each word in a command should be at least {{.Count}} characters.",
@@ -1628,12 +2056,28 @@ var _i18nResourcesAllZh_hansJson = []byte(`[
     "translation": "命令 '{{.Name}}' 使用了预留的标志名称。 这些由 CLI 框架负责处理。"
   },
   {
+    "id": "Command '{{.Name}}' uses plural form but description doesn't clearly indicate it returns a list or group of items.",
+    "translation": "'{{.Name}}' 命令使用了复数形式，但说明中并未明确指出它会返回一个列表或一组项目。"
+  },
+  {
+    "id": "Convert arguments values to CAPITAL letters (e.g., NAME, INSTANCE_ID, FORMAT).",
+    "translation": "将参数值转换为大写（例如：NAME、INSTANCE_ID、FORMAT）。"
+  },
+  {
     "id": "Could not read from input: ",
     "translation": "无法从输入进行读取： "
   },
   {
+    "id": "Description",
+    "translation": "描述"
+  },
+  {
     "id": "Description for '{{.Name}}' has {{.WordCount}} words. Consider limiting to less than {{.MaxWordCount}} words for better display.",
     "translation": "'{{.Name}}' 的描述包含 {{.WordCount}} 个单词。 为获得更好的显示效果，建议将字数控制在 {{.MaxWordCount}} 字以内。"
+  },
+  {
+    "id": "Description for '{{.Name}}' should start with a capital letter.",
+    "translation": "'{{.Name}}' 的描述应以大写字母开头。"
   },
   {
     "id": "Description for '{{.Name}}' starts with '{{.Bad}}'. Use a sentence without subject.",
@@ -1658,6 +2102,10 @@ var _i18nResourcesAllZh_hansJson = []byte(`[
   {
     "id": "Failed, rows could not convert to csv format",
     "translation": "失败，数据行无法转换为 csv 格式"
+  },
+  {
+    "id": "ID",
+    "translation": "标识"
   },
   {
     "id": "Invalid grant type: ",
@@ -1704,16 +2152,28 @@ var _i18nResourcesAllZh_hansJson = []byte(`[
     "translation": "响应: "
   },
   {
-    "id": "Reduce command depth to {{.Level}} or fewer levels. Options: (1) Flatten the hierarchy by combining levels, (2) Use command flags/options instead of subcommands, (3) Reorganize the command structure to be more intuitive.",
-    "translation": "将命令深度缩减至 {{.Level}} 层或更少。 选项：(1) 通过合并层级来简化层次结构，(2) 使用命令标志 /opt ion代替子命令，(3) 重新组织命令结构，使其更加直观。"
-  },
-  {
     "id": "Remote server error. Status code: {{.StatusCode}}, error code: {{.ErrorCode}}, message: {{.Message}}",
     "translation": "远程服务器错误。状态码：{{.StatusCode}}，错误代码：{{.ErrorCode}}，消息：{{.Message}}"
   },
   {
+    "id": "Remove '{{.Bad}}' and start directly with the action. Example: 'List all instances' instead of 'This command lists all instances'.",
+    "translation": "删除 '{{.Bad}}' ，直接从该操作开始。 示例：使用“列出所有实例”，而不是“此命令列出所有实例”。"
+  },
+  {
+    "id": "Remove placeholders from command usage text",
+    "translation": "从命令用法说明中删除占位符"
+  },
+  {
     "id": "Session inactive: ",
     "translation": "会议非活动： "
+  },
+  {
+    "id": "Set MinCliVersion to {{.Version}} or higher to ensure compatibility with supported CLI versions.",
+    "translation": "将 `+"`"+` MinCliVersion `+"`"+` 设置为 `+"`"+` {{.Version}} `+"`"+` 或更高版本，以确保与受支持的 CLI 版本兼容。"
+  },
+  {
+    "id": "Shorten the description to be more concise.",
+    "translation": "请将描述内容精简，使其更加简洁。"
   },
   {
     "id": "Start usage examples with '{{.Command}}' in lowercase (e.g., '{{.CommandPlugin}}...').",
@@ -1724,6 +2184,10 @@ var _i18nResourcesAllZh_hansJson = []byte(`[
     "translation": "无法保存插件配置："
   },
   {
+    "id": "Update description to include words like 'list', 'show', 'display', 'view', 'all', or 'multiple' to clarify it returns multiple items.",
+    "translation": "更新描述，加入“列表”、“显示”、“查看”、“全部”或“多个”等词语，以明确说明该操作会返回多个项目。"
+  },
+  {
     "id": "Usage contains placeholder arguments/flags",
     "translation": "用法包含占位参数/标志"
   },
@@ -1732,12 +2196,20 @@ var _i18nResourcesAllZh_hansJson = []byte(`[
     "translation": "用法中包含指示符之间未封闭的 {{.UnclosedGroup}} {{.Indicies}}"
   },
   {
+    "id": "Usage does not have any usage text besides COMMAND",
+    "translation": "除 COMMAND 之外，该用法没有其他说明文本"
+  },
+  {
     "id": "Usage should start with '{{.Command}}' (lowercase) or the full path to the {{.Command}} binary.",
     "translation": "使用时应以 `+"`"+` '{{.Command}}' `+"`"+`（小写）或 `+"`"+` {{.Command}} `+"`"+` 二进制文件的完整路径开头。"
   },
   {
     "id": "Use common verbs in command names such as list, create, update, delete, or use plural forms to indicate listing operations.",
     "translation": "在命令名称中使用常见动词，例如 list、create、update、delete，或使用复数形式来表示列表操作。"
+  },
+  {
+    "id": "Use more descriptive words with at least {{.Count}} characters for each segment.",
+    "translation": "请使用更具描述性的词语，每个段落至少包含 {{.Count}} 个字符。"
   },
   {
     "id": "{{.Field}} contains the following forbidden characters: {{.Chars}}",
@@ -1750,10 +2222,6 @@ var _i18nResourcesAllZh_hansJson = []byte(`[
   {
     "id": "{{.Field}} must contain at least {{.Param}} element",
     "translation": "{{.Field}} 必须至少包含 {{.Param}} 元素"
-  },
-  {
-    "id": "{{.Field}} must not equal '{{.Param}}'",
-    "translation": "{{.Field}} 不得等于 ' {{.Param}} '"
   }
 ]`)
 
@@ -1767,7 +2235,7 @@ func i18nResourcesAllZh_hansJson() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "i18n/resources/all.zh_Hans.json", size: 7394, mode: os.FileMode(420), modTime: time.Unix(1778267255, 0)}
+	info := bindataFileInfo{name: "i18n/resources/all.zh_Hans.json", size: 9526, mode: os.FileMode(420), modTime: time.Unix(1780504718, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -1776,6 +2244,14 @@ var _i18nResourcesAllZh_hantJson = []byte(`[
   {
     "id": "\nEnter a number",
     "translation": "\n請輸入數字"
+  },
+  {
+    "id": "Add a sentence without subject describing what the command does.",
+    "translation": "請添加一句不帶主語的句子，說明該指令的功能。"
+  },
+  {
+    "id": "Add usage text showing command syntax with parameters and options.",
+    "translation": "新增使用說明，展示包含參數與選項的指令語法。"
   },
   {
     "id": "An error occurred when creating log file '{{.Path}}':\n{{.Error}}\n\n",
@@ -1788,6 +2264,10 @@ var _i18nResourcesAllZh_hantJson = []byte(`[
   {
     "id": "An error occurred while dumping response:\n{{.Error}}\n",
     "translation": "傾出回應時發生錯誤：\n{{.Error}}\n"
+  },
+  {
+    "id": "Capitalize the first letter of the description.",
+    "translation": "描述文字的首字母應大寫。"
   },
   {
     "id": "Command '{{.Name}}' contains a segment '{{.Segment}}' that is less than {{.Count}} characters. Each word in a command should be at least {{.Count}} characters.",
@@ -1818,12 +2298,28 @@ var _i18nResourcesAllZh_hantJson = []byte(`[
     "translation": "指令 `+"`"+` '{{.Name}}' `+"`"+` 使用了保留的旗標名稱。 這些由 CLI 框架負責處理。"
   },
   {
+    "id": "Command '{{.Name}}' uses plural form but description doesn't clearly indicate it returns a list or group of items.",
+    "translation": "指令 `+"`"+` '{{.Name}}' `+"`"+` 使用了複數形式，但說明文字並未明確指出它會傳回一組項目。"
+  },
+  {
+    "id": "Convert arguments values to CAPITAL letters (e.g., NAME, INSTANCE_ID, FORMAT).",
+    "translation": "將參數值轉換為大寫字母（例如：NAME、INSTANCE_ID、FORMAT）。"
+  },
+  {
     "id": "Could not read from input: ",
     "translation": "無法從輸入讀取： "
   },
   {
+    "id": "Description",
+    "translation": "說明"
+  },
+  {
     "id": "Description for '{{.Name}}' has {{.WordCount}} words. Consider limiting to less than {{.MaxWordCount}} words for better display.",
     "translation": "'{{.Name}}' 的說明文字共有 {{.WordCount}} 個字。 為獲得更好的顯示效果，建議將字數限制在 {{.MaxWordCount}} 字以內。"
+  },
+  {
+    "id": "Description for '{{.Name}}' should start with a capital letter.",
+    "translation": "'{{.Name}}' 的描述應以大寫字母開頭。"
   },
   {
     "id": "Description for '{{.Name}}' starts with '{{.Bad}}'. Use a sentence without subject.",
@@ -1848,6 +2344,10 @@ var _i18nResourcesAllZh_hantJson = []byte(`[
   {
     "id": "Failed, rows could not convert to csv format",
     "translation": "失敗，資料無法轉換成 csv 格式"
+  },
+  {
+    "id": "ID",
+    "translation": "ID"
   },
   {
     "id": "Invalid grant type: ",
@@ -1894,16 +2394,28 @@ var _i18nResourcesAllZh_hantJson = []byte(`[
     "translation": "回應："
   },
   {
-    "id": "Reduce command depth to {{.Level}} or fewer levels. Options: (1) Flatten the hierarchy by combining levels, (2) Use command flags/options instead of subcommands, (3) Reorganize the command structure to be more intuitive.",
-    "translation": "請將指令層級減少至 {{.Level}} 或更少層級。 選項：(1) 透過合併層級來簡化層級結構，(2) 使用命令參數 /opt ion 取代子命令，(3) 重新組織命令結構，使其更直觀。"
-  },
-  {
     "id": "Remote server error. Status code: {{.StatusCode}}, error code: {{.ErrorCode}}, message: {{.Message}}",
     "translation": "遠端伺服器錯誤。狀態碼：{{.StatusCode}}，錯誤碼：{{.ErrorCode}}，訊息：{{.Message}}"
   },
   {
+    "id": "Remove '{{.Bad}}' and start directly with the action. Example: 'List all instances' instead of 'This command lists all instances'.",
+    "translation": "移除 `+"`"+` '{{.Bad}}' `+"`"+`，並直接從該動作開始。 範例：使用「列出所有執行個體」而非「此指令會列出所有執行個體」。"
+  },
+  {
+    "id": "Remove placeholders from command usage text",
+    "translation": "從命令使用說明中移除佔位符"
+  },
+  {
     "id": "Session inactive: ",
     "translation": "會議非主動： "
+  },
+  {
+    "id": "Set MinCliVersion to {{.Version}} or higher to ensure compatibility with supported CLI versions.",
+    "translation": "請將 `+"`"+` MinCliVersion `+"`"+` 設定為 `+"`"+` {{.Version}} `+"`"+` 或更高版本，以確保與受支援的 CLI 版本相容。"
+  },
+  {
+    "id": "Shorten the description to be more concise.",
+    "translation": "請將描述簡化，使其更為簡潔。"
   },
   {
     "id": "Start usage examples with '{{.Command}}' in lowercase (e.g., '{{.CommandPlugin}}...').",
@@ -1914,6 +2426,10 @@ var _i18nResourcesAllZh_hantJson = []byte(`[
     "translation": "無法儲存外掛程式配置："
   },
   {
+    "id": "Update description to include words like 'list', 'show', 'display', 'view', 'all', or 'multiple' to clarify it returns multiple items.",
+    "translation": "請在描述中加入「清單」、「顯示」、「檢視」、「全部」或「多個」等字詞，以明確指出該功能會返回多個項目。"
+  },
+  {
     "id": "Usage contains placeholder arguments/flags",
     "translation": "用法包含占位符參數/旗標"
   },
@@ -1922,12 +2438,20 @@ var _i18nResourcesAllZh_hantJson = []byte(`[
     "translation": "使用方式包含指標之間未封閉的 {{.UnclosedGroup}} {{.Indicies}}"
   },
   {
+    "id": "Usage does not have any usage text besides COMMAND",
+    "translation": "除了 COMMAND 之外，此指令沒有其他說明文字"
+  },
+  {
     "id": "Usage should start with '{{.Command}}' (lowercase) or the full path to the {{.Command}} binary.",
     "translation": "使用時應以 `+"`"+` '{{.Command}}' `+"`"+`（小寫）或 `+"`"+` {{.Command}} `+"`"+` 二進位檔的完整路徑作為開頭。"
   },
   {
     "id": "Use common verbs in command names such as list, create, update, delete, or use plural forms to indicate listing operations.",
     "translation": "請在指令名稱中使用常見動詞，例如 list、create、update、delete，或使用複數形式來表示清單操作。"
+  },
+  {
+    "id": "Use more descriptive words with at least {{.Count}} characters for each segment.",
+    "translation": "請使用更具描述性的詞彙，並確保每個段落至少有 {{.Count}} 個字元。"
   },
   {
     "id": "{{.Field}} contains the following forbidden characters: {{.Chars}}",
@@ -1940,10 +2464,6 @@ var _i18nResourcesAllZh_hantJson = []byte(`[
   {
     "id": "{{.Field}} must contain at least {{.Param}} element",
     "translation": "{{.Field}} 必須至少包含 {{.Param}} 元素"
-  },
-  {
-    "id": "{{.Field}} must not equal '{{.Param}}'",
-    "translation": "{{.Field}} 不得等於 ' {{.Param}} '"
   }
 ]`)
 
@@ -1957,7 +2477,7 @@ func i18nResourcesAllZh_hantJson() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "i18n/resources/all.zh_Hant.json", size: 7441, mode: os.FileMode(420), modTime: time.Unix(1778267255, 0)}
+	info := bindataFileInfo{name: "i18n/resources/all.zh_Hant.json", size: 9594, mode: os.FileMode(420), modTime: time.Unix(1780504718, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }

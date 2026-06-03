@@ -4,6 +4,14 @@
     "translation": "\nEnter a number"
   },
   {
+    "id": "Add a sentence without subject describing what the command does.",
+    "translation": "Add a sentence without subject describing what the command does."
+  },
+  {
+    "id": "Add usage text showing command syntax with parameters and options.",
+    "translation": "Add usage text showing command syntax with parameters and options."
+  },
+  {
     "id": "An error occurred when creating log file '{{.Path}}':\n{{.Error}}\n\n",
     "translation": "An error occurred when creating log file '{{.Path}}':\n{{.Error}}\n\n"
   },
@@ -14,6 +22,10 @@
   {
     "id": "An error occurred while dumping response:\n{{.Error}}\n",
     "translation": "An error occurred while dumping response:\n{{.Error}}\n"
+  },
+  {
+    "id": "Capitalize the first letter of the description.",
+    "translation": "Capitalize the first letter of the description."
   },
   {
     "id": "Command '{{.Name}}' contains a segment '{{.Segment}}' that is less than {{.Count}} characters. Each word in a command should be at least {{.Count}} characters.",
@@ -44,12 +56,28 @@
     "translation": "Command '{{.Name}}' uses a reserved flag name. These are handled by the CLI framework."
   },
   {
+    "id": "Command '{{.Name}}' uses plural form but description doesn't clearly indicate it returns a list or group of items.",
+    "translation": "Command '{{.Name}}' uses plural form but description doesn't clearly indicate it returns a list or group of items."
+  },
+  {
+    "id": "Convert arguments values to CAPITAL letters (e.g., NAME, INSTANCE_ID, FORMAT).",
+    "translation": "Convert arguments values to CAPITAL letters (e.g., NAME, INSTANCE_ID, FORMAT)."
+  },
+  {
     "id": "Could not read from input: ",
     "translation": "Could not read from input: "
   },
   {
+    "id": "Description",
+    "translation": "Description"
+  },
+  {
     "id": "Description for '{{.Name}}' has {{.WordCount}} words. Consider limiting to less than {{.MaxWordCount}} words for better display.",
     "translation": "Description for '{{.Name}}' has {{.WordCount}} words. Consider limiting to less than {{.MaxWordCount}} words for better display."
+  },
+  {
+    "id": "Description for '{{.Name}}' should start with a capital letter.",
+    "translation": "Description for '{{.Name}}' should start with a capital letter."
   },
   {
     "id": "Description for '{{.Name}}' starts with '{{.Bad}}'. Use a sentence without subject.",
@@ -74,6 +102,10 @@
   {
     "id": "Failed, rows could not convert to csv format",
     "translation": "Failed, rows could not convert to csv format"
+  },
+  {
+    "id": "ID",
+    "translation": "ID"
   },
   {
     "id": "Invalid grant type: ",
@@ -120,16 +152,28 @@
     "translation": "RESPONSE:"
   },
   {
-    "id": "Reduce command depth to {{.Level}} or fewer levels. Options: (1) Flatten the hierarchy by combining levels, (2) Use command flags/options instead of subcommands, (3) Reorganize the command structure to be more intuitive.",
-    "translation": "Reduce command depth to {{.Level}} or fewer levels. Options: (1) Flatten the hierarchy by combining levels, (2) Use command flags/options instead of subcommands, (3) Reorganize the command structure to be more intuitive."
-  },
-  {
     "id": "Remote server error. Status code: {{.StatusCode}}, error code: {{.ErrorCode}}, message: {{.Message}}",
     "translation": "Remote server error. Status code: {{.StatusCode}}, error code: {{.ErrorCode}}, message: {{.Message}}"
   },
   {
+    "id": "Remove '{{.Bad}}' and start directly with the action. Example: 'List all instances' instead of 'This command lists all instances'.",
+    "translation": "Remove '{{.Bad}}' and start directly with the action. Example: 'List all instances' instead of 'This command lists all instances'."
+  },
+  {
+    "id": "Remove placeholders from command usage text",
+    "translation": "Remove placeholders from command usage text"
+  },
+  {
     "id": "Session inactive: ",
     "translation": "Session inactive: "
+  },
+  {
+    "id": "Set MinCliVersion to {{.Version}} or higher to ensure compatibility with supported CLI versions.",
+    "translation": "Set MinCliVersion to {{.Version}} or higher to ensure compatibility with supported CLI versions."
+  },
+  {
+    "id": "Shorten the description to be more concise.",
+    "translation": "Shorten the description to be more concise."
   },
   {
     "id": "Start usage examples with '{{.Command}}' in lowercase (e.g., '{{.CommandPlugin}}...').",
@@ -140,6 +184,10 @@
     "translation": "Unable to save plugin config: "
   },
   {
+    "id": "Update description to include words like 'list', 'show', 'display', 'view', 'all', or 'multiple' to clarify it returns multiple items.",
+    "translation": "Update description to include words like 'list', 'show', 'display', 'view', 'all', or 'multiple' to clarify it returns multiple items."
+  },
+  {
     "id": "Usage contains placeholder arguments/flags",
     "translation": "Usage contains placeholder arguments/flags"
   },
@@ -148,12 +196,20 @@
     "translation": "Usage contains unclosed {{.UnclosedGroup}} between indicies {{.Indicies}}"
   },
   {
+    "id": "Usage does not have any usage text besides COMMAND",
+    "translation": "Usage does not have any usage text besides COMMAND"
+  },
+  {
     "id": "Usage should start with '{{.Command}}' (lowercase) or the full path to the {{.Command}} binary.",
     "translation": "Usage should start with '{{.Command}}' (lowercase) or the full path to the {{.Command}} binary."
   },
   {
     "id": "Use common verbs in command names such as list, create, update, delete, or use plural forms to indicate listing operations.",
     "translation": "Use common verbs in command names such as list, create, update, delete, or use plural forms to indicate listing operations."
+  },
+  {
+    "id": "Use more descriptive words with at least {{.Count}} characters for each segment.",
+    "translation": "Use more descriptive words with at least {{.Count}} characters for each segment."
   },
   {
     "id": "{{.Field}} contains the following forbidden characters: {{.Chars}}",
@@ -166,9 +222,5 @@
   {
     "id": "{{.Field}} must contain at least {{.Param}} element",
     "translation": "{{.Field}} must contain at least {{.Param}} element"
-  },
-  {
-    "id": "{{.Field}} must not equal '{{.Param}}'",
-    "translation": "{{.Field}} must not equal '{{.Param}}'"
   }
 ]
