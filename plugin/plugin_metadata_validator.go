@@ -33,7 +33,6 @@ var (
 
 	cmdIndxRegex       *regexp.Regexp
 	placeholdersRegexp *regexp.Regexp
-	utf16Regexp        *regexp.Regexp
 	idxRegex           *regexp.Regexp
 
 	compileOnce sync.Once
@@ -101,6 +100,8 @@ func Validator() *validator.Validate {
 		return validateCliVersionMinimum(fl.Field().Interface().(VersionType), fl.Param()) == nil
 	})
 
+	validate.RegisterStructValidation(validatePluginCommandStruct, Command{})
+
 	return validate
 }
 
@@ -118,12 +119,12 @@ func (p pluginMetadataValidate) Errors(metadatas []PluginMetadata) PluginToValid
 		placeholdersRegexp = regexp.MustCompile(`\[([aA]rguments|[oO]ptions)+\.{0,3}\]`)
 		cmdIndxRegex = regexp.MustCompile(`Commands\[\d+\]`)
 		idxRegex = regexp.MustCompile(`\d+`)
-		utf16Regexp = regexp.MustCompile(`\\u[0-9a-fA-F]{4}`)
 	})
 
 	var (
 		metadataErrs []PluginMetadataError
 		pluginName   string
+		cmdName      string
 	)
 	pluginToMetadataErrs := PluginToValidationErrors{}
 	for _, metadata := range metadatas {
@@ -143,18 +144,19 @@ func (p pluginMetadataValidate) Errors(metadatas []PluginMetadata) PluginToValid
 					cmdIdx := p.CommandIndexFromNamespace(v.StructNamespace())
 					if cmdIdx != -1 {
 						cmd := metadata.Commands[cmdIdx]
+						cmdName = cmd.Name
 						validErr.CommandName = cmd.Namespace + " " + cmd.Name
 					}
-					validErr.Error = p.ParseValidationTagErrors(v)
+					pluginErr := p.ParseValidationTagErrors(v, cmdName)
+					validErr.Error = pluginErr.Error
 					validErr.Priority = PriorityError // Default priority for struct validation errors
+					if pluginErr.Priority != "" {
+						validErr.Priority = pluginErr.Priority
+					}
+					validErr.Remediation = pluginErr.Remediation
 					metadataErrs = append(metadataErrs, validErr)
 				}
 			}
-		}
-
-		// Validate each command
-		for _, cmd := range metadata.Commands {
-			metadataErrs = append(metadataErrs, p.validateCommand(cmd, metadata.Name)...)
 		}
 
 		// Only add to map if there are errors
@@ -172,40 +174,228 @@ func (p pluginMetadataValidate) Errors(metadatas []PluginMetadata) PluginToValid
 	return pluginToMetadataErrs
 }
 
-func (p pluginMetadataValidate) ParseValidationTagErrors(fieldErr validator.FieldError) string {
+// ParseValidationTagErrors translates validator.FieldError validation tags into user-friendly PluginMetadataError messages.
+// This method serves as the central error message formatter for all plugin metadata validation failures,
+// converting technical validation tags into actionable error messages with appropriate priority levels and remediation guidance.
+//
+// Parameters:
+//   - fieldErr: The validation error from the go-playground/validator library containing the failed validation tag and context
+//   - cmdName: The name of the command being validated (used for contextual error messages)
+//
+// Returns:
+//   - PluginMetadataError: A structured error containing the error message, priority level, and remediation advice
+//
+// Supported Validation Tags:
+//
+//   - min: Validates minimum element count in collections (e.g., Commands, Namespaces must have at least 1 element)
+//     Priority: ERROR
+//
+//   - required: Validates presence of mandatory fields (Name, Description, Usage)
+//     Priority: ERROR
+//     Special handling for Usage and Description fields with command-specific error messages
+//
+//   - uppercase: Validates that descriptions start with a capital letter
+//     Priority: ERROR
+//     Remediation: Capitalize the first letter
+//
+//   - cmdsegmin: Validates minimum character length for command name segments
+//     Priority: ERROR
+//     Format: "count|segment" where count is minimum length and segment is the offending word
+//     Remediation: Use more descriptive words (at least 2 characters per segment)
+//
+//   - noreserves: Detects use of reserved command names (--version, --help, -v, -h)
+//     Priority: WARNING
+//     Remediation: Remove command as these are automatically provided by CLI framework
+//
+//   - maxnsdepth: Validates command depth does not exceed maximum (default: 3 levels)
+//     Priority: WARNING
+//     Remediation: Flatten hierarchy, use flags instead of subcommands, or reorganize structure
+//
+//   - usage: Validates command usage text meets requirements (proper prefix, no placeholders, closed brackets)
+//     Priority: ERROR
+//     Delegates to validatePluginMetadataUsage for detailed validation
+//
+//   - nosubject: Detects anti-pattern of starting descriptions with subjects like "This command", "Plugin to"
+//     Priority: ERROR
+//     Remediation: Remove subject and start directly with action verb
+//
+//   - mincliversion: Validates MinCliVersion meets minimum required version (2.0.0)
+//     Priority: ERROR
+//     Delegates to validateCliVersionMinimum for version comparison
+//
+//   - cmdwordcount: Validates description word count doesn't exceed recommended maximum (15 words)
+//     Priority: INFO
+//     Remediation: Shorten description for better display
+//
+//   - cleardesc: Validates that plural command names have descriptions indicating they return multiple items
+//     Priority: WARNING
+//     Remediation: Include words like 'list', 'show', 'display', 'all', or 'multiple'
+//
+//   - capargs: Validates that positional arguments in usage text are in CAPITAL letters
+//     Priority: WARNING
+//     Param contains comma-separated list of lowercase arguments found
+//     Remediation: Convert to CAPITAL letters (e.g., NAME, INSTANCE_ID, FORMAT)
+//
+//   - noverb: Validates command names use common verbs or plural forms
+//     Priority: ERROR (default, but can vary)
+//     Remediation: Use common verbs (list, create, update, delete, show, get, set) or plural nouns
+//
+//   - excludesall: Validates field names don't contain forbidden characters
+//     Priority: ERROR
+//     Param contains the forbidden characters found
+//
+// Example Usage:
+//
+//	fieldErr := validator.FieldError{...}
+//	pluginErr := validator.ParseValidationTagErrors(fieldErr, "service create")
+//	// Returns: PluginMetadataError{
+//	//   Error: "Command 'service create' has no usage information.",
+//	//   Priority: PriorityError,
+//	//   Remediation: "Add usage text showing command syntax with parameters and options."
+//	// }
+//
+// Note: If no remediation message is explicitly set, it defaults to the error message.
+// If no priority is set, it defaults to PriorityError.
+func (p pluginMetadataValidate) ParseValidationTagErrors(fieldErr validator.FieldError, cmdName string) PluginMetadataError {
+	var (
+		errMsg         string
+		remediationMsg string
+		priority       Priority
+	)
 	switch fieldErr.Tag() {
 	case "min":
-		return i18n.T("{{.Field}} must contain at least {{.Param}} element", map[string]any{
-			"Field": fieldErr.Field(),
-			"Param": fieldErr.Param(),
-		})
-	case "ne":
-		return i18n.T("{{.Field}} must not equal '{{.Param}}'", map[string]any{
+		errMsg = i18n.T("{{.Field}} must contain at least {{.Param}} element", map[string]any{
 			"Field": fieldErr.Field(),
 			"Param": fieldErr.Param(),
 		})
 	case "required":
-		return i18n.T("{{.Field}} is required", map[string]any{
-			"Field": fieldErr.Field(),
+		if fieldErr.StructField() == "Usage" {
+			remediationMsg = i18n.T("Add usage text showing command syntax with parameters and options.")
+			errMsg = i18n.T("Command '{{.Name}}' has no usage information.", map[string]any{
+				"Name": cmdName,
+			})
+		} else if fieldErr.StructField() == "Description" {
+			if isCommandDescription(fieldErr.Namespace()) {
+				remediationMsg = i18n.T("Add a sentence without subject describing what the command does.")
+				errMsg = i18n.T("Command '{{.Name}}' has no description. All commands must have a clear description.", map[string]any{
+					"Name": cmdName,
+				})
+			}
+		} else {
+			errMsg = i18n.T("{{.Field}} is required", map[string]any{
+				"Field": fieldErr.StructField(),
+			})
+		}
+	// Validate if property starts with a capital letter
+	case "uppercase":
+
+		errMsg = i18n.T("Description for '{{.Name}}' should start with a capital letter.", map[string]any{
+			"Name": cmdName,
+		})
+		remediationMsg = i18n.T("Capitalize the first letter of the description.")
+
+	// Validate if command name has at least X amount of segments
+	case "cmdsegmin":
+		params := strings.Split(fieldErr.Param(), "|")
+		count := params[0]
+		segment := params[1]
+
+		errMsg = i18n.T("Command '{{.Name}}' contains a segment '{{.Segment}}' that is less than {{.Count}} characters. Each word in a command should be at least {{.Count}} characters.", map[string]any{
+			"Name":    cmdName,
+			"Segment": segment,
+			"Count":   count,
+		})
+		remediationMsg = i18n.T("Use more descriptive words with at least {{.Count}} characters for each segment.", map[string]any{
+			"Count": fieldErr.Param(),
+		})
+	case "noreserves":
+		errMsg = i18n.T("Command '{{.Name}}' uses a reserved flag name. These are handled by the CLI framework.", map[string]any{
+			"Name": cmdName,
+		})
+		priority = PriorityWarning
+		remediationMsg = "Remove this command; --version and --help are automatically provided."
+	case "maxnsdepth":
+
+		errMsg = i18n.T("Command '{{.Name}}' has {{.Level}} levels, exceeding the maximum of {{.Level}}. Deep command hierarchies are difficult for users to remember and discover.",
+			map[string]any{
+				"Name":  cmdName,
+				"Level": fieldErr.Param(),
+			})
+
+		priority = PriorityWarning
+		remediationMsg = i18n.T("Reduce command depth to {{.Level}} or fewer levels. Options: (1) Flatten the hierarchy by combining levels, "+
+			"(2) Use command flags/options instead of subcommands, (3) Reorganize the command structure to be more intuitive.", map[string]any{
+			"Level": fieldErr.Param(),
 		})
 	case "usage":
 		if err := validatePluginMetadataUsage(fmt.Sprint(fieldErr.Value())); err != nil {
-			return err.Error()
+			return *err
 		}
+	case "nosubject":
+		errMsg = i18n.T("Description for '{{.Name}}' starts with '{{.Bad}}'. Use a sentence without subject.", map[string]any{
+			"Name": cmdName,
+			"Bad":  fieldErr.Param(),
+		})
+		remediationMsg = i18n.T("Remove '{{.Bad}}' and start directly with the action. Example: 'List all instances' instead of 'This command lists all instances'.", map[string]any{
+			"Bad": fieldErr.Param(),
+		})
 	case "mincliversion":
 		if err := validateCliVersionMinimum(fieldErr.Value().(VersionType), fieldErr.Param()); err != nil {
-			return fmt.Sprintf("%s. Remediation: Set MinCliVersion to %s or higher to ensure compatibility with supported CLI versions.", err.Error(), fieldErr.Param())
+			return *err
 		}
 	case "excludesall":
-		return i18n.T("{{.Field}} contains the following forbidden characters: {{.Chars}}", map[string]any{
+		errMsg = i18n.T("{{.Field}} contains the following forbidden characters: {{.Chars}}", map[string]any{
 			"Field": fieldErr.Field(),
 			"Chars": strings.Join(strings.Split(fieldErr.Param(), ""), " "),
 		})
-	default:
-		return fieldErr.Error()
+
+	case "cmdwordcount":
+		wordCount := len(strings.Fields(fieldErr.Value().(string)))
+		errMsg = i18n.T("Description for '{{.Name}}' has {{.WordCount}} words. Consider limiting to less than {{.MaxWordCount}} words for better display.", map[string]any{
+			"Name":         cmdName,
+			"WordCount":    wordCount,
+			"MaxWordCount": fieldErr.Param(),
+		})
+		priority = PriorityInfo
+		remediationMsg = i18n.T("Shorten the description to be more concise.")
+
+	case "cleardesc":
+		errMsg = i18n.T("Command '{{.Name}}' uses plural form but description doesn't clearly indicate it returns a list or group of items.", map[string]any{
+			"Name": cmdName,
+		})
+		priority = PriorityWarning
+		remediationMsg = i18n.T("Update description to include words like 'list', 'show', 'display', 'view', 'all', or 'multiple' to clarify it returns multiple items.")
+
+	case "capargs":
+		errMsg = i18n.T("Command '{{.Name}}' usage contains lowercase argument values: {{.Args}}. User input values should be in CAPITAL letters.",
+			map[string]any{
+				"Name": cmdName,
+				"Args": fieldErr.Param(),
+			})
+
+		priority = PriorityWarning
+		remediationMsg = i18n.T("Convert arguments values to CAPITAL letters (e.g., NAME, INSTANCE_ID, FORMAT).")
+	case "noverb":
+		errMsg = i18n.T("Command '{{.Name}}' does not use a common verb or plural form. Consider using verbs like: list, create, update, delete, show, get, set... or plural nouns like 'instances', 'services'", map[string]any{
+			"Name": cmdName,
+		})
+		remediationMsg = i18n.T("Use common verbs in command names such as list, create, update, delete, or use plural forms to indicate listing operations.")
+		priority = PriorityWarning
 	}
 
-	return ""
+	if remediationMsg == "" {
+		remediationMsg = errMsg
+	}
+
+	if priority == "" {
+		priority = PriorityError
+	}
+
+	return PluginMetadataError{
+		Error:       errMsg,
+		Remediation: remediationMsg,
+		Priority:    priority,
+	}
 }
 
 func UnclosedGroupings(usageText string) (bool, rune, []int) {
@@ -259,46 +449,86 @@ func UnclosedGroupings(usageText string) (bool, rune, []int) {
 	return false, ' ', indicies
 }
 
-func validateCliVersionMinimum(versionType VersionType, minVersion string) error {
+func validateCliVersionMinimum(versionType VersionType, minVersion string) *PluginMetadataError {
 	minSemVer, minErr := semver.NewVersion(minVersion)
 	if minErr != nil {
-		return minErr
+		return &PluginMetadataError{
+			Error:    minErr.Error(),
+			Priority: PriorityError,
+		}
 	}
 	specifiedVersion, verErr := semver.NewVersion(versionType.String())
 	if verErr != nil {
-		return verErr
+		return &PluginMetadataError{
+			Error:    verErr.Error(),
+			Priority: PriorityError,
+		}
 	}
 
 	if specifiedVersion.LessThan(minSemVer) {
-		return errors.New(i18n.T("MinCliVersion ({{.ProvidedMinVersion}}) is lower than the allowed minimum {{.AllowedMinimum}}", map[string]any{
-			"ProvidedMinVersion": versionType.String(),
-			"AllowedMinimum":     minVersion,
-		}))
+		return &PluginMetadataError{
+			Error: i18n.T("MinCliVersion ({{.ProvidedMinVersion}}) is lower than the allowed minimum {{.AllowedMinimum}}", map[string]any{
+				"ProvidedMinVersion": versionType.String(),
+				"AllowedMinimum":     minVersion,
+			}),
+			Remediation: i18n.T("Set MinCliVersion to {{.Version}} or higher to ensure compatibility with supported CLI versions.", minVersion),
+			Priority:    PriorityError,
+		}
 	}
 
 	return nil
 }
 
-func validatePluginMetadataUsage(usageText string) error {
+func validatePluginMetadataUsage(usageText string) *PluginMetadataError {
 
-	// All arguments and flags MUST be explicitly stated (no placeholders)
+	// (1) All arguments and flags MUST be explicitly stated (no placeholders)
 	if placeholdersRegexp.MatchString(usageText) {
-		return errors.New(i18n.T("Usage contains placeholder arguments/flags"))
+		return &PluginMetadataError{
+			Error:       i18n.T("Usage contains placeholder arguments/flags"),
+			Priority:    PriorityError,
+			Remediation: i18n.T("Remove placeholders from command usage text"),
+		}
+
 	}
 
-	// No basic usage text (Just COMMAND)
+	// (2) Check that usage starts with 'ibmcloud' or full path
+	// NOTE: Renable if we need it
+	// usageStripped := strings.TrimSpace(usageText)
+	// if !strings.HasPrefix(usageStripped, "ibmcloud") && !strings.Contains(usageStripped[:min(50, len(usageStripped))], "/ibmcloud") {
+	// 	return &PluginMetadataError{
+	// 		Error: i18n.T("Usage should start with '{{.Command}}' (lowercase) or the full path to the {{.Command}} binary.",
+	// 			map[string]any{
+	// 				"Command": "ibmcloud",
+	// 			}),
+	// 		Priority: PriorityError,
+	// 		Remediation: i18n.T("Start usage examples with '{{.Command}}' in lowercase (e.g., '{{.CommandPlugin}}...').",
+	// 			map[string]any{
+	// 				"Command":       "ibmcloud",
+	// 				"CommandPlugin": "ibmcloud plugin-name command",
+	// 			}),
+	// 	}
+	// }
+
+	// (3) No basic usage text (Just COMMAND)
 	parts := strings.SplitAfter(usageText, "COMMAND")
 	if len(parts) == 2 && strings.TrimSpace(parts[1]) == "" {
-		return errors.New(i18n.T("Usage does not have any usage text besides COMMAND"))
+		return &PluginMetadataError{
+			Error:    i18n.T("Usage does not have any usage text besides COMMAND"),
+			Priority: PriorityError,
+		}
+
 	}
 
-	// All surrounded parenthesis and brackets MUST be closed
+	// (4) All surrounded parenthesis and brackets MUST be closed
 	unclosed, unclosedChar, indicies := UnclosedGroupings(usageText)
 	if unclosed {
-		return errors.New(i18n.T("Usage contains unclosed {{.UnclosedGroup}} between indicies {{.Indicies}}", map[string]any{
-			"Indicies":      indicies,
-			"UnclosedGroup": string(unclosedChar),
-		}))
+		return &PluginMetadataError{
+			Error: i18n.T("Usage contains unclosed {{.UnclosedGroup}} between indicies {{.Indicies}}", map[string]any{
+				"Indicies":      indicies,
+				"UnclosedGroup": string(unclosedChar),
+			}),
+			Priority: PriorityError,
+		}
 	}
 
 	return nil
@@ -344,42 +574,148 @@ func (p pluginMetadataValidate) validatePluginInfo(metadata PluginMetadata) []Pl
 	return errs
 }
 
-// validateCommand validates a single command against CLI standards
-func (p pluginMetadataValidate) validateCommand(cmd Command, pluginName string) []PluginMetadataError {
-	var errs []PluginMetadataError
+func validatePluginCommandStruct(sl validator.StructLevel) {
+	validateCommandNaming(sl)
+	validateCommandDepth(sl)
+	validateDescription(sl)
+	validatePositionalArguments(sl)
+}
 
+func validatePositionalArguments(sl validator.StructLevel) {
+	cmd := sl.Current().Interface().(Command)
 	if cmd.Name == "" {
-		return errs
+		sl.ReportError(cmd.Name, "name", "Name", "required", "")
+		return
 	}
 
-	// Validate command naming
-	errs = append(errs, p.validateCommandNaming(cmd, pluginName)...)
+	usageText := cmd.Usage
+	// Check for lowercase positional argument values (should be CAPS)
+	// Look for lowercase words that appear to be user-input parameters
+	// Filter out common words, command names, and words that are part of the command structure
+	// Strategy: Find lowercase words including those in choice operators, but exclude flags and paths
 
-	// Validate command depth
-	errs = append(errs, p.validateCommandDepth(cmd, pluginName)...)
+	// Remove flag names (words after --) to avoid false positives
+	// Flags like --name, --zone, --tags or -a, -A should not be flagged
+	usageWithoutFlags := regexp.MustCompile(`(-[a-zA-Z]{1}\s+)|(--[a-zA-Z][a-zA-Z-]*)`).ReplaceAllString(usageText, "")
 
-	// Validate description
-	errs = append(errs, p.validateDescription(cmd, pluginName)...)
+	// Remove file paths to avoid flagging path components like /usr/local/bin
+	usageWithoutPaths := regexp.MustCompile(`/[a-z/]+`).ReplaceAllString(usageWithoutFlags, "")
 
-	// Validate usage
-	errs = append(errs, p.validateUsageEnhanced(cmd, pluginName)...)
+	// Match lowercase words (2+ chars, may contain hyphens/underscores)
+	// Use word boundaries to properly match words
+	// This will match lowercase words even inside choice operators like (option_a | OPTION_B)
+	paramPattern := regexp.MustCompile(`\b([a-z][a-z_-]+)\b`)
+	matches := paramPattern.FindAllStringSubmatch(usageWithoutPaths, -1)
+	var lowercaseParams []string
 
-	// Validate flags
-	errs = append(errs, p.validateFlags(cmd, pluginName)...)
+	// Build list of words to exclude: common words + words from the command name itself
+	excludeWords := map[string]bool{
+		"and": true, "or": true, "to": true, "from": true, "with": true, "ibmcloud": true, "ic": true, "bx": true,
+		"options": true, "arguments": true,
+	}
 
-	// Set command name for all errors
-	for i := range errs {
-		if errs[i].CommandName == "" {
-			errs[i].CommandName = cmd.Namespace + " " + cmd.Name
+	// Add words from the command name to exclusion list (these are command/subcommand names)
+	// Split on spaces but keep hyphenated words intact (e.g., "service-instance-create" stays as one word)
+	cmdWords := strings.Fields(cmd.Namespace + " " + cmd.Name)
+	for _, word := range cmdWords {
+		excludeWords[strings.ToLower(word)] = true
+		// Also exclude individual parts of hyphenated words (e.g., "list" and "all" from "list-all")
+		hyphenParts := strings.Split(word, "-")
+		for _, part := range hyphenParts {
+			if part != "" {
+				excludeWords[strings.ToLower(part)] = true
+			}
 		}
 	}
 
-	return errs
+	for _, match := range matches {
+		if len(match) > 1 {
+			word := match[1]
+			if !excludeWords[word] {
+				lowercaseParams = append(lowercaseParams, word)
+			}
+		}
+	}
+
+	if len(lowercaseParams) > 0 {
+		sl.ReportError(cmd.Usage, "usage", "Usage", "capargs", strings.Join(lowercaseParams, ", "))
+	}
+}
+
+// validateDescription validates command description
+func validateDescription(sl validator.StructLevel) {
+	cmd := sl.Current().Interface().(Command)
+
+	description := cmd.Description
+
+	// Check capitalization
+	if len(description) > 0 && !unicode.IsUpper(rune(description[0])) {
+		sl.ReportError(cmd.Description, "description", "Description", "uppercase", "")
+	}
+
+	// Check for subject (anti-pattern)
+	badStarts := []string{"this command", "plugin to", "commands to", "this plugin", "this is"}
+	descLower := strings.ToLower(description)
+	for _, badStart := range badStarts {
+		if strings.HasPrefix(descLower, badStart) {
+			sl.ReportError(cmd.Description, "description", "Description", "nosubject", badStart)
+		}
+	}
+
+	// Check word count (guideline, not strict)
+	wordCount := len(strings.Fields(description))
+	if wordCount > maxDescriptionWordCount {
+		sl.ReportError(cmd.Description, "description", "Description", "cmdwordcount", strconv.Itoa(maxDescriptionWordCount))
+	}
+
+	// Check if command uses plural form but description doesn't indicate listing
+	// Only check the LAST word - if it ends with 's' and is not a verb, it's likely a plural noun
+	if lastWordIsPluralForm(cmd.Name) {
+		// Check if description contains list-related keywords
+		listKeywords := []string{"list", "show", "display", "view", "retrieve", "get", "all", "multiple"}
+		hasListKeyword := false
+		descLower := strings.ToLower(description)
+
+		for _, keyword := range listKeywords {
+			if strings.Contains(descLower, keyword) {
+				hasListKeyword = true
+				break
+			}
+		}
+
+		if !hasListKeyword {
+			sl.ReportError(cmd.Description, "description", "Description", "cleardesc", "")
+		}
+	}
+}
+
+// validateCommandDepth validates command depth does not exceed maximum
+func validateCommandDepth(sl validator.StructLevel) {
+	cmd := sl.Current().Interface().(Command)
+	cmdName := cmd.Name
+
+	// Count depth by splitting on spaces
+	parts := strings.Fields(cmdName)
+
+	// Remove base CLI name if present
+	if len(parts) > 1 {
+		firstPart := strings.ToLower(parts[0])
+		if firstPart == "ibmcloud" || firstPart == "ic" || firstPart == "bx" {
+			parts = parts[1:]
+		}
+	}
+
+	depth := len(parts)
+
+	if depth > maxCommandDepth {
+		sl.ReportError(cmd.Name, "name", "Name", "maxnsdepth", strconv.Itoa(maxCommandDepth))
+	}
+
 }
 
 // validateCommandNaming validates command naming conventions
-func (p pluginMetadataValidate) validateCommandNaming(cmd Command, pluginName string) []PluginMetadataError {
-	var errs []PluginMetadataError
+func validateCommandNaming(sl validator.StructLevel) {
+	cmd := sl.Current().Interface().(Command)
 	cmdName := cmd.Name
 
 	// Check for reserved names
@@ -387,13 +723,7 @@ func (p pluginMetadataValidate) validateCommandNaming(cmd Command, pluginName st
 		"--version": true, "-v": true, "--help": true, "-h": true,
 	}
 	if reservedNames[cmdName] {
-		errs = append(errs, PluginMetadataError{
-			Namespace:   fmt.Sprintf("Command.%s", cmdName),
-			Error:       fmt.Sprintf("Command '%s' uses a reserved flag name. These are handled by the CLI framework.", cmdName),
-			Priority:    PriorityWarning,
-			Remediation: "Remove this command; --version and --help are automatically provided.",
-		})
-		return errs
+		sl.ReportError(cmd.Name, "name", "Name", "noreserves", "")
 	}
 
 	// Check minimum length
@@ -409,26 +739,11 @@ func (p pluginMetadataValidate) validateCommandNaming(cmd Command, pluginName st
 	})
 
 	// Check each segment is at least 2 characters
+	minSegCount := 2
 	for _, segment := range segments {
-		if len(segment) < 2 {
-			errs = append(errs, PluginMetadataError{
-				Namespace:   fmt.Sprintf("Command.%s", cmdName),
-				Error:       fmt.Sprintf("Command '%s' contains a segment '%s' that is less than 2 characters. Each word in a command should be at least 2 characters.", cmdName, segment),
-				Priority:    PriorityError,
-				Remediation: "Use more descriptive words with at least 2 characters for each segment.",
-			})
-			break
+		if len(segment) < minSegCount {
+			sl.ReportError(cmd.Name, "Name", "name", "cmdsegmin", strconv.Itoa(minSegCount)+"|"+segment)
 		}
-	}
-
-	// Check for uppercase letters
-	if hasUppercase(cmdName) {
-		errs = append(errs, PluginMetadataError{
-			Namespace:   fmt.Sprintf("Command.%s", cmdName),
-			Error:       fmt.Sprintf("Command '%s' contains uppercase letters. Use lower case words with hyphens or spaces.", cmdName),
-			Priority:    PriorityError,
-			Remediation: "Convert command name to lowercase with hyphens or spaces as separators.",
-		})
 	}
 
 	// Check for common verbs or plural forms (ending with 's')
@@ -461,7 +776,7 @@ func (p pluginMetadataValidate) validateCommandNaming(cmd Command, pluginName st
 	isRetrievalCommand := false
 	if cmd.Description != "" {
 		descLower := strings.ToLower(cmd.Description)
-		retrievalKeywords := []string{"get", "show", "display", "view", "retrieve", "return", "fetch"}
+		retrievalKeywords := []string{"get", "show", "display", "view", "retrieve", "return", "fetch", "invite"}
 		for _, keyword := range retrievalKeywords {
 			if strings.Contains(descLower, keyword) {
 				isRetrievalCommand = true
@@ -471,249 +786,9 @@ func (p pluginMetadataValidate) validateCommandNaming(cmd Command, pluginName st
 	}
 
 	if !hasCommonVerb && !hasPluralForm && !isRetrievalCommand && len(words) > 1 && !isConfigPattern {
-		errs = append(errs, PluginMetadataError{
-			Namespace:   fmt.Sprintf("Command.%s", cmdName),
-			Error:       fmt.Sprintf("Command '%s' does not use a common verb or plural form. Consider using verbs like: list, create, update, delete, show, get, set... or plural nouns like 'instances', 'services'", cmdName),
-			Priority:    PriorityWarning,
-			Remediation: "Use common verbs in command names such as list, create, update, delete, or use plural forms to indicate listing operations.",
-		})
+		sl.ReportError(cmd.Name, "name", "Name", "noverb", "")
 	}
 
-	return errs
-}
-
-// validateCommandDepth validates command depth does not exceed maximum
-func (p pluginMetadataValidate) validateCommandDepth(cmd Command, pluginName string) []PluginMetadataError {
-	var errs []PluginMetadataError
-	cmdName := cmd.Name
-
-	// Count depth by splitting on spaces
-	parts := strings.Fields(cmdName)
-
-	// Remove base CLI name if present
-	if len(parts) > 1 {
-		firstPart := strings.ToLower(parts[0])
-		if firstPart == "ibmcloud" || firstPart == "ic" {
-			parts = parts[1:]
-		}
-	}
-
-	depth := len(parts)
-
-	if depth > maxCommandDepth {
-		errs = append(errs, PluginMetadataError{
-			Namespace: fmt.Sprintf("Command.%s", cmdName),
-			Error: fmt.Sprintf("Command '%s' has %d levels, exceeding the maximum of %d. Deep command hierarchies are difficult for users to remember and discover.",
-				cmdName, depth, maxCommandDepth),
-			Priority: PriorityWarning,
-			Remediation: fmt.Sprintf("Reduce command depth to %d or fewer levels. Options: (1) Flatten the hierarchy by combining levels, "+
-				"(2) Use command flags/options instead of subcommands, (3) Reorganize the command structure to be more intuitive.", maxCommandDepth),
-		})
-	}
-
-	return errs
-}
-
-// validateDescription validates command description
-func (p pluginMetadataValidate) validateDescription(cmd Command, pluginName string) []PluginMetadataError {
-	var errs []PluginMetadataError
-	description := cmd.Description
-	cmdName := cmd.Name
-
-	if description == "" {
-		errs = append(errs, PluginMetadataError{
-			Namespace:   fmt.Sprintf("Command.%s.Description", cmdName),
-			Error:       fmt.Sprintf("Command '%s' has no description. All commands must have a clear description.", cmdName),
-			Priority:    PriorityError,
-			Remediation: "Add a sentence without subject describing what the command does.",
-		})
-		return errs
-	}
-
-	// Check capitalization
-	if len(description) > 0 && !unicode.IsUpper(rune(description[0])) {
-		errs = append(errs, PluginMetadataError{
-			Namespace:   fmt.Sprintf("Command.%s.Description", cmdName),
-			Error:       fmt.Sprintf("Description for '%s' should start with a capital letter.", cmdName),
-			Priority:    PriorityError,
-			Remediation: "Capitalize the first letter of the description.",
-		})
-	}
-
-	// Check for subject (anti-pattern)
-	badStarts := []string{"this command", "plugin to", "commands to", "this plugin", "this is"}
-	descLower := strings.ToLower(description)
-	for _, badStart := range badStarts {
-		if strings.HasPrefix(descLower, badStart) {
-			errs = append(errs, PluginMetadataError{
-				Namespace:   fmt.Sprintf("Command.%s.Description", cmdName),
-				Error:       fmt.Sprintf("Description for '%s' starts with '%s'. Use a sentence without subject.", cmdName, badStart),
-				Priority:    PriorityError,
-				Remediation: fmt.Sprintf("Remove '%s' and start directly with the action. Example: 'List all instances' instead of 'This command lists all instances'.", badStart),
-			})
-			break
-		}
-	}
-
-	// Check word count (guideline, not strict)
-	wordCount := len(strings.Fields(description))
-	if wordCount > maxDescriptionWordCount {
-		errs = append(errs, PluginMetadataError{
-			Namespace:   fmt.Sprintf("Command.%s.Description", cmdName),
-			Error:       fmt.Sprintf("Description for '%s' has %d words. Consider limiting to less than %d words for better display.", cmdName, wordCount, maxDescriptionWordCount),
-			Priority:    PriorityInfo,
-			Remediation: "Shorten the description to be more concise.",
-		})
-	}
-
-	// Check if command uses plural form but description doesn't indicate listing
-	// Only check the LAST word - if it ends with 's' and is not a verb, it's likely a plural noun
-	if lastWordIsPluralForm(cmd.Name) {
-		// Check if description contains list-related keywords
-		listKeywords := []string{"list", "show", "display", "view", "retrieve", "get", "all", "multiple"}
-		hasListKeyword := false
-		descLower := strings.ToLower(description)
-
-		for _, keyword := range listKeywords {
-			if strings.Contains(descLower, keyword) {
-				hasListKeyword = true
-				break
-			}
-		}
-
-		if !hasListKeyword {
-			errs = append(errs, PluginMetadataError{
-				Namespace:   fmt.Sprintf("Command.%s.Description", cmdName),
-				Error:       fmt.Sprintf("Command '%s' uses plural form but description doesn't clearly indicate it returns a list or group of items.", cmdName),
-				Priority:    PriorityWarning,
-				Remediation: "Update description to include words like 'list', 'show', 'display', 'view', 'all', or 'multiple' to clarify it returns multiple items.",
-			})
-		}
-	}
-
-	return errs
-}
-
-// validateUsageEnhanced validates usage format with additional checks
-func (p pluginMetadataValidate) validateUsageEnhanced(cmd Command, pluginName string) []PluginMetadataError {
-	var errs []PluginMetadataError
-	usage := cmd.Usage
-	cmdName := cmd.Name
-
-	if usage == "" {
-		errs = append(errs, PluginMetadataError{
-			Namespace:   fmt.Sprintf("Command.%s.Usage", cmdName),
-			Error:       fmt.Sprintf("Command '%s' has no usage information.", cmdName),
-			Priority:    PriorityError,
-			Remediation: "Add usage text showing command syntax with parameters and options.",
-		})
-		return errs
-	}
-
-	// Check that usage starts with 'ibmcloud' or full path
-	usageStripped := strings.TrimSpace(usage)
-	if !strings.HasPrefix(usageStripped, "ibmcloud") && !strings.Contains(usageStripped[:min(50, len(usageStripped))], "/ibmcloud") {
-		errs = append(errs, PluginMetadataError{
-			Namespace:   fmt.Sprintf("Command.%s.Usage", cmdName),
-			Error:       fmt.Sprintf("Command '%s' usage should start with 'ibmcloud' (lowercase) or the full path to the ibmcloud binary.", cmdName),
-			Priority:    PriorityError,
-			Remediation: "Start usage examples with 'ibmcloud' in lowercase (e.g., 'ibmcloud plugin-name command ...').",
-		})
-	}
-
-	// Check for lowercase argument values (should be CAPS)
-	// Look for lowercase words that appear to be user-input parameters
-	// Filter out common words, command names, and words that are part of the command structure
-	// Strategy: Find lowercase words including those in choice operators, but exclude flags and paths
-
-	// Remove flag names (words after --) to avoid false positives
-	// Flags like --name, --zone, --tags should not be flagged
-	usageWithoutFlags := regexp.MustCompile(`--[a-z][a-z-]*`).ReplaceAllString(usage, "")
-
-	// Remove file paths to avoid flagging path components like /usr/local/bin
-	usageWithoutPaths := regexp.MustCompile(`/[a-z/]+`).ReplaceAllString(usageWithoutFlags, "")
-
-	// Match lowercase words (2+ chars, may contain hyphens/underscores)
-	// Use word boundaries to properly match words
-	// This will match lowercase words even inside choice operators like (option_a | OPTION_B)
-	paramPattern := regexp.MustCompile(`\b([a-z][a-z_-]+)\b`)
-	matches := paramPattern.FindAllStringSubmatch(usageWithoutPaths, -1)
-	var lowercaseParams []string
-
-	// Build list of words to exclude: common words + words from the command name itself
-	excludeWords := map[string]bool{
-		"and": true, "or": true, "to": true, "from": true, "with": true, "ibmcloud": true, "ic": true,
-	}
-
-	// Add words from the command name to exclusion list (these are command/subcommand names)
-	// Split on spaces but keep hyphenated words intact (e.g., "service-instance-create" stays as one word)
-	cmdWords := strings.Fields(cmd.Namespace + " " + cmd.Name)
-	for _, word := range cmdWords {
-		excludeWords[strings.ToLower(word)] = true
-		// Also exclude individual parts of hyphenated words (e.g., "list" and "all" from "list-all")
-		hyphenParts := strings.Split(word, "-")
-		for _, part := range hyphenParts {
-			if part != "" {
-				excludeWords[strings.ToLower(part)] = true
-			}
-		}
-	}
-
-	for _, match := range matches {
-		if len(match) > 1 {
-			word := match[1]
-			if !excludeWords[word] {
-				lowercaseParams = append(lowercaseParams, word)
-			}
-		}
-	}
-
-	if len(lowercaseParams) > 0 {
-		errs = append(errs, PluginMetadataError{
-			Namespace: fmt.Sprintf("Command.%s.Usage", cmdName),
-			Error: fmt.Sprintf("Command '%s' usage contains lowercase argument values: %s. User input values should be in CAPITAL letters.",
-				cmdName, strings.Join(lowercaseParams, ", ")),
-			Priority:    PriorityWarning,
-			Remediation: "Convert argument values to CAPITAL letters (e.g., NAME, INSTANCE_ID, FORMAT).",
-		})
-	}
-
-	return errs
-}
-
-// validateFlags validates command flags/options
-func (p pluginMetadataValidate) validateFlags(cmd Command, pluginName string) []PluginMetadataError {
-	var errs []PluginMetadataError
-	cmdName := cmd.Name
-
-	for _, flag := range cmd.Flags {
-		flagName := flag.Name
-		if flagName == "" {
-			continue
-		}
-
-		// Check single letter flags use -
-		if len(flagName) == 1 && !strings.HasPrefix(flagName, "-") {
-			errs = append(errs, PluginMetadataError{
-				Namespace:   fmt.Sprintf("Command.%s.Flag.%s", cmdName, flagName),
-				Error:       fmt.Sprintf("Flag '%s' in command '%s' should use '-' prefix.", flagName, cmdName),
-				Priority:    PriorityError,
-				Remediation: fmt.Sprintf("Use '-%s' for single letter flags.", flagName),
-			})
-		}
-
-		// Check multi-letter flags use --
-		if len(flagName) > 1 && strings.HasPrefix(flagName, "-") && !strings.HasPrefix(flagName, "--") {
-			errs = append(errs, PluginMetadataError{
-				Namespace:   fmt.Sprintf("Command.%s.Flag.%s", cmdName, flagName),
-				Error:       fmt.Sprintf("Flag '%s' in command '%s' should use '--' prefix.", flagName, cmdName),
-				Priority:    PriorityError,
-				Remediation: fmt.Sprintf("Use '--%s' for multi-letter flags.", strings.TrimPrefix(flagName, "-")),
-			})
-		}
-	}
-
-	return errs
 }
 
 // hasUppercase checks if a string contains any uppercase letters
@@ -724,6 +799,12 @@ func hasUppercase(s string) bool {
 		}
 	}
 	return false
+}
+
+func isCommandDescription(namespace string) bool {
+	cmdDescRegex := regexp.MustCompile(`Commands(\[\d+\])*\.Description`)
+
+	return cmdDescRegex.MatchString(namespace)
 }
 
 // min returns the minimum of two integers

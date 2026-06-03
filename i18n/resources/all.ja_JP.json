@@ -4,6 +4,14 @@
     "translation": "\n数値を入力してください"
   },
   {
+    "id": "Add a sentence without subject describing what the command does.",
+    "translation": "そのコマンドが何をするのかを説明する、主語のない文を追加してください。"
+  },
+  {
+    "id": "Add usage text showing command syntax with parameters and options.",
+    "translation": "パラメータやオプションを含むコマンドの構文を示す説明文を追加してください。"
+  },
+  {
     "id": "An error occurred when creating log file '{{.Path}}':\n{{.Error}}\n\n",
     "translation": "ログ・ファイル '{{.Path}}' を作成中にエラーが発生しました:\n{{.Error}}\n\n"
   },
@@ -16,8 +24,64 @@
     "translation": "応答のダンプ中にエラーが発生しました:\n{{.Error}}\n"
   },
   {
+    "id": "Capitalize the first letter of the description.",
+    "translation": "説明文の最初の文字を大文字にしてください。"
+  },
+  {
+    "id": "Command '{{.Name}}' contains a segment '{{.Segment}}' that is less than {{.Count}} characters. Each word in a command should be at least {{.Count}} characters.",
+    "translation": "コマンド ` '{{.Name}}' ` には、 {{.Count}} 文字未満のセグメント ` '{{.Segment}}' ` が含まれています。 コマンド内の各単語は、少なくとも {{.Count}} 文字以上である必要があります。"
+  },
+  {
+    "id": "Command '{{.Name}}' does not use a common verb or plural form. Consider using verbs like: list, create, update, delete, show, get, set... or plural nouns like 'instances', 'services'",
+    "translation": "「 '{{.Name}}' 」という命令には、一般的な動詞や複数形は使われません。 「list」「create」「update」「delete」「show」「get」「set」などの動詞の使用を検討してください。 または「インスタンス」や「サービス」のような複数形の名詞"
+  },
+  {
+    "id": "Command '{{.Name}}' has no description. All commands must have a clear description.",
+    "translation": "コマンド「 '{{.Name}}' 」には説明がありません。 すべてのコマンドには、明確な説明が必要です。"
+  },
+  {
+    "id": "Command '{{.Name}}' has no usage information.",
+    "translation": "コマンド「 '{{.Name}}' 」には使用方法に関する情報がありません。"
+  },
+  {
+    "id": "Command '{{.Name}}' has {{.Level}} levels, exceeding the maximum of {{.Level}}. Deep command hierarchies are difficult for users to remember and discover.",
+    "translation": "コマンド「 '{{.Name}}' 」には、 {{.Level}} レベルのデータがあり、最大値である {{.Level}} を超えています。 階層が深いコマンド体系は、ユーザーが覚えたり見つけたりするのが難しい。"
+  },
+  {
+    "id": "Command '{{.Name}}' usage contains lowercase argument values: {{.Args}}. User input values should be in CAPITAL letters.",
+    "translation": "コマンド「 '{{.Name}}' 」の使用例には、小文字の引数値が含まれています： {{.Args}}。 ユーザーが入力する値は、すべて大文字にしてください。"
+  },
+  {
+    "id": "Command '{{.Name}}' uses a reserved flag name. These are handled by the CLI framework.",
+    "translation": "コマンド「 '{{.Name}}' 」は、予約済みのフラグ名を使用しています。 これらはCLIフレームワークによって処理されます。"
+  },
+  {
+    "id": "Command '{{.Name}}' uses plural form but description doesn't clearly indicate it returns a list or group of items.",
+    "translation": "コマンド「 '{{.Name}}' 」は複数形を使用していますが、説明文にはリストや項目のグループが返されることが明確に示されていません。"
+  },
+  {
+    "id": "Convert arguments values to CAPITAL letters (e.g., NAME, INSTANCE_ID, FORMAT).",
+    "translation": "引数の値を大文字に変換します（例：NAME、INSTANCE_ID、FORMAT）。"
+  },
+  {
     "id": "Could not read from input: ",
     "translation": "入力から読み取れませんでした。 "
+  },
+  {
+    "id": "Description",
+    "translation": "説明"
+  },
+  {
+    "id": "Description for '{{.Name}}' has {{.WordCount}} words. Consider limiting to less than {{.MaxWordCount}} words for better display.",
+    "translation": "「 '{{.Name}}' 」の説明文には、 {{.WordCount}} 語が含まれています。 表示を最適化するため、文字数を {{.MaxWordCount}} 文字未満に抑えることをご検討ください。"
+  },
+  {
+    "id": "Description for '{{.Name}}' should start with a capital letter.",
+    "translation": "'{{.Name}}' の説明文は、大文字で始める必要があります。"
+  },
+  {
+    "id": "Description for '{{.Name}}' starts with '{{.Bad}}'. Use a sentence without subject.",
+    "translation": "'{{.Name}}' の説明は、 '{{.Bad}}' から始まります。 主語のない文を使ってください。"
   },
   {
     "id": "Elapsed:",
@@ -38,6 +102,10 @@
   {
     "id": "Failed, rows could not convert to csv format",
     "translation": "行をcsv形式に変換できませんでした"
+  },
+  {
+    "id": "ID",
+    "translation": "ID"
   },
   {
     "id": "Invalid grant type: ",
@@ -88,12 +156,32 @@
     "translation": "リモート・サーバー・エラー。 状況コード: {{.StatusCode}}、エラー・コード: {{.ErrorCode}}、メッセージ: {{.Message}}"
   },
   {
+    "id": "Remove '{{.Bad}}' and start directly with the action. Example: 'List all instances' instead of 'This command lists all instances'.",
+    "translation": "'{{.Bad}}' を削除し、アクションを直接開始してください。 例：「このコマンドはすべてのインスタンスを表示します」ではなく、「すべてのインスタンスを表示」とする。"
+  },
+  {
+    "id": "Remove placeholders from command usage text",
+    "translation": "コマンドの使用方法の説明文からプレースホルダーを削除する"
+  },
+  {
     "id": "Session inactive: ",
     "translation": "セッションは不活発： "
   },
   {
+    "id": "Set MinCliVersion to {{.Version}} or higher to ensure compatibility with supported CLI versions.",
+    "translation": "サポートされているCLIバージョンとの互換性を確保するため、 MinCliVersion を {{.Version}} 以上に設定してください。"
+  },
+  {
+    "id": "Shorten the description to be more concise.",
+    "translation": "説明文を簡潔にするために、内容を短縮してください。"
+  },
+  {
     "id": "Unable to save plugin config: ",
     "translation": "プラグイン構成を保存できません: "
+  },
+  {
+    "id": "Update description to include words like 'list', 'show', 'display', 'view', 'all', or 'multiple' to clarify it returns multiple items.",
+    "translation": "説明文に「一覧」、「表示」、「表示する」、「閲覧」、「すべて」、「複数」などの単語を追加し、複数の項目が返されることを明確にしてください。"
   },
   {
     "id": "Usage contains placeholder arguments/flags",
@@ -102,6 +190,18 @@
   {
     "id": "Usage contains unclosed {{.UnclosedGroup}} between indicies {{.Indicies}}",
     "translation": "使用法には、インジケーターの間に閉じていない {{.UnclosedGroup}} が含まれる。 {{.Indicies}}"
+  },
+  {
+    "id": "Usage does not have any usage text besides COMMAND",
+    "translation": "このコマンドには、COMMAND 以外の説明文はありません"
+  },
+  {
+    "id": "Use common verbs in command names such as list, create, update, delete, or use plural forms to indicate listing operations.",
+    "translation": "コマンド名には、「list」「create」「update」「delete」などの一般的な動詞を使用するか、一覧表示操作を示すために複数形を使用してください。"
+  },
+  {
+    "id": "Use more descriptive words with at least {{.Count}} characters for each segment.",
+    "translation": "各セグメントには、少なくとも {{.Count}} 文字の、より具体的な言葉を使用してください。"
   },
   {
     "id": "{{.Field}} contains the following forbidden characters: {{.Chars}}",
@@ -114,9 +214,5 @@
   {
     "id": "{{.Field}} must contain at least {{.Param}} element",
     "translation": "{{.Field}} は少なくとも {{.Param}} の要素を含んでいなければならない"
-  },
-  {
-    "id": "{{.Field}} must not equal '{{.Param}}'",
-    "translation": "{{.Field}} は ' {{.Param}} ' と同じであってはならない"
   }
 ]

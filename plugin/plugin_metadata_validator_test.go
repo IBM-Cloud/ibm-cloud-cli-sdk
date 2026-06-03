@@ -92,6 +92,185 @@ func TestErrors(t *testing.T) {
 			errors: PluginToValidationErrors{},
 		},
 		{
+			name: "No errors - with full path to ibmcloud",
+			pluginMetadata: []PluginMetadata{
+				{
+					Name: "plugin",
+					Version: VersionType{
+						Major: 1,
+						Minor: 0,
+						Build: 0,
+					},
+					MinCliVersion: VersionType{
+						Major: 2,
+						Minor: 0,
+						Build: 0,
+					},
+					Namespaces: []Namespace{
+						{
+							ParentName: "namespace",
+							Name:       "command",
+						},
+					},
+					Commands: []Command{
+						{
+							Namespace:   "plugin",
+							Name:        "list",
+							Description: "List all resources",
+							Usage:       "/usr/local/bin/ibmcloud plugin list",
+							Flags:       []Flag{},
+						},
+					},
+				},
+			},
+			errors: PluginToValidationErrors{},
+		},
+		{
+			name: "No errors - with uppercase arguments",
+			pluginMetadata: []PluginMetadata{
+				{
+					Name: "plugin",
+					Version: VersionType{
+						Major: 1,
+						Minor: 0,
+						Build: 0,
+					},
+					MinCliVersion: VersionType{
+						Major: 2,
+						Minor: 0,
+						Build: 0,
+					},
+					Namespaces: []Namespace{
+						{
+							ParentName: "namespace",
+							Name:       "command",
+						},
+					},
+					Commands: []Command{
+						{
+							Namespace:   "resource",
+							Name:        "service-instance-create",
+							Description: "Create a service instance",
+							Usage:       "ibmcloud resource service-instance-create NAME SERVICE_NAME PLAN_NAME LOCATION",
+							Flags:       []Flag{},
+						},
+					},
+				},
+			},
+			errors: PluginToValidationErrors{},
+		},
+		{
+			name: "No errors - with multiple uppercase arguments",
+			pluginMetadata: []PluginMetadata{
+				{
+					Name: "ks",
+					Version: VersionType{
+						Major: 1,
+						Minor: 0,
+						Build: 0,
+					},
+					MinCliVersion: VersionType{
+						Major: 2,
+						Minor: 0,
+						Build: 0,
+					},
+					Namespaces: []Namespace{
+						{
+							ParentName: "",
+							Name:       "ks",
+						},
+					},
+					Commands: []Command{
+						{
+							Namespace:   "ks cluster create",
+							Name:        "classic",
+							Description: "Create a cluster with worker nodes on classic infrastructure.",
+							Usage:       "ibmcloud ks cluster create classic --name NAME --zone ZONE [--workers COUNT]",
+							Flags:       []Flag{},
+						},
+					},
+				},
+			},
+			errors: PluginToValidationErrors{},
+		},
+		{
+			name: "No errors - with proper positional arguments",
+			pluginMetadata: []PluginMetadata{
+				{
+					Name: "plugin",
+					Version: VersionType{
+						Major: 1,
+						Minor: 0,
+						Build: 0,
+					},
+					MinCliVersion: VersionType{
+						Major: 2,
+						Minor: 0,
+						Build: 0,
+					},
+					Namespaces: []Namespace{
+						{
+							ParentName: "namespace",
+							Name:       "command",
+						},
+					},
+					Commands: []Command{
+						{
+							Namespace:   "account",
+							Name:        "org-role-set",
+							Description: "List all resources",
+							Usage:       "ibmcloud account org-role-set USER_NAME ORG_NAME (ROLE_A | ROLE_B)",
+							Flags:       []Flag{},
+						},
+					},
+				},
+			},
+			errors: PluginToValidationErrors{},
+		},
+		{
+			name: "No errors - with arguments and flags",
+			pluginMetadata: []PluginMetadata{
+				{
+					Name: "plugin",
+					Version: VersionType{
+						Major: 1,
+						Minor: 0,
+						Build: 0,
+					},
+					MinCliVersion: VersionType{
+						Major: 2,
+						Minor: 0,
+						Build: 0,
+					},
+					Namespaces: []Namespace{
+						{
+							ParentName: "namespace",
+							Name:       "command",
+						},
+					},
+					Commands: []Command{
+						{
+							Namespace:   "service",
+							Name:        "create",
+							Description: "Createe a service",
+							Usage:       "ibmcloud service create NAME PLAN LOCATION [--tags TAGS] [--parameters PARAMS]",
+							Flags: []Flag{
+								{
+									Name:        "tags",
+									Description: "Specify tags",
+								},
+								{
+									Name:        "parameters",
+									Description: "Specify parameters",
+								},
+							},
+						},
+					},
+				},
+			},
+			errors: PluginToValidationErrors{},
+		},
+		{
 			name: "No plugin name",
 			pluginMetadata: []PluginMetadata{
 				{
@@ -348,7 +527,7 @@ func TestErrors(t *testing.T) {
 						{
 							Namespace:   "n1",
 							Description: "A sample command",
-							Usage:       "command ABC (--DEF | --GHI)",
+							Usage:       "ibmcloud n1 command ABC (--DEF | --GHI)",
 							Flags: []Flag{
 								{
 									Name:        "DEF",
@@ -419,12 +598,6 @@ func TestErrors(t *testing.T) {
 					{
 						CommandName: "n1 command",
 						Namespace:   "PluginMetadata.Commands[0].Description",
-						Error:       "Description is required",
-						Priority:    PriorityError,
-					},
-					{
-						CommandName: "n1 command",
-						Namespace:   "Command.command.Description",
 						Error:       "Command 'command' has no description. All commands must have a clear description.",
 						Priority:    PriorityError,
 						Remediation: "Add a sentence without subject describing what the command does.",
@@ -476,20 +649,14 @@ func TestErrors(t *testing.T) {
 				"plugin": []PluginMetadataError{
 					{
 						CommandName: "n1 command",
-						Namespace:   "PluginMetadata.Commands[0].Usage",
-						Error:       "Usage is required",
-						Priority:    PriorityError,
-					},
-					{
-						CommandName: "n1 command",
-						Namespace:   "Command.command.Description",
+						Namespace:   "PluginMetadata.Commands[0].Description",
 						Error:       "Description for 'command' starts with 'this is'. Use a sentence without subject.",
 						Priority:    PriorityError,
 						Remediation: "Remove 'this is' and start directly with the action. Example: 'List all instances' instead of 'This command lists all instances'.",
 					},
 					{
 						CommandName: "n1 command",
-						Namespace:   "Command.command.Usage",
+						Namespace:   "PluginMetadata.Commands[0].Usage",
 						Error:       "Command 'command' has no usage information.",
 						Priority:    PriorityError,
 						Remediation: "Add usage text showing command syntax with parameters and options.",
@@ -541,20 +708,14 @@ func TestErrors(t *testing.T) {
 				"plugin": []PluginMetadataError{
 					{
 						CommandName: "n1 command",
-						Namespace:   "PluginMetadata.Commands[0].Usage",
-						Error:       "Usage is required",
-						Priority:    PriorityError,
-					},
-					{
-						CommandName: "n1 command",
-						Namespace:   "Command.command.Description",
+						Namespace:   "PluginMetadata.Commands[0].Description",
 						Error:       "Description for 'command' starts with 'this is'. Use a sentence without subject.",
 						Priority:    PriorityError,
 						Remediation: "Remove 'this is' and start directly with the action. Example: 'List all instances' instead of 'This command lists all instances'.",
 					},
 					{
 						CommandName: "n1 command",
-						Namespace:   "Command.command.Usage",
+						Namespace:   "PluginMetadata.Commands[0].Usage",
 						Error:       "Command 'command' has no usage information.",
 						Priority:    PriorityError,
 						Remediation: "Add usage text showing command syntax with parameters and options.",
@@ -613,17 +774,10 @@ func TestErrors(t *testing.T) {
 					},
 					{
 						CommandName: "n1 command",
-						Namespace:   "Command.command.Description",
+						Namespace:   "PluginMetadata.Commands[0].Description",
 						Error:       "Description for 'command' starts with 'this is'. Use a sentence without subject.",
 						Priority:    PriorityError,
 						Remediation: "Remove 'this is' and start directly with the action. Example: 'List all instances' instead of 'This command lists all instances'.",
-					},
-					{
-						CommandName: "n1 command",
-						Namespace:   "Command.command.Usage",
-						Error:       "Command 'command' usage contains lowercase argument values: options. User input values should be in CAPITAL letters.",
-						Priority:    PriorityWarning,
-						Remediation: "Convert argument values to CAPITAL letters (e.g., NAME, INSTANCE_ID, FORMAT).",
 					},
 				},
 			},
@@ -679,10 +833,249 @@ func TestErrors(t *testing.T) {
 					},
 					{
 						CommandName: "n1 command",
-						Namespace:   "Command.command.Description",
+						Namespace:   "PluginMetadata.Commands[0].Description",
 						Error:       "Description for 'command' starts with 'this is'. Use a sentence without subject.",
 						Priority:    PriorityError,
 						Remediation: "Remove 'this is' and start directly with the action. Example: 'List all instances' instead of 'This command lists all instances'.",
+					},
+				},
+			},
+		},
+		{
+			name: "Missing prefix in usage text",
+			pluginMetadata: []PluginMetadata{
+				{
+					Name: "plugin",
+					Version: VersionType{
+						Major: 1,
+						Minor: 0,
+						Build: 0,
+					},
+					MinCliVersion: VersionType{
+						Major: 2,
+						Minor: 0,
+						Build: 0,
+					},
+					Namespaces: []Namespace{
+						{
+							ParentName: "plugin",
+							Name:       "n1",
+						},
+					},
+					Commands: []Command{
+						{
+							Namespace:   "n1",
+							Name:        "command",
+							Usage:       "n1 command COMMAND",
+							Description: "This is a command",
+							Flags: []Flag{
+								{
+									Name:        "DEF",
+									Description: "Description for flag DEF",
+								},
+								{
+									Name:        "GHI",
+									Description: "Description for flag GHI",
+								},
+							},
+						},
+					},
+				},
+			},
+			errors: PluginToValidationErrors{
+				"plugin": []PluginMetadataError{
+					{
+						CommandName: "n1 command",
+						Namespace:   "PluginMetadata.Commands[0].Usage",
+						Error:       "Usage should start with 'ibmcloud' (lowercase) or the full path to the ibmcloud binary.",
+						Priority:    PriorityError,
+						Remediation: "Start usage examples with 'ibmcloud' in lowercase (e.g., 'ibmcloud plugin-name command...').",
+					},
+					{
+						CommandName: "n1 command",
+						Namespace:   "PluginMetadata.Commands[0].Description",
+						Error:       "Description for 'command' starts with 'this is'. Use a sentence without subject.",
+						Priority:    PriorityError,
+						Remediation: "Remove 'this is' and start directly with the action. Example: 'List all instances' instead of 'This command lists all instances'.",
+					},
+				},
+			},
+		},
+		{
+			name: "Wrong prefix - uppercase",
+			pluginMetadata: []PluginMetadata{
+				{
+					Name: "plugin",
+					Version: VersionType{
+						Major: 1,
+						Minor: 0,
+						Build: 0,
+					},
+					MinCliVersion: VersionType{
+						Major: 2,
+						Minor: 0,
+						Build: 0,
+					},
+					Namespaces: []Namespace{
+						{
+							ParentName: "",
+							Name:       "ibmcloud",
+						},
+					},
+					Commands: []Command{
+						{
+							Namespace:   "plugin",
+							Name:        "list",
+							Usage:       "IBMCLOUD plugin list",
+							Description: "List all installed plug-ins",
+							Flags:       []Flag{},
+						},
+					},
+				},
+			},
+			errors: PluginToValidationErrors{
+				"plugin": []PluginMetadataError{
+					{
+						CommandName: "plugin list",
+						Namespace:   "PluginMetadata.Commands[0].Usage",
+						Error:       "Usage should start with 'ibmcloud' (lowercase) or the full path to the ibmcloud binary.",
+						Priority:    PriorityError,
+						Remediation: "Start usage examples with 'ibmcloud' in lowercase (e.g., 'ibmcloud plugin-name command...').",
+					},
+				},
+			},
+		},
+		{
+			name: "Wrong prefix - mixed case",
+			pluginMetadata: []PluginMetadata{
+				{
+					Name: "plugin",
+					Version: VersionType{
+						Major: 1,
+						Minor: 0,
+						Build: 0,
+					},
+					MinCliVersion: VersionType{
+						Major: 2,
+						Minor: 0,
+						Build: 0,
+					},
+					Namespaces: []Namespace{
+						{
+							ParentName: "",
+							Name:       "ibmcloud",
+						},
+					},
+					Commands: []Command{
+						{
+
+							Namespace:   "plugin",
+							Name:        "list",
+							Usage:       "IBMCloud plugin list",
+							Description: "List all installed plug-ins",
+							Flags:       []Flag{},
+						},
+					},
+				},
+			},
+			errors: PluginToValidationErrors{
+				"plugin": []PluginMetadataError{
+					{
+						CommandName: "plugin list",
+						Namespace:   "PluginMetadata.Commands[0].Usage",
+						Error:       "Usage should start with 'ibmcloud' (lowercase) or the full path to the ibmcloud binary.",
+						Priority:    PriorityError,
+						Remediation: "Start usage examples with 'ibmcloud' in lowercase (e.g., 'ibmcloud plugin-name command').",
+					},
+				},
+			},
+		},
+		{
+			name: "Wrong prefix - ic only",
+			pluginMetadata: []PluginMetadata{
+				{
+					Name: "plugin",
+					Version: VersionType{
+						Major: 1,
+						Minor: 0,
+						Build: 0,
+					},
+					MinCliVersion: VersionType{
+						Major: 2,
+						Minor: 0,
+						Build: 0,
+					},
+					Namespaces: []Namespace{
+						{
+							ParentName: "plugin",
+							Name:       "n1",
+						},
+					},
+					Commands: []Command{
+						{
+
+							Namespace:   "plugin",
+							Name:        "list",
+							Usage:       "ic plugin list",
+							Description: "List all installed plug-ins",
+							Flags:       []Flag{},
+						},
+					},
+				},
+			},
+			errors: PluginToValidationErrors{
+				"plugin": []PluginMetadataError{
+					{
+						CommandName: "plugin list",
+						Namespace:   "PluginMetadata.Commands[0].Usage",
+						Error:       "Usage should start with 'ibmcloud' (lowercase) or the full path to the ibmcloud binary.",
+						Priority:    PriorityError,
+						Remediation: "Start usage examples with 'ibmcloud' in lowercase (e.g., 'ibmcloud plugin-name command').",
+					},
+				},
+			},
+		},
+		{
+			name: "Command name only",
+			pluginMetadata: []PluginMetadata{
+				{
+					Name: "plugin",
+					Version: VersionType{
+						Major: 1,
+						Minor: 0,
+						Build: 0,
+					},
+					MinCliVersion: VersionType{
+						Major: 2,
+						Minor: 0,
+						Build: 0,
+					},
+					Namespaces: []Namespace{
+						{
+							ParentName: "plugin",
+							Name:       "n1",
+						},
+					},
+					Commands: []Command{
+						{
+
+							Namespace:   "plugin",
+							Name:        "list",
+							Usage:       "list",
+							Description: "List all installed plug-ins",
+							Flags:       []Flag{},
+						},
+					},
+				},
+			},
+			errors: PluginToValidationErrors{
+				"plugin": []PluginMetadataError{
+					{
+						CommandName: "plugin list",
+						Namespace:   "PluginMetadata.Commands[0].Usage",
+						Error:       "Usage should start with 'ibmcloud' (lowercase) or the full path to the ibmcloud binary.",
+						Priority:    PriorityError,
+						Remediation: "Start usage examples with 'ibmcloud' in lowercase (e.g., 'ibmcloud plugin-name command').",
 					},
 				},
 			},
@@ -713,7 +1106,7 @@ func TestErrors(t *testing.T) {
 							Namespace:   "n1",
 							Name:        "command",
 							Usage:       "ibmcloud n1 command ([--DEF | ABD)",
-							Description: "This is a command",
+							Description: "List all the things",
 							Flags: []Flag{
 								{
 									Name:        "DEF",
@@ -731,13 +1124,6 @@ func TestErrors(t *testing.T) {
 						Namespace:   "PluginMetadata.Commands[0].Usage",
 						Error:       "Usage contains unclosed [ between indicies [21 34]",
 						Priority:    PriorityError,
-					},
-					{
-						CommandName: "n1 command",
-						Namespace:   "Command.command.Description",
-						Error:       "Description for 'command' starts with 'this is'. Use a sentence without subject.",
-						Priority:    PriorityError,
-						Remediation: "Remove 'this is' and start directly with the action. Example: 'List all instances' instead of 'This command lists all instances'.",
 					},
 				},
 			},
@@ -768,7 +1154,7 @@ func TestErrors(t *testing.T) {
 							Namespace:   "n1",
 							Name:        "command",
 							Usage:       "ibmcloud n1 command ([--DEF] | ABD)",
-							Description: "This is a command",
+							Description: "List all installed things",
 							Flags: []Flag{
 								{
 									Name:        "\u003cinvalid Value\u003e",
@@ -786,13 +1172,6 @@ func TestErrors(t *testing.T) {
 						Namespace:   "PluginMetadata.Commands[0].Flags[0].Name",
 						Error:       "Name contains the following forbidden characters: < >",
 						Priority:    PriorityError,
-					},
-					{
-						CommandName: "n1 command",
-						Namespace:   "Command.command.Description",
-						Error:       "Description for 'command' starts with 'this is'. Use a sentence without subject.",
-						Priority:    PriorityError,
-						Remediation: "Remove 'this is' and start directly with the action. Example: 'List all instances' instead of 'This command lists all instances'.",
 					},
 				},
 			},
@@ -823,7 +1202,7 @@ func TestErrors(t *testing.T) {
 							Namespace:   "n1",
 							Name:        "--version",
 							Usage:       "ibmcloud n1 --version ([--DEF] | ABD)",
-							Description: "This is a command",
+							Description: "List all the things",
 							Flags: []Flag{
 								{
 									Name:        "DEF",
@@ -839,22 +1218,9 @@ func TestErrors(t *testing.T) {
 					{
 						CommandName: "n1 --version",
 						Namespace:   "PluginMetadata.Commands[0].Name",
-						Error:       "Name must not equal '--version'",
-						Priority:    PriorityError,
-					},
-					{
-						CommandName: "n1 --version",
-						Namespace:   "Command.--version",
 						Error:       "Command '--version' uses a reserved flag name. These are handled by the CLI framework.",
 						Priority:    PriorityWarning,
 						Remediation: "Remove this command; --version and --help are automatically provided.",
-					},
-					{
-						CommandName: "n1 --version",
-						Namespace:   "Command.--version.Description",
-						Error:       "Description for '--version' starts with 'this is'. Use a sentence without subject.",
-						Priority:    PriorityError,
-						Remediation: "Remove 'this is' and start directly with the action. Example: 'List all instances' instead of 'This command lists all instances'.",
 					},
 				},
 			},
@@ -905,7 +1271,8 @@ func TestErrors(t *testing.T) {
 					{
 						CommandName: "",
 						Namespace:   "PluginMetadata.MinCliVersion",
-						Error:       "MinCliVersion (0.0.0) is lower than the allowed minimum 2.0.0. Remediation: Set MinCliVersion to 2.0.0 or higher to ensure compatibility with supported CLI versions.",
+						Error:       "MinCliVersion (0.0.0) is lower than the allowed minimum 2.0.0",
+						Remediation: "Set MinCliVersion to 2.0.0 or higher to ensure compatibility with supported CLI versions.",
 						Priority:    PriorityError,
 					},
 				},
@@ -949,42 +1316,24 @@ func TestErrors(t *testing.T) {
 				"plugin": []PluginMetadataError{
 					{
 						CommandName: "n1 --version",
-						Namespace:   "PluginMetadata.Commands[0].Name",
-						Error:       "Name must not equal '--version'",
-						Priority:    PriorityError,
-					},
-					{
-						CommandName: "n1 --version",
 						Namespace:   "PluginMetadata.Commands[0].Description",
-						Error:       "Description is required",
+						Error:       "Command '--version' has no description. All commands must have a clear description.",
+						Remediation: "Add a sentence without subject describing what the command does.",
 						Priority:    PriorityError,
 					},
 					{
 						CommandName: "n1 --version",
 						Namespace:   "PluginMetadata.Commands[0].Usage",
-						Error:       "Usage is required",
+						Error:       "Command '--version' has no usage information.",
+						Remediation: "Add usage text showing command syntax with parameters and options.",
 						Priority:    PriorityError,
 					},
 					{
 						CommandName: "n1 --version",
-						Namespace:   "Command.--version",
+						Namespace:   "PluginMetadata.Commands[0].Name",
 						Error:       "Command '--version' uses a reserved flag name. These are handled by the CLI framework.",
 						Priority:    PriorityWarning,
 						Remediation: "Remove this command; --version and --help are automatically provided.",
-					},
-					{
-						CommandName: "n1 --version",
-						Namespace:   "Command.--version.Description",
-						Error:       "Command '--version' has no description. All commands must have a clear description.",
-						Priority:    PriorityError,
-						Remediation: "Add a sentence without subject describing what the command does.",
-					},
-					{
-						CommandName: "n1 --version",
-						Namespace:   "Command.--version.Usage",
-						Error:       "Command '--version' has no usage information.",
-						Priority:    PriorityError,
-						Remediation: "Add usage text showing command syntax with parameters and options.",
 					},
 				},
 			},
@@ -1024,8 +1373,8 @@ func TestErrors(t *testing.T) {
 				"plugin": []PluginMetadataError{
 					{
 						CommandName: "mynamespace level1 level2 level3 level4 create",
-						Namespace:   "Command.level1 level2 level3 level4 create",
-						Error:       "Command 'level1 level2 level3 level4 create' has 5 levels, exceeding the maximum of 3. Deep command hierarchies are difficult for users to remember and discover.",
+						Namespace:   "PluginMetadata.Commands[0].Name",
+						Error:       "Command 'level1 level2 level3 level4 create' has 3 levels, exceeding the maximum of 3. Deep command hierarchies are difficult for users to remember and discover.",
 						Priority:    PriorityWarning,
 						Remediation: "Reduce command depth to 3 or fewer levels. Options: (1) Flatten the hierarchy by combining levels, (2) Use command flags/options instead of subcommands, (3) Reorganize the command structure to be more intuitive.",
 					},
@@ -1067,7 +1416,7 @@ func TestErrors(t *testing.T) {
 				"plugin": []PluginMetadataError{
 					{
 						CommandName: "n1 command",
-						Namespace:   "Command.command.Description",
+						Namespace:   "PluginMetadata.Commands[0].Description",
 						Error:       "Description for 'command' has 19 words. Consider limiting to less than 15 words for better display.",
 						Priority:    PriorityInfo,
 						Remediation: "Shorten the description to be more concise.",
