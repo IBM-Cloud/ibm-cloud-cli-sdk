@@ -380,6 +380,7 @@ func (p pluginMetadataValidate) ParseValidationTagErrors(fieldErr validator.Fiel
 			"Name": cmdName,
 		})
 		remediationMsg = i18n.T("Use common verbs in command names such as list, create, update, delete, or use plural forms to indicate listing operations.")
+		priority = PriorityWarning
 	}
 
 	if remediationMsg == "" {
