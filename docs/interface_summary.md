@@ -98,7 +98,7 @@ NAME:
   group-update - Update an existing resource group
 
 USAGE:
-  icd resource group-update NAME [-n, --name NEW_NAME] [-f, --force] [--output FORMAT] [-q, --quiet]
+  ibmcloud resource group-update NAME [-n, --name NEW_NAME] [-f, --force] [--output FORMAT] [-q, --quiet]
 
 OPTIONS:
   -n value, --name value  New name of the resource group
@@ -133,7 +133,7 @@ NAME:
   group-update - Update an existing resource group
 
 USAGE:
-  icd resource group-update NAME [-n, --name NEW_NAME] [-f, --force] [--output FORMAT] [-q, --quiet]
+  ibmcloud resource group-update NAME [-n, --name NEW_NAME] [-f, --force] [--output FORMAT] [-q, --quiet]
 
 OPTIONS:
   -n value, --name value  New name of the resource group
