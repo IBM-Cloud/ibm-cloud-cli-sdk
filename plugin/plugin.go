@@ -302,4 +302,7 @@ type PluginContext interface {
 
 	// MCPEnabled returns true if the CLI is functioning as an MCP server
 	MCPEnabled() bool
+
+	// SSOType return the type of SSO used for the current session
+	SSOType() string
 }
