@@ -112,6 +112,10 @@ func (c *pluginContext) ColorEnabled() string {
 	return envOrConfig(bluemix.EnvColor, c.ReadWriter.ColorEnabled())
 }
 
+func (c *pluginContext) SSOType() string {
+	return c.TypeOfSSO()
+}
+
 func (c *pluginContext) VersionCheckEnabled() bool {
 	return !c.CheckCLIVersionDisabled()
 }
