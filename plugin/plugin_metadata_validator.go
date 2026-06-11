@@ -586,7 +586,6 @@ func validatePluginCommandStruct(sl validator.StructLevel) {
 func validatePositionalArguments(sl validator.StructLevel) {
 	cmd := sl.Current().Interface().(Command)
 	if cmd.Name == "" {
-		sl.ReportError(cmd.Name, "name", "Name", "required", "")
 		return
 	}
 
