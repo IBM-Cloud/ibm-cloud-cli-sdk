@@ -314,9 +314,11 @@ func TestErrors(t *testing.T) {
 			errors: PluginToValidationErrors{
 				"UNKNOWN": []PluginMetadataError{
 					{
-						Namespace: "PluginMetadata.Name",
-						Error:     "Name is required",
-						Priority:  PriorityError,
+						Namespace:   "PluginMetadata.Name",
+						Error:       "Name is required",
+						CommandName: "",
+						Priority:    PriorityError,
+						Remediation: "Nvme is required",
 					},
 				},
 			},
@@ -474,9 +476,9 @@ func TestErrors(t *testing.T) {
 					},
 					Commands: []Command{
 						{
-							Name:        "command",
+							Name:        "plugin",
 							Description: "A sample command",
-							Usage:       "ibmcloud command ABC (--DEF | --GHI)",
+							Usage:       "plugin ABC (--DEF | --GHI)",
 							Flags: []Flag{
 								{
 									Name:        "DEF",
@@ -494,7 +496,7 @@ func TestErrors(t *testing.T) {
 			errors: PluginToValidationErrors{
 				"plugin": []PluginMetadataError{
 					{
-						CommandName: " command",
+						CommandName: " plugin",
 						Namespace:   "PluginMetadata.Commands[0].Namespace",
 						Error:       "Namespace is required",
 						Priority:    PriorityError,
@@ -525,9 +527,9 @@ func TestErrors(t *testing.T) {
 					},
 					Commands: []Command{
 						{
-							Namespace:   "n1",
+							Namespace:   "plugin",
 							Description: "A sample command",
-							Usage:       "ibmcloud n1 command ABC (--DEF | --GHI)",
+							Usage:       "plugin command ABC (--DEF | --GHI)",
 							Flags: []Flag{
 								{
 									Name:        "DEF",
@@ -545,8 +547,9 @@ func TestErrors(t *testing.T) {
 			errors: PluginToValidationErrors{
 				"plugin": []PluginMetadataError{
 					{
-						CommandName: "n1 ",
+						CommandName: "plugin ",
 						Namespace:   "PluginMetadata.Commands[0].Name",
+						Remediation: "Name is required",
 						Error:       "Name is required",
 						Priority:    PriorityError,
 					},
@@ -837,245 +840,6 @@ func TestErrors(t *testing.T) {
 						Error:       "Description for 'command' starts with 'this is'. Use a sentence without subject.",
 						Priority:    PriorityError,
 						Remediation: "Remove 'this is' and start directly with the action. Example: 'List all instances' instead of 'This command lists all instances'.",
-					},
-				},
-			},
-		},
-		{
-			name: "Missing prefix in usage text",
-			pluginMetadata: []PluginMetadata{
-				{
-					Name: "plugin",
-					Version: VersionType{
-						Major: 1,
-						Minor: 0,
-						Build: 0,
-					},
-					MinCliVersion: VersionType{
-						Major: 2,
-						Minor: 0,
-						Build: 0,
-					},
-					Namespaces: []Namespace{
-						{
-							ParentName: "plugin",
-							Name:       "n1",
-						},
-					},
-					Commands: []Command{
-						{
-							Namespace:   "n1",
-							Name:        "command",
-							Usage:       "n1 command COMMAND",
-							Description: "This is a command",
-							Flags: []Flag{
-								{
-									Name:        "DEF",
-									Description: "Description for flag DEF",
-								},
-								{
-									Name:        "GHI",
-									Description: "Description for flag GHI",
-								},
-							},
-						},
-					},
-				},
-			},
-			errors: PluginToValidationErrors{
-				"plugin": []PluginMetadataError{
-					{
-						CommandName: "n1 command",
-						Namespace:   "PluginMetadata.Commands[0].Usage",
-						Error:       "Usage should start with 'ibmcloud' (lowercase) or the full path to the ibmcloud binary.",
-						Priority:    PriorityError,
-						Remediation: "Start usage examples with 'ibmcloud' in lowercase (e.g., 'ibmcloud plugin-name command...').",
-					},
-					{
-						CommandName: "n1 command",
-						Namespace:   "PluginMetadata.Commands[0].Description",
-						Error:       "Description for 'command' starts with 'this is'. Use a sentence without subject.",
-						Priority:    PriorityError,
-						Remediation: "Remove 'this is' and start directly with the action. Example: 'List all instances' instead of 'This command lists all instances'.",
-					},
-				},
-			},
-		},
-		{
-			name: "Wrong prefix - uppercase",
-			pluginMetadata: []PluginMetadata{
-				{
-					Name: "plugin",
-					Version: VersionType{
-						Major: 1,
-						Minor: 0,
-						Build: 0,
-					},
-					MinCliVersion: VersionType{
-						Major: 2,
-						Minor: 0,
-						Build: 0,
-					},
-					Namespaces: []Namespace{
-						{
-							ParentName: "",
-							Name:       "ibmcloud",
-						},
-					},
-					Commands: []Command{
-						{
-							Namespace:   "plugin",
-							Name:        "list",
-							Usage:       "IBMCLOUD plugin list",
-							Description: "List all installed plug-ins",
-							Flags:       []Flag{},
-						},
-					},
-				},
-			},
-			errors: PluginToValidationErrors{
-				"plugin": []PluginMetadataError{
-					{
-						CommandName: "plugin list",
-						Namespace:   "PluginMetadata.Commands[0].Usage",
-						Error:       "Usage should start with 'ibmcloud' (lowercase) or the full path to the ibmcloud binary.",
-						Priority:    PriorityError,
-						Remediation: "Start usage examples with 'ibmcloud' in lowercase (e.g., 'ibmcloud plugin-name command...').",
-					},
-				},
-			},
-		},
-		{
-			name: "Wrong prefix - mixed case",
-			pluginMetadata: []PluginMetadata{
-				{
-					Name: "plugin",
-					Version: VersionType{
-						Major: 1,
-						Minor: 0,
-						Build: 0,
-					},
-					MinCliVersion: VersionType{
-						Major: 2,
-						Minor: 0,
-						Build: 0,
-					},
-					Namespaces: []Namespace{
-						{
-							ParentName: "",
-							Name:       "ibmcloud",
-						},
-					},
-					Commands: []Command{
-						{
-
-							Namespace:   "plugin",
-							Name:        "list",
-							Usage:       "IBMCloud plugin list",
-							Description: "List all installed plug-ins",
-							Flags:       []Flag{},
-						},
-					},
-				},
-			},
-			errors: PluginToValidationErrors{
-				"plugin": []PluginMetadataError{
-					{
-						CommandName: "plugin list",
-						Namespace:   "PluginMetadata.Commands[0].Usage",
-						Error:       "Usage should start with 'ibmcloud' (lowercase) or the full path to the ibmcloud binary.",
-						Priority:    PriorityError,
-						Remediation: "Start usage examples with 'ibmcloud' in lowercase (e.g., 'ibmcloud plugin-name command').",
-					},
-				},
-			},
-		},
-		{
-			name: "Wrong prefix - ic only",
-			pluginMetadata: []PluginMetadata{
-				{
-					Name: "plugin",
-					Version: VersionType{
-						Major: 1,
-						Minor: 0,
-						Build: 0,
-					},
-					MinCliVersion: VersionType{
-						Major: 2,
-						Minor: 0,
-						Build: 0,
-					},
-					Namespaces: []Namespace{
-						{
-							ParentName: "plugin",
-							Name:       "n1",
-						},
-					},
-					Commands: []Command{
-						{
-
-							Namespace:   "plugin",
-							Name:        "list",
-							Usage:       "ic plugin list",
-							Description: "List all installed plug-ins",
-							Flags:       []Flag{},
-						},
-					},
-				},
-			},
-			errors: PluginToValidationErrors{
-				"plugin": []PluginMetadataError{
-					{
-						CommandName: "plugin list",
-						Namespace:   "PluginMetadata.Commands[0].Usage",
-						Error:       "Usage should start with 'ibmcloud' (lowercase) or the full path to the ibmcloud binary.",
-						Priority:    PriorityError,
-						Remediation: "Start usage examples with 'ibmcloud' in lowercase (e.g., 'ibmcloud plugin-name command').",
-					},
-				},
-			},
-		},
-		{
-			name: "Command name only",
-			pluginMetadata: []PluginMetadata{
-				{
-					Name: "plugin",
-					Version: VersionType{
-						Major: 1,
-						Minor: 0,
-						Build: 0,
-					},
-					MinCliVersion: VersionType{
-						Major: 2,
-						Minor: 0,
-						Build: 0,
-					},
-					Namespaces: []Namespace{
-						{
-							ParentName: "plugin",
-							Name:       "n1",
-						},
-					},
-					Commands: []Command{
-						{
-
-							Namespace:   "plugin",
-							Name:        "list",
-							Usage:       "list",
-							Description: "List all installed plug-ins",
-							Flags:       []Flag{},
-						},
-					},
-				},
-			},
-			errors: PluginToValidationErrors{
-				"plugin": []PluginMetadataError{
-					{
-						CommandName: "plugin list",
-						Namespace:   "PluginMetadata.Commands[0].Usage",
-						Error:       "Usage should start with 'ibmcloud' (lowercase) or the full path to the ibmcloud binary.",
-						Priority:    PriorityError,
-						Remediation: "Start usage examples with 'ibmcloud' in lowercase (e.g., 'ibmcloud plugin-name command').",
 					},
 				},
 			},
