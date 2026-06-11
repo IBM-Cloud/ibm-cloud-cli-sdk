@@ -395,6 +395,16 @@ type FakePluginContext struct {
 		result1 string
 		result2 error
 	}
+	SSOTypeStub        func() string
+	sSOTypeMutex       sync.RWMutex
+	sSOTypeArgsForCall []struct {
+	}
+	sSOTypeReturns struct {
+		result1 string
+	}
+	sSOTypeReturnsOnCall map[int]struct {
+		result1 string
+	}
 	TraceStub        func() string
 	traceMutex       sync.RWMutex
 	traceArgsForCall []struct {
@@ -2467,6 +2477,59 @@ func (fake *FakePluginContext) RefreshIAMTokenReturnsOnCall(i int, result1 strin
 	}{result1, result2}
 }
 
+func (fake *FakePluginContext) SSOType() string {
+	fake.sSOTypeMutex.Lock()
+	ret, specificReturn := fake.sSOTypeReturnsOnCall[len(fake.sSOTypeArgsForCall)]
+	fake.sSOTypeArgsForCall = append(fake.sSOTypeArgsForCall, struct {
+	}{})
+	stub := fake.SSOTypeStub
+	fakeReturns := fake.sSOTypeReturns
+	fake.recordInvocation("SSOType", []interface{}{})
+	fake.sSOTypeMutex.Unlock()
+	if stub != nil {
+		return stub()
+	}
+	if specificReturn {
+		return ret.result1
+	}
+	return fakeReturns.result1
+}
+
+func (fake *FakePluginContext) SSOTypeCallCount() int {
+	fake.sSOTypeMutex.RLock()
+	defer fake.sSOTypeMutex.RUnlock()
+	return len(fake.sSOTypeArgsForCall)
+}
+
+func (fake *FakePluginContext) SSOTypeCalls(stub func() string) {
+	fake.sSOTypeMutex.Lock()
+	defer fake.sSOTypeMutex.Unlock()
+	fake.SSOTypeStub = stub
+}
+
+func (fake *FakePluginContext) SSOTypeReturns(result1 string) {
+	fake.sSOTypeMutex.Lock()
+	defer fake.sSOTypeMutex.Unlock()
+	fake.SSOTypeStub = nil
+	fake.sSOTypeReturns = struct {
+		result1 string
+	}{result1}
+}
+
+func (fake *FakePluginContext) SSOTypeReturnsOnCall(i int, result1 string) {
+	fake.sSOTypeMutex.Lock()
+	defer fake.sSOTypeMutex.Unlock()
+	fake.SSOTypeStub = nil
+	if fake.sSOTypeReturnsOnCall == nil {
+		fake.sSOTypeReturnsOnCall = make(map[int]struct {
+			result1 string
+		})
+	}
+	fake.sSOTypeReturnsOnCall[i] = struct {
+		result1 string
+	}{result1}
+}
+
 func (fake *FakePluginContext) Trace() string {
 	fake.traceMutex.Lock()
 	ret, specificReturn := fake.traceReturnsOnCall[len(fake.traceArgsForCall)]
@@ -2682,90 +2745,6 @@ func (fake *FakePluginContext) VersionCheckEnabledReturnsOnCall(i int, result1 b
 func (fake *FakePluginContext) Invocations() map[string][][]interface{} {
 	fake.invocationsMutex.RLock()
 	defer fake.invocationsMutex.RUnlock()
-	fake.aPIEndpointMutex.RLock()
-	defer fake.aPIEndpointMutex.RUnlock()
-	fake.cLINameMutex.RLock()
-	defer fake.cLINameMutex.RUnlock()
-	fake.cRITypeMutex.RLock()
-	defer fake.cRITypeMutex.RUnlock()
-	fake.cloudNameMutex.RLock()
-	defer fake.cloudNameMutex.RUnlock()
-	fake.cloudTypeMutex.RLock()
-	defer fake.cloudTypeMutex.RUnlock()
-	fake.colorEnabledMutex.RLock()
-	defer fake.colorEnabledMutex.RUnlock()
-	fake.commandNamespaceMutex.RLock()
-	defer fake.commandNamespaceMutex.RUnlock()
-	fake.consoleEndpointMutex.RLock()
-	defer fake.consoleEndpointMutex.RUnlock()
-	fake.consoleEndpointsMutex.RLock()
-	defer fake.consoleEndpointsMutex.RUnlock()
-	fake.currentAccountMutex.RLock()
-	defer fake.currentAccountMutex.RUnlock()
-	fake.currentProfileMutex.RLock()
-	defer fake.currentProfileMutex.RUnlock()
-	fake.currentRegionMutex.RLock()
-	defer fake.currentRegionMutex.RUnlock()
-	fake.currentResourceGroupMutex.RLock()
-	defer fake.currentResourceGroupMutex.RUnlock()
-	fake.getEndpointMutex.RLock()
-	defer fake.getEndpointMutex.RUnlock()
-	fake.hTTPTimeoutMutex.RLock()
-	defer fake.hTTPTimeoutMutex.RUnlock()
-	fake.hasAPIEndpointMutex.RLock()
-	defer fake.hasAPIEndpointMutex.RUnlock()
-	fake.hasTargetedAccountMutex.RLock()
-	defer fake.hasTargetedAccountMutex.RUnlock()
-	fake.hasTargetedComputeResourceMutex.RLock()
-	defer fake.hasTargetedComputeResourceMutex.RUnlock()
-	fake.hasTargetedProfileMutex.RLock()
-	defer fake.hasTargetedProfileMutex.RUnlock()
-	fake.hasTargetedRegionMutex.RLock()
-	defer fake.hasTargetedRegionMutex.RUnlock()
-	fake.hasTargetedResourceGroupMutex.RLock()
-	defer fake.hasTargetedResourceGroupMutex.RUnlock()
-	fake.iAMEndpointMutex.RLock()
-	defer fake.iAMEndpointMutex.RUnlock()
-	fake.iAMEndpointsMutex.RLock()
-	defer fake.iAMEndpointsMutex.RUnlock()
-	fake.iAMRefreshTokenMutex.RLock()
-	defer fake.iAMRefreshTokenMutex.RUnlock()
-	fake.iAMTokenMutex.RLock()
-	defer fake.iAMTokenMutex.RUnlock()
-	fake.iMSAccountIDMutex.RLock()
-	defer fake.iMSAccountIDMutex.RUnlock()
-	fake.isAccessFromVPCMutex.RLock()
-	defer fake.isAccessFromVPCMutex.RUnlock()
-	fake.isLoggedInMutex.RLock()
-	defer fake.isLoggedInMutex.RUnlock()
-	fake.isLoggedInAsCRIMutex.RLock()
-	defer fake.isLoggedInAsCRIMutex.RUnlock()
-	fake.isLoggedInAsProfileMutex.RLock()
-	defer fake.isLoggedInAsProfileMutex.RUnlock()
-	fake.isLoggedInWithServiceIDMutex.RLock()
-	defer fake.isLoggedInWithServiceIDMutex.RUnlock()
-	fake.isPrivateEndpointEnabledMutex.RLock()
-	defer fake.isPrivateEndpointEnabledMutex.RUnlock()
-	fake.isSSLDisabledMutex.RLock()
-	defer fake.isSSLDisabledMutex.RUnlock()
-	fake.localeMutex.RLock()
-	defer fake.localeMutex.RUnlock()
-	fake.mCPEnabledMutex.RLock()
-	defer fake.mCPEnabledMutex.RUnlock()
-	fake.pluginConfigMutex.RLock()
-	defer fake.pluginConfigMutex.RUnlock()
-	fake.pluginDirectoryMutex.RLock()
-	defer fake.pluginDirectoryMutex.RUnlock()
-	fake.refreshIAMTokenMutex.RLock()
-	defer fake.refreshIAMTokenMutex.RUnlock()
-	fake.traceMutex.RLock()
-	defer fake.traceMutex.RUnlock()
-	fake.userEmailMutex.RLock()
-	defer fake.userEmailMutex.RUnlock()
-	fake.vPCCRITokenURLMutex.RLock()
-	defer fake.vPCCRITokenURLMutex.RUnlock()
-	fake.versionCheckEnabledMutex.RLock()
-	defer fake.versionCheckEnabledMutex.RUnlock()
 	copiedInvocations := map[string][][]interface{}{}
 	for key, value := range fake.invocations {
 		copiedInvocations[key] = value

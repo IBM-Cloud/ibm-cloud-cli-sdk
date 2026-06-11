@@ -122,10 +122,6 @@ func (fake *FakePlugin) RunArgsForCall(i int) (plugin.PluginContext, []string) {
 func (fake *FakePlugin) Invocations() map[string][][]interface{} {
 	fake.invocationsMutex.RLock()
 	defer fake.invocationsMutex.RUnlock()
-	fake.getMetadataMutex.RLock()
-	defer fake.getMetadataMutex.RUnlock()
-	fake.runMutex.RLock()
-	defer fake.runMutex.RUnlock()
 	copiedInvocations := map[string][][]interface{}{}
 	for key, value := range fake.invocations {
 		copiedInvocations[key] = value
