@@ -55,7 +55,7 @@ func (r *TraceLoggingTransport) dumpRequest(req *http.Request, start time.Time) 
 
 	dumpedRequest, err := httputil.DumpRequest(req, shouldDisplayBody)
 	if err != nil {
-		trace.Logger.Printf(T("An error occurred while dumping request:\n{{.Error}}\n", map[string]interface{}{"Error": err.Error()}))
+		trace.Logger.Print(T("An error occurred while dumping request:\n{{.Error}}\n", map[string]interface{}{"Error": err.Error()}))
 		return
 	}
 
@@ -76,7 +76,7 @@ func (r *TraceLoggingTransport) dumpResponse(res *http.Response, start time.Time
 
 	dumpedResponse, err := httputil.DumpResponse(res, shouldDisplayBody)
 	if err != nil {
-		trace.Logger.Printf(T("An error occurred while dumping response:\n{{.Error}}\n", map[string]interface{}{"Error": err.Error()}))
+		trace.Logger.Print(T("An error occurred while dumping response:\n{{.Error}}\n", map[string]interface{}{"Error": err.Error()}))
 		return
 	}
 
