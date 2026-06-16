@@ -87,7 +87,7 @@ func NewFileLogger(path string) PrinterCloser {
 	file, err := os.OpenFile(filepath.Clean(path), os.O_CREATE|os.O_RDWR|os.O_APPEND, 0600)
 	if err != nil {
 		logger := NewStdLogger()
-		logger.Printf(T("An error occurred when creating log file '{{.Path}}':\n{{.Error}}\n\n", map[string]interface{}{"Path": path, "Error": err.Error()}))
+		logger.Print(T("An error occurred when creating log file '{{.Path}}':\n{{.Error}}\n\n", map[string]interface{}{"Path": path, "Error": err.Error()}))
 		return logger
 	}
 	return newLoggerImpl(file, "", 0)
