@@ -251,6 +251,15 @@ demo-app   This is a long long long ...
            description.
 ```
 
+When the output is an empty list the plug-in should give a helpful message to the user, rather than table headers with no data or no response. The following is an example responding with `No templates found`:
+
+```
+Getting templates under account <the-account-id>...
+OK
+No templates found
+```
+
+
 ### JSON Output ([reference](https://github.com/IBM-Cloud/ibm-cloud-cli-sdk/blob/master/docs/plugin_developer_guide.md#211-json-output))
 
 Use flag `--output json` to show the json representation of resource(s) if the command is to list resources, or retrieve details of a resource. If this flag is used, don't show any informational messages or prompts but just the JSON string so that it can be easily parsed with other tools like jq. For example:
@@ -269,7 +278,7 @@ $ibmcloud account orgs --output json
 ]
 ```
 
-When the output is an empty list the plugin should produce an empty json list (not null).  For example if there were no account orgs:
+When the output is an empty list the plug-in should produce an empty json list (not null).  For example if there were no account orgs:
 ```
 $ibmcloud account orgs --output json
 []
