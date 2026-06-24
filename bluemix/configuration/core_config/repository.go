@@ -66,6 +66,9 @@ type Repository interface {
 	// VPCCRITokenURL() returns the value specified by the environment variable 'IBMCLOUD_CR_VPC_URL', if set.
 	// Otherwise, the default VPC auth url specified by the constant `DefaultServerEndpoint` is returned
 	VPCCRITokenURL() string
+	// PVSCCRITokenURL() returns the value specified by the environment variable 'IBMCLOUD_CR_PVS_URL', if set.
+	// Otherwise, the default VPC auth url specified by the constant `DefaultPowerEndpoint` is returned
+	PVSCRITokenURL() string
 
 	// UsageSatsDisabled returns whether the usage statistics data collection is disabled or not
 	// Deprecated: use UsageSatsEnabled instead. We change to disable usage statistics by default,
@@ -171,6 +174,15 @@ func (c repository) VPCCRITokenURL() string {
 	return vpc.DefaultServerEndpoint
 }
 
+func (c repository) PVSCRITokenURL() string {
+	if env := bluemix.EnvCRPvsUrl.Get(); env != "" {
+		return env
+	}
+
+	// default power endpoint is a constant value in vpc authenticator
+	return vpc.DefaultPowerServerEndpoint
+}
+
 func (c repository) IAMEndpoint() string {
 	if c.IsPrivateEndpointEnabled() {
 		if c.IsAccessFromVPC() {
@@ -189,7 +201,7 @@ func (c repository) RefreshIAMToken() (string, error) {
 	// confirm user is logged in as a VPC compute resource identity
 	isLoggedInAsCRI := c.IsLoggedInAsCRI()
 	criType := c.CRIType()
-	if isLoggedInAsCRI && criType == "VPC" {
+	if isLoggedInAsCRI && (criType == "VPC" || criType == "PVS") {
 		token, err := c.fetchNewIAMTokenUsingVPCAuth()
 		if err != nil {
 			return "", err
@@ -225,8 +237,14 @@ func (c repository) RefreshIAMToken() (string, error) {
 }
 
 func (c repository) fetchNewIAMTokenUsingVPCAuth() (*iam.Token, error) {
-	// create a vpc client using default configuration
-	client := vpc.NewClient(vpc.DefaultConfig(c.VPCCRITokenURL(), vpc.DefaultMetadataServiceVersion), rest.NewClient())
+	criType := c.CRIType()
+	config := vpc.DefaultConfig(c.VPCCRITokenURL(), vpc.DefaultMetadataServiceVersion)
+
+	if criType == "PVS" {
+		config = vpc.PVSConfig(c.PVSCRITokenURL(), vpc.DefaultMetadataServiceVersion)
+	}
+	// create a vpc client using default or pvc configuration
+	client := vpc.NewClient(config, rest.NewClient())
 	// fetch an instance identity token from the metadata server
 	identityToken, err := client.GetInstanceIdentityToken()
 	if err != nil {
