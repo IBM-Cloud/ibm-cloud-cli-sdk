@@ -743,6 +743,15 @@ func (demo *DemoPlugin) PrintTable() {
     table.Print()
 }
 ```
+
+When the output is an empty list the plug-in should give a helpful message to the user, rather than table headers with no data or no response. The following is an example responding with `No templates found`:
+
+```
+Getting templates under account <the-account-id>...
+OK
+No templates found
+```
+
 ### 2.11. Json Output
 
 Use flag `--output json` to show the json representation of resource(s) if the command is to list resources, or retrieve details of a resource. If this flag is used, don't show any informational messages or prompts but just the JSON string so that it can be easily parsed with other tools like jq. For example:
