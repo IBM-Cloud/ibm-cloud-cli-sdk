@@ -9,13 +9,14 @@ import (
 )
 
 const (
-	DefaultMetadataServiceVersion = "2022-03-01"
-	DefaultServerEndpoint         = "http://169.254.169.254"
+	DefaultMetadataServiceVersion = "2025-08-26"
+	DefaultServerEndpoint         = "http://api.metadata.cloud.ibm.com"
+	DefaultPowerServerEndpoint    = "https://api.metadata.power-iaas.cloud.ibm.com"
 
-	defaultMetadataFlavor                 = "ibm"
+	DefaultMetadataFlavor                 = "ibm"
 	defaultInstanceIdentityTokenLifetime  = 300
-	defaultOperationPathCreateAccessToken = "/instance_identity/v1/token"
-	defaultOperationPathCreateIamToken    = "/instance_identity/v1/iam_token"
+	defaultOperationPathCreateAccessToken = "/identity/v1/token"
+	defaultOperationPathCreateIamToken    = "/identity/v1/iam_tokens"
 
 	// headers
 	MetadataFlavor = "Metadata-Flavor"
@@ -58,6 +59,7 @@ type Interface interface {
 
 type Config struct {
 	VPCAuthEndpoint              string
+	PVSAuthEndpoint              string
 	InstanceIdentiyTokenEndpoint string
 	IAMTokenEndpoint             string
 	Version                      string
@@ -106,12 +108,20 @@ func (c Config) instanceIdentityTokenEndpoint() string {
 	if c.InstanceIdentiyTokenEndpoint != "" {
 		return c.InstanceIdentiyTokenEndpoint
 	}
+
+	if c.PVSAuthEndpoint != "" {
+		return c.PVSAuthEndpoint + defaultOperationPathCreateAccessToken
+	}
 	return c.VPCAuthEndpoint + defaultOperationPathCreateAccessToken
 }
 
 func (c Config) iamTokenEndpoint() string {
 	if c.IAMTokenEndpoint != "" {
 		return c.IAMTokenEndpoint
+	}
+
+	if c.PVSAuthEndpoint != "" {
+		return c.PVSAuthEndpoint + defaultOperationPathCreateIamToken
 	}
 	return c.VPCAuthEndpoint + defaultOperationPathCreateIamToken
 }
@@ -122,6 +132,14 @@ func DefaultConfig(vpcAuthEndpoint string, apiVersion string) Config {
 		InstanceIdentiyTokenEndpoint: vpcAuthEndpoint + defaultOperationPathCreateAccessToken,
 		IAMTokenEndpoint:             vpcAuthEndpoint + defaultOperationPathCreateIamToken,
 		Version:                      apiVersion,
+	}
+}
+
+func PVSConfig(pvsAuthEndpoint string, apiVersion string) Config {
+	return Config{
+		PVSAuthEndpoint:              pvsAuthEndpoint,
+		InstanceIdentiyTokenEndpoint: pvsAuthEndpoint + defaultOperationPathCreateAccessToken,
+		IAMTokenEndpoint:             pvsAuthEndpoint + defaultOperationPathCreateIamToken,
 	}
 }
 
@@ -138,13 +156,17 @@ func NewClient(config Config, restClient *rest.Client) Interface {
 }
 
 // GetInstanceIdentityToken retrieves the VPC/VSI compute resource's instance identity token specified at
-// `c.config.VPCAuthEndpoint` using the "create_access_token" operation of the VPC Instance Metadata Service API.
+// `c.config.VPCAuthEndpoint` or `c.config.PVSAuthEndpoint` using the "create_access_token" operation of the VPC Instance Metadata Service API.
 func (c *client) GetInstanceIdentityToken() (*InstanceIdentityToken, error) {
 	req := rest.PutRequest(c.config.instanceIdentityTokenEndpoint())
 	// set headers
-	req.Set(MetadataFlavor, defaultMetadataFlavor)
+	req.Set(MetadataFlavor, DefaultMetadataFlavor)
 	// set query params
-	req.Query("version", c.config.Version)
+
+	// only VPC endpoint supports version query
+	if c.config.VPCAuthEndpoint != "" {
+		req.Query("version", c.config.Version)
+	}
 
 	// create body
 	body := fmt.Sprintf("{\"expires_in\": %d}", defaultInstanceIdentityTokenLifetime)
@@ -165,13 +187,20 @@ func (c *client) GetInstanceIdentityToken() (*InstanceIdentityToken, error) {
 }
 
 // GetIAMAccessToken exchanges the VPC/VSI compute resource's instance identity token for an IAM access token at
-// `c.config.VPCAuthEndpoint` using the "create_iam_token" operation of the VPC Instance Metadata Service API.
+// `c.config.VPCAuthEndpoint` or `c.config.PVSAuthEndpoint` using the "create_iam_token" operation of the VPC Instance Metadata Service API.
 // The request body can consist of a profile CRN or ID, but not both.
 func (c *client) GetIAMAccessToken(tokenReq *IAMAccessTokenRequest) (*iam.Token, error) {
 	req := rest.PostRequest(c.config.iamTokenEndpoint())
 	// set instance identity token
 	req.Set(authorization, "Bearer "+tokenReq.AccessToken)
-	req.Query("version", c.config.Version)
+
+	// // NOTE: Only VPC supports version
+	// PowerVS require the Metadata-Flavor request header
+	if c.config.PVSAuthEndpoint != "" {
+		req.Set(MetadataFlavor, DefaultMetadataFlavor)
+	} else {
+		req.Query("version", c.config.Version)
+	}
 
 	if tokenReq.Body != nil {
 		var body string

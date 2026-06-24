@@ -32,9 +32,19 @@ var currentTime time.Time = time.Now()
 func TestDefaultConfig(t *testing.T) {
 	config := vpc.DefaultConfig("http://mockUrl", vpc.DefaultMetadataServiceVersion)
 	assert.Equal(t, "http://mockUrl", config.VPCAuthEndpoint)
-	assert.Equal(t, "http://mockUrl/instance_identity/v1/token", config.InstanceIdentiyTokenEndpoint)
-	assert.Equal(t, "http://mockUrl/instance_identity/v1/iam_token", config.IAMTokenEndpoint)
+	assert.Equal(t, "http://mockUrl/identity/v1/token", config.InstanceIdentiyTokenEndpoint)
+	assert.Equal(t, "http://mockUrl/identity/v1/iam_tokens", config.IAMTokenEndpoint)
 	assert.Equal(t, vpc.DefaultMetadataServiceVersion, config.Version)
+
+}
+
+func TestPVSConfig(t *testing.T) {
+	config := vpc.PVSConfig("http://mockUrl", vpc.DefaultMetadataServiceVersion)
+	assert.Equal(t, "http://mockUrl", config.PVSAuthEndpoint)
+	assert.Empty(t, config.VPCAuthEndpoint)
+	assert.Equal(t, "http://mockUrl/identity/v1/token", config.InstanceIdentiyTokenEndpoint)
+	assert.Equal(t, "http://mockUrl/identity/v1/iam_tokens", config.IAMTokenEndpoint)
+	assert.Equal(t, "", config.Version)
 
 }
 func TestIAMAccessTokenRequestWithProfileID(t *testing.T) {
@@ -84,7 +94,7 @@ func TestIAMAccessTokenRequestFailure(t *testing.T) {
 }
 
 func TestGetInstanceIdentiyTokenSuccess(t *testing.T) {
-	server := startMockVPCServerForTokenExchange(t, http.StatusOK, false, false, true)
+	server := startMockVPCServerForTokenExchange(t, http.StatusOK, false, false, true, false)
 	defer server.Close()
 
 	mockServerEndpoint := server.URL
@@ -106,7 +116,7 @@ func TestGetInstanceIdentiyTokenSuccess(t *testing.T) {
 }
 
 func TestGetInstanceIdentiyTokenFailure(t *testing.T) {
-	server := startMockVPCServerForTokenExchange(t, http.StatusUnauthorized, false, false, true)
+	server := startMockVPCServerForTokenExchange(t, http.StatusUnauthorized, false, false, true, false)
 	defer server.Close()
 
 	mockServerEndpoint := server.URL
@@ -121,7 +131,7 @@ func TestGetInstanceIdentiyTokenFailure(t *testing.T) {
 }
 
 func TestGetIAMAccessTokenSuccessWProfileID(t *testing.T) {
-	server := startMockVPCServerForTokenExchange(t, http.StatusOK, false, true, true)
+	server := startMockVPCServerForTokenExchange(t, http.StatusOK, false, true, true, false)
 	defer server.Close()
 
 	mockServerEndpoint := server.URL
@@ -152,7 +162,7 @@ func TestGetIAMAccessTokenSuccessWProfileID(t *testing.T) {
 }
 
 func TestGetIAMAccessTokenSuccessWithoutBody1(t *testing.T) {
-	server := startMockVPCServerForTokenExchange(t, http.StatusOK, false, false, false)
+	server := startMockVPCServerForTokenExchange(t, http.StatusOK, false, false, false, false)
 	defer server.Close()
 
 	mockServerEndpoint := server.URL
@@ -184,7 +194,7 @@ func TestGetIAMAccessTokenSuccessWithoutBody1(t *testing.T) {
 }
 
 func TestGetIAMAccessTokenSuccessWithoutBody2(t *testing.T) {
-	server := startMockVPCServerForTokenExchange(t, http.StatusOK, false, false, false)
+	server := startMockVPCServerForTokenExchange(t, http.StatusOK, false, false, false, false)
 	defer server.Close()
 
 	mockServerEndpoint := server.URL
@@ -215,7 +225,7 @@ func TestGetIAMAccessTokenSuccessWithoutBody2(t *testing.T) {
 }
 
 func TestGetIAMAccessTokenFailureWProfileID(t *testing.T) {
-	server := startMockVPCServerForTokenExchange(t, http.StatusBadRequest, false, true, true)
+	server := startMockVPCServerForTokenExchange(t, http.StatusBadRequest, false, true, true, false)
 	defer server.Close()
 
 	mockServerEndpoint := server.URL
@@ -242,7 +252,7 @@ func TestGetIAMAccessTokenFailureWProfileID(t *testing.T) {
 }
 
 func TestGetIAMAccessTokenSuccessWProfileCRN(t *testing.T) {
-	server := startMockVPCServerForTokenExchange(t, http.StatusOK, true, false, true)
+	server := startMockVPCServerForTokenExchange(t, http.StatusOK, true, false, true, false)
 	defer server.Close()
 
 	mockServerEndpoint := server.URL
@@ -274,7 +284,7 @@ func TestGetIAMAccessTokenSuccessWProfileCRN(t *testing.T) {
 }
 
 func TestGetIAMAccessTokenFailureWProfileCRN(t *testing.T) {
-	server := startMockVPCServerForTokenExchange(t, http.StatusBadRequest, true, false, true)
+	server := startMockVPCServerForTokenExchange(t, http.StatusBadRequest, true, false, true, false)
 	defer server.Close()
 
 	mockServerEndpoint := server.URL
@@ -303,12 +313,12 @@ func TestGetIAMAccessTokenFailureWProfileCRN(t *testing.T) {
 
 // startMockIAMServerForCRExchange will start a mock server endpoint that supports both the
 // VPC operations for exchanging an instance identity token and an IAM TOKEN.
-func startMockVPCServerForTokenExchange(t *testing.T, statusCode int, withCRN bool, withID bool, containsBody bool) *httptest.Server {
+func startMockVPCServerForTokenExchange(t *testing.T, statusCode int, withCRN bool, withID bool, containsBody bool, isPVS bool) *httptest.Server {
 	// Create the mock server.
 	server := httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
 		operationPath := req.URL.EscapedPath()
 
-		if operationPath == "/instance_identity/v1/token" {
+		if operationPath == "/identity/v1/token" {
 			// If this is an invocation of the VPC "create_access_token" operation,
 			// then validate it and then send back a good response.
 			assert.Equal(t, applicationJson, req.Header.Get("Accept"))
@@ -318,7 +328,11 @@ func startMockVPCServerForTokenExchange(t *testing.T, statusCode int, withCRN bo
 			query := req.URL.Query()
 			version := query.Get("version")
 
-			assert.Equal(t, vpc.DefaultMetadataServiceVersion, version)
+			if isPVS {
+				assert.Equal(t, "", version)
+			} else {
+				assert.Equal(t, vpc.DefaultMetadataServiceVersion, version)
+			}
 			// validate request body
 			type createAccessTokenRequestBody struct {
 				// Time in seconds before the access token expires.
@@ -327,7 +341,10 @@ func startMockVPCServerForTokenExchange(t *testing.T, statusCode int, withCRN bo
 			// Unmarshal the request body.
 			requestBody := &createAccessTokenRequestBody{}
 			_ = json.NewDecoder(req.Body).Decode(requestBody)
-			defer req.Body.Close()
+			defer func() {
+				err := req.Body.Close()
+				assert.Nil(t, err)
+			}()
 			assert.NotNil(t, requestBody.ExpiresIn)
 
 			expiration := currentTime.Add(time.Second * 300).UTC().Format(time.RFC3339)
@@ -335,15 +352,18 @@ func startMockVPCServerForTokenExchange(t *testing.T, statusCode int, withCRN bo
 			res.WriteHeader(statusCode)
 			switch statusCode {
 			case http.StatusOK:
-				fmt.Fprintf(res, `{"access_token": "%s", "created_at": "%s", "expires_at": "%s", "expires_in": 300}`,
+				_, err := fmt.Fprintf(res, `{"access_token": "%s", "created_at": "%s", "expires_at": "%s", "expires_in": 300}`,
 					instanceIdentityToken, time.Now().String(), expiration)
+				assert.Nil(t, err)
 			case http.StatusBadRequest:
-				fmt.Fprintf(res, `Sorry, bad request!`)
+				_, err := fmt.Fprintf(res, `Sorry, bad request!`)
+				assert.Nil(t, err)
 
 			case http.StatusUnauthorized:
-				fmt.Fprintf(res, `Sorry, you are not authorized!`)
+				_, err := fmt.Fprintf(res, `Sorry, you are not authorized!`)
+				assert.Nil(t, err)
 			}
-		} else if operationPath == "/instance_identity/v1/iam_token" {
+		} else if operationPath == "/identity/v1/iam_tokens" {
 			// If this is an invocation of the VPC "create_iam_token" operation,
 			// then validate it and then send back a good response.
 			assert.Equal(t, applicationJson, req.Header.Get("Accept"))
@@ -356,14 +376,22 @@ func startMockVPCServerForTokenExchange(t *testing.T, statusCode int, withCRN bo
 			query := req.URL.Query()
 			version := query.Get("version")
 
-			assert.Equal(t, vpc.DefaultMetadataServiceVersion, version)
+			if isPVS {
+				assert.Equal(t, "", version)
+				assert.Equal(t, vpc.DefaultMetadataFlavor, req.Header.Get(vpc.MetadataFlavor))
+			} else {
+				assert.Equal(t, vpc.DefaultMetadataServiceVersion, version)
+			}
 			// Models the request body for the 'create_iam_token' operation.
 			type createIamTokenRequestBody struct {
 				TrustedProfile *vpc.TrustedProfileByIdOrCRN `json:"trusted_profile,omitempty"`
 			}
 			requestBody := &createIamTokenRequestBody{}
 			_ = json.NewDecoder(req.Body).Decode(requestBody)
-			defer req.Body.Close()
+			defer func() {
+				err := req.Body.Close()
+				assert.Nil(t, err)
+			}()
 
 			if withID {
 				assert.NotNil(t, requestBody.TrustedProfile.ID)
@@ -381,13 +409,16 @@ func startMockVPCServerForTokenExchange(t *testing.T, statusCode int, withCRN bo
 			res.WriteHeader(statusCode)
 			switch statusCode {
 			case http.StatusOK:
-				fmt.Fprintf(res, `{"access_token": "%s", "created_at": "%s", "expires_at": "%s", "expires_in": 3600}`,
+				_, err := fmt.Fprintf(res, `{"access_token": "%s", "created_at": "%s", "expires_at": "%s", "expires_in": 3600}`,
 					iamAccessToken, time.Now().String(), expiration)
+				assert.Nil(t, err)
 			case http.StatusBadRequest:
-				fmt.Fprintf(res, `Sorry, bad request!`)
+				_, err := fmt.Fprintf(res, `Sorry, bad request!`)
+				assert.Nil(t, err)
 
 			case http.StatusUnauthorized:
-				fmt.Fprintf(res, `Sorry, you are not authorized!`)
+				_, err := fmt.Fprintf(res, `Sorry, you are not authorized!`)
+				assert.Nil(t, err)
 			}
 		} else {
 			assert.Fail(t, "unknown operation path: "+operationPath)
