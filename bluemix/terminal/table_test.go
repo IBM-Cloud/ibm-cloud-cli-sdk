@@ -24,7 +24,7 @@ func TestPrintTableSimple(t *testing.T) {
 	testTable.Print()
 	assert.Contains(t, buf.String(), "test2")
 	assert.Contains(t, buf.String(), "row1")
-	assert.Equal(t, bold+"test1   "+reset+bold+"test2   "+reset+"\nrow1    row2\n", buf.String())
+	assert.Equal(t, "test1   test2\nrow1    row2\n", buf.String())
 }
 
 func TestPrintTableJson(t *testing.T) {
@@ -44,7 +44,7 @@ func TestEmptyHeaderTable(t *testing.T) {
 	testTable.Add("row1", "row2")
 	testTable.Print()
 	assert.Contains(t, buf.String(), "row1")
-	assert.Equal(t, bold+"       "+reset+bold+"       "+reset+"\nrow1   row2\n", buf.String())
+	assert.Equal(t, "\nrow1   row2\n", buf.String())
 }
 
 func TestEmptyHeaderTableJson(t *testing.T) {
@@ -85,7 +85,7 @@ func TestNotEnoughRowEntires(t *testing.T) {
 	testTable.Add("", "row2")
 	testTable.Print()
 	assert.Contains(t, buf.String(), "row1")
-	assert.Equal(t, bold+"col1   "+reset+bold+"col2   "+reset+"\nrow1\n       row2\n", buf.String())
+	assert.Equal(t, "col1   col2\nrow1\n       row2\n", buf.String())
 }
 
 func TestMoreColThanTerminalWidth(t *testing.T) {
@@ -95,8 +95,9 @@ func TestMoreColThanTerminalWidth(t *testing.T) {
 	testTable.Add("row1", "row2")
 	testTable.Print()
 	assert.Contains(t, buf.String(), "row1")
-	assert.Equal(t, bold+"col1   "+reset+bold+"       "+reset+"\nrow1   row2\n", buf.String())
-	os.Unsetenv("TEST_TERMINAL_WIDTH")
+	assert.Equal(t, "col1\nrow1   row2\n", buf.String())
+	err := os.Unsetenv("TEST_TERMINAL_WIDTH")
+	assert.Nil(t, err)
 }
 
 func TestWideHeaderNames(t *testing.T) {
@@ -105,7 +106,7 @@ func TestWideHeaderNames(t *testing.T) {
 	testTable.Add("col1", "col2")
 	testTable.Print()
 	assert.Contains(t, buf.String(), "Lorem ipsum dolor sit amet, consectetu")
-	assert.Equal(t, bold+"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt u   "+reset+bold+"NAME   "+reset+"\ncol1                                                                                          col2\n", buf.String())
+	assert.Equal(t, "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt u   NAME\ncol1                                                                                          col2\n", buf.String())
 }
 
 func TestWidestColumn(t *testing.T) {
@@ -115,7 +116,7 @@ func TestWidestColumn(t *testing.T) {
 	testTable.Add(id, "row2")
 	testTable.Print()
 	assert.Contains(t, buf.String(), id)
-	assert.Equal(t, bold+"ID                                             "+reset+bold+"Name   "+reset+"\nABCDEFG-9b8babbd-f2ed-4371-b817-a839e4130332   row2\n", buf.String())
+	assert.Equal(t, buf.String(), "ID                                             Name\nABCDEFG-9b8babbd-f2ed-4371-b817-a839e4130332   row2\n")
 }
 
 func TestMultiWideColumns(t *testing.T) {
@@ -126,7 +127,7 @@ func TestMultiWideColumns(t *testing.T) {
 	testTable.Add(id, desc, "col3")
 	testTable.Print()
 	result := strings.Split(buf.String(), "\n")
-	assert.Equal(t, result[0], bold+"ID                                             "+reset+bold+"Description                                                                                    "+reset+bold+"Name   "+reset)
+	assert.Equal(t, result[0], "ID                                             "+"Description                                                                                    "+"Name")
 	assert.Equal(t, result[1], "ABCDEFG-9b8babbd-f2ed-4371-b817-a839e4130332   Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut   col3")
 }
 
@@ -138,7 +139,7 @@ func TestMultiWideColumnsWithoutDescription(t *testing.T) {
 	testTable.Add(id, desc, "col3", "Column The fourth", "Yet another column value", "ZZZZZZ")
 	testTable.Print()
 	result := strings.Split(buf.String(), "\n")
-	assert.Equal(t, result[0], "\x1b[1mAA                                             \x1b[0m\x1b[1mBB                                                                                                                                                                     \x1b[0m\x1b[1mCC     \x1b[0m\x1b[1mDD                  \x1b[0m\x1b[1mFF                         \x1b[0m\x1b[1mZZ       \x1b[0m")
+	assert.Equal(t, result[0], "AA                                             BB                                                                                                                                                                     CC     DD                  FF                         ZZ")
 	assert.Equal(t, result[1], "ABCDEFG-9b8babbd-f2ed-4371-b817-a839e4130332   Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.   col3   Column The fourth   Yet another column value   ZZZZZZ")
 }
 
@@ -196,4 +197,21 @@ func TestEmptyTable(t *testing.T) {
 	err := testTable.PrintCsv()
 	assert.Equal(t, err, nil)
 	assert.Equal(t, len(strings.TrimSpace(buf.String())), 0)
+}
+
+func TestColorEnabled(t *testing.T) {
+	setErr := os.Setenv("IBMCLOUD_COLOR", "true")
+	assert.Nil(t, setErr)
+	buf := bytes.Buffer{}
+	testTable := NewTable(&buf, []string{"test1", "test2"})
+	testTable.Add("row1", "row2")
+	testTable.Print()
+	assert.Contains(t, buf.String(), bold+"test1")
+	assert.Contains(t, buf.String(), bold+"test2")
+	assert.Contains(t, buf.String(), "row1")
+	assert.Equal(t, bold+"test1   "+reset+bold+"test2   "+reset+"\nrow1    row2\n", buf.String())
+
+	unsetErr := os.Unsetenv("IBMCLOUD_COLOR")
+	assert.Nil(t, unsetErr)
+
 }
