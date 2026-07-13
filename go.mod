@@ -5,7 +5,7 @@ go 1.26.5
 require (
 	github.com/Masterminds/semver v1.5.0
 	github.com/fatih/color v1.7.1-0.20180516100307-2d684516a886
-	github.com/fatih/structs v1.0.1-0.20171020064819-f5faa72e7309
+	github.com/fatih/structs v1.1.0
 	github.com/go-playground/validator/v10 v10.28.0
 	github.com/gofrs/flock v0.8.1
 	github.com/google/uuid v1.6.0
