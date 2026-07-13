@@ -21,7 +21,7 @@ require (
 	golang.org/x/crypto v0.53.0
 	golang.org/x/term v0.44.0
 	golang.org/x/text v0.40.0
-	gopkg.in/cheggaaa/pb.v1 v1.0.15
+	gopkg.in/cheggaaa/pb.v1 v1.0.28
 )
 
 require (
