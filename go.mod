@@ -13,14 +13,14 @@ require (
 	github.com/mattn/go-colorable v0.0.0-20160210001857-9fdad7c47650
 	github.com/mattn/go-runewidth v0.0.15
 	github.com/nicksnyder/go-i18n/v2 v2.6.1
-	github.com/onsi/gomega v1.38.3
+	github.com/onsi/gomega v1.42.1
 	github.com/spf13/cobra v1.6.1
 	github.com/spf13/pflag v1.0.5
 	github.com/stretchr/testify v1.8.4
 	go.yaml.in/yaml/v2 v2.4.3
-	golang.org/x/crypto v0.46.0
-	golang.org/x/term v0.38.0
-	golang.org/x/text v0.32.0
+	golang.org/x/crypto v0.53.0
+	golang.org/x/term v0.44.0
+	golang.org/x/text v0.38.0
 	gopkg.in/cheggaaa/pb.v1 v1.0.15
 )
 
@@ -36,7 +36,7 @@ require (
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/rivo/uniseg v0.2.0 // indirect
 	go.yaml.in/yaml/v3 v3.0.4 // indirect
-	golang.org/x/net v0.47.0 // indirect
-	golang.org/x/sys v0.39.0 // indirect
+	golang.org/x/net v0.56.0 // indirect
+	golang.org/x/sys v0.46.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
