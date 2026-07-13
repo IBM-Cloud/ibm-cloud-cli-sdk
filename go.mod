@@ -20,7 +20,7 @@ require (
 	go.yaml.in/yaml/v2 v2.4.3
 	golang.org/x/crypto v0.53.0
 	golang.org/x/term v0.44.0
-	golang.org/x/text v0.38.0
+	golang.org/x/text v0.40.0
 	gopkg.in/cheggaaa/pb.v1 v1.0.15
 )
 
