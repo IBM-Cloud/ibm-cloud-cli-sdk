@@ -4,13 +4,13 @@ go 1.26.5
 
 require (
 	github.com/Masterminds/semver v1.5.0
-	github.com/fatih/color v1.7.1-0.20180516100307-2d684516a886
+	github.com/fatih/color v1.19.0
 	github.com/fatih/structs v1.1.0
 	github.com/go-playground/validator/v10 v10.30.3
 	github.com/gofrs/flock v0.8.1
 	github.com/google/uuid v1.6.0
 	github.com/jedib0t/go-pretty/v6 v6.8.2
-	github.com/mattn/go-colorable v0.0.0-20160210001857-9fdad7c47650
+	github.com/mattn/go-colorable v0.1.14
 	github.com/mattn/go-runewidth v0.0.16
 	github.com/nicksnyder/go-i18n/v2 v2.6.1
 	github.com/onsi/gomega v1.42.1
@@ -32,7 +32,7 @@ require (
 	github.com/google/go-cmp v0.7.0 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/leodido/go-urn v1.4.0 // indirect
-	github.com/mattn/go-isatty v0.0.5-0.20180830101745-3fb116b82035 // indirect
+	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/rivo/uniseg v0.4.7 // indirect
 	go.yaml.in/yaml/v3 v3.0.4 // indirect
