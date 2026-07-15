@@ -353,16 +353,6 @@ type FakePluginContext struct {
 	localeReturnsOnCall map[int]struct {
 		result1 string
 	}
-	MCPEnabledStub        func() bool
-	mCPEnabledMutex       sync.RWMutex
-	mCPEnabledArgsForCall []struct {
-	}
-	mCPEnabledReturns struct {
-		result1 bool
-	}
-	mCPEnabledReturnsOnCall map[int]struct {
-		result1 bool
-	}
 	PluginConfigStub        func() plugin.PluginConfig
 	pluginConfigMutex       sync.RWMutex
 	pluginConfigArgsForCall []struct {
@@ -2262,59 +2252,6 @@ func (fake *FakePluginContext) LocaleReturnsOnCall(i int, result1 string) {
 	}{result1}
 }
 
-func (fake *FakePluginContext) MCPEnabled() bool {
-	fake.mCPEnabledMutex.Lock()
-	ret, specificReturn := fake.mCPEnabledReturnsOnCall[len(fake.mCPEnabledArgsForCall)]
-	fake.mCPEnabledArgsForCall = append(fake.mCPEnabledArgsForCall, struct {
-	}{})
-	stub := fake.MCPEnabledStub
-	fakeReturns := fake.mCPEnabledReturns
-	fake.recordInvocation("MCPEnabled", []interface{}{})
-	fake.mCPEnabledMutex.Unlock()
-	if stub != nil {
-		return stub()
-	}
-	if specificReturn {
-		return ret.result1
-	}
-	return fakeReturns.result1
-}
-
-func (fake *FakePluginContext) MCPEnabledCallCount() int {
-	fake.mCPEnabledMutex.RLock()
-	defer fake.mCPEnabledMutex.RUnlock()
-	return len(fake.mCPEnabledArgsForCall)
-}
-
-func (fake *FakePluginContext) MCPEnabledCalls(stub func() bool) {
-	fake.mCPEnabledMutex.Lock()
-	defer fake.mCPEnabledMutex.Unlock()
-	fake.MCPEnabledStub = stub
-}
-
-func (fake *FakePluginContext) MCPEnabledReturns(result1 bool) {
-	fake.mCPEnabledMutex.Lock()
-	defer fake.mCPEnabledMutex.Unlock()
-	fake.MCPEnabledStub = nil
-	fake.mCPEnabledReturns = struct {
-		result1 bool
-	}{result1}
-}
-
-func (fake *FakePluginContext) MCPEnabledReturnsOnCall(i int, result1 bool) {
-	fake.mCPEnabledMutex.Lock()
-	defer fake.mCPEnabledMutex.Unlock()
-	fake.MCPEnabledStub = nil
-	if fake.mCPEnabledReturnsOnCall == nil {
-		fake.mCPEnabledReturnsOnCall = make(map[int]struct {
-			result1 bool
-		})
-	}
-	fake.mCPEnabledReturnsOnCall[i] = struct {
-		result1 bool
-	}{result1}
-}
-
 func (fake *FakePluginContext) PluginConfig() plugin.PluginConfig {
 	fake.pluginConfigMutex.Lock()
 	ret, specificReturn := fake.pluginConfigReturnsOnCall[len(fake.pluginConfigArgsForCall)]
@@ -2745,6 +2682,88 @@ func (fake *FakePluginContext) VersionCheckEnabledReturnsOnCall(i int, result1 b
 func (fake *FakePluginContext) Invocations() map[string][][]interface{} {
 	fake.invocationsMutex.RLock()
 	defer fake.invocationsMutex.RUnlock()
+	fake.aPIEndpointMutex.RLock()
+	defer fake.aPIEndpointMutex.RUnlock()
+	fake.cLINameMutex.RLock()
+	defer fake.cLINameMutex.RUnlock()
+	fake.cRITypeMutex.RLock()
+	defer fake.cRITypeMutex.RUnlock()
+	fake.cloudNameMutex.RLock()
+	defer fake.cloudNameMutex.RUnlock()
+	fake.cloudTypeMutex.RLock()
+	defer fake.cloudTypeMutex.RUnlock()
+	fake.colorEnabledMutex.RLock()
+	defer fake.colorEnabledMutex.RUnlock()
+	fake.commandNamespaceMutex.RLock()
+	defer fake.commandNamespaceMutex.RUnlock()
+	fake.consoleEndpointMutex.RLock()
+	defer fake.consoleEndpointMutex.RUnlock()
+	fake.consoleEndpointsMutex.RLock()
+	defer fake.consoleEndpointsMutex.RUnlock()
+	fake.currentAccountMutex.RLock()
+	defer fake.currentAccountMutex.RUnlock()
+	fake.currentProfileMutex.RLock()
+	defer fake.currentProfileMutex.RUnlock()
+	fake.currentRegionMutex.RLock()
+	defer fake.currentRegionMutex.RUnlock()
+	fake.currentResourceGroupMutex.RLock()
+	defer fake.currentResourceGroupMutex.RUnlock()
+	fake.getEndpointMutex.RLock()
+	defer fake.getEndpointMutex.RUnlock()
+	fake.hTTPTimeoutMutex.RLock()
+	defer fake.hTTPTimeoutMutex.RUnlock()
+	fake.hasAPIEndpointMutex.RLock()
+	defer fake.hasAPIEndpointMutex.RUnlock()
+	fake.hasTargetedAccountMutex.RLock()
+	defer fake.hasTargetedAccountMutex.RUnlock()
+	fake.hasTargetedComputeResourceMutex.RLock()
+	defer fake.hasTargetedComputeResourceMutex.RUnlock()
+	fake.hasTargetedProfileMutex.RLock()
+	defer fake.hasTargetedProfileMutex.RUnlock()
+	fake.hasTargetedRegionMutex.RLock()
+	defer fake.hasTargetedRegionMutex.RUnlock()
+	fake.hasTargetedResourceGroupMutex.RLock()
+	defer fake.hasTargetedResourceGroupMutex.RUnlock()
+	fake.iAMEndpointMutex.RLock()
+	defer fake.iAMEndpointMutex.RUnlock()
+	fake.iAMEndpointsMutex.RLock()
+	defer fake.iAMEndpointsMutex.RUnlock()
+	fake.iAMRefreshTokenMutex.RLock()
+	defer fake.iAMRefreshTokenMutex.RUnlock()
+	fake.iAMTokenMutex.RLock()
+	defer fake.iAMTokenMutex.RUnlock()
+	fake.iMSAccountIDMutex.RLock()
+	defer fake.iMSAccountIDMutex.RUnlock()
+	fake.isAccessFromVPCMutex.RLock()
+	defer fake.isAccessFromVPCMutex.RUnlock()
+	fake.isLoggedInMutex.RLock()
+	defer fake.isLoggedInMutex.RUnlock()
+	fake.isLoggedInAsCRIMutex.RLock()
+	defer fake.isLoggedInAsCRIMutex.RUnlock()
+	fake.isLoggedInAsProfileMutex.RLock()
+	defer fake.isLoggedInAsProfileMutex.RUnlock()
+	fake.isLoggedInWithServiceIDMutex.RLock()
+	defer fake.isLoggedInWithServiceIDMutex.RUnlock()
+	fake.isPrivateEndpointEnabledMutex.RLock()
+	defer fake.isPrivateEndpointEnabledMutex.RUnlock()
+	fake.isSSLDisabledMutex.RLock()
+	defer fake.isSSLDisabledMutex.RUnlock()
+	fake.localeMutex.RLock()
+	defer fake.localeMutex.RUnlock()
+	fake.pluginConfigMutex.RLock()
+	defer fake.pluginConfigMutex.RUnlock()
+	fake.pluginDirectoryMutex.RLock()
+	defer fake.pluginDirectoryMutex.RUnlock()
+	fake.refreshIAMTokenMutex.RLock()
+	defer fake.refreshIAMTokenMutex.RUnlock()
+	fake.traceMutex.RLock()
+	defer fake.traceMutex.RUnlock()
+	fake.userEmailMutex.RLock()
+	defer fake.userEmailMutex.RUnlock()
+	fake.vPCCRITokenURLMutex.RLock()
+	defer fake.vPCCRITokenURLMutex.RUnlock()
+	fake.versionCheckEnabledMutex.RLock()
+	defer fake.versionCheckEnabledMutex.RUnlock()
 	copiedInvocations := map[string][][]interface{}{}
 	for key, value := range fake.invocations {
 		copiedInvocations[key] = value
