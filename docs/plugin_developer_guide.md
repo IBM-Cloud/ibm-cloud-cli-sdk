@@ -90,7 +90,7 @@ IBM Cloud CLI SDK provides a set of APIs to register and manage plug-ins. It als
     - _IsCobraPlugin_ (*optional*): Indicates if the plug-in is built using the Cobra framework.
       - It is **strongly** recommended that you use this framework to build your plug-in.
     - _Alias_ (*optional*): An alias is a short name of the command.
-    - _Namespaces[]_ (**required**): The list of namespaces / categories that group commands of similar functionality. A command under a namespace is run using `ibmcloud [namespace] [command]`. Visit [1.2 Namespaces](#12-namespace) for more information.
+    - _Namespaces[]_ (**required**): The list of namespaces / categories that group commands of similar functionality. A command under a namespace is run using `ibmcloud NAMESPACE COMMAND`. Visit [1.2 Namespaces](#12-namespace) for more information.
         - _Namespaces[].ParentName_ (*optional*): The fully qualified name of the parent namespace
         - _Namespaces[].Name_ (**required**): The base name of the namespace
         - _Namespaces[].Aliases_ (*optional*): A list of aliases for the namespace
@@ -743,6 +743,15 @@ func (demo *DemoPlugin) PrintTable() {
     table.Print()
 }
 ```
+
+When the output is an empty list the plug-in should give a helpful message to the user, rather than table headers with no data or no response. The following is an example responding with `No templates found`:
+
+```
+Getting templates under account <the-account-id>...
+OK
+No templates found
+```
+
 ### 2.11. Json Output
 
 Use flag `--output json` to show the json representation of resource(s) if the command is to list resources, or retrieve details of a resource. If this flag is used, don't show any informational messages or prompts but just the JSON string so that it can be easily parsed with other tools like jq. For example:
