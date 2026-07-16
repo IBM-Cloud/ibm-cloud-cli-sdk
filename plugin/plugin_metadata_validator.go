@@ -595,9 +595,24 @@ func validatePositionalArguments(sl validator.StructLevel) {
 	// Filter out common words, command names, and words that are part of the command structure
 	// Strategy: Find lowercase words including those in choice operators, but exclude flags and paths
 
-	// Remove flag names (words after --) to avoid false positives
-	// Flags like --name, --zone, --tags or -a, -A should not be flagged
-	usageWithoutFlags := regexp.MustCompile(`(-[a-zA-Z]{1}\s+)|(--[a-zA-Z][a-zA-Z-]*)`).ReplaceAllString(usageText, "")
+	// Remove flag names (and any pipe-list values that follow them) to avoid false positives.
+	// Flags like --name, --zone, --tags or -a, -A should not be flagged.
+	// A pipe-list after a flag (e.g. --output json|text|yaml or --provider (classic|vpc-gen2))
+	// contains literal enum values, not user-input placeholders, so they are also stripped.
+	// Single bare words after a flag (e.g. --flag value) are intentionally NOT stripped here
+	// so that missing-caps placeholders like --name instance are still caught.
+	// Two patterns are needed because short flags (-f) already consume a trailing space in the
+	// original behaviour, so the pipe-list must be appended differently for each form.
+	flagPipeListPattern := regexp.MustCompile(
+		// Long flag: --flag optionally followed by a pipe-list value
+		`--[a-zA-Z][a-zA-Z-]*` +
+			`(?:\s+[\(\[]?\s*[a-zA-Z0-9][a-zA-Z0-9_-]*(?:\s*\|\s*[a-zA-Z0-9][a-zA-Z0-9_-]*)+\s*[\)\]]?)?` +
+			// Short flag: -f<space> optionally followed by a pipe-list value (space already consumed)
+			`|-[a-zA-Z]\s+[\(\[]?\s*[a-zA-Z0-9][a-zA-Z0-9_-]*(?:\s*\|\s*[a-zA-Z0-9][a-zA-Z0-9_-]*)+\s*[\)\]]?` +
+			// Short flag with no pipe-list value (original behaviour, kept last so the above takes priority)
+			`|-[a-zA-Z]\s+`,
+	)
+	usageWithoutFlags := flagPipeListPattern.ReplaceAllString(usageText, "")
 
 	// Remove file paths to avoid flagging path components like /usr/local/bin
 	usageWithoutPaths := regexp.MustCompile(`/[a-z/]+`).ReplaceAllString(usageWithoutFlags, "")
