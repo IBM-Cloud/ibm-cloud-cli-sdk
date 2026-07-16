@@ -15,7 +15,7 @@ require (
 	github.com/nicksnyder/go-i18n/v2 v2.6.1
 	github.com/onsi/gomega v1.42.1
 	github.com/spf13/cobra v1.10.2
-	github.com/spf13/pflag v1.0.9
+	github.com/spf13/pflag v1.0.10
 	github.com/stretchr/testify v1.11.1
 	go.yaml.in/yaml/v2 v2.4.4
 	golang.org/x/crypto v0.54.0
