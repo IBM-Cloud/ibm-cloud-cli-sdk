@@ -524,6 +524,114 @@ func TestValidateUsageEnhanced_LowercaseArguments(t *testing.T) {
 	}
 }
 
+// TestValidateUsageEnhanced_FlagPipeListExemption tests that pipe-separated literal
+// enum values attached to a flag are NOT flagged as lowercase argument placeholders.
+func TestValidateUsageEnhanced_FlagPipeListExemption(t *testing.T) {
+	validator := NewPluginMetadataValidator()
+
+	baseMetadata := func(usage string) []PluginMetadata {
+		return []PluginMetadata{
+			{
+				Name:          "plugin",
+				Version:       VersionType{Major: 1},
+				MinCliVersion: VersionType{Major: 2},
+				Namespaces:    []Namespace{{ParentName: "", Name: "ibmcloud"}},
+				Commands: []Command{
+					{
+						Namespace:   "sl",
+						Name:        "vs-create",
+						Description: "Create a virtual server",
+						Usage:       usage,
+						Flags:       []Flag{},
+					},
+				},
+			},
+		}
+	}
+
+	noErrorCases := []struct {
+		name  string
+		usage string
+	}{
+		{
+			name:  "bare pipe-list after flag",
+			usage: "ibmcloud sl vs-create NAME --output json|text|yaml",
+		},
+		{
+			name:  "bare pipe-list after flag with spaces around pipes",
+			usage: "ibmcloud sl vs-create NAME --output json | text | yaml",
+		},
+		{
+			name:  "parenthesised pipe-list after flag",
+			usage: "ibmcloud sl vs-create NAME --output (json|text|yaml)",
+		},
+		{
+			name:  "parenthesised pipe-list with spaces after flag",
+			usage: "ibmcloud sl vs-create NAME --output (json | text | yaml)",
+		},
+		{
+			name:  "bracketed pipe-list after flag",
+			usage: "ibmcloud sl vs-create NAME --provider [classic|vpc-gen2]",
+		},
+		{
+			name:  "multiple flags each with a pipe-list",
+			usage: "ibmcloud sl vs-create NAME --output json|text --provider classic|vpc-gen2",
+		},
+		{
+			name:  "short flag with pipe-list",
+			usage: "ibmcloud sl vs-create NAME -o json|text|yaml",
+		},
+	}
+
+	for _, tc := range noErrorCases {
+		t.Run(tc.name, func(t *testing.T) {
+			pluginToErrors := validator.Errors(baseMetadata(tc.usage))
+			for _, errs := range pluginToErrors {
+				for _, err := range errs {
+					assert.False(t,
+						containsString(err.Error, "lowercase argument values"),
+						"Flag pipe-list values should not be flagged as lowercase args in: %s\ngot: %s",
+						tc.usage, err.Error,
+					)
+				}
+			}
+		})
+	}
+
+	// A missing-caps placeholder after a flag must still be caught.
+	t.Run("single bare lowercase after flag is still caught", func(t *testing.T) {
+		usage := "ibmcloud sl vs-create NAME --zone us-south-1a"
+		pluginToErrors := validator.Errors(baseMetadata(usage))
+		found := false
+		for _, errs := range pluginToErrors {
+			for _, err := range errs {
+				if containsString(err.Error, "lowercase argument values") {
+					found = true
+				}
+			}
+		}
+		assert.True(t, found, "Expected capargs warning for missing-caps placeholder in: %s", usage)
+	})
+
+	// A positional choice group that is NOT behind a flag must still be validated.
+	t.Run("positional pipe-list with lowercase is still caught", func(t *testing.T) {
+		usage := "ibmcloud sl vs-create NAME (option_a | OPTION_B)"
+		pluginToErrors := validator.Errors(baseMetadata(usage))
+		found := false
+		for _, errs := range pluginToErrors {
+			for _, err := range errs {
+				if containsString(err.Error, "lowercase argument values") &&
+					containsString(err.Error, "option_a") {
+					found = true
+				}
+			}
+		}
+		assert.True(t, found, "Expected capargs warning for lowercase positional choice in: %s", usage)
+	})
+}
+
+
+
 // TestValidateUsageEnhanced_ExcludedWords tests that command words are not flagged as lowercase arguments
 func TestValidateUsageEnhanced_ExcludedWords(t *testing.T) {
 	validator := NewPluginMetadataValidator()
