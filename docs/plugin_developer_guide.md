@@ -1387,6 +1387,8 @@ A CLI plugin should maintain backward compatibility within a major version, but 
 
 When a new major version of a plugin introduces incompatible changes, support for the prior major version of the plugin may only be withdrawn one year from an official deprecation notice for that version of the plugin.
 
+To deprecate an individual command, use the [Stage setting](https://github.com/IBM-Cloud/ibm-cloud-cli-sdk/blob/9bf44f5401eeda036740e8a2c0ea5dcf34d892e3/plugin/plugin.go#L59) in the plug-in metadata with value `StageDeprecated`. 
+
 ## 11. Building
 
 A CLI plug-in can be built for numerous architectures. For example: `Win64`, `Linux64`, `Linux64 ARM`, `MacOS`, and `MacOS ARM(M1)`. Below are a list of commands you can use for building these architectures.
