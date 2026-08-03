@@ -589,7 +589,11 @@ func validatePositionalArguments(sl validator.StructLevel) {
 		return
 	}
 
-	usageText := cmd.Usage
+	// Only examine the first line of the usage string.
+	// Subsequent lines are often explanatory prose (e.g. "NAMESPACE is the name of
+	// the namespace to add.") and must not be scanned for lowercase argument tokens.
+	usageText := strings.SplitN(cmd.Usage, "\n", 2)[0]
+
 	// Check for lowercase positional argument values (should be CAPS)
 	// Look for lowercase words that appear to be user-input parameters
 	// Filter out common words, command names, and words that are part of the command structure
