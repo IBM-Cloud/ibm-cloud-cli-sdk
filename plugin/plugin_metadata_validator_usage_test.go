@@ -1278,24 +1278,63 @@ func TestValidateUsageEnhanced_EdgeCases(t *testing.T) {
 				},
 			},
 			expectErrors: true, // Improved regex now catches this case
-		},
-	}
-
-	for _, tc := range testCases {
-		t.Run(tc.name, func(t *testing.T) {
-
-			pluginToErrors := validator.Errors(tc.pluginMetadata)
-
-			for _, errs := range pluginToErrors {
-				if tc.expectErrors {
-					assert.NotEmpty(t, errs, "Expected errors for: %s", tc.usage)
-				} else {
-					assert.Empty(t, errs, "Expected no errors for: %s", tc.usage)
+			},
+			{
+				name: "Multiline usage with explanatory continuation lines is not flagged",
+				pluginMetadata: []PluginMetadata{
+					{
+						Name: "cr",
+						Version: VersionType{
+							Major: 1,
+							Minor: 0,
+							Build: 0,
+						},
+						MinCliVersion: VersionType{
+							Major: 2,
+							Minor: 0,
+							Build: 0,
+						},
+						Namespaces: []Namespace{
+							{
+								ParentName: "",
+								Name:       "ibmcloud",
+							},
+						},
+						Commands: []Command{
+							{
+								Namespace:   "cr",
+								Name:        "namespace-add",
+								Description: "Add a namespace to your account.",
+								Usage:       "ibmcloud cr namespace-add [-g (RESOURCE_GROUP_NAME | RESOURCE_GROUP_ID)] NAMESPACE\nNAMESPACE is the name of the namespace to add. Do not put personal information in your namespace name.",
+								Flags: []Flag{
+									{
+										Name:        "g",
+										Description: "Optional: resource group name or ID.",
+									},
+								},
+							},
+						},
+					},
+				},
+				expectErrors: false,
+			},
+		}
+	
+		for _, tc := range testCases {
+			t.Run(tc.name, func(t *testing.T) {
+	
+				pluginToErrors := validator.Errors(tc.pluginMetadata)
+	
+				for _, errs := range pluginToErrors {
+					if tc.expectErrors {
+						assert.NotEmpty(t, errs, "Expected errors for: %s", tc.usage)
+					} else {
+						assert.Empty(t, errs, "Expected no errors for: %s", tc.usage)
+					}
 				}
-			}
-		})
+			})
+		}
 	}
-}
 
 // TestValidateUsageEnhanced_ErrorPriorities tests that errors have correct priorities
 func TestValidateUsageEnhanced_ErrorPriorities(t *testing.T) {
