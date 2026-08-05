@@ -640,10 +640,9 @@ func validatePositionalArguments(sl validator.StructLevel) {
 	// Match lowercase words (2+ chars, may contain hyphens/underscores).
 	// Uses word boundaries to properly match words, including those inside choice operators
 	// like (option_a | OPTION_B).
-	// TODO: digits are excluded from this character class, so a token like "my-db-1" is split
+	// NOTE: digits are excluded from this character class, so a token like "my-db-1" is split
 	// at the digit boundary and only "my-db" is flagged. Values that mix letters and digits
 	// (e.g. example zone names like "us-south-1a") may produce noisy or missed matches.
-	// Consider whether digit-containing tokens should be excluded from flagging entirely.
 	paramPattern := regexp.MustCompile(`\b([a-z][a-z_-]+)\b`)
 	matches := paramPattern.FindAllStringSubmatch(usageWithoutPaths, -1)
 	var lowercaseParams []string
