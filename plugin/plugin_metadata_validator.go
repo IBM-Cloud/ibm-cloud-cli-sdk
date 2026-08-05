@@ -607,15 +607,29 @@ func validatePositionalArguments(sl validator.StructLevel) {
 	// so that missing-caps placeholders like --name instance are still caught.
 	// Two patterns are needed because short flags (-f) already consume a trailing space in the
 	// original behaviour, so the pipe-list must be appended differently for each form.
-	flagPipeListPattern := regexp.MustCompile(
-		// Long flag: --flag optionally followed by a pipe-list value
-		`--[a-zA-Z][a-zA-Z-]*` +
-			`(?:\s+[\(\[]?\s*[a-zA-Z0-9][a-zA-Z0-9_-]*(?:\s*\|\s*[a-zA-Z0-9][a-zA-Z0-9_-]*)+\s*[\)\]]?)?` +
-			// Short flag: -f<space> optionally followed by a pipe-list value (space already consumed)
-			`|-[a-zA-Z]\s+[\(\[]?\s*[a-zA-Z0-9][a-zA-Z0-9_-]*(?:\s*\|\s*[a-zA-Z0-9][a-zA-Z0-9_-]*)+\s*[\)\]]?` +
-			// Short flag with no pipe-list value (original behaviour, kept last so the above takes priority)
-			`|-[a-zA-Z]\s+`,
-	)
+
+	// pipeListItem matches one token in a pipe-separated list: alphanumeric plus hyphens/underscores.
+	//   e.g. "json", "vpc-gen2", "my_value"
+	const pipeListItem = `[a-zA-Z0-9][a-zA-Z0-9_-]*`
+
+	// pipeList matches two or more pipe-separated tokens, with optional surrounding ( ) or [ ].
+	//   e.g. "json|text|yaml"  or  "(classic|vpc-gen2)"  or  "[ a | b ]"
+	const pipeList = `[\(\[]?\s*` + pipeListItem + `(?:\s*\|\s*` + pipeListItem + `)+\s*[\)\]]?`
+
+	// longFlag matches a long flag name, optionally followed by a pipe-list value.
+	//   e.g. "--output"  or  "--output json|text|yaml"
+	//   A single bare word after the flag is NOT consumed so that "--name instance" is still caught.
+	const longFlag = `--[a-zA-Z][a-zA-Z-]*(?:\s+` + pipeList + `)?`
+
+	// shortFlagWithList matches a short flag followed by a pipe-list value (space consumed by flag).
+	//   e.g. "-o classic|vpc-gen2"
+	const shortFlagWithList = `-[a-zA-Z]\s+` + pipeList
+
+	// shortFlag matches a short flag that consumes its trailing space but has no pipe-list.
+	//   e.g. "-f "  (kept last so shortFlagWithList takes priority)
+	const shortFlag = `-[a-zA-Z]\s+`
+
+	flagPipeListPattern := regexp.MustCompile(longFlag + `|` + shortFlagWithList + `|` + shortFlag)
 	usageWithoutFlags := flagPipeListPattern.ReplaceAllString(usageText, "")
 
 	// Remove file paths to avoid flagging path components like /usr/local/bin
