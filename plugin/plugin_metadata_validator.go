@@ -616,18 +616,20 @@ func validatePositionalArguments(sl validator.StructLevel) {
 	//   e.g. "json|text|yaml"  or  "(classic|vpc-gen2)"  or  "[ a | b ]"
 	const pipeList = `[\(\[]?\s*` + pipeListItem + `(?:\s*\|\s*` + pipeListItem + `)+\s*[\)\]]?`
 
-	// longFlag matches a long flag name, optionally followed by a pipe-list value.
-	//   e.g. "--output"  or  "--output json|text|yaml"
+	// longFlag matches a long flag name (letters, digits, hyphens), optionally followed by a
+	// pipe-list value.
+	//   e.g. "--output"  or  "--output json|text|yaml"  or  "--tls-1-3 (on|off)"
 	//   A single bare word after the flag is NOT consumed so that "--name instance" is still caught.
-	const longFlag = `--[a-zA-Z][a-zA-Z-]*(?:\s+` + pipeList + `)?`
+	const longFlag = `--[a-zA-Z][a-zA-Z0-9-]*(?:\s+` + pipeList + `)?`
 
 	// shortFlagWithList matches a short flag followed by a pipe-list value (space consumed by flag).
-	//   e.g. "-o classic|vpc-gen2"
-	const shortFlagWithList = `-[a-zA-Z]\s+` + pipeList
+	// Also handles the "-f, --long VALUE" alias style where a comma follows the short flag.
+	//   e.g. "-o classic|vpc-gen2"  or  "-i, --instance" (comma eaten; --instance handled by longFlag)
+	const shortFlagWithList = `-[a-zA-Z][,\s]\s*` + pipeList
 
-	// shortFlag matches a short flag that consumes its trailing space but has no pipe-list.
-	//   e.g. "-f "  (kept last so shortFlagWithList takes priority)
-	const shortFlag = `-[a-zA-Z]\s+`
+	// shortFlag matches a short flag that consumes its trailing space or comma but has no pipe-list.
+	//   e.g. "-f "  or  "-i, "  (kept last so shortFlagWithList takes priority)
+	const shortFlag = `-[a-zA-Z][,\s]\s*`
 
 	flagPipeListPattern := regexp.MustCompile(longFlag + `|` + shortFlagWithList + `|` + shortFlag)
 	usageWithoutFlags := flagPipeListPattern.ReplaceAllString(usageText, "")
@@ -635,9 +637,13 @@ func validatePositionalArguments(sl validator.StructLevel) {
 	// Remove file paths to avoid flagging path components like /usr/local/bin
 	usageWithoutPaths := regexp.MustCompile(`/[a-z/]+`).ReplaceAllString(usageWithoutFlags, "")
 
-	// Match lowercase words (2+ chars, may contain hyphens/underscores)
-	// Use word boundaries to properly match words
-	// This will match lowercase words even inside choice operators like (option_a | OPTION_B)
+	// Match lowercase words (2+ chars, may contain hyphens/underscores).
+	// Uses word boundaries to properly match words, including those inside choice operators
+	// like (option_a | OPTION_B).
+	// TODO: digits are excluded from this character class, so a token like "my-db-1" is split
+	// at the digit boundary and only "my-db" is flagged. Values that mix letters and digits
+	// (e.g. example zone names like "us-south-1a") may produce noisy or missed matches.
+	// Consider whether digit-containing tokens should be excluded from flagging entirely.
 	paramPattern := regexp.MustCompile(`\b([a-z][a-z_-]+)\b`)
 	matches := paramPattern.FindAllStringSubmatch(usageWithoutPaths, -1)
 	var lowercaseParams []string
