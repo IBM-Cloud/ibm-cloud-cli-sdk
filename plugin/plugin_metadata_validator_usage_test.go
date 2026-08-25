@@ -524,6 +524,177 @@ func TestValidateUsageEnhanced_LowercaseArguments(t *testing.T) {
 	}
 }
 
+// TestValidateUsageEnhanced_FlagPipeListExemption tests that pipe-separated literal
+// enum values attached to a flag are NOT flagged as lowercase argument placeholders.
+func TestValidateUsageEnhanced_FlagPipeListExemption(t *testing.T) {
+	validator := NewPluginMetadataValidator()
+
+	baseMetadata := func(usage string) []PluginMetadata {
+		return []PluginMetadata{
+			{
+				Name:          "plugin",
+				Version:       VersionType{Major: 1},
+				MinCliVersion: VersionType{Major: 2},
+				Namespaces:    []Namespace{{ParentName: "", Name: "ibmcloud"}},
+				Commands: []Command{
+					{
+						Namespace:   "sl",
+						Name:        "vs-create",
+						Description: "Create a virtual server",
+						Usage:       usage,
+						Flags:       []Flag{},
+					},
+				},
+			},
+		}
+	}
+
+	noErrorCases := []struct {
+		name  string
+		usage string
+	}{
+		{
+			name:  "bare pipe-list after flag",
+			usage: "ibmcloud sl vs-create NAME --output json|text|yaml",
+		},
+		{
+			name:  "bare pipe-list after flag with spaces around pipes",
+			usage: "ibmcloud sl vs-create NAME --output json | text | yaml",
+		},
+		{
+			name:  "parenthesised pipe-list after flag",
+			usage: "ibmcloud sl vs-create NAME --output (json|text|yaml)",
+		},
+		{
+			name:  "parenthesised pipe-list with spaces after flag",
+			usage: "ibmcloud sl vs-create NAME --output (json | text | yaml)",
+		},
+		{
+			name:  "bracketed pipe-list after flag",
+			usage: "ibmcloud sl vs-create NAME --provider [classic|vpc-gen2]",
+		},
+		{
+			name:  "multiple flags each with a pipe-list",
+			usage: "ibmcloud sl vs-create NAME --output json|text --provider classic|vpc-gen2",
+		},
+		{
+			name:  "short flag with pipe-list",
+			usage: "ibmcloud sl vs-create NAME -o json|text|yaml",
+		},
+		{
+			// Flag names containing digits (e.g. --tls-1-3) must be fully stripped.
+			name:  "long flag with digits in name and parenthesised pipe-list",
+			usage: "ibmcloud sl vs-create NAME --tls-1-3 (on|off)",
+		},
+		{
+			name:  "long flag with digits in name and bare pipe-list",
+			usage: "ibmcloud sl vs-create NAME --tls-1-2-only (on|off) --tls-1-3 (on|off)",
+		},
+		{
+			// Short flags in "-q, --quiet" alias style: the comma must not leave
+			// the long flag name behind as a lowercase word.
+			name:  "short flag with comma alias, no value",
+			usage: "ibmcloud sl vs-create NAME [-q, --quiet]",
+		},
+		{
+			// Short flag in alias style followed by a pipe-list value.
+			name:  "short flag with comma alias and pipe-list",
+			usage: "ibmcloud sl vs-create NAME [-i, --instance INSTANCE] [--output json|text|yaml]",
+		},
+		{
+			// true | false after a flag is a literal enum, not a user placeholder.
+			name:  "true | false pipe-list after long flag",
+			usage: "ibmcloud sl vs-create NAME --metadata-service true | false",
+		},
+		{
+			// enable | disable style common in VPC/PI commands.
+			name:  "enable | disable pipe-list after long flag",
+			usage: "ibmcloud sl vs-create NAME --advertise enable | disable",
+		},
+	}
+
+	for _, tc := range noErrorCases {
+		t.Run(tc.name, func(t *testing.T) {
+			pluginToErrors := validator.Errors(baseMetadata(tc.usage))
+			for _, errs := range pluginToErrors {
+				for _, err := range errs {
+					assert.False(t,
+						containsString(err.Error, "lowercase argument values"),
+						"Flag pipe-list values should not be flagged as lowercase args in: %s\ngot: %s",
+						tc.usage, err.Error,
+					)
+				}
+			}
+		})
+	}
+
+	// Real-world CIS pattern: digits in flag name + parenthesised pipe-list + short/long alias
+	// pair. Uses matching namespace/name so command words are correctly excluded.
+	t.Run("cis tls-settings-update style line", func(t *testing.T) {
+		usage := "ibmcloud cis tls-settings-update DNS_DOMAIN_ID [--tls-1-2-only (on|off)] [--tls-1-3 (on|off)] [-i, --instance INSTANCE] [--output FORMAT]"
+		metadata := []PluginMetadata{
+			{
+				Name:          "plugin",
+				Version:       VersionType{Major: 1},
+				MinCliVersion: VersionType{Major: 2},
+				Namespaces:    []Namespace{{ParentName: "", Name: "ibmcloud"}},
+				Commands: []Command{
+					{
+						Namespace:   "cis",
+						Name:        "tls-settings-update",
+						Description: "Update TLS settings",
+						Usage:       usage,
+						Flags:       []Flag{},
+					},
+				},
+			},
+		}
+		pluginToErrors := validator.Errors(metadata)
+		for _, errs := range pluginToErrors {
+			for _, err := range errs {
+				assert.False(t,
+					containsString(err.Error, "lowercase argument values"),
+					"Flag pipe-list values should not be flagged as lowercase args in: %s\ngot: %s",
+					usage, err.Error,
+				)
+			}
+		}
+	})
+
+	// A missing-caps placeholder after a flag must still be caught.
+	t.Run("single bare lowercase after flag is still caught", func(t *testing.T) {
+		usage := "ibmcloud sl vs-create NAME --zone us-south-1a"
+		pluginToErrors := validator.Errors(baseMetadata(usage))
+		found := false
+		for _, errs := range pluginToErrors {
+			for _, err := range errs {
+				if containsString(err.Error, "lowercase argument values") {
+					found = true
+				}
+			}
+		}
+		assert.True(t, found, "Expected capargs warning for missing-caps placeholder in: %s", usage)
+	})
+
+	// A positional choice group that is NOT behind a flag must still be validated.
+	t.Run("positional pipe-list with lowercase is still caught", func(t *testing.T) {
+		usage := "ibmcloud sl vs-create NAME (option_a | OPTION_B)"
+		pluginToErrors := validator.Errors(baseMetadata(usage))
+		found := false
+		for _, errs := range pluginToErrors {
+			for _, err := range errs {
+				if containsString(err.Error, "lowercase argument values") &&
+					containsString(err.Error, "option_a") {
+					found = true
+				}
+			}
+		}
+		assert.True(t, found, "Expected capargs warning for lowercase positional choice in: %s", usage)
+	})
+}
+
+
+
 // TestValidateUsageEnhanced_ExcludedWords tests that command words are not flagged as lowercase arguments
 func TestValidateUsageEnhanced_ExcludedWords(t *testing.T) {
 	validator := NewPluginMetadataValidator()
@@ -1278,24 +1449,63 @@ func TestValidateUsageEnhanced_EdgeCases(t *testing.T) {
 				},
 			},
 			expectErrors: true, // Improved regex now catches this case
-		},
-	}
-
-	for _, tc := range testCases {
-		t.Run(tc.name, func(t *testing.T) {
-
-			pluginToErrors := validator.Errors(tc.pluginMetadata)
-
-			for _, errs := range pluginToErrors {
-				if tc.expectErrors {
-					assert.NotEmpty(t, errs, "Expected errors for: %s", tc.usage)
-				} else {
-					assert.Empty(t, errs, "Expected no errors for: %s", tc.usage)
+			},
+			{
+				name: "Multiline usage with explanatory continuation lines is not flagged",
+				pluginMetadata: []PluginMetadata{
+					{
+						Name: "cr",
+						Version: VersionType{
+							Major: 1,
+							Minor: 0,
+							Build: 0,
+						},
+						MinCliVersion: VersionType{
+							Major: 2,
+							Minor: 0,
+							Build: 0,
+						},
+						Namespaces: []Namespace{
+							{
+								ParentName: "",
+								Name:       "ibmcloud",
+							},
+						},
+						Commands: []Command{
+							{
+								Namespace:   "cr",
+								Name:        "namespace-add",
+								Description: "Add a namespace to your account.",
+								Usage:       "ibmcloud cr namespace-add [-g (RESOURCE_GROUP_NAME | RESOURCE_GROUP_ID)] NAMESPACE\nNAMESPACE is the name of the namespace to add. Do not put personal information in your namespace name.",
+								Flags: []Flag{
+									{
+										Name:        "g",
+										Description: "Optional: resource group name or ID.",
+									},
+								},
+							},
+						},
+					},
+				},
+				expectErrors: false,
+			},
+		}
+	
+		for _, tc := range testCases {
+			t.Run(tc.name, func(t *testing.T) {
+	
+				pluginToErrors := validator.Errors(tc.pluginMetadata)
+	
+				for _, errs := range pluginToErrors {
+					if tc.expectErrors {
+						assert.NotEmpty(t, errs, "Expected errors for: %s", tc.usage)
+					} else {
+						assert.Empty(t, errs, "Expected no errors for: %s", tc.usage)
+					}
 				}
-			}
-		})
+			})
+		}
 	}
-}
 
 // TestValidateUsageEnhanced_ErrorPriorities tests that errors have correct priorities
 func TestValidateUsageEnhanced_ErrorPriorities(t *testing.T) {

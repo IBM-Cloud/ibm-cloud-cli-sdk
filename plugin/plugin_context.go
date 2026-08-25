@@ -121,9 +121,9 @@ func (c *pluginContext) VersionCheckEnabled() bool {
 }
 
 func (c *pluginContext) MCPEnabled() bool {
-	return bluemix.EnvMCP.Get() != ""
+	// DEPRECATED
+	return false
 }
-
 func envOrConfig(env bluemix.Env, config string) string {
 	if v := env.Get(); v != "" {
 		return v
