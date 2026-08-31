@@ -7,7 +7,7 @@ require (
 	github.com/fatih/color v1.19.0
 	github.com/fatih/structs v1.1.0
 	github.com/go-playground/validator/v10 v10.30.3
-	github.com/gofrs/flock v0.13.0
+	github.com/gofrs/flock v0.13.1
 	github.com/google/uuid v1.6.0
 	github.com/jedib0t/go-pretty/v6 v6.8.3
 	github.com/mattn/go-colorable v0.1.15
