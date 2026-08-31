@@ -13,7 +13,7 @@ require (
 	github.com/mattn/go-colorable v0.1.15
 	github.com/mattn/go-runewidth v0.0.28
 	github.com/nicksnyder/go-i18n/v2 v2.6.1
-	github.com/onsi/gomega v1.42.1
+	github.com/onsi/gomega v1.43.0
 	github.com/spf13/cobra v1.10.2
 	github.com/spf13/pflag v1.0.10
 	github.com/stretchr/testify v1.12.1
