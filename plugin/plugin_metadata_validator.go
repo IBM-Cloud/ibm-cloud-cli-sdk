@@ -653,17 +653,40 @@ func validatePositionalArguments(sl validator.StructLevel) {
 		"options": true, "arguments": true,
 	}
 
-	// Add words from the command name to exclusion list (these are command/subcommand names)
-	// Split on spaces but keep hyphenated words intact (e.g., "service-instance-create" stays as one word)
-	cmdWords := strings.Fields(cmd.Namespace + " " + cmd.Name)
-	for _, word := range cmdWords {
-		excludeWords[strings.ToLower(word)] = true
-		// Also exclude individual parts of hyphenated words (e.g., "list" and "all" from "list-all")
-		hyphenParts := strings.Split(word, "-")
-		for _, part := range hyphenParts {
+	// addExcludeToken adds a token and each of its hyphen-separated parts to the exclusion set.
+	// This ensures that "backup-now" (a command alias) excludes both "backup-now" and its
+	// individual parts "backup" and "now", just as command name parts are already excluded.
+	addExcludeToken := func(token string) {
+		token = strings.ToLower(token)
+		excludeWords[token] = true
+		for _, part := range strings.Split(token, "-") {
 			if part != "" {
-				excludeWords[strings.ToLower(part)] = true
+				excludeWords[part] = true
 			}
+		}
+	}
+
+	// Add words from the command name and namespace to exclusion list
+	for _, word := range strings.Fields(cmd.Namespace + " " + cmd.Name) {
+		addExcludeToken(word)
+	}
+
+	// Add command aliases (e.g., "backup-now" is an alias for "deployment-backup-now").
+	// These appear in usage strings alongside the primary command name and must not be
+	// flagged as lowercase argument placeholders.
+	if cmd.Alias != "" {
+		addExcludeToken(cmd.Alias)
+	}
+	for _, alias := range cmd.Aliases {
+		addExcludeToken(alias)
+	}
+
+	// Add plugin-level aliases (e.g., "cdb" for the "cloud-databases" plugin).
+	// Usage strings often include the short plugin alias as part of the invocation
+	// (e.g., "ibmcloud cdb backup-now NAME"), so they must be excluded too.
+	if top, ok := sl.Top().Interface().(PluginMetadata); ok {
+		for _, alias := range top.Aliases {
+			addExcludeToken(alias)
 		}
 	}
 
