@@ -845,6 +845,63 @@ func TestValidateUsageEnhanced_ExcludedWords(t *testing.T) {
 			},
 			shouldErr: false,
 		},
+		{
+			// Plugin aliases (e.g. "cdb" for "cloud-databases") appear in usage strings as
+			// part of the invocation shorthand. They must not be flagged as lowercase arguments.
+			name: "Plugin alias in usage is not flagged",
+			pluginMetadata: []PluginMetadata{
+				{
+					Name:    "cloud-databases",
+					Aliases: []string{"cdb"},
+					Version: VersionType{Major: 1},
+					MinCliVersion: VersionType{
+						Major: 2,
+					},
+					Namespaces: []Namespace{
+						{Name: "cloud-databases"},
+					},
+					Commands: []Command{
+						{
+							Namespace:   "cloud-databases",
+							Name:        "deployment-backups-list",
+							Description: "List backups for a deployment",
+							Usage:       "ibmcloud cdb deployment-backups-list NAME",
+							Flags:       []Flag{},
+						},
+					},
+				},
+			},
+			shouldErr: false,
+		},
+		{
+			// Command aliases (e.g. "backup-now" for "deployment-backup-now") also appear in
+			// usage strings and must not be flagged as lowercase arguments.
+			name: "Command alias in usage is not flagged",
+			pluginMetadata: []PluginMetadata{
+				{
+					Name:    "cloud-databases",
+					Aliases: []string{"cdb"},
+					Version: VersionType{Major: 1},
+					MinCliVersion: VersionType{
+						Major: 2,
+					},
+					Namespaces: []Namespace{
+						{Name: "cloud-databases"},
+					},
+					Commands: []Command{
+						{
+							Namespace:   "cloud-databases",
+							Name:        "deployment-backup-now",
+							Aliases:     []string{"backup-now"},
+							Description: "Trigger an immediate backup",
+							Usage:       "ibmcloud cdb backup-now NAME",
+							Flags:       []Flag{},
+						},
+					},
+				},
+			},
+			shouldErr: false,
+		},
 	}
 
 	for _, tc := range testCases {
