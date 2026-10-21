@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"os"
 
 	"go.yaml.in/yaml/v2"
 
@@ -17,6 +18,8 @@ import (
 // ErrEmptyResponseBody means the client receives an unexpected empty response from server
 var ErrEmptyResponseBody = errors.New("empty response body")
 var bufferSize = 1024
+
+const ibmCloudCtxHeader = "IBM-Cloud-Req-Ctx"
 
 // ErrorResponse is the status code and response received from the server when an error occurs.
 type ErrorResponse struct {
@@ -140,6 +143,11 @@ func (c *Client) makeRequest(ctx context.Context, r *Request) (*http.Request, er
 		req.Header.Set("Content-Type", "application/json")
 	}
 
+	ibmCloudCtxValue := ibmCloudCtx()
+	if ibmCloudCtxValue != "" {
+		req.Header.Add(ibmCloudCtxHeader, ibmCloudCtxValue)
+	}
+
 	return req, nil
 }
 
@@ -152,4 +160,8 @@ func (c *Client) applyDefaultHeader(req *http.Request) {
 			req.Header.Add(k, v)
 		}
 	}
+}
+
+func ibmCloudCtx() string {
+	return os.Getenv("IBM_CLOUD_REQ_CTX")
 }
