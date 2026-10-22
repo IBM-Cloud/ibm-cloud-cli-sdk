@@ -214,3 +214,38 @@ func TestDownloadFile(t *testing.T) {
 	bytes, _ := os.ReadFile(f.Name())
 	assert.Equal("abcedefg", string(bytes))
 }
+
+func TestMakeRequest_IBMCloudCtxHeader_Set(t *testing.T) {
+	assert := assert.New(t)
+
+	ctxValue := "test-context-value"
+	t.Setenv("IBM_CLOUD_REQ_CTX", ctxValue)
+
+	var capturedHeader string
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		capturedHeader = r.Header.Get(ibmCloudCtxHeader)
+		w.WriteHeader(http.StatusOK)
+	}))
+	defer ts.Close()
+
+	_, err := NewClient().Do(GetRequest(ts.URL), nil, nil)
+	assert.NoError(err)
+	assert.Equal(ctxValue, capturedHeader)
+}
+
+func TestMakeRequest_IBMCloudCtxHeader_NotSet(t *testing.T) {
+	assert := assert.New(t)
+
+	os.Unsetenv("IBM_CLOUD_REQ_CTX")
+
+	var capturedHeader string
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		capturedHeader = r.Header.Get(ibmCloudCtxHeader)
+		w.WriteHeader(http.StatusOK)
+	}))
+	defer ts.Close()
+
+	_, err := NewClient().Do(GetRequest(ts.URL), nil, nil)
+	assert.NoError(err)
+	assert.Empty(capturedHeader)
+}
