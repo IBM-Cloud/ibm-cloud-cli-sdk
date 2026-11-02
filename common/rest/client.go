@@ -144,7 +144,7 @@ func (c *Client) makeRequest(ctx context.Context, r *Request) (*http.Request, er
 	}
 
 	ibmCloudCtxValue := ibmCloudCtx()
-	if ibmCloudCtxValue != "" {
+	if ibmCloudCtxValue != "" && req.Header.Get(ibmCloudCtxHeader) == "" {
 		req.Header.Add(ibmCloudCtxHeader, ibmCloudCtxValue)
 	}
 

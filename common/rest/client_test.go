@@ -249,3 +249,24 @@ func TestMakeRequest_IBMCloudCtxHeader_NotSet(t *testing.T) {
 	assert.NoError(err)
 	assert.Empty(capturedHeader)
 }
+
+func TestMakeRequest_IBMCloudCtxHeader_NoDuplicateWithDefaultHeader(t *testing.T) {
+	assert := assert.New(t)
+
+	ctxValue := "test-context-value"
+	t.Setenv("IBM_CLOUD_REQ_CTX", ctxValue)
+
+	var capturedValues []string
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		capturedValues = r.Header.Values(ibmCloudCtxHeader)
+		w.WriteHeader(http.StatusOK)
+	}))
+	defer ts.Close()
+
+	client := NewClient()
+	client.DefaultHeader.Add(ibmCloudCtxHeader, ctxValue)
+
+	_, err := client.Do(GetRequest(ts.URL), nil, nil)
+	assert.NoError(err)
+	assert.Equal([]string{ctxValue}, capturedValues)
+}
