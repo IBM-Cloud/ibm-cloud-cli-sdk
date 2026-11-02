@@ -1,6 +1,6 @@
 module github.com/IBM-Cloud/ibm-cloud-cli-sdk
 
-go 1.27.2
+go 1.27.3
 
 require (
 	github.com/Masterminds/semver v1.5.0
@@ -12,7 +12,7 @@ require (
 	github.com/jedib0t/go-pretty/v6 v6.8.3
 	github.com/mattn/go-colorable v0.1.16
 	github.com/mattn/go-runewidth v0.0.31
-	github.com/nicksnyder/go-i18n/v2 v2.6.1
+	github.com/nicksnyder/go-i18n/v2 v2.7.0
 	github.com/onsi/gomega v1.44.0
 	github.com/spf13/cobra v1.10.2
 	github.com/spf13/pflag v1.0.10
