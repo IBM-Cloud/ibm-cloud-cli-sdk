@@ -9,7 +9,7 @@ require (
 	github.com/go-playground/validator/v10 v10.30.6
 	github.com/gofrs/flock v0.13.2
 	github.com/google/uuid v1.6.0
-	github.com/jedib0t/go-pretty/v6 v6.9.1
+	github.com/jedib0t/go-pretty/v6 v6.9.3
 	github.com/mattn/go-colorable v0.1.16
 	github.com/mattn/go-runewidth v0.0.31
 	github.com/nicksnyder/go-i18n/v2 v2.7.0
